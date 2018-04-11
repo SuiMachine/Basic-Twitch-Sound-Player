@@ -227,7 +227,6 @@ namespace BasicTwitchSoundPlayer
 
         private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException("Color settings not implemented");
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
