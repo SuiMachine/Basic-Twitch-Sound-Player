@@ -126,11 +126,6 @@ namespace BasicTwitchSoundPlayer.IRC
 
         }
 
-        internal void Reload()
-        {
-            throw new NotImplementedException();
-        }
-
         internal void UpdateVolume()
         {
             SndDB.ChangeVolume(programSettings.Volume);

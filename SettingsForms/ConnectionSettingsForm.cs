@@ -5,8 +5,13 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
+using System.Net;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
 {
@@ -14,6 +19,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
     {
         private MainForm _parent;
         private PrivateSettings _settingsRef;
+        private HttpListener webListener;
 
         public string Server { get; set; }
         public string Username { get; set; }
@@ -37,15 +43,25 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             this.ChannelToJoin = _settingsRef.TwitchChannelToJoin;
         }
 
+        private void CloseHttpListener()
+        {
+            if(webListener != null && webListener.IsListening)
+            {
+                webListener.Stop();
+            }
+        }
+
         private void B_Save_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            CloseHttpListener();
             this.Close();
         }
 
         private void B_Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            CloseHttpListener();
             this.Close();
         }
 
@@ -66,6 +82,30 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             {
                 TB_Password.UseSystemPasswordChar = true;
             }
+        }
+
+        private void B_GetLoginData_Click(object sender, EventArgs e)
+        {
+            webListener = new HttpListener();
+            webListener.Prefixes.Add("http://127.0.0.1:43628/");
+            webListener.Prefixes.Add("http://localhost:43628/");
+
+            webListener.Start();
+            Debug.WriteLine("WebListener started.");
+            Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token" +
+                "&client_id=9z58zy6ak0ejk9lme6dy6nyugydaes" +
+                "&redirect_uri=http://127.0.0.1:43628/resp.html" +
+                "&scope=chat_login+channel_subscriptions");
+            var context = webListener.GetContext();
+            var response = context.Response;
+            var responseText = new StreamReader(context.Request.InputStream).ReadToEnd();
+            const string responseString = "Testing";
+            var buffer = Encoding.UTF8.GetBytes(responseString);
+            response.ContentLength64 = buffer.Length;
+            var output = response.OutputStream;
+            output.Write(buffer, 0, buffer.Length);
+            Debug.WriteLine("Response written");
+            CloseHttpListener();
         }
     }
 }

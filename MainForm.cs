@@ -45,12 +45,17 @@ namespace BasicTwitchSoundPlayer
             trackBar_Volume.Value = valrr;
             L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
             soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), _programSettings);
-            TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb);
             if(_programSettings.Autostart)
             {
-                TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
-                TwitchBotThread.Start();
+                StartBot();
             }
+        }
+
+        private void StartBot()
+        {
+            TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb);
+            TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
+            TwitchBotThread.Start();
         }
 
         private void LoadColors()
@@ -168,14 +173,11 @@ namespace BasicTwitchSoundPlayer
             var CastedSender = (ToolStripMenuItem)sender;
             if(CastedSender.Checked)
             {
-                TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
-                TwitchBotThread.Start();
+                StartBot();
             }
             else
             {
-                TwitchBot.StopBot();
-                TwitchBotThread.Abort();
-                TwitchBotThread = null;
+                StopBot();
             }
         }
 
@@ -198,8 +200,29 @@ namespace BasicTwitchSoundPlayer
                 _programSettings.TwitchChannelToJoin = form.ChannelToJoin;
 
                 _programSettings.SaveSettings();
-                TwitchBot.Reload();
+                ReloadBot();
             }
+        }
+
+        private void ReloadBot()
+        {
+            if (TwitchBot.BotRunning)
+                StopBot();
+
+            StartBot();
+        }
+
+        private void StopBot()
+        {
+            if (TwitchBot.BotRunning)
+            {
+                TwitchBot.StopBot();
+            }
+
+            TwitchBot = null;
+            if (TwitchBotThread != null)
+                TwitchBotThread.Abort();
+            TwitchBotThread = null;
         }
 
         private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)

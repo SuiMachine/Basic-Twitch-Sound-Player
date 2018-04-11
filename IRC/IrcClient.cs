@@ -60,12 +60,13 @@ namespace BasicTwitchSoundPlayer.IRC
                 meebyIrc.Connect(Config_Server, 6667);
                 while (!meebyIrc.IsConnected)
                     System.Threading.Thread.Sleep(50);
-                meebyIrc.Login(Config_Username, Config_Username, 4, Config_Username, Config_Password);
-                krakenConnection = new KrakenConnections(Channel);
-                krakenUpdateTimer = new Timer(1000 * 60 * 2);
-                krakenUpdateTimer.Elapsed += KrakenUpdateTimer_Elapsed;
+                meebyIrc.Login(Config_Username, Config_Username, 4, Config_Username, "oauth:" + Config_Password);
+                krakenConnection = new KrakenConnections(Channel, Password);
+                krakenUpdateTimer = new Timer();
                 krakenUpdateTimer.Start();
-                KrakenUpdateTimer_Elapsed(null, null);
+                krakenUpdateTimer.Elapsed += KrakenUpdateTimer_Elapsed;
+                krakenUpdateTimer.Interval = 10;
+
             }
             catch (ConnectionException e)
             {
@@ -79,6 +80,8 @@ namespace BasicTwitchSoundPlayer.IRC
 
         private void KrakenUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            krakenUpdateTimer.Interval = 2 * 60 * 1000;
+
             Task<string[]> updateTask = krakenConnection.GetSubscribersAsync();
             Debug.WriteLine("Updating subscribers");
             updateTask.Wait();
@@ -88,8 +91,9 @@ namespace BasicTwitchSoundPlayer.IRC
                 int PreviousSubscribers = subscribers.Length;
                 if(PreviousSubscribers != result.Length)
                 {
-                    parent.ThreadSafeAddPreviewText("Wat", LineType.IrcCommand);
+                    parent.ThreadSafeAddPreviewText("Subscriber amount changed to " + result.Length, LineType.IrcCommand);
                 }
+                subscribers = result;
             }
         }
         #endregion

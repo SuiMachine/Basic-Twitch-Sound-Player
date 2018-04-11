@@ -44,6 +44,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.TB_Server = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.B_GetLoginData = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -59,9 +60,9 @@
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 170F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 11F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 218);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 196F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 241);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -72,17 +73,17 @@
             this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 173);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 199);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 42);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 39);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // B_Save
             // 
             this.B_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.B_Save.Location = new System.Drawing.Point(36, 9);
+            this.B_Save.Location = new System.Drawing.Point(36, 8);
             this.B_Save.Name = "B_Save";
             this.B_Save.Size = new System.Drawing.Size(75, 23);
             this.B_Save.TabIndex = 0;
@@ -93,7 +94,7 @@
             // B_Cancel
             // 
             this.B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.B_Cancel.Location = new System.Drawing.Point(183, 9);
+            this.B_Cancel.Location = new System.Drawing.Point(183, 8);
             this.B_Cancel.Name = "B_Cancel";
             this.B_Cancel.Size = new System.Drawing.Size(75, 23);
             this.B_Cancel.TabIndex = 1;
@@ -103,6 +104,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.B_GetLoginData);
             this.panel1.Controls.Add(this.CB_ShowPassword);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.TB_Username);
@@ -117,7 +119,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(294, 164);
+            this.panel1.Size = new System.Drawing.Size(294, 190);
             this.panel1.TabIndex = 1;
             // 
             // CB_ShowPassword
@@ -219,11 +221,21 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Server:";
             // 
+            // B_GetLoginData
+            // 
+            this.B_GetLoginData.Location = new System.Drawing.Point(93, 162);
+            this.B_GetLoginData.Name = "B_GetLoginData";
+            this.B_GetLoginData.Size = new System.Drawing.Size(132, 23);
+            this.B_GetLoginData.TabIndex = 11;
+            this.B_GetLoginData.Text = "Obtain New Login Data";
+            this.B_GetLoginData.UseVisualStyleBackColor = true;
+            this.B_GetLoginData.Click += new System.EventHandler(this.B_GetLoginData_Click);
+            // 
             // ConnectionSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 218);
+            this.ClientSize = new System.Drawing.Size(300, 241);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -256,5 +268,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox TB_Username;
         private System.Windows.Forms.CheckBox CB_ShowPassword;
+        private System.Windows.Forms.Button B_GetLoginData;
     }
 }
