@@ -1,13 +1,19 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace BasicTwitchSoundPlayer.Structs
 {
     public enum TwitchRights
     {
+        [Description("Disabled")]
         Disabled,
+        [Description("Public")]
         Public,
+        [Description("Subscribers / Trusted")]
         TrustedSub,
+        [Description("Moderators")]
         Mod,
+        [Description("Administrator")]
         Admin,
     }
 

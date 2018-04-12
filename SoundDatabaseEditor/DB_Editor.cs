@@ -7,14 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BasicTwitchSoundPlayer.Extensions;
 using BasicTwitchSoundPlayer.Structs;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 {
     public partial class DB_Editor : Form
     {
-        private const string FilesNodeName = "Files";
-        private const string RequirementsNodeName = "Requirement";
+        public const string NodeNameEntry = "Entry";
+        public const string NodeNameFiles = "Files";
+        public const string NodeNameRequirements = "Requirement";
 
         public List<SoundEntry> Sounds;
 
@@ -28,16 +30,55 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         {
             foreach(var Sound in Sounds)
             {
-                var newNode = sndTreeView.Nodes.Add(Sound.GetCommand());
-                var FilesNode = newNode.Nodes.Add(FilesNodeName);
-                FilesNode.Name = FilesNodeName;
-                foreach(var file in Sound.GetAllFiles())
+                sndTreeView.Nodes.Add(Sound.ToTreeNode());
+            }
+        }
+
+        private TreeNode GetRootSoundNode(TreeNode Node)
+        {
+            while(Node.Parent != null)
+            {
+                Node = Node.Parent;
+            }
+            return Node;
+        }
+
+        private void EditEntry()
+        {
+            if (sndTreeView.SelectedNode != null)
+            {
+                var SndNode = GetRootSoundNode(sndTreeView.SelectedNode);
+                int index = sndTreeView.SelectedNode.Index;
+                var dialForm = new EditDialogues.AddEditNewEntryDialog(SndNode.ToSoundEntry());
+                DialogResult res = dialForm.ShowDialog();
+
+                if(res == DialogResult.OK)
                 {
-                    FilesNode.Nodes.Add(file);
+                    sndTreeView.Nodes[index].Remove();
+                    sndTreeView.Nodes.Insert(index, dialForm.ReturnSound.ToTreeNode());
+
                 }
-                var Requirement = newNode.Nodes.Add(RequirementsNodeName);
-                Requirement.Name = RequirementsNodeName;
-                Requirement.Nodes.Add(Sound.GetRequirement().ToString());
+            }
+        }
+
+        private void RemoveEntry()
+        {
+            if(sndTreeView.SelectedNode != null)
+            {
+                var SndNode = GetRootSoundNode(sndTreeView.SelectedNode);
+                sndTreeView.Nodes.Remove(SndNode);
+            }
+        }
+
+        #region ButtonEvents
+        private void SndTreeView_DoubleClick(object sender, EventArgs e)
+        {
+            var SelectedNode = sndTreeView.SelectedNode;
+            if (SelectedNode != null)
+            {
+                var RootSndNode = GetRootSoundNode(SelectedNode);
+                sndTreeView.SelectedNode = RootSndNode;
+                EditEntry();
             }
         }
 
@@ -53,55 +94,76 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
             this.Close();
         }
 
-        private void SndTreeView_DoubleClick(object sender, EventArgs e)
-        {
-            var SelectedNode = sndTreeView.SelectedNode;
-            if(SelectedNode.Parent != null && SelectedNode.Nodes.Count == 0)
-            {
-                if(SelectedNode.Parent.Name == FilesNodeName)
-                {
-                    var fileDialog = new OpenFileDialog
-                    {
-                        Filter = SupportedFileFormats.Filter
-                    };
-                    fileDialog.FilterIndex = SupportedFileFormats.LastIndex;
-
-                    DialogResult res = fileDialog.ShowDialog();
-                    if(res == DialogResult.OK)
-                    {
-                        SelectedNode.Text = fileDialog.FileName;
-                    }
-                }
-                else if (SelectedNode.Parent.Name == RequirementsNodeName)
-                {
-                    var PermissionDialog = new EditDialogues.EditDialog_Right(SelectedNode.Text.ToTwitchRights());
-                    DialogResult res = PermissionDialog.ShowDialog();
-                    if(res == DialogResult.OK)
-                    {
-                        SelectedNode.Text = PermissionDialog.RetPermission.ToString();
-                    }
-                }
-            }
-        }
-
-        private void SndTreeView_MouseClick(object sender, MouseEventArgs e)
-        {
-
-        }
-
         private void B_AddEntry_Click(object sender, EventArgs e)
         {
-            EditDialogues.AddNewEntryDialog newEntryDialog = new EditDialogues.AddNewEntryDialog();
-            newEntryDialog.ShowDialog();
+            EditDialogues.AddEditNewEntryDialog newEntryDialog = new EditDialogues.AddEditNewEntryDialog();
+            DialogResult res = newEntryDialog.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                sndTreeView.Nodes.Add(newEntryDialog.ReturnSound.ToTreeNode());
+            }
+
+        }
+
+
+        private void B_Edit_Click(object sender, EventArgs e)
+        {
+            EditEntry();
         }
 
         private void B_RemoveEntry_Click(object sender, EventArgs e)
         {
+            RemoveEntry();
+        }
+        #endregion
+    }
 
+    #region Extensions
+    static class EditorExtensions
+    {
+        public static SoundEntry ToSoundEntry(this TreeNode node)
+        {
+            if (node.Name == DB_Editor.NodeNameEntry)
+            {
+                string Command = node.Text;
+                TwitchRights Right = node.Nodes[DB_Editor.NodeNameRequirements].Nodes[0].Text.ToTwitchRights();
+                string[] Files = new string[node.Nodes[DB_Editor.NodeNameFiles].Nodes.Count];
+                for (int i = 0; i < Files.Length; i++)
+                {
+                    Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
+                }
+
+                return new SoundEntry(Command, Right, Files);
+            }
+            else
+                return new SoundEntry();
         }
 
-        private void SndTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        public static TreeNode ToTreeNode(this SoundEntry snd)
         {
+            if (snd.GetIsProperEntry())
+            {
+                var newNode = new TreeNode(snd.GetCommand())
+                {
+                    Name = DB_Editor.NodeNameEntry
+                };
+                var FilesNode = newNode.Nodes.Add(DB_Editor.NodeNameFiles);
+                FilesNode.Name = DB_Editor.NodeNameFiles;
+                foreach (var file in snd.GetAllFiles())
+                {
+                    if(file.RemoveWhitespaces() != String.Empty)
+                    {
+                        FilesNode.Nodes.Add(file);
+                    }
+                }
+                var Requirement = newNode.Nodes.Add(DB_Editor.NodeNameRequirements);
+                Requirement.Name = DB_Editor.NodeNameRequirements;
+                Requirement.Nodes.Add(snd.GetRequirement().ToString());
+                return newNode;
+            }
+            else
+                throw new Exception(snd.GetCommand() + " is an incorrect entry!");
         }
     }
+    #endregion
 }

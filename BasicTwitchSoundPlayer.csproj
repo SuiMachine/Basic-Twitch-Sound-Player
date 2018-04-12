@@ -32,9 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>Libaries\log4net.dll</HintPath>
@@ -65,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\Numbers.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="MainForm.cs">
@@ -92,17 +91,11 @@
     <Compile Include="SoundDatabaseEditor\DB_Editor.Designer.cs">
       <DependentUpon>DB_Editor.cs</DependentUpon>
     </Compile>
-    <Compile Include="SoundDatabaseEditor\EditDialogues\AddNewEntryDialog.cs">
+    <Compile Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SoundDatabaseEditor\EditDialogues\AddNewEntryDialog.Designer.cs">
-      <DependentUpon>AddNewEntryDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SoundDatabaseEditor\EditDialogues\EditDialog_Right.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SoundDatabaseEditor\EditDialogues\EditDialog_Right.Designer.cs">
-      <DependentUpon>EditDialog_Right.cs</DependentUpon>
+    <Compile Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.Designer.cs">
+      <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="SoundStorageXML.cs" />
@@ -127,15 +120,9 @@
     <EmbeddedResource Include="SoundDatabaseEditor\DB_Editor.resx">
       <DependentUpon>DB_Editor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\AddNewEntryDialog.resx">
-      <DependentUpon>AddNewEntryDialog.cs</DependentUpon>
+    <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.resx">
+      <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\EditDialog_Right.resx">
-      <DependentUpon>EditDialog_Right.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

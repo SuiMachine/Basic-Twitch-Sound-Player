@@ -1,6 +1,10 @@
-﻿namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+
+namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 {
-    partial class AddNewEntryDialog
+    partial class AddEditNewEntryDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -105,6 +109,7 @@
             this.TB_Command.Name = "TB_Command";
             this.TB_Command.Size = new System.Drawing.Size(205, 20);
             this.TB_Command.TabIndex = 1;
+            this.TB_Command.TextChanged += new System.EventHandler(this.TB_Command_TextChanged);
             // 
             // tableLayoutPanel3
             // 
@@ -237,15 +242,15 @@
             this.B_OK.UseVisualStyleBackColor = true;
             this.B_OK.Click += new System.EventHandler(this.B_OK_Click);
             // 
-            // AddNewEntryDialog
+            // AddEditNewEntryDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 291);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MinimizeBox = false;
-            this.Name = "AddNewEntryDialog";
+            this.Name = "AddEditNewEntryDialog";
+            this.ShowIcon = false;
             this.Text = "Add new entry";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -261,6 +266,19 @@
         }
 
         #endregion
+
+        private void AddComboboxDataSources()
+        {
+            CBox_RequiredRight.DisplayMember = "Description";
+            CBox_RequiredRight.ValueMember = "value";
+            CBox_RequiredRight.DataSource = Enum.GetValues(typeof(BasicTwitchSoundPlayer.Structs.TwitchRights)).Cast<Enum>().Select(value =>
+            new
+            {
+                (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()),
+                typeof(DescriptionAttribute)) as DescriptionAttribute).Description,
+                value
+            }).ToList();
+        }
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
