@@ -66,6 +66,7 @@
             this.sndTreeView.Size = new System.Drawing.Size(670, 472);
             this.sndTreeView.TabIndex = 1;
             this.sndTreeView.DoubleClick += new System.EventHandler(this.SndTreeView_DoubleClick);
+            this.sndTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SndTreeView_KeyDown);
             // 
             // tableLayoutPanel2
             // 

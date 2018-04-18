@@ -56,7 +56,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 {
                     sndTreeView.Nodes[index].Remove();
                     sndTreeView.Nodes.Insert(index, dialForm.ReturnSound.ToTreeNode());
-
                 }
             }
         }
@@ -84,8 +83,22 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
         private void B_Save_Click(object sender, EventArgs e)
         {
+            this.Sounds = TreeNodesToSoundsEntryList(sndTreeView);
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private List<SoundEntry> TreeNodesToSoundsEntryList(TreeView tree)
+        {
+            this.Sounds = new List<SoundEntry>();  //Cause I can't be bothered to test whatever it's a hidden pointer and propages everywhere or not
+            for(int i=0; i<sndTreeView.Nodes.Count; i++)
+            {
+                var newSnd = sndTreeView.Nodes[i].ToSoundEntry();
+                if (newSnd.GetIsProperEntry())
+                    Sounds.Add(newSnd);
+            }
+            return Sounds;
+
         }
 
         private void B_Cancel_Click(object sender, EventArgs e)
@@ -114,6 +127,28 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         private void B_RemoveEntry_Click(object sender, EventArgs e)
         {
             RemoveEntry();
+        }
+        #endregion
+
+        #region PressKeyEvents
+        private void SndTreeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete)
+            {
+                if(sndTreeView.SelectedNode != null)
+                {
+                    var parent = GetRootSoundNode(sndTreeView.SelectedNode);
+
+                    sndTreeView.Nodes.Remove(parent);
+                }
+            }
+            else if(e.KeyCode == Keys.Enter)
+            {
+                if(sndTreeView.SelectedNode != null)
+                {
+                    EditEntry();
+                }
+            }
         }
         #endregion
     }

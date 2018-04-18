@@ -4,8 +4,6 @@ Basic Sound player for Twitch written in C#.
 
 Known issues / incomplete features
 -------
-  * Sound Database Editor doesn't actually store anything.
-  * Add new entry dialog doesn't do anything for now.
   * Opening Color Settings doesn't do anything.
   * Obtaining New Login Data starts a browser and redirect the result the listener, but listener doesn't do anything for now.
   * Player officially only supports wav files for now.

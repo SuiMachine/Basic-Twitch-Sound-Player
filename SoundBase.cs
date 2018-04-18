@@ -192,7 +192,12 @@ namespace BasicTwitchSoundPlayer
                 {
                     soundlist.Add(entry);
                 }
+                SoundStorageXML.SaveSoundBase(SoundBaseFile, soundlist);
             }
+        }
+
+        internal void Save()
+        {
             SoundStorageXML.SaveSoundBase(SoundBaseFile, soundlist);
         }
     }
