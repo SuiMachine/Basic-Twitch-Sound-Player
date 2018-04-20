@@ -33,6 +33,7 @@
             this.B_Save = new System.Windows.Forms.Button();
             this.B_Cancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.B_GetLoginData = new System.Windows.Forms.Button();
             this.CB_ShowPassword = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.TB_Username = new System.Windows.Forms.TextBox();
@@ -44,7 +45,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.TB_Server = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.B_GetLoginData = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -122,6 +122,16 @@
             this.panel1.Size = new System.Drawing.Size(294, 190);
             this.panel1.TabIndex = 1;
             // 
+            // B_GetLoginData
+            // 
+            this.B_GetLoginData.Location = new System.Drawing.Point(93, 162);
+            this.B_GetLoginData.Name = "B_GetLoginData";
+            this.B_GetLoginData.Size = new System.Drawing.Size(132, 23);
+            this.B_GetLoginData.TabIndex = 11;
+            this.B_GetLoginData.Text = "Obtain New Login Data";
+            this.B_GetLoginData.UseVisualStyleBackColor = true;
+            this.B_GetLoginData.Click += new System.EventHandler(this.B_GetLoginData_Click);
+            // 
             // CB_ShowPassword
             // 
             this.CB_ShowPassword.AutoSize = true;
@@ -160,6 +170,7 @@
             // 
             // TB_Password
             // 
+            this.TB_Password.Enabled = false;
             this.TB_Password.Location = new System.Drawing.Point(93, 87);
             this.TB_Password.Name = "TB_Password";
             this.TB_Password.Size = new System.Drawing.Size(198, 20);
@@ -220,16 +231,6 @@
             this.label1.Size = new System.Drawing.Size(41, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Server:";
-            // 
-            // B_GetLoginData
-            // 
-            this.B_GetLoginData.Location = new System.Drawing.Point(93, 162);
-            this.B_GetLoginData.Name = "B_GetLoginData";
-            this.B_GetLoginData.Size = new System.Drawing.Size(132, 23);
-            this.B_GetLoginData.TabIndex = 11;
-            this.B_GetLoginData.Text = "Obtain New Login Data";
-            this.B_GetLoginData.UseVisualStyleBackColor = true;
-            this.B_GetLoginData.Click += new System.EventHandler(this.B_GetLoginData_Click);
             // 
             // ConnectionSettingsForm
             // 

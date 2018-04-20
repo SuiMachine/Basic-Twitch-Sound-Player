@@ -206,7 +206,7 @@ namespace BasicTwitchSoundPlayer
 
         private void ReloadBot()
         {
-            if (TwitchBot.BotRunning)
+            if (TwitchBot != null && TwitchBot.BotRunning)
                 StopBot();
 
             StartBot();

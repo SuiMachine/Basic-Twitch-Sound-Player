@@ -92,20 +92,68 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
             webListener.Start();
             Debug.WriteLine("WebListener started.");
-            Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token" +
+            Process.Start("https://id.twitch.tv/oauth2/authorize?response_type=token" +
                 "&client_id=9z58zy6ak0ejk9lme6dy6nyugydaes" +
                 "&redirect_uri=http://127.0.0.1:43628/resp.html" +
                 "&scope=chat_login+channel_subscriptions");
-            var context = webListener.GetContext();
-            var response = context.Response;
-            var responseText = new StreamReader(context.Request.InputStream).ReadToEnd();
-            const string responseString = "Testing";
-            var buffer = Encoding.UTF8.GetBytes(responseString);
-            response.ContentLength64 = buffer.Length;
-            var output = response.OutputStream;
-            output.Write(buffer, 0, buffer.Length);
-            Debug.WriteLine("Response written");
-            CloseHttpListener();
+
+            string pageContentRedirect = string.Join("\n", "<html>",
+                    "<head>",
+                    "<script>",
+                    "window.onload = function() {",
+                    "if(location.hash != null && location.hash.startsWith(\"#\"))",
+                    "{",
+                    "window.location.replace(\"http://127.0.0.1:43628/\" +  location.hash.replace(\'#\', \'&\'));",
+                    "}",
+                    "}",
+                    "</script>",
+                    "<title>Close it</title>",
+                    "</head>",
+                    "<body>You can probably close this page</body>",
+                    "</html>");
+
+            string requestUri = "";
+
+            for (int i = 0; i < 2; i++)
+            {
+                var context = webListener.GetContext();
+                var response = context.Response;
+                var responseText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                var buffer = Encoding.UTF8.GetBytes(pageContentRedirect);
+                requestUri = context.Request.Url.ToString();
+                response.ContentLength64 = buffer.Length;
+                var output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+            }
+            webListener.Stop();
+            string login = "";
+            string scopes = "";
+
+            if (requestUri.Contains("&"))
+            {
+                var split = requestUri.Split('&');
+                for(int i=0; i<split.Length; i++)
+                {
+                    if(split[i].StartsWith("access_token="))
+                    {
+                        login = split[i].Remove(0, "access_token=".Length);
+                    }
+                    else if(split[i].StartsWith("scope="))
+                    {
+                        scopes = split[i].Remove(0, "scope=".Length);
+                    }
+                }
+            }
+
+            if(scopes != "" && login != "")
+            {
+                TB_Password.Text = login;
+                MessageBox.Show("Sucessfully received new login data!\nClick Save button to save the new authorization key.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Failed to obtain new login data!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
