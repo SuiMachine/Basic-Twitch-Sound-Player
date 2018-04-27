@@ -60,13 +60,6 @@ namespace BasicTwitchSoundPlayer
 
         private void LoadColors()
         {
-            this.BackColor = Color.FromArgb(15, 15, 15);
-            menuStrip1.BackColor = Color.FromArgb(15, 15, 15);
-            menuStrip1.ForeColor = Color.WhiteSmoke;
-
-            RB_Preview.BackColor = Color.FromArgb(30, 30, 30);
-            RB_Preview.ForeColor = Color.WhiteSmoke;
-            L_Volume.ForeColor = Color.WhiteSmoke;
         }
 
         #region ThreadSafeFunctions
@@ -227,6 +220,12 @@ namespace BasicTwitchSoundPlayer
 
         private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SettingsForms.ColorSettingsForm csf = new SettingsForms.ColorSettingsForm(_programSettings);
+            DialogResult res = csf.ShowDialog();
+            if(res == DialogResult.OK)
+            {
+
+            }
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)

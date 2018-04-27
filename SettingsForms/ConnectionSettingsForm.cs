@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.IO;
-using System.Threading.Tasks;
 using System.Net;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
+using System.Security.Principal;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
 {
@@ -86,74 +79,88 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
         private void B_GetLoginData_Click(object sender, EventArgs e)
         {
-            webListener = new HttpListener();
-            webListener.Prefixes.Add("http://127.0.0.1:43628/");
-            webListener.Prefixes.Add("http://localhost:43628/");
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            bool isElevated = true;
 
-            webListener.Start();
-            Debug.WriteLine("WebListener started.");
-            Process.Start("https://id.twitch.tv/oauth2/authorize?response_type=token" +
-                "&client_id=9z58zy6ak0ejk9lme6dy6nyugydaes" +
-                "&redirect_uri=http://127.0.0.1:43628/resp.html" +
-                "&scope=chat_login+channel_subscriptions");
-
-            string pageContentRedirect = string.Join("\n", "<html>",
-                    "<head>",
-                    "<script>",
-                    "window.onload = function() {",
-                    "if(location.hash != null && location.hash.startsWith(\"#\"))",
-                    "{",
-                    "window.location.replace(\"http://127.0.0.1:43628/\" +  location.hash.replace(\'#\', \'&\'));",
-                    "}",
-                    "}",
-                    "</script>",
-                    "<title>Close it</title>",
-                    "</head>",
-                    "<body>You can probably close this page</body>",
-                    "</html>");
-
-            string requestUri = "";
-
-            for (int i = 0; i < 2; i++)
+            if (!isElevated)
             {
-                var context = webListener.GetContext();
-                var response = context.Response;
-                var responseText = new StreamReader(context.Request.InputStream).ReadToEnd();
-                var buffer = Encoding.UTF8.GetBytes(pageContentRedirect);
-                requestUri = context.Request.Url.ToString();
-                response.ContentLength64 = buffer.Length;
-                var output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
+                DialogResult result = MessageBox.Show("HttpListener generally requires administrator rights. You can try running it without them, but the program oftens fails. Are you sure you want to continue?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                    isElevated = true;
             }
-            webListener.Stop();
-            string login = "";
-            string scopes = "";
 
-            if (requestUri.Contains("&"))
+            if(isElevated)
             {
-                var split = requestUri.Split('&');
-                for(int i=0; i<split.Length; i++)
+                webListener = new HttpListener();
+                webListener.Prefixes.Add("http://127.0.0.1:43628/");
+                webListener.Prefixes.Add("http://localhost:43628/");
+
+                webListener.Start();
+                Debug.WriteLine("WebListener started.");
+                Process.Start("https://id.twitch.tv/oauth2/authorize?response_type=token" +
+                    "&client_id=9z58zy6ak0ejk9lme6dy6nyugydaes" +
+                    "&redirect_uri=http://127.0.0.1:43628/resp.html" +
+                    "&scope=chat_login+channel_subscriptions");
+
+                string pageContentRedirect = string.Join("\n", "<html>",
+                        "<head>",
+                        "<script>",
+                        "window.onload = function() {",
+                        "if(location.hash != null && location.hash.startsWith(\"#\"))",
+                        "{",
+                        "window.location.replace(\"http://127.0.0.1:43628/\" +  location.hash.replace(\'#\', \'&\'));",
+                        "}",
+                        "}",
+                        "</script>",
+                        "<title>Close it</title>",
+                        "</head>",
+                        "<body>You can probably close this page</body>",
+                        "</html>");
+
+                string requestUri = "";
+
+                for (int i = 0; i < 2; i++)
                 {
-                    if(split[i].StartsWith("access_token="))
+                    var context = webListener.GetContext();
+                    var response = context.Response;
+                    var responseText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                    var buffer = Encoding.UTF8.GetBytes(pageContentRedirect);
+                    requestUri = context.Request.Url.ToString();
+                    response.ContentLength64 = buffer.Length;
+                    var output = response.OutputStream;
+                    output.Write(buffer, 0, buffer.Length);
+                }
+                webListener.Stop();
+                string login = "";
+                string scopes = "";
+
+                if (requestUri.Contains("&"))
+                {
+                    var split = requestUri.Split('&');
+                    for (int i = 0; i < split.Length; i++)
                     {
-                        login = split[i].Remove(0, "access_token=".Length);
-                    }
-                    else if(split[i].StartsWith("scope="))
-                    {
-                        scopes = split[i].Remove(0, "scope=".Length);
+                        if (split[i].StartsWith("access_token="))
+                        {
+                            login = split[i].Remove(0, "access_token=".Length);
+                        }
+                        else if (split[i].StartsWith("scope="))
+                        {
+                            scopes = split[i].Remove(0, "scope=".Length);
+                        }
                     }
                 }
-            }
 
-            if(scopes != "" && login != "")
-            {
-                TB_Password.Text = login;
-                MessageBox.Show("Sucessfully received new login data!\nClick Save button to save the new authorization key.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Failed to obtain new login data!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                if (scopes != "" && login != "")
+                {
+                    TB_Password.Text = login;
+                    MessageBox.Show("Sucessfully received new login data!\nClick Save button to save the new authorization key.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to obtain new login data!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }           
         }
     }
 }

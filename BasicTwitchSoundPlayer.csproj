@@ -79,6 +79,12 @@
     <Compile Include="IRC\IrcClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsForms\ColorSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\ColorSettingsForm.Designer.cs">
+      <DependentUpon>ColorSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForms\ConnectionSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +123,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SettingsForms\ColorSettingsForm.resx">
+      <DependentUpon>ColorSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\ConnectionSettingsForm.resx">
       <DependentUpon>ConnectionSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
