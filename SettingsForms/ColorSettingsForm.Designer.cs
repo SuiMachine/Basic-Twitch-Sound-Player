@@ -70,6 +70,10 @@
             this.B_ColorMenuStripBackground = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.B_RefreshDisplay = new System.Windows.Forms.Button();
+            this.B_OK = new System.Windows.Forms.Button();
+            this.B_Cancel = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -78,6 +82,7 @@
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -96,7 +101,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(794, 412);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(794, 410);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -131,7 +136,7 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(585, 383);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(585, 381);
             this.tableLayoutPanel3.TabIndex = 7;
             // 
             // tableLayoutPanel4
@@ -146,7 +151,7 @@
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(579, 351);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(579, 349);
             this.tableLayoutPanel4.TabIndex = 6;
             // 
             // panel1
@@ -185,7 +190,7 @@
             this.RB_Preview.Location = new System.Drawing.Point(3, 72);
             this.RB_Preview.Name = "RB_Preview";
             this.RB_Preview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.RB_Preview.Size = new System.Drawing.Size(573, 276);
+            this.RB_Preview.Size = new System.Drawing.Size(573, 274);
             this.RB_Preview.TabIndex = 0;
             this.RB_Preview.Text = "";
             // 
@@ -270,7 +275,7 @@
             this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel5.ColumnCount = 2;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel5.Controls.Add(this.button9, 1, 10);
             this.tableLayoutPanel5.Controls.Add(this.button8, 1, 9);
             this.tableLayoutPanel5.Controls.Add(this.button7, 1, 8);
@@ -315,7 +320,7 @@
             // 
             this.button9.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button9.Location = new System.Drawing.Point(158, 323);
+            this.button9.Location = new System.Drawing.Point(159, 323);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(32, 23);
             this.button9.TabIndex = 19;
@@ -326,7 +331,7 @@
             // 
             this.button8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button8.Location = new System.Drawing.Point(158, 290);
+            this.button8.Location = new System.Drawing.Point(159, 290);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(32, 23);
             this.button8.TabIndex = 18;
@@ -337,7 +342,7 @@
             // 
             this.button7.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button7.Location = new System.Drawing.Point(158, 257);
+            this.button7.Location = new System.Drawing.Point(159, 257);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(32, 23);
             this.button7.TabIndex = 17;
@@ -348,7 +353,7 @@
             // 
             this.button6.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button6.Location = new System.Drawing.Point(158, 224);
+            this.button6.Location = new System.Drawing.Point(159, 224);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(32, 23);
             this.button6.TabIndex = 16;
@@ -359,7 +364,7 @@
             // 
             this.button5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Location = new System.Drawing.Point(158, 191);
+            this.button5.Location = new System.Drawing.Point(159, 191);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(32, 23);
             this.button5.TabIndex = 15;
@@ -370,7 +375,7 @@
             // 
             this.button4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Location = new System.Drawing.Point(158, 158);
+            this.button4.Location = new System.Drawing.Point(159, 158);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(32, 23);
             this.button4.TabIndex = 14;
@@ -381,7 +386,7 @@
             // 
             this.button3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Location = new System.Drawing.Point(158, 125);
+            this.button3.Location = new System.Drawing.Point(159, 125);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(32, 23);
             this.button3.TabIndex = 13;
@@ -392,7 +397,7 @@
             // 
             this.B_ColorMenuStripSelectedBackground.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.B_ColorMenuStripSelectedBackground.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.B_ColorMenuStripSelectedBackground.Location = new System.Drawing.Point(158, 92);
+            this.B_ColorMenuStripSelectedBackground.Location = new System.Drawing.Point(159, 92);
             this.B_ColorMenuStripSelectedBackground.Name = "B_ColorMenuStripSelectedBackground";
             this.B_ColorMenuStripSelectedBackground.Size = new System.Drawing.Size(32, 23);
             this.B_ColorMenuStripSelectedBackground.TabIndex = 12;
@@ -403,7 +408,7 @@
             // 
             this.B_ColorMenuStriptTextColor.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.B_ColorMenuStriptTextColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.B_ColorMenuStriptTextColor.Location = new System.Drawing.Point(158, 59);
+            this.B_ColorMenuStriptTextColor.Location = new System.Drawing.Point(159, 59);
             this.B_ColorMenuStriptTextColor.Name = "B_ColorMenuStriptTextColor";
             this.B_ColorMenuStriptTextColor.Size = new System.Drawing.Size(32, 23);
             this.B_ColorMenuStriptTextColor.TabIndex = 11;
@@ -514,7 +519,7 @@
             // 
             this.B_ColorMenuStripBackground.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.B_ColorMenuStripBackground.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.B_ColorMenuStripBackground.Location = new System.Drawing.Point(158, 26);
+            this.B_ColorMenuStripBackground.Location = new System.Drawing.Point(159, 26);
             this.B_ColorMenuStripBackground.Name = "B_ColorMenuStripBackground";
             this.B_ColorMenuStripBackground.Size = new System.Drawing.Size(32, 23);
             this.B_ColorMenuStripBackground.TabIndex = 10;
@@ -537,20 +542,72 @@
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel6, 0, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(800, 450);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(800, 458);
             this.tableLayoutPanel2.TabIndex = 1;
+            // 
+            // tableLayoutPanel6
+            // 
+            this.tableLayoutPanel6.ColumnCount = 4;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 116F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel6.Controls.Add(this.B_RefreshDisplay, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.B_OK, 2, 0);
+            this.tableLayoutPanel6.Controls.Add(this.B_Cancel, 3, 0);
+            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 419);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 1;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(794, 36);
+            this.tableLayoutPanel6.TabIndex = 1;
+            // 
+            // B_RefreshDisplay
+            // 
+            this.B_RefreshDisplay.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.B_RefreshDisplay.Location = new System.Drawing.Point(9, 6);
+            this.B_RefreshDisplay.Name = "B_RefreshDisplay";
+            this.B_RefreshDisplay.Size = new System.Drawing.Size(98, 23);
+            this.B_RefreshDisplay.TabIndex = 0;
+            this.B_RefreshDisplay.Text = "Refresh Display";
+            this.B_RefreshDisplay.UseVisualStyleBackColor = true;
+            this.B_RefreshDisplay.Click += new System.EventHandler(this.B_RefreshDisplay_Click);
+            // 
+            // B_OK
+            // 
+            this.B_OK.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.B_OK.Location = new System.Drawing.Point(664, 6);
+            this.B_OK.Name = "B_OK";
+            this.B_OK.Size = new System.Drawing.Size(57, 23);
+            this.B_OK.TabIndex = 1;
+            this.B_OK.Text = "OK";
+            this.B_OK.UseVisualStyleBackColor = true;
+            this.B_OK.Click += new System.EventHandler(this.B_OK_Click);
+            // 
+            // B_Cancel
+            // 
+            this.B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.B_Cancel.Location = new System.Drawing.Point(730, 6);
+            this.B_Cancel.Name = "B_Cancel";
+            this.B_Cancel.Size = new System.Drawing.Size(57, 23);
+            this.B_Cancel.TabIndex = 2;
+            this.B_Cancel.Text = "Cancel";
+            this.B_Cancel.UseVisualStyleBackColor = true;
+            this.B_Cancel.Click += new System.EventHandler(this.B_Cancel_Click);
             // 
             // ColorSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 458);
             this.Controls.Add(this.tableLayoutPanel2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -570,6 +627,7 @@
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -618,5 +676,9 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button B_ColorMenuStripBackground;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
+        private System.Windows.Forms.Button B_RefreshDisplay;
+        private System.Windows.Forms.Button B_OK;
+        private System.Windows.Forms.Button B_Cancel;
     }
 }
