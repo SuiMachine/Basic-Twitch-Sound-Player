@@ -80,8 +80,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             //Overriding renderers
             UpdatePreviewColors();
 
-            CB_Preset.SelectedIndex = 2;
-            B_SetPreset_Click(null, null);
+            CB_Preset.SelectedIndex = 0;
         }
 
         private void B_Color_Click(object sender, EventArgs e)

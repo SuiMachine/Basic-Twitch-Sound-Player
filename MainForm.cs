@@ -49,7 +49,6 @@ namespace BasicTwitchSoundPlayer
             {
                 StartBot();
             }
-            ColorSettingsToolStripMenuItem_Click(null, null);
         }
 
         private void StartBot()
