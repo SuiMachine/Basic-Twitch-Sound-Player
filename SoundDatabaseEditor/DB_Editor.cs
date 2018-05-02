@@ -161,7 +161,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
             if (node.Name == DB_Editor.NodeNameEntry)
             {
                 string Command = node.Text;
-                TwitchRights Right = node.Nodes[DB_Editor.NodeNameRequirements].Nodes[0].Text.ToTwitchRights();
+                TwitchRightsEnum Right = node.Nodes[DB_Editor.NodeNameRequirements].Nodes[0].Text.ToTwitchRights();
                 string[] Files = new string[node.Nodes[DB_Editor.NodeNameFiles].Nodes.Count];
                 for (int i = 0; i < Files.Length; i++)
                 {

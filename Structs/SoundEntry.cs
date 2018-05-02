@@ -7,9 +7,9 @@ namespace BasicTwitchSoundPlayer.Structs
     {
         string Command { get; set; }
         string[] File { get; set; }
-        TwitchRights Requirement { get; set; }
+        TwitchRightsEnum Requirement { get; set; }
 
-        public SoundEntry(string Command, TwitchRights Requirement, string File)
+        public SoundEntry(string Command, TwitchRightsEnum Requirement, string File)
         {
             //This is actually not used, but I wrote it, so whatever
             this.Command = Command;
@@ -17,7 +17,7 @@ namespace BasicTwitchSoundPlayer.Structs
             this.File = new string[1] { File };
         }
 
-        public SoundEntry(string Command, TwitchRights Requirement, string[] Files)
+        public SoundEntry(string Command, TwitchRightsEnum Requirement, string[] Files)
         {
             this.Command = Command;
             this.Requirement = Requirement;
@@ -25,7 +25,7 @@ namespace BasicTwitchSoundPlayer.Structs
         }
 
         public string GetCommand() { return Command; }
-        public TwitchRights GetRequirement() { return Requirement; }
+        public TwitchRightsEnum GetRequirement() { return Requirement; }
         public string[] GetAllFiles() { return File; }
         public string GetFile(Random rng)
         {

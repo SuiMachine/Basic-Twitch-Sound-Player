@@ -29,7 +29,7 @@ namespace BasicTwitchSoundPlayer
                 {
                     string[] helper = line.Split(',');
                     string command = helper[0];
-                    TwitchRights requirement = RequirementToInt(helper[1]).ToTwitchRights();
+                    TwitchRightsEnum requirement = RequirementToInt(helper[1]).ToTwitchRights();
                     string[] files = new string[helper.Length - 2];
                     for (int i = 0; i < helper.Length - 2; i++)
                     {
@@ -46,7 +46,7 @@ namespace BasicTwitchSoundPlayer
         {
             if (int.TryParse(requirement, out int val))
             {
-                if (val >= (int)TwitchRights.Public && val <= (int)TwitchRights.Admin)
+                if (val >= (int)TwitchRightsEnum.Public && val <= (int)TwitchRightsEnum.Admin)
                 {
                     return val;
                 }

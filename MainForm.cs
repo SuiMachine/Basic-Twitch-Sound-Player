@@ -38,8 +38,8 @@ namespace BasicTwitchSoundPlayer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoadColors();
             _programSettings = new PrivateSettings();
+            UpdateColors();
             connectOnStartupToolStripMenuItem.Checked = _programSettings.Autostart;
             int valrr = Convert.ToInt32(100 * _programSettings.Volume);
             trackBar_Volume.Value = valrr;
@@ -57,10 +57,6 @@ namespace BasicTwitchSoundPlayer
             TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb);
             TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
             TwitchBotThread.Start();
-        }
-
-        private void LoadColors()
-        {
         }
 
         #region ThreadSafeFunctions
@@ -82,24 +78,24 @@ namespace BasicTwitchSoundPlayer
                 switch(type)
                 {
                     case LineType.Generic:
-                        RB_Preview.SelectionColor = Color.WhiteSmoke;
+                        RB_Preview.SelectionColor = _programSettings.Colors.LineColorGeneric;
                         break;
 
                     case LineType.IrcCommand:
-                        RB_Preview.SelectionColor = Color.LimeGreen;
+                        RB_Preview.SelectionColor = _programSettings.Colors.LineColorIrcCommand;
                         break;
 
                     case LineType.ModCommand:
-                        RB_Preview.SelectionColor = Color.Red;
+                        RB_Preview.SelectionColor = _programSettings.Colors.LineColorModeration;
                         break;
 
 
                     case LineType.SoundCommand:
-                        RB_Preview.SelectionColor = Color.Purple;
+                        RB_Preview.SelectionColor = _programSettings.Colors.LineColorSoundPlayback;
                         break;
 
                     default:
-                        RB_Preview.SelectionColor = Color.WhiteSmoke;
+                        RB_Preview.SelectionColor = _programSettings.Colors.LineColorGeneric;
                         break;
 
                 }
@@ -136,7 +132,9 @@ namespace BasicTwitchSoundPlayer
 
         private void PerformShutdownTasks()
         {
-            TwitchBot.StopBot();
+            if(TwitchBot != null)
+                TwitchBot.StopBot();
+            trayIcon.Visible = false;
         }
         #endregion
 
@@ -156,10 +154,24 @@ namespace BasicTwitchSoundPlayer
         {
             L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
             _programSettings.Volume = trackBar_Volume.Value / 100f;
-            TwitchBot.UpdateVolume();
+            if(TwitchBot != null)
+                TwitchBot.UpdateVolume();
         }
 
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                trayIcon.Visible = true;
+                this.Hide();
+            }
+            else if (this.WindowState == FormWindowState.Normal)
+            {
+                trayIcon.Visible = false;
+                this.Show();
 
+            }
+        }
 
         #region FileTree_Events
         private void RunBotToolStripMenuItem_Click(object sender, EventArgs e)
@@ -225,7 +237,21 @@ namespace BasicTwitchSoundPlayer
             DialogResult res = csf.ShowDialog();
             if(res == DialogResult.OK)
             {
+                _programSettings.Colors.FormBackground = csf.FormBackground;
+                _programSettings.Colors.FormTextColor = csf.FormTextColor;
+                _programSettings.Colors.MenuStripBarBackground = csf.MenuStripBarBackground;
+                _programSettings.Colors.MenuStripBarText = csf.MenuStripBarText;
+                _programSettings.Colors.MenuStripBackground = csf.MenuStripBackground;
+                _programSettings.Colors.MenuStripText = csf.MenuStripText;
+                _programSettings.Colors.MenuStripBackgroundSelected = csf.MenuStripBackgroundSelected;
 
+                _programSettings.Colors.LineColorBackground = csf.LineColorBackground;
+                _programSettings.Colors.LineColorGeneric = csf.LineColorGeneric;
+                _programSettings.Colors.LineColorIrcCommand = csf.LineColorIrcCommand;
+                _programSettings.Colors.LineColorModeration = csf.LineColorModeration;
+                _programSettings.Colors.LineColorSoundPlayback = csf.LineColorSoundPlayback;
+                _programSettings.SaveSettings();
+                UpdateColors();
             }
         }
 
@@ -254,6 +280,65 @@ namespace BasicTwitchSoundPlayer
         }
         #endregion
 
+        #region TrayIcon_Events
+        private void ShowProgramToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+        #endregion
+        #endregion
+
+        #region ColorThemeOverrideFunctions
+        private void UpdateColors()
+        {
+            var CustomColorTable = new Extensions.OverridenColorTable()
+            {
+                UseSystemColors = false,
+                ColorMenuBorder = Color.Black,
+                ColorMenuBarBackground = _programSettings.Colors.MenuStripBarBackground,
+                ColorMenuItemSelected = _programSettings.Colors.MenuStripBackgroundSelected,
+                ColorMenuBackground = _programSettings.Colors.MenuStripBackground,
+
+                TextColor = _programSettings.Colors.MenuStripText
+            };
+
+            this.BackColor = _programSettings.Colors.FormBackground;
+            this.ForeColor = _programSettings.Colors.FormTextColor;
+            menuStrip1.Renderer = new ToolStripProfessionalRenderer(CustomColorTable);
+            menuStrip1.ForeColor = _programSettings.Colors.MenuStripBarText;
+            ReColorChildren(menuStrip1);
+
+            RB_Preview.BackColor = _programSettings.Colors.LineColorBackground;
+            RB_Preview.Clear();
+        }
+
+        private void ReColorChildren(MenuStrip menuStrip1)
+        {
+            for (int i = 0; i < menuStrip1.Items.Count; i++)
+            {
+                if (menuStrip1.Items[1].GetType() == typeof(ToolStripMenuItem))
+                {
+                    var TempCast = (ToolStripMenuItem)menuStrip1.Items[i];
+                    foreach (ToolStripItem child in TempCast.DropDownItems)
+                    {
+                        child.BackColor = _programSettings.Colors.MenuStripBackground;
+                        child.ForeColor = _programSettings.Colors.MenuStripText;
+                    }
+                }
+            }
+        }
         #endregion
     }
 }

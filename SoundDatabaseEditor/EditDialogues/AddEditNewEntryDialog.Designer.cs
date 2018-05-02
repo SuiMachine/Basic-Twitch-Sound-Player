@@ -271,7 +271,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
         {
             CBox_RequiredRight.DisplayMember = "Description";
             CBox_RequiredRight.ValueMember = "value";
-            CBox_RequiredRight.DataSource = Enum.GetValues(typeof(BasicTwitchSoundPlayer.Structs.TwitchRights)).Cast<Enum>().Select(value =>
+            CBox_RequiredRight.DataSource = Enum.GetValues(typeof(BasicTwitchSoundPlayer.Structs.TwitchRightsEnum)).Cast<Enum>().Select(value =>
             new
             {
                 (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()),

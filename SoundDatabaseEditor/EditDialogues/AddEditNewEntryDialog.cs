@@ -47,7 +47,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
                 files[i] = listFile[i].ToString();
             }
 
-            this.ReturnSound = new SoundEntry(TB_Command.Text, (TwitchRights)CBox_RequiredRight.SelectedIndex, files);
+            this.ReturnSound = new SoundEntry(TB_Command.Text, (TwitchRightsEnum)CBox_RequiredRight.SelectedIndex, files);
 
             this.Close();
 

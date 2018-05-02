@@ -85,7 +85,7 @@ namespace BasicTwitchSoundPlayer.IRC
             }
             else
             {
-                TwitchRights privilage = GetPrivilageForUser(formattedMessage.user);
+                TwitchRightsEnum privilage = GetPrivilageForUser(formattedMessage.user);
                 string text = formattedMessage.message.Remove(0, 1).ToLower();
 
                 if (irc.moderators.Contains(formattedMessage.user))
@@ -131,16 +131,16 @@ namespace BasicTwitchSoundPlayer.IRC
             SndDB.ChangeVolume(programSettings.Volume);
         }
 
-        private TwitchRights GetPrivilageForUser(string user)
+        private TwitchRightsEnum GetPrivilageForUser(string user)
         {
             if (irc.supermod.Contains(user))
-                return TwitchRights.Admin;
+                return TwitchRightsEnum.Admin;
             else if (irc.moderators.Contains(user))
-                return TwitchRights.Mod;
+                return TwitchRightsEnum.Mod;
             else if (irc.subscribers.Contains(user) || irc.trustedUsers.Contains(user))
-                return TwitchRights.TrustedSub;
+                return TwitchRightsEnum.TrustedSub;
             else
-                return TwitchRights.Public;
+                return TwitchRightsEnum.Public;
         }
 
         #region EventHandlers

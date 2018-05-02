@@ -8,15 +8,43 @@ namespace BasicTwitchSoundPlayer
 {
     public class ColorStruct
     {
-        public Color GenericLine { get; set; }
-        public Color SoundLine { get; set; }
-        public Color MenuBarBackground { get; set; }
+        //Form background
+        public Color FormBackground { get; set; }
+        public Color FormTextColor { get; set; }
+
+        //MenuStripBar
+        public Color MenuStripBarBackground { get; set; }
+        public Color MenuStripBarText { get; set; }
+
+        //MenuStripColors
+        public Color MenuStripBackground { get; set; }
+        public Color MenuStripText { get; set; }
+        public Color MenuStripBackgroundSelected { get; set; }
+
+        //LineColors
+        public Color LineColorBackground { get; set; }
+        public Color LineColorGeneric { get; set; }
+        public Color LineColorIrcCommand { get; set; }
+        public Color LineColorModeration { get; set; }
+        public Color LineColorSoundPlayback { get; set; }
 
         public ColorStruct()
         {
-            GenericLine = Color.WhiteSmoke;
-            MenuBarBackground = Color.FromArgb(30, 30, 30);
-            SoundLine = Color.Yellow;
+            FormBackground = Color.WhiteSmoke;
+            FormTextColor = Color.Black;
+
+            MenuStripBarBackground = Color.WhiteSmoke;
+            MenuStripBarText = Color.Black;
+
+            MenuStripBackground = Color.WhiteSmoke;
+            MenuStripText = Color.Black;
+            MenuStripBackgroundSelected = Color.SkyBlue;
+
+            LineColorBackground = Color.GhostWhite;
+            LineColorGeneric = Color.Black;
+            LineColorIrcCommand = Color.DarkGreen;
+            LineColorModeration = Color.DarkBlue;
+            LineColorSoundPlayback = Color.DarkOrange;
         }
     }
 
@@ -70,8 +98,27 @@ namespace BasicTwitchSoundPlayer
             //ProgramSettings
             var ProgramSettingsNode = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.NODENAME);
             Autostart = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Autostart).Sui_GetInnerText("false").ToBoolean(false);
-            Colors.GenericLine = ColorExtension.ParseColor(ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_GenericLineColor).Sui_GetInnerText(Colors.GenericLine.ToArgb().ToString()), Colors.GenericLine);
-            Colors.SoundLine = ColorExtension.ParseColor(ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_SoundLineColor).Sui_GetInnerText(Colors.SoundLine.ToArgb().ToString()), Colors.SoundLine);
+
+            //Colors
+            var ColorSettingsNode = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.NODENAME);
+
+            Colors.FormBackground = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_FormBackground).Sui_GetInnerText(Colors.FormBackground.ToArgb().ToString()), Colors.FormBackground);
+            Colors.FormTextColor = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_FormTextColor).Sui_GetInnerText(Colors.FormTextColor.ToArgb().ToString()), Colors.FormTextColor);
+
+            Colors.MenuStripBarBackground = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBarBackground).Sui_GetInnerText(Colors.MenuStripBarBackground.ToArgb().ToString()), Colors.MenuStripBarBackground);
+            Colors.MenuStripBarText = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBarText).Sui_GetInnerText(Colors.MenuStripBarText.ToArgb().ToString()), Colors.MenuStripBarText);
+
+            Colors.MenuStripBackground = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBackground).Sui_GetInnerText(Colors.MenuStripBackground.ToArgb().ToString()), Colors.MenuStripBackground);
+            Colors.MenuStripText = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripText).Sui_GetInnerText(Colors.MenuStripText.ToArgb().ToString()), Colors.MenuStripText);
+            Colors.MenuStripBackgroundSelected = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBackgroundSelected).Sui_GetInnerText(Colors.MenuStripBackgroundSelected.ToArgb().ToString()), Colors.MenuStripBackgroundSelected);
+
+            Colors.LineColorBackground = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorBackground).Sui_GetInnerText(Colors.LineColorBackground.ToArgb().ToString()), Colors.LineColorBackground);
+            Colors.LineColorGeneric = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorGeneric).Sui_GetInnerText(Colors.LineColorGeneric.ToArgb().ToString()), Colors.LineColorGeneric);
+            Colors.LineColorIrcCommand = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorIrcCommand).Sui_GetInnerText(Colors.LineColorIrcCommand.ToArgb().ToString()), Colors.LineColorIrcCommand);
+            Colors.LineColorModeration = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorModeration).Sui_GetInnerText(Colors.LineColorModeration.ToArgb().ToString()), Colors.LineColorModeration);
+            Colors.LineColorSoundPlayback = ColorExtension.ParseColor(ColorSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorSoundPlayback).Sui_GetInnerText(Colors.LineColorSoundPlayback.ToArgb().ToString()), Colors.LineColorSoundPlayback);
+
+            //Other
             Volume = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Volume).Sui_GetInnerText("0.5").ToFloat(0.5f);
             Delay = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Delay).Sui_GetInnerText("15").ToInt(15);
 
@@ -88,10 +135,27 @@ namespace BasicTwitchSoundPlayer
             //ProgramSettings
             var ProgramSettingsNode = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.NODENAME);
             ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Autostart).Sui_SetInnerText(Autostart.ToString());
-            ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_GenericLineColor).Sui_SetInnerText(Colors.GenericLine.ToArgb().ToString());
-            ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_SoundLineColor).Sui_SetInnerText(Colors.SoundLine.ToArgb().ToString());
             ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Volume).Sui_SetInnerText(Volume.ToString());
             ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Delay).Sui_SetInnerText(Delay.ToString());
+
+            //Colors
+            var ColorsNode = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.NODENAME);
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_FormBackground).Sui_SetInnerText(Colors.FormBackground.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_FormTextColor).Sui_SetInnerText(Colors.FormTextColor.ToArgb().ToString());
+
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBarBackground).Sui_SetInnerText(Colors.MenuStripBarBackground.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBarText).Sui_SetInnerText(Colors.MenuStripBarText.ToArgb().ToString());
+
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBackground).Sui_SetInnerText(Colors.MenuStripBackground.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripText).Sui_SetInnerText(Colors.MenuStripText.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_MenuStripBackgroundSelected).Sui_SetInnerText(Colors.MenuStripBackgroundSelected.ToArgb().ToString());
+
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorBackground).Sui_SetInnerText(Colors.LineColorBackground.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorGeneric).Sui_SetInnerText(Colors.LineColorGeneric.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorIrcCommand).Sui_SetInnerText(Colors.LineColorIrcCommand.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorModeration).Sui_SetInnerText(Colors.LineColorModeration.ToArgb().ToString());
+            ColorsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.Var_LineColorSoundPlayback).Sui_SetInnerText(Colors.LineColorSoundPlayback.ToArgb().ToString());
+
 
             //TwitchSettings
             var TwitchSettings = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.NODENAME);

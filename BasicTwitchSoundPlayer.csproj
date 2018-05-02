@@ -36,6 +36,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>sound_player_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>Libaries\log4net.dll</HintPath>
@@ -109,7 +112,7 @@
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\ConfigNameStructs.cs" />
-    <Compile Include="Structs\RightsEnum.cs" />
+    <Compile Include="Structs\TwitchRightsEnum.cs" />
     <Compile Include="Structs\SoundEntry.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -149,7 +152,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="sound_player_icon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

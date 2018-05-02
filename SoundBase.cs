@@ -123,7 +123,7 @@ namespace BasicTwitchSoundPlayer
         }
         #endregion
 
-        public bool PlaySoundIfExists(string user, string cmd, TwitchRights userLevel)
+        public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel)
         {
             for(int i=SoundPlayererStack.Count-1; i>=0; i--)
             {
@@ -146,7 +146,7 @@ namespace BasicTwitchSoundPlayer
                 {
                     if (soundlist[i].GetCommand() == cmd)
                     {
-                        if (userLevel >= soundlist[i].GetRequirement() && soundlist[i].GetRequirement() != TwitchRights.Disabled)
+                        if (userLevel >= soundlist[i].GetRequirement() && soundlist[i].GetRequirement() != TwitchRightsEnum.Disabled)
                         {
                             string filename = soundlist[i].GetFile(rng);
                             for(int j=0; j<SoundPlayererStack.Count; j++)

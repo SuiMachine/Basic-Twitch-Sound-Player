@@ -4,7 +4,6 @@ Basic Sound player for Twitch written in C#.
 
 Known issues / incomplete features
 -------
-  * Opening Color Settings doesn't do anything.
   * Player officially only supports wav files for now.
 
 Credits

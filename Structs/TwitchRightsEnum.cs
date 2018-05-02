@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace BasicTwitchSoundPlayer.Structs
 {
-    public enum TwitchRights
+    public enum TwitchRightsEnum
     {
         [Description("Disabled")]
         Disabled,
@@ -19,28 +19,28 @@ namespace BasicTwitchSoundPlayer.Structs
 
     static class TwitchRightsExtensions
     {
-        public static TwitchRights ToTwitchRights(this int Number)
+        public static TwitchRightsEnum ToTwitchRights(this int Number)
         {
             Number += 1;
             try
             {
-                TwitchRights right = (TwitchRights)Number;
+                TwitchRightsEnum right = (TwitchRightsEnum)Number;
                 return right;
             }
             catch
             {
-                return TwitchRights.Disabled;
+                return TwitchRightsEnum.Disabled;
             }
         }
 
-        public static TwitchRights ToTwitchRights(this string Text)
+        public static TwitchRightsEnum ToTwitchRights(this string Text)
         {
-            if (Enum.TryParse(Text, out TwitchRights enumeratedResult))
+            if (Enum.TryParse(Text, out TwitchRightsEnum enumeratedResult))
             {
                 return enumeratedResult;
             }
             else
-                return TwitchRights.Disabled;
+                return TwitchRightsEnum.Disabled;
         }
     }
 }

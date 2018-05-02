@@ -22,44 +22,54 @@ namespace BasicTwitchSoundPlayer.Extensions
     public class OverridenColorTable : ProfessionalColorTable
     {
         public Color ColorMenuBorder { get; set; }
-        public Color ColorMenuItemSelected { get; set; }
+        public Color ColorMenuBarBackground { get; set; }
+        public Color ColorMenuBarSelected { get; set; }
         public Color ColorMenuBackground { get; set; }
+        public Color ColorMenuItemSelected { get; set; }
         public Color TextColor { get; set; }
 
         public OverridenColorTable()
         {
             ColorMenuBorder = base.MenuBorder;
+            ColorMenuBarBackground = base.MenuStripGradientBegin;
             ColorMenuItemSelected = base.MenuItemSelected;
             ColorMenuBackground = base.ToolStripDropDownBackground;
-            TextColor = Color.Black;
+            TextColor = base.MenuBorder;
         }
 
         public override Color MenuBorder => ColorMenuBorder;
-        public override Color ButtonCheckedGradientBegin => base.ButtonCheckedGradientBegin;
-        public override Color ButtonCheckedGradientEnd => base.ButtonCheckedGradientEnd;
-        public override Color ButtonCheckedGradientMiddle => base.ButtonCheckedGradientMiddle;
-        public override Color ButtonCheckedHighlight => base.ButtonCheckedHighlight;
-        public override Color ButtonCheckedHighlightBorder => base.ButtonCheckedHighlightBorder;
-        public override Color ButtonPressedBorder => base.ButtonPressedBorder;
-        public override Color ButtonPressedGradientBegin => base.ButtonPressedGradientBegin;
-        public override Color ButtonPressedGradientEnd => base.ButtonPressedGradientEnd;
-        public override Color ButtonPressedGradientMiddle => base.ButtonPressedGradientMiddle;
-        public override Color ButtonPressedHighlight => base.ButtonPressedHighlight;
-        public override Color ButtonPressedHighlightBorder => base.ButtonPressedHighlightBorder;
-        public override Color ButtonSelectedBorder => base.ButtonSelectedBorder;
-        public override Color ButtonSelectedHighlight => base.ButtonSelectedHighlight;
-        public override Color ButtonSelectedHighlightBorder => base.ButtonSelectedHighlightBorder;
-        public override Color CheckBackground => ColorMenuBackground;
-        public override Color CheckPressedBackground => base.CheckPressedBackground;
-        public override Color CheckSelectedBackground => ColorMenuItemSelected;
+
+        public override Color CheckSelectedBackground => Transparent(ColorMenuItemSelected, 40);
+        public override Color CheckBackground => Transparent(ColorMenuItemSelected, 40);
+        public override Color CheckPressedBackground => Transparent(ColorMenuItemSelected, 40);
+
+        private Color Transparent(Color originalColor, int Opacity)
+        {
+            int opacity = 255 * Opacity / 100;
+            return Color.FromArgb(opacity, originalColor.R, originalColor.G, originalColor.B);
+        }
+
+        #region Menus
         public override Color MenuItemBorder => ColorMenuBorder;
-        public override Color MenuItemPressedGradientBegin => base.MenuItemPressedGradientBegin;
-        public override Color MenuItemPressedGradientEnd => base.MenuItemPressedGradientEnd;
-        public override Color MenuItemPressedGradientMiddle => base.MenuItemPressedGradientMiddle;
+
+        //MenuStrip Background
+        public override Color MenuStripGradientBegin => ColorMenuBarBackground;
+        public override Color MenuStripGradientEnd => ColorMenuBarBackground;
+
+        //Menu Item Pressed
+        public override Color MenuItemPressedGradientBegin => ColorMenuBarSelected;
+        public override Color MenuItemPressedGradientMiddle => ColorMenuBarSelected;
+        public override Color MenuItemPressedGradientEnd => ColorMenuBarSelected;
+
+        //Menu Item Selected
         public override Color MenuItemSelected => ColorMenuItemSelected;
+        public override Color MenuItemSelectedGradientBegin => ColorMenuItemSelected;
+        public override Color MenuItemSelectedGradientEnd => ColorMenuItemSelected;
+        #endregion
+
+        //Toolstrip
         public override Color ToolStripBorder => ColorMenuBorder;
-        public override Color MenuStripGradientBegin => Color.Black;
-        public override Color MenuStripGradientEnd => Color.Yellow;
+
         public override Color ToolStripDropDownBackground => ColorMenuBackground;
     }
 }

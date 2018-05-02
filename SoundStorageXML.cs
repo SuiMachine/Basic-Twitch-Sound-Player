@@ -69,7 +69,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
             {
                 string tmpCommand = node.Name;
                 string[] tmpSounds = node.Sui_GetAttributeValue(xmlDoc, varSounds, "").Split(';');
-                TwitchRights tmpRequirement = node.Sui_GetAttributeValue(xmlDoc, varRequirement, TwitchRights.Disabled.ToString()).ToTwitchRights();
+                TwitchRightsEnum tmpRequirement = node.Sui_GetAttributeValue(xmlDoc, varRequirement, TwitchRightsEnum.Disabled.ToString()).ToTwitchRights();
                 return new SoundEntry(tmpCommand, tmpRequirement, tmpSounds);
             }
             catch
