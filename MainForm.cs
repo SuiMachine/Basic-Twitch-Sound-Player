@@ -219,14 +219,18 @@ namespace BasicTwitchSoundPlayer
 
         private void StopBot()
         {
-            if (TwitchBot.BotRunning)
+            if (TwitchBot != null && TwitchBot.BotRunning)
             {
                 TwitchBot.StopBot();
             }
 
             TwitchBot = null;
             if (TwitchBotThread != null)
+            {
+                TwitchBotThread.Interrupt();
                 TwitchBotThread.Abort();
+            }
+
             TwitchBotThread = null;
         }
 
@@ -256,6 +260,7 @@ namespace BasicTwitchSoundPlayer
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.StopBot();
             this.Close();
         }
         #endregion

@@ -3,6 +3,9 @@ using System.IO;
 using Meebey.SmartIrc4net;
 using System.Linq;
 using BasicTwitchSoundPlayer.Structs;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -30,7 +33,15 @@ namespace BasicTwitchSoundPlayer.IRC
         public void Run()
         {
             InitBot(channelToJoin);
-            irc.meebyIrc.Listen();
+            this.BotRunning = true;
+            try
+            {
+                irc.meebyIrc.Listen();
+            }
+            catch(ThreadInterruptedException e)
+            {
+                Debug.WriteLine("Nop" + e);
+            }
         }
 
         public void StopBot()
@@ -40,7 +51,26 @@ namespace BasicTwitchSoundPlayer.IRC
             irc.SaveIgnoredList();
             irc.SaveTrustedList();
             irc.SaveSuperMods();
-            irc.meebyIrc.Disconnect();
+
+            irc.meebyIrc.OnError -= MeebyIrc_OnError;
+            irc.meebyIrc.OnErrorMessage -= MeebyIrc_OnErrorMessage;
+            irc.meebyIrc.OnConnecting -= MeebyIrc_OnConnecting;
+            irc.meebyIrc.OnConnected -= MeebyIrc_OnConnected;
+            irc.meebyIrc.OnAutoConnectError -= MeebyIrc_OnAutoConnectError;
+            irc.meebyIrc.OnDisconnecting -= MeebyIrc_OnDisconnecting;
+            irc.meebyIrc.OnDisconnected -= MeebyIrc_OnDisconnected;
+            irc.meebyIrc.OnRegistered -= MeebyIrc_OnRegistered;
+            irc.meebyIrc.OnPart -= MeebyIrc_OnPart;
+            irc.meebyIrc.OnJoin -= MeebyIrc_OnJoin;
+            irc.meebyIrc.OnChannelAction -= MeebyIrc_OnChannelAction;
+            irc.meebyIrc.OnReadLine -= MeebyIrc_OnReadLine;
+            irc.meebyIrc.OnChannelMessage -= MeebyIrc_OnChannelMessage;
+
+            Task.Factory.StartNew(() =>
+                irc.meebyIrc.Disconnect()
+            );
+
+            System.Threading.Thread.Sleep(200);
         }
 
         private void InitBot(string channel)
