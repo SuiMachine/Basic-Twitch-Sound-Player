@@ -32,6 +32,7 @@
             this.sndTreeView = new System.Windows.Forms.TreeView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.B_ExportToCSV = new System.Windows.Forms.Button();
             this.B_RemoveEntry = new System.Windows.Forms.Button();
             this.B_AddEntry = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -55,7 +56,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(676, 526);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(758, 526);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // sndTreeView
@@ -63,7 +64,7 @@
             this.sndTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sndTreeView.Location = new System.Drawing.Point(3, 3);
             this.sndTreeView.Name = "sndTreeView";
-            this.sndTreeView.Size = new System.Drawing.Size(670, 472);
+            this.sndTreeView.Size = new System.Drawing.Size(752, 472);
             this.sndTreeView.TabIndex = 1;
             this.sndTreeView.DoubleClick += new System.EventHandler(this.SndTreeView_DoubleClick);
             this.sndTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SndTreeView_KeyDown);
@@ -71,8 +72,8 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 58.0597F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.9403F));
             this.tableLayoutPanel2.Controls.Add(this.panel2, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -80,17 +81,28 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(670, 42);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(752, 42);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.B_ExportToCSV);
             this.panel2.Controls.Add(this.B_RemoveEntry);
             this.panel2.Controls.Add(this.B_AddEntry);
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(170, 33);
+            this.panel2.Size = new System.Drawing.Size(274, 33);
             this.panel2.TabIndex = 1;
+            // 
+            // B_ExportToCSV
+            // 
+            this.B_ExportToCSV.Location = new System.Drawing.Point(168, 5);
+            this.B_ExportToCSV.Name = "B_ExportToCSV";
+            this.B_ExportToCSV.Size = new System.Drawing.Size(93, 23);
+            this.B_ExportToCSV.TabIndex = 2;
+            this.B_ExportToCSV.Text = "Export to HTML";
+            this.B_ExportToCSV.UseVisualStyleBackColor = true;
+            this.B_ExportToCSV.Click += new System.EventHandler(this.B_ExportToHTML_Click);
             // 
             // B_RemoveEntry
             // 
@@ -117,7 +129,7 @@
             this.panel1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.panel1.Controls.Add(this.B_Cancel);
             this.panel1.Controls.Add(this.B_Save);
-            this.panel1.Location = new System.Drawing.Point(494, 4);
+            this.panel1.Location = new System.Drawing.Point(576, 4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(173, 33);
             this.panel1.TabIndex = 0;
@@ -146,7 +158,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 526);
+            this.ClientSize = new System.Drawing.Size(758, 526);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimumSize = new System.Drawing.Size(546, 260);
             this.Name = "DB_Editor";
@@ -171,5 +183,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button B_AddEntry;
         private System.Windows.Forms.Button B_RemoveEntry;
+        private System.Windows.Forms.Button B_ExportToCSV;
     }
 }

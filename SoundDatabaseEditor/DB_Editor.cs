@@ -17,11 +17,14 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         public const string NodeNameEntry = "Entry";
         public const string NodeNameFiles = "Files";
         public const string NodeNameRequirements = "Requirement";
+        public const string NodeDescription = "Description";
 
         public List<SoundEntry> Sounds;
+        char PrefixCharacter;
 
-        public DB_Editor(List<SoundEntry> Sounds)
+        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter)
         {
+            this.PrefixCharacter = PrefixCharacter;
             this.Sounds = Sounds;
             InitializeComponent();
         }
@@ -151,6 +154,84 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
             }
         }
         #endregion
+
+        private void B_ExportToHTML_Click(object sender, EventArgs e)
+        {
+            var dialog = new SaveFileDialog()
+            {
+                Filter = "HTML file (*.html)|*.html"
+            };
+            DialogResult res = dialog.ShowDialog();
+            if(res == DialogResult.OK)
+            {
+                var ExportSounds = TreeNodesToSoundsEntryList(sndTreeView);
+                StringBuilder sb = new StringBuilder();
+
+                sb.AppendLine("<!DOCTYPE HTML PUBLIC \" -//W3C//DTD HTML 4.0 Transitional//EN\">");
+                sb.AppendLine("");
+                sb.AppendLine("<html>");
+                sb.AppendLine("<head>");
+                sb.AppendLine("	<meta http-equiv=\"content - type\" content=\"text / html; charset = windows - 1250\"/>");
+                sb.AppendLine("<title></title>");
+                sb.AppendLine("<style type=\"text / css\">");
+                sb.AppendLine("\t\tbody, div, table, thead, tbody, tfoot, tr, th, td, p { font - family:\"Arial\"; font - size:x - small }");
+                sb.AppendLine("\t\ta.comment-indicator:hover + comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em;  } ");
+                sb.AppendLine("\t\ta.comment - indicator { background: red; display: inline - block; border: 1px solid black; width: 0.5em; height: 0.5em; }");
+                sb.AppendLine("comment { display:none;  } ");
+                sb.AppendLine("</style>");
+                sb.AppendLine("</head>");
+                sb.AppendLine("<body>");
+                sb.AppendLine("<table cellspacing=\"0\" border=\"1\">");
+                sb.AppendLine("<colgroup span=\"3\" width=\"1000\"></colgroup>");
+                sb.AppendLine("<tr>" +
+                    "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command</b></td>" +
+                    "<td align=\"left\"><b>File</b></td>" +
+                    "<td align=\"left\"><b>Description</b></td>" +
+                    "</tr>");
+                foreach (var snd in ExportSounds)
+                {
+                    sb.AppendLine(GetTableRowForFile(snd));
+                }
+                sb.AppendLine("</table>");
+                sb.AppendLine("</body>");
+                sb.AppendLine("</html>");
+                System.IO.File.WriteAllText(dialog.FileName, sb.ToString());
+                System.Diagnostics.Process.Start(dialog.FileName);
+            }
+        }
+
+        private string GetTableRowForFile(SoundEntry hSound)
+        {
+            return string.Format("<tr>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{4}\">{0}{1}</td>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{4}\">{2}</td>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{4}\">{3}</td>" +
+                "</tr>",
+                PrefixCharacter,
+                hSound.GetCommand(),
+                hSound.GetAllFiles().Length > 1 ? "multiple" : System.IO.Path.GetFileNameWithoutExtension(hSound.GetAllFiles().First()),
+                hSound.GetDescription(),
+                GetHTMLColor(hSound.GetRequirement())
+                );
+
+        }
+
+        private string GetHTMLColor(TwitchRightsEnum twitchRightsEnum)
+        {
+            switch(twitchRightsEnum)
+            {
+                case TwitchRightsEnum.Admin:
+                    return "#FF0000";
+                case TwitchRightsEnum.Mod:
+                    return "#00FF00";
+                case TwitchRightsEnum.TrustedSub:
+                    return "#F0F0FF";
+                case TwitchRightsEnum.Public:
+                    return "#FFFF90";
+                default:
+                    return "#0000FF";
+            }
+        }
     }
 
     #region Extensions
@@ -163,12 +244,14 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 string Command = node.Text;
                 TwitchRightsEnum Right = node.Nodes[DB_Editor.NodeNameRequirements].Nodes[0].Text.ToTwitchRights();
                 string[] Files = new string[node.Nodes[DB_Editor.NodeNameFiles].Nodes.Count];
+                string Description = node.Nodes[DB_Editor.NodeDescription].Nodes[0].Text;
+
                 for (int i = 0; i < Files.Length; i++)
                 {
                     Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
                 }
 
-                return new SoundEntry(Command, Right, Files);
+                return new SoundEntry(Command, Right, Files, Description);
             }
             else
                 return new SoundEntry();
@@ -194,6 +277,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 var Requirement = newNode.Nodes.Add(DB_Editor.NodeNameRequirements);
                 Requirement.Name = DB_Editor.NodeNameRequirements;
                 Requirement.Nodes.Add(snd.GetRequirement().ToString());
+                var Description = newNode.Nodes.Add(DB_Editor.NodeDescription);
+                Description.Name = DB_Editor.NodeDescription;
+                Description.Nodes.Add(snd.GetDescription());
                 return newNode;
             }
             else

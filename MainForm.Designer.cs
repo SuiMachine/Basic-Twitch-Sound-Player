@@ -160,14 +160,14 @@
             // databaseEditorToolStripMenuItem
             // 
             this.databaseEditorToolStripMenuItem.Name = "databaseEditorToolStripMenuItem";
-            this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.databaseEditorToolStripMenuItem.Text = "Database Editor";
             this.databaseEditorToolStripMenuItem.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
             // 
             // importFromBotnakToolStripMenuItem
             // 
             this.importFromBotnakToolStripMenuItem.Name = "importFromBotnakToolStripMenuItem";
-            this.importFromBotnakToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.importFromBotnakToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importFromBotnakToolStripMenuItem.Text = "Import from Botnak";
             this.importFromBotnakToolStripMenuItem.Click += new System.EventHandler(this.ImportFromBotnakToolStripMenuItem_Click);
             // 

@@ -49,12 +49,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.B_Cancel = new System.Windows.Forms.Button();
             this.B_OK = new System.Windows.Forms.Button();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.RB_Description = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.contextMenu_File.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
+            this.tableLayoutPanel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -64,16 +68,18 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel6, 0, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(284, 291);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(459, 384);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -89,7 +95,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(278, 27);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(453, 27);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // label1
@@ -107,7 +113,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.TB_Command.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TB_Command.Location = new System.Drawing.Point(69, 4);
             this.TB_Command.Name = "TB_Command";
-            this.TB_Command.Size = new System.Drawing.Size(205, 20);
+            this.TB_Command.Size = new System.Drawing.Size(380, 20);
             this.TB_Command.TabIndex = 1;
             this.TB_Command.TextChanged += new System.EventHandler(this.TB_Command_TextChanged);
             // 
@@ -124,7 +130,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(278, 181);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(453, 154);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // label2
@@ -145,7 +151,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.ListB_Files.Location = new System.Drawing.Point(4, 25);
             this.ListB_Files.Name = "ListB_Files";
             this.ListB_Files.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.ListB_Files.Size = new System.Drawing.Size(270, 152);
+            this.ListB_Files.Size = new System.Drawing.Size(445, 125);
             this.ListB_Files.TabIndex = 1;
             // 
             // contextMenu_File
@@ -179,11 +185,11 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel4.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.CBox_RequiredRight, 1, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 223);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 196);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(278, 29);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(453, 29);
             this.tableLayoutPanel4.TabIndex = 2;
             // 
             // label3
@@ -202,7 +208,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.CBox_RequiredRight.FormattingEnabled = true;
             this.CBox_RequiredRight.Location = new System.Drawing.Point(82, 4);
             this.CBox_RequiredRight.Name = "CBox_RequiredRight";
-            this.CBox_RequiredRight.Size = new System.Drawing.Size(192, 21);
+            this.CBox_RequiredRight.Size = new System.Drawing.Size(367, 21);
             this.CBox_RequiredRight.TabIndex = 1;
             // 
             // tableLayoutPanel5
@@ -213,7 +219,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel5.Controls.Add(this.B_Cancel, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.B_OK, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(81, 258);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(256, 351);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -242,11 +248,48 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.B_OK.UseVisualStyleBackColor = true;
             this.B_OK.Click += new System.EventHandler(this.B_OK_Click);
             // 
+            // tableLayoutPanel6
+            // 
+            this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.tableLayoutPanel6.ColumnCount = 1;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel6.Controls.Add(this.label4, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.RB_Description, 0, 1);
+            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 231);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 2;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(453, 114);
+            this.tableLayoutPanel6.TabIndex = 4;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(161, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Description (only for table export)";
+            // 
+            // RB_Description
+            // 
+            this.RB_Description.DetectUrls = false;
+            this.RB_Description.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.RB_Description.Location = new System.Drawing.Point(4, 28);
+            this.RB_Description.Name = "RB_Description";
+            this.RB_Description.Size = new System.Drawing.Size(445, 82);
+            this.RB_Description.TabIndex = 2;
+            this.RB_Description.Text = "";
+            // 
             // AddEditNewEntryDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 291);
+            this.ClientSize = new System.Drawing.Size(459, 384);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimizeBox = false;
             this.Name = "AddEditNewEntryDialog";
@@ -261,6 +304,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
             this.tableLayoutPanel5.ResumeLayout(false);
+            this.tableLayoutPanel6.ResumeLayout(false);
+            this.tableLayoutPanel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -296,5 +341,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
         private System.Windows.Forms.ContextMenuStrip contextMenu_File;
         private System.Windows.Forms.ToolStripMenuItem addFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeFileToolStripMenuItem;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.RichTextBox RB_Description;
     }
 }

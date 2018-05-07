@@ -33,6 +33,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             {
                 ListB_Files.Items.Add(sound);
             }
+            this.RB_Description.Text = Entry.GetDescription();
             Verify();
         }
 
@@ -47,10 +48,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
                 files[i] = listFile[i].ToString();
             }
 
-            this.ReturnSound = new SoundEntry(TB_Command.Text, (TwitchRightsEnum)CBox_RequiredRight.SelectedIndex, files);
+            this.ReturnSound = new SoundEntry(TB_Command.Text, (TwitchRightsEnum)CBox_RequiredRight.SelectedIndex, files, RB_Description.Text);
 
             this.Close();
-
         }
 
         private void B_Cancel_Click(object sender, EventArgs e)

@@ -8,6 +8,8 @@ namespace BasicTwitchSoundPlayer.Structs
         string Command { get; set; }
         string[] File { get; set; }
         TwitchRightsEnum Requirement { get; set; }
+        string Description { get; set; }
+
 
         public SoundEntry(string Command, TwitchRightsEnum Requirement, string File)
         {
@@ -15,18 +17,23 @@ namespace BasicTwitchSoundPlayer.Structs
             this.Command = Command;
             this.Requirement = Requirement;
             this.File = new string[1] { File };
+            Description = "";
         }
 
-        public SoundEntry(string Command, TwitchRightsEnum Requirement, string[] Files)
+        public SoundEntry(string Command, TwitchRightsEnum Requirement, string[] Files, string Description)
         {
             this.Command = Command;
             this.Requirement = Requirement;
             this.File = Files;
+            this.Description = Description;
         }
 
         public string GetCommand() { return Command; }
         public TwitchRightsEnum GetRequirement() { return Requirement; }
         public string[] GetAllFiles() { return File; }
+        public string GetDescription() { return Description; }
+
+
         public string GetFile(Random rng)
         {
             if (File.Length > 1)

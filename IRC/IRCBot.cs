@@ -16,17 +16,17 @@ namespace BasicTwitchSoundPlayer.IRC
         private MainForm parent;
         private static ReadMessage FormattedMessage;
         private string channelToJoin;
-        private char prefixChar;
+        private char PrefixChar;
         private SoundBase SndDB { get; set; }
         PrivateSettings programSettings;
 
-        public IRCBot(MainForm parentReference, PrivateSettings programSettings, SoundBase soundDb)
+        public IRCBot(MainForm parentReference, PrivateSettings programSettings, SoundBase soundDb, char PrefixChar)
         {
             irc = new OldIRCClient(parentReference, programSettings.TwitchServer, programSettings.TwitchUsername, programSettings.TwitchPassword, programSettings.TwitchChannelToJoin);
             this.programSettings = programSettings;
             channelToJoin = programSettings.TwitchChannelToJoin;
             parent = parentReference;
-            prefixChar = '-';
+            this.PrefixChar = PrefixChar;
             SndDB = soundDb;
         }
 
@@ -107,7 +107,7 @@ namespace BasicTwitchSoundPlayer.IRC
         {
             FormattedMessage = formattedMessage;
 
-            if (!formattedMessage.message.StartsWith(prefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
+            if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
             {
                 parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, (int)LineType.Generic);
                 //literally nothing else happens in your code if this is false

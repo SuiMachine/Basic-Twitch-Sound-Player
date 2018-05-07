@@ -27,6 +27,7 @@ namespace BasicTwitchSoundPlayer
         public delegate void SetVolumeSlider(int valuee);       //used to safely change the slider position
 
         IRC.IRCBot TwitchBot;
+        private char PrefixCharacter = '-';
         Thread TwitchBotThread;
         PrivateSettings _programSettings;
         SoundBase soundDb;
@@ -53,7 +54,7 @@ namespace BasicTwitchSoundPlayer
 
         private void StartBot()
         {
-            TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb);
+            TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb, PrefixCharacter);
             TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
             TwitchBotThread.Start();
         }
@@ -168,7 +169,6 @@ namespace BasicTwitchSoundPlayer
             {
                 trayIcon.Visible = false;
                 this.Show();
-
             }
         }
 
@@ -268,7 +268,7 @@ namespace BasicTwitchSoundPlayer
         #region SoundTree_Events
         private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist);
+            SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
             DialogResult res = scf.ShowDialog();
             if (res == DialogResult.OK)
             {
