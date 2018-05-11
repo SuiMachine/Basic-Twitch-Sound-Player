@@ -135,6 +135,7 @@ namespace BasicTwitchSoundPlayer
             if(TwitchBot != null)
                 TwitchBot.StopBot();
             trayIcon.Visible = false;
+            System.Environment.Exit(0);
         }
         #endregion
 
