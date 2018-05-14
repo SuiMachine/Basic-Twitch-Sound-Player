@@ -19,6 +19,7 @@ namespace BasicTwitchSoundPlayer
         private int delay;
         private string SoundBaseFile;
 
+
         #region ConstructorRelated
         public SoundBase(string importPath, PrivateSettings programSettings)
         {
@@ -152,15 +153,12 @@ namespace BasicTwitchSoundPlayer
                             for(int j=0; j<SoundPlayererStack.Count; j++)
                             {
                                 //Just so we don't play the same sounds at the same time
-                                if (filename == SoundPlayererStack[i].fullFileName)
+                                if (filename == SoundPlayererStack[j].fullFileName)
                                     return false;
                             }
                             //Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
                             SoundPlayererStack.Add(new NSoundPlayer(soundlist[i].GetFile(rng), programSettings.Volume));
-
-                            //If the user is SuperMod - we don't use delay
-                            //if(!(req == 4))
-                                userDB[user] = DateTime.Now;
+                            userDB[user] = DateTime.Now;
 
                             return true;
                         }
@@ -204,7 +202,7 @@ namespace BasicTwitchSoundPlayer
 
     class NSoundPlayer :IDisposable
     {
-        private bool disposed;
+        private bool disposed = false;
         AudioFileReader audioFileReader;
         IWavePlayer directWaveOut;
         public string fullFileName;
@@ -217,7 +215,7 @@ namespace BasicTwitchSoundPlayer
             if(File.Exists(soundFile))
             {
                 audioFileReader = new AudioFileReader(soundFile);
-                directWaveOut = new DirectSoundOut();
+                directWaveOut = new DirectSoundOut(120);
                 directWaveOut.Init(audioFileReader);
                 audioFileReader.Volume = volume;
                 directWaveOut.Play();

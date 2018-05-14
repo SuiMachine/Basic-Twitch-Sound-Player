@@ -46,7 +46,14 @@ namespace BasicTwitchSoundPlayer
             trackBar_Volume.Value = valrr;
             L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
             soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), _programSettings);
-            if(_programSettings.Autostart)
+
+#if false
+            TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb, PrefixCharacter);
+            TwitchBot.TestStack();
+#endif
+
+
+            if (_programSettings.Autostart)
             {
                 StartBot();
             }
