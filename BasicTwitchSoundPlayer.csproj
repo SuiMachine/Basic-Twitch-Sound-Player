@@ -37,7 +37,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>sound_player_icon.ico</ApplicationIcon>
+    <ApplicationIcon>sound_player_icon_bundled.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
@@ -110,10 +110,17 @@
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
+    <Compile Include="VSS\VSS_Entry.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\ConfigNameStructs.cs" />
     <Compile Include="Structs\TwitchRightsEnum.cs" />
     <Compile Include="Structs\SoundEntry.cs" />
+    <Compile Include="VSS\VSS_BindingsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VSS\VSS_BindingsEditor.Designer.cs">
+      <DependentUpon>VSS_BindingsEditor.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -138,6 +145,9 @@
     <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.resx">
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VSS\VSS_BindingsEditor.resx">
+      <DependentUpon>VSS_BindingsEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -153,7 +163,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sound_player_icon.ico" />
+    <Content Include="sound_player_icon_bundled.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -120,7 +120,7 @@ namespace BasicTwitchSoundPlayer
 
             //Other
             Volume = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Volume).Sui_GetInnerText("0.5").ToFloat(0.5f);
-            Delay = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Delay).Sui_GetInnerText("15").ToInt(15);
+            Delay = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Delay).Sui_GetInnerText("60").ToInt(15);
 
             //TwitchSettings
             var TwitchSettings = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.NODENAME);

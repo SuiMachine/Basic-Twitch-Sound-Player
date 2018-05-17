@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DB_Editor));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.sndTreeView = new System.Windows.Forms.TreeView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -38,6 +40,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.B_Cancel = new System.Windows.Forms.Button();
             this.B_Save = new System.Windows.Forms.Button();
+            this.iconList = new System.Windows.Forms.ImageList(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -62,8 +65,11 @@
             // sndTreeView
             // 
             this.sndTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sndTreeView.ImageIndex = 0;
+            this.sndTreeView.ImageList = this.iconList;
             this.sndTreeView.Location = new System.Drawing.Point(3, 3);
             this.sndTreeView.Name = "sndTreeView";
+            this.sndTreeView.SelectedImageIndex = 0;
             this.sndTreeView.Size = new System.Drawing.Size(752, 472);
             this.sndTreeView.TabIndex = 1;
             this.sndTreeView.DoubleClick += new System.EventHandler(this.SndTreeView_DoubleClick);
@@ -154,6 +160,15 @@
             this.B_Save.UseVisualStyleBackColor = true;
             this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
             // 
+            // iconList
+            // 
+            this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
+            this.iconList.TransparentColor = System.Drawing.Color.Transparent;
+            this.iconList.Images.SetKeyName(0, "sound_player_icon_bundled.ico");
+            this.iconList.Images.SetKeyName(1, "audio-volume-high-4.ico");
+            this.iconList.Images.SetKeyName(2, "star.ico");
+            this.iconList.Images.SetKeyName(3, "note.ico");
+            // 
             // DB_Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -184,5 +199,6 @@
         private System.Windows.Forms.Button B_AddEntry;
         private System.Windows.Forms.Button B_RemoveEntry;
         private System.Windows.Forms.Button B_ExportToCSV;
+        private System.Windows.Forms.ImageList iconList;
     }
 }

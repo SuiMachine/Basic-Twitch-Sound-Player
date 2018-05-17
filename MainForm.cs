@@ -48,8 +48,8 @@ namespace BasicTwitchSoundPlayer
             soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), _programSettings);
 
 #if false
-            TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb, PrefixCharacter);
-            TwitchBot.TestStack();
+            VSS.VSS_BindingsEditor ed = new VSS.VSS_BindingsEditor(null);
+            ed.ShowDialog();
 #endif
 
 
@@ -352,5 +352,15 @@ namespace BasicTwitchSoundPlayer
             }
         }
         #endregion
+
+        private void VSSEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VSS.VSS_BindingsEditor scf = new VSS.VSS_BindingsEditor(null);
+            DialogResult res = scf.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

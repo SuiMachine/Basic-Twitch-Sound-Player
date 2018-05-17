@@ -49,6 +49,7 @@
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vSSEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -152,6 +153,7 @@
             // 
             this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.databaseEditorToolStripMenuItem,
+            this.vSSEditorToolStripMenuItem,
             this.importFromBotnakToolStripMenuItem});
             this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
             this.soundsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
@@ -226,6 +228,13 @@
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
+            // vSSEditorToolStripMenuItem
+            // 
+            this.vSSEditorToolStripMenuItem.Name = "vSSEditorToolStripMenuItem";
+            this.vSSEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.vSSEditorToolStripMenuItem.Text = "VSS Editor";
+            this.vSSEditorToolStripMenuItem.Click += new System.EventHandler(this.VSSEditorToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,6 +282,7 @@
         private System.Windows.Forms.ContextMenuStrip trayMenu;
         private System.Windows.Forms.ToolStripMenuItem showProgramToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vSSEditorToolStripMenuItem;
     }
 }
 
