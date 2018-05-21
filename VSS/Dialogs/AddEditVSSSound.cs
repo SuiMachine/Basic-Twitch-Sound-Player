@@ -79,9 +79,20 @@ namespace BasicTwitchSoundPlayer.VSS.Dialogs
             {
                 Task.Factory.StartNew(() =>
                 {
-                    AudioFileReader audioFileReader = new AudioFileReader(TB_SoundPath.Text);
-                    directWaveOut.Init(audioFileReader);
-                    directWaveOut.Play();
+                    if(TB_SoundPath.Text.ToLower().EndsWith("ogg"))
+                    {
+                        var VorbisStream = new NAudio.Vorbis.VorbisWaveReader(TB_SoundPath.Text);
+                        directWaveOut.Init(VorbisStream);
+                        directWaveOut.Play();
+                    }
+                    else
+                    {
+                        AudioFileReader audioFileReader = new AudioFileReader(TB_SoundPath.Text);
+                        directWaveOut.Init(audioFileReader);
+                        directWaveOut.Play();
+                    }
+
+
                 });
             }
         }

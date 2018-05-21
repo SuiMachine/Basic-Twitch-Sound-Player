@@ -200,10 +200,18 @@ namespace BasicTwitchSoundPlayer
         }
     }
 
+    enum PlayerFormat
+    {
+        Generic,
+        Vorbis
+    }
+
     class NSoundPlayer :IDisposable
     {
         private bool disposed = false;
-        AudioFileReader audioFileReader;
+        PlayerFormat format;
+        AudioFileReader GenericFileReader;
+        NAudio.Vorbis.VorbisWaveReader VorbisFileReader;
         IWavePlayer directWaveOut;
         public string fullFileName;
         string fileName;
@@ -214,21 +222,49 @@ namespace BasicTwitchSoundPlayer
             fileName = soundFile.Split('\\').Last();
             if(File.Exists(soundFile))
             {
-                audioFileReader = new AudioFileReader(soundFile);
-                directWaveOut = new DirectSoundOut(120);
-                directWaveOut.Init(audioFileReader);
-                audioFileReader.Volume = volume;
-                directWaveOut.Play();
+                if(soundFile.EndsWith("ogg"))
+                {
+                    format = PlayerFormat.Vorbis;
+                }
+
+                switch(format)
+                {
+                    case PlayerFormat.Vorbis:
+                        VorbisFileReader = new NAudio.Vorbis.VorbisWaveReader(soundFile);
+                        directWaveOut = new DirectSoundOut(120);
+                        directWaveOut.Init(VorbisFileReader);
+                        directWaveOut.Volume = volume;
+                        directWaveOut.Play();
+                        break;
+                    default:
+                        GenericFileReader = new AudioFileReader(soundFile);
+                        directWaveOut = new DirectSoundOut(120);
+                        directWaveOut.Init(GenericFileReader);
+                        directWaveOut.Volume = volume;
+                        directWaveOut.Play();
+                        break;
+                }
+
             }
         }
 
         public bool DonePlaying()
         {
-            if (audioFileReader.CurrentTime >= audioFileReader.TotalTime)
-                return true;
+            switch(format)
+            {
+                case PlayerFormat.Vorbis:
+                    if (VorbisFileReader.CurrentTime >= VorbisFileReader.TotalTime)
+                        return true;
+                    else
+                        return false;
+                default:
+                    if (GenericFileReader.CurrentTime >= GenericFileReader.TotalTime)
+                        return true;
+                    else
+                        return false;
+            }
 
-            else
-                return false;
+
         }
 
         protected virtual void Dispose(bool disposing)
@@ -240,15 +276,19 @@ namespace BasicTwitchSoundPlayer
                     if(directWaveOut != null)
                         directWaveOut.Stop();
 
-                    if (audioFileReader != null)
-                        audioFileReader.Dispose();
+                    if (GenericFileReader != null)
+                        GenericFileReader.Dispose();
+
+                    if (VorbisFileReader != null)
+                        VorbisFileReader.Dispose();
 
                     if (directWaveOut != null)
                         directWaveOut.Dispose();
                     Debug.WriteLine("[DISPOSE] Disposed of player for " + fileName + ".");
                 }
             }
-            audioFileReader = null;
+            GenericFileReader = null;
+            VorbisFileReader = null;
             directWaveOut = null;
             //dispose unmanaged resources
             disposed = true;
@@ -262,7 +302,7 @@ namespace BasicTwitchSoundPlayer
 
         internal void SetVolume(float volume)
         {
-            audioFileReader.Volume = volume;
+            directWaveOut.Volume = volume;
         }
     }
 }

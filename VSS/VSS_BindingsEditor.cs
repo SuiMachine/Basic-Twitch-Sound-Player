@@ -122,6 +122,7 @@ namespace BasicTwitchSoundPlayer.VSS
             var res = AddNewVSSDialog.ShowDialog();
             if(res == DialogResult.OK)
             {
+                parentNode.Nodes.Add(new VSS.VSS_Entry_Sound(AddNewVSSDialog.NameDesc, AddNewVSSDialog.Hotkey, AddNewVSSDialog.FilePath));
             }
         }
 

@@ -357,7 +357,7 @@ namespace BasicTwitchSoundPlayer
             DialogResult res = scf.ShowDialog();
             if (res == DialogResult.OK)
             {
-                SoundStorage.VSSStorageXML.SaveVSSBase("vss.xml", scf.VSS_RootEntry);
+                SoundStorage.VSSStorageXML.SaveVSSBase(Path.Combine("SoundDBs", "VSS.xml"), scf.VSS_RootEntry);
             }
         }
 
