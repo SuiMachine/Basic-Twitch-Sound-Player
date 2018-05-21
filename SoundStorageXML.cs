@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.Structs;
 using System.IO;
 using System.Xml;
+using System.Windows.Forms;
+using BasicTwitchSoundPlayer.Structs;
+using System.Linq;
+using System;
 
 namespace BasicTwitchSoundPlayer.SoundStorage
 {
@@ -12,7 +15,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
         private static readonly string varRequirement = "Requirement";
         private static readonly string varDescription = "SoundDescription";
 
-        public static List<SoundEntry> LoadSoundBase(string XmlPath)
+        public static List<Structs.SoundEntry> LoadSoundBase(string XmlPath)
         {
             XmlDocument doc = new XmlDocument();
             XmlNode ROOTNODE = null;
@@ -36,7 +39,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
             return entries;
         }
 
-        public static void SaveSoundBase(string XmlPath, List<SoundEntry> entries)
+        public static void SaveSoundBase(string XmlPath, List<Structs.SoundEntry> entries)
         {
             XmlDocument doc = new XmlDocument();
             XmlNode ROOTNODE = doc.Sui_GetNode("Entries");
@@ -57,6 +60,130 @@ namespace BasicTwitchSoundPlayer.SoundStorage
             }
 
             doc.Save(XmlPath);
+        }
+    }
+
+    class VSSStorageXML
+    {
+        private static readonly string varDescription = "Description";
+        private static readonly string varSoundPath = "SoundPath";
+
+        public static VSS.VSS_Entry_Group LoadVSSBase(string XmlPath)
+        {
+            XmlDocument doc = new XmlDocument();
+            VSS.VSS_Entry_Group RootGroupNode = null;
+            XmlNode ROOTNODE = null;
+
+            if (!File.Exists(XmlPath))
+            {
+                RootGroupNode = new VSS.VSS_Entry_Group("Root Node", Keys.V);
+                ROOTNODE = GetXMLNodeForVSS(doc, RootGroupNode);
+                SaveVSSBase(XmlPath, RootGroupNode);
+            }
+            else
+            {
+                doc.Load(XmlPath);
+                ROOTNODE = doc.FirstChild;
+                RootGroupNode = (VSS.VSS_Entry_Group)GetVSSFromXMLNode(ROOTNODE);
+            }
+            return RootGroupNode;
+        }
+
+
+        public static void SaveVSSBase(string XmlPath, VSS.VSS_Entry rootVSSNode)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode ROOTNODE = GetXMLNodeForVSS(doc, rootVSSNode);
+
+            var parentDir = Directory.GetParent(XmlPath);
+            if (!parentDir.Exists)
+                parentDir.Create();
+
+            doc.Save(XmlPath);
+        }
+
+        private static XmlNode GetXMLNodeForVSS(XmlDocument doc, VSS.VSS_Entry entry, VSS.VSS_Entry parent = null)
+        {
+            if(parent == null)
+            {
+                var node = doc.CreateElement(entry.Hotkey.ToString());
+                var desc = doc.CreateAttribute(varDescription);
+                desc.InnerText = entry.Description;
+                node.Attributes.Append(desc);
+                foreach(var child in entry.Nodes)
+                {
+
+                    if (child.GetType() == typeof(VSS.VSS_Entry_Group))
+                        node.AppendChild(GetXMLNodeForVSS(doc, (VSS.VSS_Entry_Group)child, entry));
+                    else
+                        node.AppendChild(GetXMLNodeForVSS(doc, (VSS.VSS_Entry_Sound)child, entry));
+                }
+                doc.AppendChild(node);
+                return node;
+            }
+            else
+            {
+                if(entry.GetType() == typeof(VSS.VSS_Entry_Group))
+                {
+                    var node = doc.CreateElement(entry.Hotkey.ToString());
+                    var desc = doc.CreateAttribute(varDescription);
+                    desc.InnerText = entry.Description;
+                    node.Attributes.Append(desc);
+
+                    var tmpCast = (VSS.VSS_Entry_Group)entry;
+                    foreach(var child in tmpCast.Nodes)
+                    {
+                        if (child.GetType() == typeof(VSS.VSS_Entry_Group))
+                            node.AppendChild(GetXMLNodeForVSS(doc, (VSS.VSS_Entry_Group)child, entry));
+                        else
+                            node.AppendChild(GetXMLNodeForVSS(doc, (VSS.VSS_Entry_Sound)child, entry));
+                    }
+                    return node;
+                }
+                else
+                {
+                    var node = doc.CreateElement(entry.Hotkey.ToString());
+                    var desc = doc.CreateAttribute(varDescription);
+                    desc.InnerText = entry.Description;
+                    var sound = doc.CreateAttribute(varSoundPath);
+                    sound.InnerText = ((VSS.VSS_Entry_Sound)entry).Filepath;
+                    node.Attributes.Append(desc);
+                    node.Attributes.Append(sound);
+                    return node;
+                }
+            }
+        }
+
+        private static VSS.VSS_Entry GetVSSFromXMLNode(XmlNode node)
+        {
+            if(node.Attributes[varSoundPath] == null)
+            {
+                if (Enum.TryParse(node.Name, out Keys key))
+                {
+                    string Description = node.Attributes[varDescription].InnerText;
+                    VSS.VSS_Entry_Group groupVSSNode = new VSS.VSS_Entry_Group(Description, key);
+
+                    foreach (var child in node.ChildNodes)
+                    {
+                        var vssChild = GetVSSFromXMLNode((XmlNode)child);
+                        if(vssChild != null)
+                        {
+                            groupVSSNode.Nodes.Add(vssChild);
+                        }
+                    }
+                    return groupVSSNode;
+                }
+            }
+            else
+            {
+                if(Enum.TryParse(node.Name, out Keys key))
+                {
+                    string Description = node.Attributes[varDescription].InnerText;
+                    string FilePath = node.Attributes[varSoundPath].InnerText;
+                    return new VSS.VSS_Entry_Sound(Description, key, FilePath);
+                }
+            }
+            return null;
         }
     }
 

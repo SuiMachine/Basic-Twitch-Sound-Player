@@ -31,6 +31,8 @@ namespace BasicTwitchSoundPlayer
         Thread TwitchBotThread;
         PrivateSettings _programSettings;
         SoundBase soundDb;
+        VSS.VSS_Entry_Group VSSdb;
+        VSS_PreviewWindow VSSPreview;
 
         public MainForm()
         {
@@ -46,12 +48,7 @@ namespace BasicTwitchSoundPlayer
             trackBar_Volume.Value = valrr;
             L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
             soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), _programSettings);
-
-#if false
-            VSS.VSS_BindingsEditor ed = new VSS.VSS_BindingsEditor(null);
-            ed.ShowDialog();
-#endif
-
+            VSSdb = SoundStorage.VSSStorageXML.LoadVSSBase(Path.Combine("SoundDBs", "VSS.xml"));
 
             if (_programSettings.Autostart)
             {
@@ -142,6 +139,7 @@ namespace BasicTwitchSoundPlayer
             if(TwitchBot != null)
                 TwitchBot.StopBot();
             trayIcon.Visible = false;
+            _programSettings.SaveSettings();
             System.Environment.Exit(0);
         }
         #endregion
@@ -355,12 +353,23 @@ namespace BasicTwitchSoundPlayer
 
         private void VSSEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            VSS.VSS_BindingsEditor scf = new VSS.VSS_BindingsEditor(null);
+            VSS.VSS_BindingsEditor scf = new VSS.VSS_BindingsEditor(VSSdb);
             DialogResult res = scf.ShowDialog();
             if (res == DialogResult.OK)
             {
-                throw new NotImplementedException();
+                SoundStorage.VSSStorageXML.SaveVSSBase("vss.xml", scf.VSS_RootEntry);
             }
+        }
+
+        private void EnableVSSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (VSSPreview == null || VSSPreview.IsDisposed)
+            {
+                VSSPreview = new VSS_PreviewWindow(_programSettings, VSSdb);
+                VSSPreview.Show();
+            }
+            else
+                VSSPreview.Show();
         }
     }
 }

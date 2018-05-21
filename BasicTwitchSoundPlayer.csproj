@@ -65,12 +65,18 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\Numbers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
+    <Compile Include="InputHook\AtomicDateTime.cs" />
+    <Compile Include="InputHook\KeyboardHook.cs" />
+    <Compile Include="InputHook\LowLevelKeyboardHook.cs" />
+    <Compile Include="InputHook\NTP.cs" />
+    <Compile Include="InputHook\TimeStamp.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -110,6 +116,24 @@
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
+    <Compile Include="VSS\Dialogs\AddEditVSSGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VSS\Dialogs\AddEditVSSGroup.Designer.cs">
+      <DependentUpon>AddEditVSSGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VSS\Dialogs\AddEditVSSSound.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VSS\Dialogs\AddEditVSSSound.Designer.cs">
+      <DependentUpon>AddEditVSSSound.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VSS\Dialogs\PressKeyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VSS\Dialogs\PressKeyDialog.Designer.cs">
+      <DependentUpon>PressKeyDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="VSS\VSS_Entry.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\ConfigNameStructs.cs" />
@@ -120,6 +144,12 @@
     </Compile>
     <Compile Include="VSS\VSS_BindingsEditor.Designer.cs">
       <DependentUpon>VSS_BindingsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VSS_PreviewWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VSS_PreviewWindow.Designer.cs">
+      <DependentUpon>VSS_PreviewWindow.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -145,8 +175,20 @@
     <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.resx">
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VSS\Dialogs\AddEditVSSGroup.resx">
+      <DependentUpon>AddEditVSSGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSS\Dialogs\AddEditVSSSound.resx">
+      <DependentUpon>AddEditVSSSound.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSS\Dialogs\PressKeyDialog.resx">
+      <DependentUpon>PressKeyDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSS\VSS_BindingsEditor.resx">
       <DependentUpon>VSS_BindingsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSS_PreviewWindow.resx">
+      <DependentUpon>VSS_PreviewWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">

@@ -42,6 +42,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vSSEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromBotnakToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -49,7 +50,7 @@
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vSSEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableVSSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -104,6 +105,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runBotToolStripMenuItem,
+            this.enableVSSToolStripMenuItem,
             this.connectOnStartupToolStripMenuItem,
             this.connectionSettingsToolStripMenuItem,
             this.colorSettingsToolStripMenuItem,
@@ -165,6 +167,13 @@
             this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.databaseEditorToolStripMenuItem.Text = "Database Editor";
             this.databaseEditorToolStripMenuItem.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
+            // 
+            // vSSEditorToolStripMenuItem
+            // 
+            this.vSSEditorToolStripMenuItem.Name = "vSSEditorToolStripMenuItem";
+            this.vSSEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.vSSEditorToolStripMenuItem.Text = "VSS Editor";
+            this.vSSEditorToolStripMenuItem.Click += new System.EventHandler(this.VSSEditorToolStripMenuItem_Click);
             // 
             // importFromBotnakToolStripMenuItem
             // 
@@ -228,12 +237,12 @@
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
-            // vSSEditorToolStripMenuItem
+            // enableVSSToolStripMenuItem
             // 
-            this.vSSEditorToolStripMenuItem.Name = "vSSEditorToolStripMenuItem";
-            this.vSSEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.vSSEditorToolStripMenuItem.Text = "VSS Editor";
-            this.vSSEditorToolStripMenuItem.Click += new System.EventHandler(this.VSSEditorToolStripMenuItem_Click);
+            this.enableVSSToolStripMenuItem.Name = "enableVSSToolStripMenuItem";
+            this.enableVSSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableVSSToolStripMenuItem.Text = "Enable VSS";
+            this.enableVSSToolStripMenuItem.Click += new System.EventHandler(this.EnableVSSToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -283,6 +292,7 @@
         private System.Windows.Forms.ToolStripMenuItem showProgramToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vSSEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableVSSToolStripMenuItem;
     }
 }
 
