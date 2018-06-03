@@ -22,12 +22,13 @@ namespace BasicTwitchSoundPlayer
         VSS.VSS_Entry_Group CurrentNode { get; set; }
         private Task PollKeys;
         private VSS_Preview preview;
-        private NAudio.Wave.WaveOut directWaveOut;
+        private IWavePlayer directWaveOut;
 
         public VSS_PreviewWindow(PrivateSettings _programSettings, VSS.VSS_Entry_Group VSSdb)
         {
             InitializeComponent();
             lowLevelHook = new LiveSplit.Model.Input.LowLevelKeyboardHook();
+            directWaveOut = new DirectSoundOut(60);
             this._programSettings = _programSettings;
             this.VSSdb = new VSS.VSS_Entry_Group("ROOTNODE", Keys.NoName);
             this.VSSdb.Nodes.Add(VSSdb);
@@ -95,13 +96,21 @@ namespace BasicTwitchSoundPlayer
 
         private void PlaySound(string filepath)
         {
-
             if (File.Exists(filepath))
             {
                 Task.Factory.StartNew(() =>
                 {
-                    AudioFileReader audioFileReader = new AudioFileReader(filepath);
-                    directWaveOut.Init(audioFileReader);
+                    if(filepath.EndsWith("ogg"))
+                    {
+                        NAudio.Vorbis.VorbisWaveReader VorbisFileReader = new NAudio.Vorbis.VorbisWaveReader(filepath);
+                        directWaveOut.Init(VorbisFileReader);
+                    }
+                    else
+                    {
+                        AudioFileReader audioFileReader = new AudioFileReader(filepath);
+                        directWaveOut.Init(audioFileReader);
+                    }
+
                     directWaveOut.Play();
                 });
             }

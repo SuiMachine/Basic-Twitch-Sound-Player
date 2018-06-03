@@ -240,7 +240,7 @@ namespace BasicTwitchSoundPlayer
                         GenericFileReader = new AudioFileReader(soundFile);
                         directWaveOut = new DirectSoundOut(120);
                         directWaveOut.Init(GenericFileReader);
-                        directWaveOut.Volume = volume;
+                        GenericFileReader.Volume = volume;
                         directWaveOut.Play();
                         break;
                 }
@@ -302,7 +302,10 @@ namespace BasicTwitchSoundPlayer
 
         internal void SetVolume(float volume)
         {
-            directWaveOut.Volume = volume;
+            if (format == PlayerFormat.Generic && GenericFileReader != null)
+                GenericFileReader.Volume = volume;
+            else if(format == PlayerFormat.Vorbis && VorbisFileReader != null )
+                directWaveOut.Volume = volume;
         }
     }
 }

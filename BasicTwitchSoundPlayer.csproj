@@ -79,6 +79,8 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
     <Compile Include="InputHook\AtomicDateTime.cs" />
+    <Compile Include="InputHook\CompositeHook.cs" />
+    <Compile Include="InputHook\HotkeyHook.cs" />
     <Compile Include="InputHook\KeyboardHook.cs" />
     <Compile Include="InputHook\LowLevelKeyboardHook.cs" />
     <Compile Include="InputHook\NTP.cs" />
