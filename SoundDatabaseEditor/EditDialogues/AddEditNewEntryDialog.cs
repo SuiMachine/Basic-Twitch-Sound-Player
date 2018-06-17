@@ -122,5 +122,27 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
             B_OK.Enabled = true;
         }
+
+        #region DragAndDropForListBox
+        private void ListB_Files_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.All(x => SupportedFileFormats.IsAcceptableAudioFormat(x)))
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void ListB_Files_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] fToAdd = (string[])e.Data.GetData(DataFormats.FileDrop);
+            ListB_Files.Items.AddRange(fToAdd);
+        }
+        #endregion
     }
 }

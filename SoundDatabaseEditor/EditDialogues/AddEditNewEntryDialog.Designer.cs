@@ -145,14 +145,17 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             // 
             // ListB_Files
             // 
+            this.ListB_Files.AllowDrop = true;
             this.ListB_Files.ContextMenuStrip = this.contextMenu_File;
             this.ListB_Files.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ListB_Files.FormattingEnabled = true;
             this.ListB_Files.Location = new System.Drawing.Point(4, 25);
             this.ListB_Files.Name = "ListB_Files";
-            this.ListB_Files.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.ListB_Files.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.ListB_Files.Size = new System.Drawing.Size(445, 125);
             this.ListB_Files.TabIndex = 1;
+            this.ListB_Files.DragDrop += new System.Windows.Forms.DragEventHandler(this.ListB_Files_DragDrop);
+            this.ListB_Files.DragEnter += new System.Windows.Forms.DragEventHandler(this.ListB_Files_DragEnter);
             // 
             // contextMenu_File
             // 
