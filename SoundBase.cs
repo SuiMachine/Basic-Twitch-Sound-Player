@@ -11,13 +11,13 @@ namespace BasicTwitchSoundPlayer
 {
     public class SoundBase
     {
-        private Random rng;
+        private readonly Random rng;
         public List<SoundEntry> soundlist;
         private List<NSoundPlayer> SoundPlayererStack;
         private PrivateSettings programSettings;
         private Dictionary<string, DateTime> userDB;
         private int delay;
-        private string SoundBaseFile;
+        private readonly string SoundBaseFile;
 
 
         #region ConstructorRelated
@@ -126,9 +126,10 @@ namespace BasicTwitchSoundPlayer
 
         public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel)
         {
+            //Iterate through existing sound players
             for(int i=SoundPlayererStack.Count-1; i>=0; i--)
             {
-                //First, cleanup
+                //Dispose of the ones which finished playing
                 if (SoundPlayererStack[i].DonePlaying())
                 {
                     SoundPlayererStack[i].Dispose();
@@ -136,17 +137,22 @@ namespace BasicTwitchSoundPlayer
                 }
             }
 
+            //Check if our db has a user and if not add him
             if(!userDB.ContainsKey(user))
             {
                 userDB.Add(user, DateTime.MinValue);
             }
 
+            //check user cooldown
             if(userDB[user]+TimeSpan.FromSeconds(delay) < DateTime.Now)
             {
+                //iterate between all files in a sound list
                 for (int i = 0; i < soundlist.Count; i++)
                 {
+                    //if sound is found
                     if (soundlist[i].GetCommand() == cmd)
                     {
+                        //Check right requirements
                         if (userLevel >= soundlist[i].GetRequirement() && soundlist[i].GetRequirement() != TwitchRightsEnum.Disabled)
                         {
                             string filename = soundlist[i].GetFile(rng);
@@ -157,8 +163,10 @@ namespace BasicTwitchSoundPlayer
                                     return false;
                             }
                             //Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
-                            SoundPlayererStack.Add(new NSoundPlayer(soundlist[i].GetFile(rng), programSettings.Volume));
-                            userDB[user] = DateTime.Now;
+                            var player = new NSoundPlayer(soundlist[i].GetFile(rng), programSettings.Volume);
+                            var lenght = player.GetTimeLenght();
+                            SoundPlayererStack.Add(player);
+                            userDB[user] = DateTime.Now+lenght;
 
                             return true;
                         }
@@ -209,12 +217,12 @@ namespace BasicTwitchSoundPlayer
     class NSoundPlayer :IDisposable
     {
         private bool disposed = false;
-        PlayerFormat format;
+        private readonly PlayerFormat format;
         AudioFileReader GenericFileReader;
         NAudio.Vorbis.VorbisWaveReader VorbisFileReader;
         IWavePlayer directWaveOut;
         public string fullFileName;
-        string fileName;
+        private readonly string fileName;
 
         public NSoundPlayer(string soundFile, float volume)
         {
@@ -246,6 +254,26 @@ namespace BasicTwitchSoundPlayer
                 }
 
             }
+        }
+
+        public TimeSpan GetTimeLenght()
+        {
+            if (format == PlayerFormat.Generic)
+            {
+                if (GenericFileReader != null)
+                    return GenericFileReader.TotalTime;
+                else
+                    return TimeSpan.Zero;
+            }
+            else if (format == PlayerFormat.Vorbis)
+            {
+                if (VorbisFileReader != null)
+                    return VorbisFileReader.TotalTime;
+                else
+                    return TimeSpan.Zero;
+            }
+            else
+                return TimeSpan.Zero;
         }
 
         public bool DonePlaying()
