@@ -157,6 +157,13 @@ namespace BasicTwitchSoundPlayer.IRC
                         return true;
                     }
 
+                    if (text.StartsWith("suboverride"))
+                    {
+                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+                        SndDB.ChangeSubOverride(irc, text);
+                        return true;
+                    }
+
                 }
                 parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
                 SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
@@ -176,7 +183,7 @@ namespace BasicTwitchSoundPlayer.IRC
                 return TwitchRightsEnum.Admin;
             else if (irc.moderators.Contains(user))
                 return TwitchRightsEnum.Mod;
-            else if (irc.subscribers.Contains(user) || irc.trustedUsers.Contains(user))
+            else if (irc.subscribers.Contains(user) || irc.trustedUsers.Contains(user) || programSettings.AllowUsersToUseSubSounds)
                 return TwitchRightsEnum.TrustedSub;
             else
                 return TwitchRightsEnum.Public;

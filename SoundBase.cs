@@ -6,6 +6,7 @@ using NAudio.Wave;
 using System.Diagnostics;
 using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs;
+using BasicTwitchSoundPlayer.IRC;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -61,6 +62,28 @@ namespace BasicTwitchSoundPlayer
                 }
             }
         }
+
+        internal void ChangeSubOverride(OldIRCClient irc, string poopedString)
+        {
+            if (!poopedString.Contains(" "))
+            {
+                irc.SendChatMessage("Subscriber override is " + (programSettings.AllowUsersToUseSubSounds ? "enabled" : "disabled") + ".");
+            }
+            else
+            {
+                string[] splice = poopedString.Split(new char[] { ' ' }, 2);
+                if(bool.TryParse(splice[1], out bool result))
+                {
+                    programSettings.AllowUsersToUseSubSounds = result;
+                    irc.SendChatMessage("Subscriber override is now " + (programSettings.AllowUsersToUseSubSounds ? "enabled" : "disabled") + ".");
+                }
+                else
+                {
+                    irc.SendChatMessage("Failed to parse a bool value.");
+                }
+            }
+        }
+
 
         internal void Stopallsounds()
         {

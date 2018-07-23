@@ -16,3 +16,4 @@ External libraries used
   * [NAudio](https://github.com/naudio/NAudio) for reliable audio playback.
   * [NAudio.Vorbis](https://github.com/naudio/Vorbis) for Vorbis files playback.
   * [Newtonsoft.Json](https://www.newtonsoft.com/json) for deserializing Json.  
+  * [globalmousekeyhook](https://github.com/gmamaladze/globalmousekeyhook) for hooking input

@@ -40,6 +40,9 @@
     <ApplicationIcon>sound_player_icon_bundled.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>Libaries\log4net.dll</HintPath>
     </Reference>
@@ -78,13 +81,6 @@
     <Compile Include="Extensions\Numbers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
-    <Compile Include="InputHook\AtomicDateTime.cs" />
-    <Compile Include="InputHook\CompositeHook.cs" />
-    <Compile Include="InputHook\HotkeyHook.cs" />
-    <Compile Include="InputHook\KeyboardHook.cs" />
-    <Compile Include="InputHook\LowLevelKeyboardHook.cs" />
-    <Compile Include="InputHook\NTP.cs" />
-    <Compile Include="InputHook\TimeStamp.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

@@ -19,9 +19,9 @@ namespace BasicTwitchSoundPlayer.IRC
     {
         MainForm parent;
         public bool ConnectedStatus = true;
-        static string ignoredfile = "ignored_users.txt";
-        static string trustedfile = "trusted_users.txt";
-        static string supermodsfile = "supermods.txt";
+        static readonly string ignoredfile = "ignored_users.txt";
+        static readonly string trustedfile = "trusted_users.txt";
+        static readonly string supermodsfile = "supermods.txt";
         #region properties
         private string Config_Server { get; set; }
         private string Config_Username { get; set; }

@@ -20,65 +20,13 @@ namespace BasicTwitchSoundPlayer.IRC
         {
             this.TwitchAuthy = "OAuth " + TwitchAuthy;
             this.Channel = Channel;
-            KRAKENURI = @"https://api.twitch.tv/kraken/channels/" + Channel.ToLower() + "/subscriptions";
+            KRAKENURI = @"https://api.twitch.tv/kraken/channels/" + Channel.ToLower() + "/";
         }
-
-        #region Sync
-        public string[] GetSubscribers()
-        {
-            string response = GetNewUpdate();
-            if (response == null || response == "")
-            {
-                return new string[0];
-            }
-            else
-            {
-                JObject jReader = JObject.Parse(response);
-                if(jReader["subscriptions"] != null)
-                {
-                    var jSubs = jReader["subscriptions"];
-                    string[] subscribers = new string[jSubs.Count()];
-                    for(int i=0; i< subscribers.Length; i++)
-                    {
-                        var jSub = jSubs.ElementAt(i);
-                        var user = jSub["user"];
-                        subscribers[i] = user["name"].Value<string>();
-                    }
-                    return subscribers;
-                }
-            }
-
-            return new string[0];
-        }
-
-        private string GetNewUpdate()
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(KRAKENURI);
-
-            try
-            {
-                request.Headers["Client-ID"] = "9z58zy6ak0ejk9lme6dy6nyugydaes";
-                request.Headers["Authorization"] = TwitchAuthy;
-                request.Timeout = 5000;
-                request.Method = "GET";
-
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-                return "";
-            }
-        }
-        #endregion
 
         #region Async
         public async Task<string[]> GetSubscribersAsync()
         {
-            string response = await GetNewUpdateAsync();
+            string response = await GetNewUpdateAsync("subscriptions");
             if (response == null || response == "")
             {
                 return new string[0];
@@ -103,9 +51,9 @@ namespace BasicTwitchSoundPlayer.IRC
             return new string[0];
         }
 
-        private async Task<string> GetNewUpdateAsync()
+        private async Task<string> GetNewUpdateAsync(string scope)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(KRAKENURI);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(KRAKENURI + scope);
 
             try
             {

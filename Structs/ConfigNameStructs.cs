@@ -19,6 +19,7 @@
         public string Var_Autostart = "Autostart";
         public string Var_Volume = "Volume";
         public string Var_Delay = "Delay";
+        public string Var_AllowUsersToUseSubscriberSounds = "AllowUsersToUseSubscriberSounds";
     }
 
     public class SettingsXMLColors

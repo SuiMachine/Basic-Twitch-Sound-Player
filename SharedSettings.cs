@@ -59,6 +59,7 @@ namespace BasicTwitchSoundPlayer
         public bool Autostart { get; set; }
         public float Volume { get; set; }
         public int Delay { get; set; }
+        public bool AllowUsersToUseSubSounds { get; set; }
 
         public string TwitchServer { get; set; }
         public string TwitchUsername { get; set; }
@@ -70,6 +71,7 @@ namespace BasicTwitchSoundPlayer
         {
             //NOTE: Make sure everything is initialized first!
             Autostart = false;
+            AllowUsersToUseSubSounds = false;
             Volume = 0.5f;
             Delay = 15;
             this.Colors = new ColorStruct();
@@ -121,6 +123,7 @@ namespace BasicTwitchSoundPlayer
             //Other
             Volume = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Volume).Sui_GetInnerText("0.5").ToFloat(0.5f);
             Delay = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Delay).Sui_GetInnerText("60").ToInt(15);
+            AllowUsersToUseSubSounds = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_AllowUsersToUseSubscriberSounds).Sui_GetInnerText("false").ToBoolean(false);
 
             //TwitchSettings
             var TwitchSettings = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.NODENAME);
@@ -137,6 +140,7 @@ namespace BasicTwitchSoundPlayer
             ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Autostart).Sui_SetInnerText(Autostart.ToString());
             ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Volume).Sui_SetInnerText(Volume.ToString());
             ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_Delay).Sui_SetInnerText(Delay.ToString());
+            ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_AllowUsersToUseSubscriberSounds).Sui_SetInnerText(AllowUsersToUseSubSounds.ToString());
 
             //Colors
             var ColorsNode = MasterNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.Colors.NODENAME);

@@ -183,7 +183,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 sb.AppendLine("<table cellspacing=\"0\" border=\"1\">");
                 sb.AppendLine("<colgroup span=\"3\" width=\"1000\"></colgroup>");
                 sb.AppendLine("<tr>" +
-                    "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command</b></td>" +
+                    "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command (total: " + ExportSounds.Count.ToString() +")</b></td>" +
                     "<td align=\"left\"><b>File</b></td>" +
                     "<td align=\"left\"><b>Description</b></td>" +
                     "</tr>");
@@ -230,6 +230,11 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 default:
                     return "#0000FF";
             }
+        }
+
+        private void B_Sort_Click(object sender, EventArgs e)
+        {
+            sndTreeView.Sort();
         }
     }
 

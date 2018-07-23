@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,16 +19,32 @@ namespace BasicTwitchSoundPlayer
     {
         PrivateSettings _programSettings { get; set; }
         VSS.VSS_Entry_Group VSSdb { get; set; }
-        LiveSplit.Model.Input.LowLevelKeyboardHook lowLevelHook;
         VSS.VSS_Entry_Group CurrentNode { get; set; }
-        private Task PollKeys;
         private VSS_Preview preview;
         private IWavePlayer directWaveOut;
+        private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
+
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        private void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
 
         public VSS_PreviewWindow(PrivateSettings _programSettings, VSS.VSS_Entry_Group VSSdb)
         {
             InitializeComponent();
-            lowLevelHook = new LiveSplit.Model.Input.LowLevelKeyboardHook();
+            m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
             directWaveOut = new DirectSoundOut(60);
             this._programSettings = _programSettings;
             this.VSSdb = new VSS.VSS_Entry_Group("ROOTNODE", Keys.NoName);
@@ -35,57 +52,27 @@ namespace BasicTwitchSoundPlayer
             this.CurrentNode = VSSdb;
             UpdateColors();
             preview = new VSS_Preview(pictureBoxVSSPreview, Color.Black, Color.Yellow, 24, Color.White, 18, Color.WhiteSmoke, 4);
-            UnregisterAllHotkeys();
             SetToRoot();
-            PollKeys = Task.Factory.StartNew(HookPoll);
-            lowLevelHook.KeyPressed += Hook_KeyPressed;
+            m_GlobalHook.KeyDown += M_GlobalHook_KeyDown;
         }
-
-        private void HookPoll()
+        private void M_GlobalHook_KeyDown(object sender, KeyEventArgs e)
         {
-            while (true)
+            foreach (var child in CurrentNode.Nodes)
             {
-                Thread.Sleep(25);
-                try
+                if (((VSS.VSS_Entry)child).Hotkey == e.KeyCode && !e.Handled)
                 {
-                    if (lowLevelHook != null)
-                        lowLevelHook.Poll();
-                }
-                catch { }
-            }
-        }
-
-        private void RegisterHotkey(Keys key)
-        {
-            Debug.WriteLine("Registered " + key);
-            lowLevelHook.RegisterHotKey(key);
-        }
-
-        public void UnregisterAllHotkeys()
-        {
-            Debug.WriteLine("Unregistered All Hotkeys");
-            lowLevelHook.UnregisterAllHotkeys();
-        }
-
-        private void Hook_KeyPressed(object sender, KeyEventArgs e)
-        {
-            foreach(var child in CurrentNode.Nodes)
-            {
-                if(((VSS.VSS_Entry)child).Hotkey == e.KeyCode && !e.Handled)
-                {
+                    e.SuppressKeyPress = true;
                     e.Handled = true;
                     if (child.GetType() == typeof(VSS.VSS_Entry_Group))
                     {
                         var cast = (VSS.VSS_Entry_Group)child;
                         this.preview.Clear();
-                        this.UnregisterAllHotkeys();
                         CurrentNode = cast;
                         AddDisplayElement(CurrentNode);
                     }
                     else
                     {
                         this.preview.Clear();
-                        this.UnregisterAllHotkeys();
                         PlaySound(((VSS.VSS_Entry_Sound)child).Filepath);
                         CurrentNode = VSSdb;
                         AddDisplayElement(CurrentNode);
@@ -128,19 +115,19 @@ namespace BasicTwitchSoundPlayer
             {
                 var cast = (VSS.VSS_Entry)child;
                 this.preview.AddElement(cast.Hotkey, cast.Description);
-                RegisterHotkey(cast.Hotkey);
             }
             preview.UpdateView();
         }
 
         private void VSS_PreviewWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            UnregisterAllHotkeys();
+            m_GlobalHook.KeyDown -= M_GlobalHook_KeyDown;
+
+            m_GlobalHook.Dispose();
         }
 
         private void ResetTimer_Tick(object sender, EventArgs e)
         {
-            lowLevelHook.UnregisterAllHotkeys();
             SetToRoot();
         }
 
@@ -148,6 +135,20 @@ namespace BasicTwitchSoundPlayer
         {
             CurrentNode = VSSdb;
             AddDisplayElement(CurrentNode);
+        }
+
+        private void PictureBoxVSSPreview_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+
+        private void CloseVSSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 

@@ -54,6 +54,7 @@ namespace BasicTwitchSoundPlayer
             {
                 StartBot();
             }
+            //EnableVSSToolStripMenuItem_Click(null, null);
         }
 
         private void StartBot()
