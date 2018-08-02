@@ -43,6 +43,24 @@
     <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis, Version=1.34.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.1.34.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.34.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.Auth.1.34.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.34.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.Auth.1.34.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.34.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.Core.1.34.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.34.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.1.34.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Sheets.v4, Version=1.34.0.1240, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.Sheets.v4.1.34.0.1240\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>Libaries\log4net.dll</HintPath>
     </Reference>
@@ -55,9 +73,8 @@
     <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libaries\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
@@ -106,7 +123,7 @@
     </Compile>
     <Compile Include="SharedSettings.cs" />
     <Compile Include="SoundBase.cs" />
-    <Compile Include="BotnakImporter.cs" />
+    <Compile Include="SoundDatabaseEditor\BotnakImporter.cs" />
     <Compile Include="SoundDatabaseEditor\DB_Editor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +136,7 @@
     <Compile Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.Designer.cs">
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="SoundDatabaseEditor\GoogleSheetsExport.cs" />
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="VSS\Dialogs\AddEditVSSGroup.cs">
       <SubType>Form</SubType>

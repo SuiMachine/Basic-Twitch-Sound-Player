@@ -50,3 +50,6 @@ Temporary Items
 .vs
 Debug
 obj
+
+#nu-get packages
+packages

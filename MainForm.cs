@@ -54,7 +54,6 @@ namespace BasicTwitchSoundPlayer
             {
                 StartBot();
             }
-            //EnableVSSToolStripMenuItem_Click(null, null);
         }
 
         private void StartBot()
@@ -210,6 +209,7 @@ namespace BasicTwitchSoundPlayer
                 _programSettings.TwitchUsername = form.Username;
                 _programSettings.TwitchPassword = form.Password;
                 _programSettings.TwitchChannelToJoin = form.ChannelToJoin;
+                _programSettings.GoogleSpreadsheetID = form.SpreadsheetID;
 
                 _programSettings.SaveSettings();
                 ReloadBot();
@@ -275,7 +275,7 @@ namespace BasicTwitchSoundPlayer
         #region SoundTree_Events
         private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
+            SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter, _programSettings.GoogleSpreadsheetID);
             DialogResult res = scf.ShowDialog();
             if (res == DialogResult.OK)
             {

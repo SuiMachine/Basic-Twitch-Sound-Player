@@ -18,6 +18,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
         public string Username { get; set; }
         public string Password { get; set; }
         public string ChannelToJoin { get; set; }
+        public string SpreadsheetID { get; set; }
 
         public ConnectionSettingsForm(MainForm _parent, PrivateSettings _settingsRef)
         {
@@ -29,11 +30,13 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             this.TB_Username.DataBindings.Add("Text", this, "Username", false, DataSourceUpdateMode.OnPropertyChanged);
             this.TB_Password.DataBindings.Add("Text", this, "Password", false, DataSourceUpdateMode.OnPropertyChanged);
             this.TB_ChannelToJoin.DataBindings.Add("Text", this, "ChannelToJoin", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.TB_GoogleSpreadsheetID.DataBindings.Add("Text", this, "SpreadsheetID", false, DataSourceUpdateMode.OnPropertyChanged);
 
             this.Server = _settingsRef.TwitchServer;
             this.Username = _settingsRef.TwitchUsername;
             this.Password = _settingsRef.TwitchPassword;
             this.ChannelToJoin = _settingsRef.TwitchChannelToJoin;
+            this.SpreadsheetID = _settingsRef.GoogleSpreadsheetID;
         }
 
         private void CloseHttpListener()

@@ -18,14 +18,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         public const string NodeNameFiles = "Files";
         public const string NodeNameRequirements = "Requirement";
         public const string NodeDescription = "Description";
+        private string spreadsheetId = "";
 
         public List<SoundEntry> Sounds;
         char PrefixCharacter;
 
-        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter)
+        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter, string spreadsheetId)
         {
             this.PrefixCharacter = PrefixCharacter;
             this.Sounds = Sounds;
+            this.spreadsheetId = spreadsheetId;
             InitializeComponent();
         }
 
@@ -235,6 +237,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         private void B_Sort_Click(object sender, EventArgs e)
         {
             sndTreeView.Sort();
+        }
+
+        private void B_ExportToSpreadsheet_Click(object sender, EventArgs e)
+        {
+            var tmpSnd = TreeNodesToSoundsEntryList(sndTreeView);
+
+            GoogleSheetsExport sheet = new GoogleSheetsExport(spreadsheetId, PrefixCharacter, tmpSnd);
+            if (sheet.WasSuccess)
+                MessageBox.Show("New sound db successfully exported to Google Spreadsheet", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
     }
 

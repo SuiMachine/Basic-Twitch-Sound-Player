@@ -65,6 +65,7 @@ namespace BasicTwitchSoundPlayer
         public string TwitchUsername { get; set; }
         public string TwitchPassword { get; set; }
         public string TwitchChannelToJoin { get; set; }
+        public string GoogleSpreadsheetID { get; set; }
         #endregion
 
         public PrivateSettings()
@@ -80,6 +81,7 @@ namespace BasicTwitchSoundPlayer
             TwitchUsername = "";
             TwitchPassword = "";
             TwitchChannelToJoin = "";
+            GoogleSpreadsheetID = "";
 
             LoadSettings();
         }
@@ -131,6 +133,9 @@ namespace BasicTwitchSoundPlayer
             TwitchUsername = TwitchSettings.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.Var_Twitch_Username).Sui_GetInnerText(TwitchUsername);
             TwitchPassword = TwitchSettings.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.Var_Twitch_Password).Sui_GetInnerText(TwitchPassword);
             TwitchChannelToJoin = TwitchSettings.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.Var_Twitch_ChannelToJoin).Sui_GetInnerText(TwitchChannelToJoin);
+
+            //GoogleSheets
+            GoogleSpreadsheetID = ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_GoogleSpreadsheetId).Sui_GetInnerText(GoogleSpreadsheetID);
         }
 
         public void SaveSettings()
@@ -168,6 +173,8 @@ namespace BasicTwitchSoundPlayer
             TwitchSettings.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.Var_Twitch_Password).Sui_SetInnerText(TwitchPassword);
             TwitchSettings.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.TwitchSettings.Var_Twitch_ChannelToJoin).Sui_SetInnerText(TwitchChannelToJoin);
 
+            //GoogleSheets
+            ProgramSettingsNode.Sui_GetNode(xmlDoc, SettingsXMLMasterNames.ProgramSetting.Var_GoogleSpreadsheetId).Sui_SetInnerText(GoogleSpreadsheetID);
             xmlDoc.Save(SettingsXMLMasterNames.CONFIGFILE);
         }
         #endregion

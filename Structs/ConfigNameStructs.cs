@@ -20,6 +20,7 @@
         public string Var_Volume = "Volume";
         public string Var_Delay = "Delay";
         public string Var_AllowUsersToUseSubscriberSounds = "AllowUsersToUseSubscriberSounds";
+        public string Var_GoogleSpreadsheetId = "GoogleSpreadsheetID";
     }
 
     public class SettingsXMLColors
