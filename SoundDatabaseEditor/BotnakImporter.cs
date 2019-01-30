@@ -35,7 +35,7 @@ namespace BasicTwitchSoundPlayer
                     {
                         files[i] = helper[i + 2];
                     }
-                    soundEntries.Add(new SoundEntry(command, requirement, files, ""));
+                    soundEntries.Add(new SoundEntry(command, requirement, files, "", DateTime.UtcNow));
                 }
             }
             return soundEntries;

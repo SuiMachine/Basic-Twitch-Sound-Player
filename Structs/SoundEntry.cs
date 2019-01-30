@@ -9,30 +9,33 @@ namespace BasicTwitchSoundPlayer.Structs
         string[] File { get; set; }
         TwitchRightsEnum Requirement { get; set; }
         string Description { get; set; }
+        DateTime DateAdded { get; set; }
 
 
-        public SoundEntry(string Command, TwitchRightsEnum Requirement, string File)
+        public SoundEntry(string Command, TwitchRightsEnum Requirement, string File, DateTime DateAdded)
         {
             //This is actually not used, but I wrote it, so whatever
             this.Command = Command;
             this.Requirement = Requirement;
             this.File = new string[1] { File };
             Description = "";
+            this.DateAdded = DateAdded;
         }
 
-        public SoundEntry(string Command, TwitchRightsEnum Requirement, string[] Files, string Description)
+        public SoundEntry(string Command, TwitchRightsEnum Requirement, string[] Files, string Description, DateTime DateAdded)
         {
             this.Command = Command;
             this.Requirement = Requirement;
             this.File = Files;
             this.Description = Description;
+            this.DateAdded = DateAdded;
         }
 
         public string GetCommand() { return Command; }
         public TwitchRightsEnum GetRequirement() { return Requirement; }
         public string[] GetAllFiles() { return File; }
         public string GetDescription() { return Description; }
-
+        public DateTime GetDateAdded() { return DateAdded; }
 
         public string GetFile(Random rng)
         {

@@ -85,6 +85,7 @@
             this.iconList.Images.SetKeyName(1, "audio-volume-high-4.ico");
             this.iconList.Images.SetKeyName(2, "star.ico");
             this.iconList.Images.SetKeyName(3, "note.ico");
+            this.iconList.Images.SetKeyName(4, "accessories-date.ico");
             // 
             // tableLayoutPanel2
             // 

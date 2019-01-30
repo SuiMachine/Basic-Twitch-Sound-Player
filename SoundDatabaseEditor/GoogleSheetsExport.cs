@@ -15,6 +15,12 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 {
     class GoogleSheetsExport
     {
+        private enum ValueTypeFormatting
+        {
+            Normal,
+            Header,
+            DateTime
+        }
         readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
         string ApplicationName = "Sui's Twitch Sound Player";
         public bool WasSuccess { get; private set; }
@@ -114,14 +120,20 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                             UserEnteredValue = new ExtendedValue() { StringValue = sound.GetDescription() },
                             UserEnteredFormat = GetCellStyle(sound.GetRequirement())
                         });
+                        rowData.Values.Add(new CellData
+                        {
+                            UserEnteredValue = new ExtendedValue() { NumberValue = sound.GetDateAdded().ToOADate() },
+                            UserEnteredFormat = GetCellStyle(sound.GetRequirement(), ValueTypeFormatting.DateTime)
+                        });
                         rowList.Add(rowData);
                     }
 
-                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = string.Format("({0}) Command (total: {1})", prefixCharacter, soundsEntries.Count )}, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, true) });
-                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "File" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, true) });
-                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Description" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, true) });
+                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = string.Format("({0}) Command (total: {1})", prefixCharacter, soundsEntries.Count )}, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
+                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "File" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
+                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Description" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
+                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Updated (UTC)" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
                     rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "" } });
-                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Colors:" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, true) });
+                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Colors:" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
                     rowList[1].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "" } });
                     rowList[1].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Admin only" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Admin) });
                     rowList[2].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "" } });
@@ -181,7 +193,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
             return sheet;
         }
 
-        private CellFormat GetCellStyle(Structs.TwitchRightsEnum right, bool isHeader = false)
+        private CellFormat GetCellStyle(Structs.TwitchRightsEnum right, ValueTypeFormatting formatType = ValueTypeFormatting.Normal)
         {
             var newFormat = new CellFormat()
             {
@@ -193,7 +205,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                     Right = new Border() { Color = new Color() { Red = 0, Green = 0, Blue = 0, Alpha = 0 }, Style = "SOLID" },
                 }
             };
-            if (isHeader)
+            if (formatType == ValueTypeFormatting.Header)
                 newFormat.TextFormat = new TextFormat() { Bold = true };
             else
             {
@@ -214,6 +226,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                     default:
                         newFormat.TextFormat = new TextFormat() { Strikethrough = true };
                         break;
+                }
+
+                if(formatType == ValueTypeFormatting.DateTime)
+                {
+                    //	08/08/2018 17:22:23
+
+                    newFormat.NumberFormat = new NumberFormat
+                    {
+                        Type = "date-time"
+                    };
                 }
             }
 

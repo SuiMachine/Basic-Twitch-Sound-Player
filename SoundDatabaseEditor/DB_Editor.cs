@@ -18,6 +18,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         public const string NodeNameFiles = "Files";
         public const string NodeNameRequirements = "Requirement";
         public const string NodeDescription = "Description";
+        public const string NodeNameDateAdded = "DateAdded";
         private string spreadsheetId = "";
 
         public List<SoundEntry> Sounds;
@@ -188,6 +189,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                     "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command (total: " + ExportSounds.Count.ToString() +")</b></td>" +
                     "<td align=\"left\"><b>File</b></td>" +
                     "<td align=\"left\"><b>Description</b></td>" +
+                    "<td align=\"left\"><b>Added (UTC)</b></td>" +
                     "</tr>");
                 foreach (var snd in ExportSounds)
                 {
@@ -204,14 +206,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         private string GetTableRowForFile(SoundEntry hSound)
         {
             return string.Format("<tr>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{4}\">{0}{1}</td>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{4}\">{2}</td>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{4}\">{3}</td>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{0}{1}</td>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{2}</td>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{3}</td>" +
+                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{4}</td>" +
                 "</tr>",
                 PrefixCharacter,
                 hSound.GetCommand(),
                 hSound.GetAllFiles().Length > 1 ? "multiple" : System.IO.Path.GetFileNameWithoutExtension(hSound.GetAllFiles().First()),
                 hSound.GetDescription(),
+                hSound.GetDateAdded().ToString(),
                 GetHTMLColor(hSound.GetRequirement())
                 );
 
@@ -261,13 +265,14 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 TwitchRightsEnum Right = node.Nodes[DB_Editor.NodeNameRequirements].Text.ToTwitchRights();
                 string[] Files = new string[node.Nodes[DB_Editor.NodeNameFiles].Nodes.Count];
                 string Description = node.Nodes[DB_Editor.NodeDescription].Text;
+                DateTime DateAdded = node.Nodes[DB_Editor.NodeNameDateAdded].Text.ToDateTimeSafe();
 
                 for (int i = 0; i < Files.Length; i++)
                 {
                     Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
                 }
 
-                return new SoundEntry(Command, Right, Files, Description);
+                return new SoundEntry(Command, Right, Files, Description, DateAdded);
             }
             else
                 return new SoundEntry();
@@ -312,6 +317,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 Description.StateImageIndex = 3;
                 Description.Name = DB_Editor.NodeDescription;
                 Description.Text = snd.GetDescription();
+
+                var DateTimeTreeNode = newNode.Nodes.Add(DB_Editor.NodeNameDateAdded);
+                DateTimeTreeNode.ImageIndex = 4;
+                DateTimeTreeNode.SelectedImageIndex = 4;
+                DateTimeTreeNode.StateImageIndex = 4;
+                DateTimeTreeNode.Name = DB_Editor.NodeNameDateAdded;
+                DateTimeTreeNode.Text = snd.GetDateAdded().ToString();
                 return newNode;
             }
             else

@@ -14,6 +14,8 @@ namespace BasicTwitchSoundPlayer.SoundStorage
         private static readonly string varSounds = "Sounds";
         private static readonly string varRequirement = "Requirement";
         private static readonly string varDescription = "SoundDescription";
+        private static readonly string varDateAdded = "DateAdded";
+
 
         public static List<Structs.SoundEntry> LoadSoundBase(string XmlPath)
         {
@@ -56,6 +58,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
                     ChildNode.Sui_SetAttributeValue(doc, varSounds, string.Join(";", entry.GetAllFiles()));
                     ChildNode.Sui_SetAttributeValue(doc, varRequirement, entry.GetRequirement().ToString());
                     ChildNode.Sui_SetAttributeValue(doc, varDescription, entry.GetDescription());
+                    ChildNode.Sui_SetAttributeValue(doc, varDateAdded, entry.GetDateAdded().ToString());
                 }
             }
 
@@ -192,7 +195,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
         private static readonly string varSounds = "Sounds";
         private static readonly string varRequirement = "Requirement";
         private static readonly string varDescription = "SoundDescription";
-
+        private static readonly string varDateAdded = "DateAdded";
 
         public static SoundEntry GetQuickSoundEntry(this XmlDocument xmlDoc, XmlNode node)
         {
@@ -202,7 +205,8 @@ namespace BasicTwitchSoundPlayer.SoundStorage
                 string[] tmpSounds = node.Sui_GetAttributeValue(xmlDoc, varSounds, "").Split(';');
                 TwitchRightsEnum tmpRequirement = node.Sui_GetAttributeValue(xmlDoc, varRequirement, TwitchRightsEnum.Disabled.ToString()).ToTwitchRights();
                 string tmpDescription = node.Sui_GetAttributeValue(xmlDoc, varDescription, "");
-                return new SoundEntry(tmpCommand, tmpRequirement, tmpSounds, tmpDescription);
+                DateTime dateAdded = node.Sui_GetAttributeValue(xmlDoc, varDateAdded, DateTime.UtcNow.ToString()).ToDateTimeSafe();
+                return new SoundEntry(tmpCommand, tmpRequirement, tmpSounds, tmpDescription, dateAdded);
             }
             catch
             {
