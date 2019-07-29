@@ -7,6 +7,7 @@ using System.Diagnostics;
 using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs;
 using BasicTwitchSoundPlayer.IRC;
+using System.Speech.Synthesis;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -19,6 +20,7 @@ namespace BasicTwitchSoundPlayer
         private Dictionary<string, DateTime> userDB;
         private int delay;
         private readonly string SoundBaseFile;
+        private SpeechSynthesizer speechSynthesizer;
 
 
         #region ConstructorRelated
@@ -30,7 +32,24 @@ namespace BasicTwitchSoundPlayer
             rng = new Random();
             this.delay = programSettings.Delay;
             this.SoundBaseFile = importPath;
+            this.speechSynthesizer = new SpeechSynthesizer();
+            this.speechSynthesizer.SelectVoice(GetSafeVoice(programSettings.VoiceSynthesizer));
+            this.speechSynthesizer.Volume = 100;
+            this.speechSynthesizer.Rate = -2;
+
             soundlist = SoundStorageXML.LoadSoundBase(importPath);
+        }
+
+        private string GetSafeVoice(string voiceSynthesizer)
+        {
+            var voices = speechSynthesizer.GetInstalledVoices();
+            foreach(var voice in voices)
+            {
+                if (voice.VoiceInfo.Name.ToLower() == voiceSynthesizer.ToLower())
+                    return voice.VoiceInfo.Name;
+            }
+
+            return speechSynthesizer.GetInstalledVoices()[0].VoiceInfo.Name;
         }
         #endregion
 
@@ -198,6 +217,34 @@ namespace BasicTwitchSoundPlayer
                 }
             }
             Debug.WriteLine("User " + user + " has to wait " + (DateTime.Now - (userDB[user] + TimeSpan.FromSeconds(delay))).TotalSeconds + " seconds.");
+            return false;
+        }
+
+        public bool PlayTTS(string user, string message, TwitchRightsEnum privilage)
+        {
+            //Check if our db has a user and if not add him
+            if (!userDB.ContainsKey(user))
+            {
+                userDB.Add(user, DateTime.MinValue);
+            }
+
+            if(privilage < TwitchRightsEnum.TrustedSub)
+            {
+                Debug.WriteLine("User " + user + " doesn't have rights to play TTS.");
+                return false;
+            }
+
+            //check user cooldown
+            if (userDB[user] + TimeSpan.FromSeconds(delay) < DateTime.Now )
+            {
+                speechSynthesizer.SpeakAsync(string.Format("{0} says: {1}", user, message));
+                userDB[user] = DateTime.Now + TimeSpan.FromSeconds(30);
+
+                return true;
+            }
+            Debug.WriteLine("User " + user + " has to wait " + (DateTime.Now - (userDB[user] + TimeSpan.FromSeconds(delay))).TotalSeconds + " seconds.");
+
+
             return false;
         }
 

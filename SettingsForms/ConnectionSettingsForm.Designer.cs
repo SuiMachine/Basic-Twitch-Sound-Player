@@ -48,27 +48,33 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.TB_GoogleSpreadsheetID = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.CBox_VoiceSynthesizer = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowCount = 4;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 196F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 275);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 306);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -79,17 +85,17 @@
             this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 235);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 270);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 37);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 33);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // B_Save
             // 
             this.B_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.B_Save.Location = new System.Drawing.Point(36, 7);
+            this.B_Save.Location = new System.Drawing.Point(36, 5);
             this.B_Save.Name = "B_Save";
             this.B_Save.Size = new System.Drawing.Size(75, 23);
             this.B_Save.TabIndex = 0;
@@ -100,7 +106,7 @@
             // B_Cancel
             // 
             this.B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.B_Cancel.Location = new System.Drawing.Point(183, 7);
+            this.B_Cancel.Location = new System.Drawing.Point(183, 5);
             this.B_Cancel.Name = "B_Cancel";
             this.B_Cancel.Size = new System.Drawing.Size(75, 23);
             this.B_Cancel.TabIndex = 1;
@@ -264,11 +270,38 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Google Sheet ID";
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.CBox_VoiceSynthesizer);
+            this.panel3.Controls.Add(this.label7);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 235);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(294, 29);
+            this.panel3.TabIndex = 3;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 7);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(92, 13);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Voice synthesizer:";
+            // 
+            // CBox_VoiceSynthesizer
+            // 
+            this.CBox_VoiceSynthesizer.FormattingEnabled = true;
+            this.CBox_VoiceSynthesizer.Location = new System.Drawing.Point(101, 3);
+            this.CBox_VoiceSynthesizer.Name = "CBox_VoiceSynthesizer";
+            this.CBox_VoiceSynthesizer.Size = new System.Drawing.Size(190, 21);
+            this.CBox_VoiceSynthesizer.TabIndex = 1;
+            // 
             // ConnectionSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 275);
+            this.ClientSize = new System.Drawing.Size(300, 306);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -281,6 +314,8 @@
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -307,5 +342,8 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox TB_GoogleSpreadsheetID;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.ComboBox CBox_VoiceSynthesizer;
+        private System.Windows.Forms.Label label7;
     }
 }

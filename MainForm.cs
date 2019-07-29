@@ -41,7 +41,7 @@ namespace BasicTwitchSoundPlayer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _programSettings = new PrivateSettings();
+            _programSettings = PrivateSettings.LoadSettings();
             UpdateColors();
             connectOnStartupToolStripMenuItem.Checked = _programSettings.Autostart;
             int valrr = Convert.ToInt32(100 * _programSettings.Volume);
@@ -210,6 +210,7 @@ namespace BasicTwitchSoundPlayer
                 _programSettings.TwitchPassword = form.Password;
                 _programSettings.TwitchChannelToJoin = form.ChannelToJoin;
                 _programSettings.GoogleSpreadsheetID = form.SpreadsheetID;
+                _programSettings.VoiceSynthesizer = form.VoiceSynthesizer;
 
                 _programSettings.SaveSettings();
                 ReloadBot();
@@ -221,6 +222,7 @@ namespace BasicTwitchSoundPlayer
             if (TwitchBot != null && TwitchBot.BotRunning)
                 StopBot();
 
+            //TODO: Add update to SoundBase for VoiceSynthesizer
             StartBot();
         }
 

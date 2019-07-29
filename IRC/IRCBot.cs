@@ -165,8 +165,18 @@ namespace BasicTwitchSoundPlayer.IRC
                     }
 
                 }
-                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-                SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
+
+                if(text.StartsWith("tts "))
+                {
+                    parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1], privilage);
+                }
+                else
+                {
+                    parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+                    SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
+                }
+
                 return true;
             }
 
