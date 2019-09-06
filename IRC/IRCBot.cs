@@ -17,6 +17,7 @@ namespace BasicTwitchSoundPlayer.IRC
         private static ReadMessage FormattedMessage;
         private string channelToJoin;
         private char PrefixChar;
+
         private SoundBase SndDB { get; set; }
         PrivateSettings programSettings;
 
@@ -64,7 +65,7 @@ namespace BasicTwitchSoundPlayer.IRC
             irc.meebyIrc.OnJoin -= MeebyIrc_OnJoin;
             irc.meebyIrc.OnChannelAction -= MeebyIrc_OnChannelAction;
             irc.meebyIrc.OnReadLine -= MeebyIrc_OnReadLine;
-            irc.meebyIrc.OnChannelMessage -= MeebyIrc_OnChannelMessage;
+            irc.meebyIrc.OnRawMessage -= MeebyIrc_OnRawMessage;
 
             Task.Factory.StartNew(() =>
                 irc.meebyIrc.Disconnect()
@@ -96,11 +97,59 @@ namespace BasicTwitchSoundPlayer.IRC
             irc.meebyIrc.OnJoin += MeebyIrc_OnJoin;
             irc.meebyIrc.OnChannelAction += MeebyIrc_OnChannelAction;
             irc.meebyIrc.OnReadLine += MeebyIrc_OnReadLine;
-            irc.meebyIrc.OnChannelMessage += MeebyIrc_OnChannelMessage;
             irc.meebyIrc.OnOp += MeebyIrc_OnOp;
             irc.meebyIrc.OnDeop += MeebyIrc_OnDeop;
-            irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/membership");
+            irc.meebyIrc.OnRawMessage += MeebyIrc_OnRawMessage;
+
+            //Request capabilities - https://dev.twitch.tv/docs/irc/guide/#twitch-irc-capabilities
+            irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
             irc.meebyIrc.RfcJoin("#" + channel);
+        }
+
+        private void MeebyIrc_OnRawMessage(object sender, IrcEventArgs e)
+        {
+            try
+            {
+                if(e.Data.Channel != null && e.Data.Nick != null && e.Data.Message != null)
+                {
+                    ReadMessage msg;
+                    msg.user = e.Data.Nick;
+                    msg.message = e.Data.Message;
+                    msg.rights = GetRoleFromTags(e);
+                    RunBot(msg);
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+                Logger.AddLine("Exception on Raw Message: " + ex.ToString());
+            }
+
+        }
+
+        private TwitchRightsEnum GetRoleFromTags(IrcEventArgs e)
+        {
+            if (irc.supermod.Contains(e.Data.Nick))
+                return TwitchRightsEnum.Admin;
+            else
+            {
+                if (e.Data.Tags != null)
+                {
+                    //Ref: https://dev.twitch.tv/docs/irc/tags/
+                    if (e.Data.Tags.ContainsKey("badges") && e.Data.Tags["badges"].Contains("broadcaster/1"))
+                        return TwitchRightsEnum.Admin;
+                    if (e.Data.Tags.ContainsKey("mod") && e.Data.Tags["mod"] == "1")
+                        return TwitchRightsEnum.Mod;
+                    else if (e.Data.Tags.ContainsKey("badges") && e.Data.Tags["badges"].Contains("vip/1"))
+                        return TwitchRightsEnum.TrustedSub;
+                    else if (e.Data.Tags.ContainsKey("badges") && e.Data.Tags["badges"].Contains("subscriber/1"))
+                        return TwitchRightsEnum.TrustedSub;
+                    else
+                        return TwitchRightsEnum.Public;
+                }
+                else
+                    return TwitchRightsEnum.Public;
+            }
         }
 
         private static bool Check(string toc)
@@ -124,7 +173,7 @@ namespace BasicTwitchSoundPlayer.IRC
             }
             else
             {
-                TwitchRightsEnum privilage = GetPrivilageForUser(formattedMessage.user);
+                TwitchRightsEnum privilage = formattedMessage.rights;
                 string text = formattedMessage.message.Remove(0, 1).ToLower();
 
                 if (irc.moderators.Contains(formattedMessage.user))
@@ -187,18 +236,6 @@ namespace BasicTwitchSoundPlayer.IRC
             SndDB.ChangeVolume(programSettings.Volume);
         }
 
-        private TwitchRightsEnum GetPrivilageForUser(string user)
-        {
-            if (irc.supermod.Contains(user))
-                return TwitchRightsEnum.Admin;
-            else if (irc.moderators.Contains(user))
-                return TwitchRightsEnum.Mod;
-            else if (irc.subscribers.Contains(user) || irc.trustedUsers.Contains(user) || programSettings.AllowUsersToUseSubSounds)
-                return TwitchRightsEnum.TrustedSub;
-            else
-                return TwitchRightsEnum.Public;
-        }
-
         #region EventHandlers
         private void MeebyIrc_OnJoin(object sender, Meebey.SmartIrc4net.JoinEventArgs e)
         {
@@ -259,14 +296,6 @@ namespace BasicTwitchSoundPlayer.IRC
         private void MeebyIrc_OnPart(object sender, PartEventArgs e)
         {
             parent.ThreadSafeAddPreviewText("! PART: " + e.Data.Nick, LineType.IrcCommand);
-        }
-
-        private void MeebyIrc_OnChannelMessage(object sender, IrcEventArgs e)
-        {
-            ReadMessage msg;
-            msg.user = e.Data.Nick;
-            msg.message = e.Data.Message;
-            RunBot(msg);
         }
 
         private void MeebyIrc_OnOp(object sender, OpEventArgs e)

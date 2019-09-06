@@ -39,9 +39,5 @@ namespace BasicTwitchSoundPlayer
             get { return color.ToArgb(); }
             set { color = Color.FromArgb(value); }
         }
-
-
-
-
     }
 }

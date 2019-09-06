@@ -42,19 +42,38 @@
             <summary>Available OAuth 2.0 scopes for use with the Google Sheets API.</summary>
         </member>
         <member name="F:Google.Apis.Sheets.v4.SheetsService.Scope.Drive">
-            <summary>View and manage the files in your Google Drive</summary>
+            <summary>See, edit, create, and delete all of your Google Drive files</summary>
         </member>
         <member name="F:Google.Apis.Sheets.v4.SheetsService.Scope.DriveFile">
             <summary>View and manage Google Drive files and folders that you have opened or created with this
             app</summary>
         </member>
         <member name="F:Google.Apis.Sheets.v4.SheetsService.Scope.DriveReadonly">
-            <summary>View the files in your Google Drive</summary>
+            <summary>See and download all your Google Drive files</summary>
         </member>
         <member name="F:Google.Apis.Sheets.v4.SheetsService.Scope.Spreadsheets">
-            <summary>View and manage your spreadsheets in Google Drive</summary>
+            <summary>See, edit, create, and delete your spreadsheets in Google Drive</summary>
         </member>
         <member name="F:Google.Apis.Sheets.v4.SheetsService.Scope.SpreadsheetsReadonly">
+            <summary>View your Google Spreadsheets</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.SheetsService.ScopeConstants">
+            <summary>Available OAuth 2.0 scope constants for use with the Google Sheets API.</summary>
+        </member>
+        <member name="F:Google.Apis.Sheets.v4.SheetsService.ScopeConstants.Drive">
+            <summary>See, edit, create, and delete all of your Google Drive files</summary>
+        </member>
+        <member name="F:Google.Apis.Sheets.v4.SheetsService.ScopeConstants.DriveFile">
+            <summary>View and manage Google Drive files and folders that you have opened or created with this
+            app</summary>
+        </member>
+        <member name="F:Google.Apis.Sheets.v4.SheetsService.ScopeConstants.DriveReadonly">
+            <summary>See and download all your Google Drive files</summary>
+        </member>
+        <member name="F:Google.Apis.Sheets.v4.SheetsService.ScopeConstants.Spreadsheets">
+            <summary>See, edit, create, and delete your spreadsheets in Google Drive</summary>
+        </member>
+        <member name="F:Google.Apis.Sheets.v4.SheetsService.ScopeConstants.SpreadsheetsReadonly">
             <summary>View your Google Spreadsheets</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.SheetsService.Spreadsheets">
@@ -97,9 +116,6 @@
         <member name="F:Google.Apis.Sheets.v4.SheetsBaseServiceRequest`1.AltEnum.Proto">
             <summary>Responses with Content-Type of application/x-protobuf</summary>
         </member>
-        <member name="P:Google.Apis.Sheets.v4.SheetsBaseServiceRequest`1.BearerToken">
-            <summary>OAuth bearer token.</summary>
-        </member>
         <member name="P:Google.Apis.Sheets.v4.SheetsBaseServiceRequest`1.Callback">
             <summary>JSONP</summary>
         </member>
@@ -112,10 +128,6 @@
         </member>
         <member name="P:Google.Apis.Sheets.v4.SheetsBaseServiceRequest`1.OauthToken">
             <summary>OAuth 2.0 token for the current user.</summary>
-        </member>
-        <member name="P:Google.Apis.Sheets.v4.SheetsBaseServiceRequest`1.Pp">
-            <summary>Pretty-print response.</summary>
-            [default: true]
         </member>
         <member name="P:Google.Apis.Sheets.v4.SheetsBaseServiceRequest`1.PrettyPrint">
             <summary>Returns response with indentations and line breaks.</summary>
@@ -325,6 +337,10 @@
             <summary>The A1 notation of a range to search for a logical table of data. Values will be appended
             after the last row of the table.</summary>
         </member>
+        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.AppendRequest.IncludeValuesInResponse">
+            <summary>Determines if the update response should include the values of the cells that were
+            appended. By default, responses do not include the updated values.</summary>
+        </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.AppendRequest.ResponseValueRenderOption">
             <summary>Determines how values in the response should be rendered. The default render option is
             ValueRenderOption.FORMATTED_VALUE.</summary>
@@ -354,10 +370,6 @@
             <summary>Determines how dates, times, and durations in the response should be rendered. This is
             ignored if response_value_render_option is FORMATTED_VALUE. The default dateTime render option is
             [DateTimeRenderOption.SERIAL_NUMBER].</summary>
-        </member>
-        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.AppendRequest.IncludeValuesInResponse">
-            <summary>Determines if the update response should include the values of the cells that were
-            appended. By default, responses do not include the updated values.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.AppendRequest.Body">
             <summary>Gets or sets the body of this request.</summary>
@@ -466,6 +478,23 @@
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.SpreadsheetId">
             <summary>The ID of the spreadsheet to retrieve data from.</summary>
         </member>
+        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.Ranges">
+            <summary>The A1 notation of the values to retrieve.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.MajorDimension">
+             <summary>The major dimension that results should use.
+            
+             For example, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then requesting
+             `range=A1:B2,majorDimension=ROWS` will return `[[1,2],[3,4]]`, whereas requesting
+             `range=A1:B2,majorDimension=COLUMNS` will return `[[1,3],[2,4]]`.</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.MajorDimensionEnum">
+             <summary>The major dimension that results should use.
+            
+             For example, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then requesting
+             `range=A1:B2,majorDimension=ROWS` will return `[[1,2],[3,4]]`, whereas requesting
+             `range=A1:B2,majorDimension=COLUMNS` will return `[[1,3],[2,4]]`.</summary>
+        </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.ValueRenderOption">
             <summary>How values should be represented in the output. The default render option is
             ValueRenderOption.FORMATTED_VALUE.</summary>
@@ -483,23 +512,6 @@
             <summary>How dates, times, and durations should be represented in the output. This is ignored if
             value_render_option is FORMATTED_VALUE. The default dateTime render option is
             [DateTimeRenderOption.SERIAL_NUMBER].</summary>
-        </member>
-        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.Ranges">
-            <summary>The A1 notation of the values to retrieve.</summary>
-        </member>
-        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.MajorDimension">
-             <summary>The major dimension that results should use.
-            
-             For example, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then requesting
-             `range=A1:B2,majorDimension=ROWS` will return `[[1,2],[3,4]]`, whereas requesting
-             `range=A1:B2,majorDimension=COLUMNS` will return `[[1,3],[2,4]]`.</summary>
-        </member>
-        <member name="T:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.MajorDimensionEnum">
-             <summary>The major dimension that results should use.
-            
-             For example, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then requesting
-             `range=A1:B2,majorDimension=ROWS` will return `[[1,2],[3,4]]`, whereas requesting
-             `range=A1:B2,majorDimension=COLUMNS` will return `[[1,3],[2,4]]`.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.BatchGetRequest.MethodName">
             <summary>Gets the method name.</summary>
@@ -743,6 +755,20 @@
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.Range">
             <summary>The A1 notation of the values to update.</summary>
         </member>
+        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.IncludeValuesInResponse">
+            <summary>Determines if the update response should include the values of the cells that were updated.
+            By default, responses do not include the updated values. If the range to write was larger than than
+            the range actually written, the response will include all values in the requested range (excluding
+            trailing empty rows and columns).</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.ResponseValueRenderOption">
+            <summary>Determines how values in the response should be rendered. The default render option is
+            ValueRenderOption.FORMATTED_VALUE.</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.ResponseValueRenderOptionEnum">
+            <summary>Determines how values in the response should be rendered. The default render option is
+            ValueRenderOption.FORMATTED_VALUE.</summary>
+        </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOption">
             <summary>How the input data should be interpreted.</summary>
         </member>
@@ -758,20 +784,6 @@
             <summary>Determines how dates, times, and durations in the response should be rendered. This is
             ignored if response_value_render_option is FORMATTED_VALUE. The default dateTime render option is
             DateTimeRenderOption.SERIAL_NUMBER.</summary>
-        </member>
-        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.IncludeValuesInResponse">
-            <summary>Determines if the update response should include the values of the cells that were updated.
-            By default, responses do not include the updated values. If the range to write was larger than than
-            the range actually written, the response will include all values in the requested range (excluding
-            trailing empty rows and columns).</summary>
-        </member>
-        <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.ResponseValueRenderOption">
-            <summary>Determines how values in the response should be rendered. The default render option is
-            ValueRenderOption.FORMATTED_VALUE.</summary>
-        </member>
-        <member name="T:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.ResponseValueRenderOptionEnum">
-            <summary>Determines how values in the response should be rendered. The default render option is
-            ValueRenderOption.FORMATTED_VALUE.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.Body">
             <summary>Gets or sets the body of this request.</summary>
@@ -1022,7 +1034,7 @@
         <member name="P:Google.Apis.Sheets.v4.Data.AddChartRequest.Chart">
             <summary>The chart that should be added to the spreadsheet, including the position where it should be
             placed. The chartId field is optional; if one is not set, an id will be randomly generated. (It is an error
-            to specify the ID of a chart that already exists.)</summary>
+            to specify the ID of an embedded object that already exists.)</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.AddChartRequest.ETag">
             <summary>The ETag of the item.</summary>
@@ -1300,6 +1312,9 @@
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.BasicChartAxis.TitleTextPosition">
             <summary>The axis title text position.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.BasicChartAxis.ViewWindowOptions">
+            <summary>The view window options for this axis.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.BasicChartAxis.ETag">
             <summary>The ETag of the item.</summary>
@@ -1911,6 +1926,23 @@
         <member name="P:Google.Apis.Sheets.v4.Data.CellFormat.ETag">
             <summary>The ETag of the item.</summary>
         </member>
+        <member name="T:Google.Apis.Sheets.v4.Data.ChartAxisViewWindowOptions">
+            <summary>The options that define a "view window" for a chart (such as the visible values in an axis).</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.ChartAxisViewWindowOptions.ViewWindowMax">
+            <summary>The maximum numeric value to be shown in this view window. If unset, will automatically determine a
+            maximum value that looks good for the data.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.ChartAxisViewWindowOptions.ViewWindowMin">
+            <summary>The minimum numeric value to be shown in this view window. If unset, will automatically determine a
+            minimum value that looks good for the data.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.ChartAxisViewWindowOptions.ViewWindowMode">
+            <summary>The view window's mode.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.ChartAxisViewWindowOptions.ETag">
+            <summary>The ETag of the item.</summary>
+        </member>
         <member name="T:Google.Apis.Sheets.v4.Data.ChartData">
             <summary>The data included in a domain or series.</summary>
         </member>
@@ -2292,6 +2324,35 @@
             <summary>The dimensions to delete from the sheet.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.DeleteDimensionRequest.ETag">
+            <summary>The ETag of the item.</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.Data.DeleteDuplicatesRequest">
+             <summary>Removes rows within this range that contain values in the specified columns that are duplicates of
+             values in any previous row. Rows with identical values but different letter cases, formatting, or formulas are
+             considered to be duplicates.
+            
+             This request also removes duplicate rows hidden from view (for example, due to a filter). When removing
+             duplicates, the first instance of each duplicate row scanning from the top downwards is kept in the resulting
+             range. Content outside of the specified range isn't removed, and rows considered duplicates do not have to be
+             adjacent to each other in the range.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.DeleteDuplicatesRequest.ComparisonColumns">
+            <summary>The columns in the range to analyze for duplicate values. If no columns are selected then all
+            columns are analyzed for duplicates.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.DeleteDuplicatesRequest.Range">
+            <summary>The range to remove duplicates rows from.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.DeleteDuplicatesRequest.ETag">
+            <summary>The ETag of the item.</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.Data.DeleteDuplicatesResponse">
+            <summary>The result of removing duplicates in a range.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.DeleteDuplicatesResponse.DuplicatesRemovedCount">
+            <summary>The number of duplicate rows removed.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.DeleteDuplicatesResponse.ETag">
             <summary>The ETag of the item.</summary>
         </member>
         <member name="T:Google.Apis.Sheets.v4.Data.DeleteEmbeddedObjectRequest">
@@ -3550,6 +3611,9 @@
         <member name="P:Google.Apis.Sheets.v4.Data.Request.DeleteDimensionGroup">
             <summary>Deletes a group over the specified range.</summary>
         </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.Request.DeleteDuplicates">
+            <summary>Removes rows containing duplicate values in specified columns of a cell range.</summary>
+        </member>
         <member name="P:Google.Apis.Sheets.v4.Data.Request.DeleteEmbeddedObject">
             <summary>Deletes an embedded object (e.g, chart, image) in a sheet.</summary>
         </member>
@@ -3609,6 +3673,9 @@
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.Request.TextToColumns">
             <summary>Converts a column of text into many columns of text.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.Request.TrimWhitespace">
+            <summary>Trims cells of whitespace (such as spaces, tabs, or new lines).</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.Request.UnmergeCells">
             <summary>Unmerges merged cells.</summary>
@@ -3694,6 +3761,9 @@
         <member name="P:Google.Apis.Sheets.v4.Data.Response.DeleteDimensionGroup">
             <summary>A reply from deleting a dimension group.</summary>
         </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.Response.DeleteDuplicates">
+            <summary>A reply from removing rows containing duplicate values.</summary>
+        </member>
         <member name="P:Google.Apis.Sheets.v4.Data.Response.DuplicateFilterView">
             <summary>A reply from duplicating a filter view.</summary>
         </member>
@@ -3702,6 +3772,9 @@
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.Response.FindReplace">
             <summary>A reply from doing a find/replace.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.Response.TrimWhitespace">
+            <summary>A reply from trimming whitespace.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.Response.UpdateConditionalFormatRule">
             <summary>A reply from updating a conditional format rule.</summary>
@@ -4115,6 +4188,27 @@
             <summary>The text format for all labels on the chart.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.TreemapChartSpec.ETag">
+            <summary>The ETag of the item.</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.Data.TrimWhitespaceRequest">
+            <summary>Trims the whitespace (such as spaces, tabs, or new lines) in every cell in the specified range. This
+            request removes all whitespace from the start and end of each cell's text, and reduces any subsequence of
+            remaining whitespace characters to a single space. If the resulting trimmed text starts with a '+' or '='
+            character, the text remains as a string value and isn't interpreted as a formula.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.TrimWhitespaceRequest.Range">
+            <summary>The range whose cells to trim.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.TrimWhitespaceRequest.ETag">
+            <summary>The ETag of the item.</summary>
+        </member>
+        <member name="T:Google.Apis.Sheets.v4.Data.TrimWhitespaceResponse">
+            <summary>The result of trimming whitespace in cells.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.TrimWhitespaceResponse.CellsChangedCount">
+            <summary>The number of cells that were trimmed of whitespace.</summary>
+        </member>
+        <member name="P:Google.Apis.Sheets.v4.Data.TrimWhitespaceResponse.ETag">
             <summary>The ETag of the item.</summary>
         </member>
         <member name="T:Google.Apis.Sheets.v4.Data.UnmergeCellsRequest">

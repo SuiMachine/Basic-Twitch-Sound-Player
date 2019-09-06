@@ -168,6 +168,9 @@ namespace BasicTwitchSoundPlayer
 
         public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel)
         {
+            if (user == null)
+                return false;
+
             //Iterate through existing sound players
             for(int i=SoundPlayererStack.Count-1; i>=0; i--)
             {
