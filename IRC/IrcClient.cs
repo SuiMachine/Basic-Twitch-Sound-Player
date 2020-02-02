@@ -14,7 +14,7 @@ namespace BasicTwitchSoundPlayer.IRC
         public string user;
         public string message;
         public BasicTwitchSoundPlayer.Structs.TwitchRightsEnum rights;
-
+        public BasicTwitchSoundPlayer.Structs.MessageType msgType;
     }
 
     class OldIRCClient

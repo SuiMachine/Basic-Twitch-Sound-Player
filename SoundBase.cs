@@ -223,18 +223,12 @@ namespace BasicTwitchSoundPlayer
             return false;
         }
 
-        public bool PlayTTS(string user, string message, TwitchRightsEnum privilage)
+        public bool PlayTTS(string user, string message)
         {
             //Check if our db has a user and if not add him
             if (!userDB.ContainsKey(user))
             {
                 userDB.Add(user, DateTime.MinValue);
-            }
-
-            if(privilage < TwitchRightsEnum.TrustedSub)
-            {
-                Debug.WriteLine("User " + user + " doesn't have rights to play TTS.");
-                return false;
             }
 
             //check user cooldown

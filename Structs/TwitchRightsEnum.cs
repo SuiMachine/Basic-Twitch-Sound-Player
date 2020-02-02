@@ -17,6 +17,21 @@ namespace BasicTwitchSoundPlayer.Structs
         Admin,
     }
 
+    public enum TTSLogic
+    {
+        [Description("Require role & reward ID")]
+        Restricted,
+        [Description("Use role for !tts")]
+        RewardIDAndCommand
+    }
+
+    public enum MessageType
+    {
+        Normal,
+        TTSReward,
+        SoundReward
+    }
+
     static class TwitchRightsExtensions
     {
         public static TwitchRightsEnum ToTwitchRights(this int Number)

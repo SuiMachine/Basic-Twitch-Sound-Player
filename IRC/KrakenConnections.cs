@@ -12,21 +12,48 @@ namespace BasicTwitchSoundPlayer.IRC
 {
     class KrakenConnections
     {
-        private string KRAKENURI { get; set; }
+        private string HELIXURI { get; set; }
         private string TwitchAuthy { get; set; }
         private string Channel { get; set; }
+        private string BroadcasterID { get; set; }
             
         public KrakenConnections(string Channel, string TwitchAuthy)
         {
-            this.TwitchAuthy = "OAuth " + TwitchAuthy;
+            this.TwitchAuthy = TwitchAuthy;
             this.Channel = Channel;
-            KRAKENURI = @"https://api.twitch.tv/kraken/channels/" + Channel.ToLower() + "/";
+            //KRAKENURI = "https://api.twitch.tv/kraken/channels/" + Channel.ToLower() + "/";
+            HELIXURI = "https://api.twitch.tv/helix/";
         }
 
         #region Async
         public async Task<string[]> GetSubscribersAsync()
         {
-            string response = await GetNewUpdateAsync("subscriptions");
+            if(BroadcasterID == null || BroadcasterID == "")
+            {
+                string responseID = await GetNewUpdateAsync("users", "?login=" + Channel);
+                if (responseID == null || responseID == "")
+                    return new string[0];
+                else
+                {
+                    JObject jReader = JObject.Parse(responseID);
+                    if (jReader["data"] != null)
+                    {
+                        var dataNode = jReader["data"];
+                        var firstDataChild = dataNode.First;
+                        if (firstDataChild["id"] != null)
+                        {
+                            BroadcasterID = firstDataChild["id"].ToString();
+                        }
+                        else
+                            return new string[0];
+                    }
+                    else
+                        return new string[0];
+
+                }
+            }
+
+            string response = await GetNewUpdateAsync("subscriptions", "?broadcaster_id=" + BroadcasterID, true);
             if (response == null || response == "")
             {
                 return new string[0];
@@ -34,33 +61,44 @@ namespace BasicTwitchSoundPlayer.IRC
             else
             {
                 JObject jReader = JObject.Parse(response);
-                if (jReader["subscriptions"] != null)
+                if (jReader["data"] != null)
                 {
-                    var jSubs = jReader["subscriptions"];
-                    string[] subscribers = new string[jSubs.Count()];
-                    for (int i = 0; i < subscribers.Length; i++)
+                    var dataNode = jReader["data"];
+
+                    List<string> subscribers = new List<string>();
+
+                    foreach(var sub in dataNode)
                     {
-                        var jSub = jSubs.ElementAt(i);
-                        var user = jSub["user"];
-                        subscribers[i] = user["name"].Value<string>();
+                        if(sub["user_name"] != null)
+                        {
+                            var curSub = sub["user_name"].ToString();
+                            if (!subscribers.Contains(curSub))
+                                subscribers.Add(curSub);
+                        }
                     }
-                    return subscribers;
+                    return subscribers.ToArray();
                 }
             }
 
             return new string[0];
         }
 
-        private async Task<string> GetNewUpdateAsync(string scope)
+        private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(KRAKENURI + scope);
+            
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
 
             try
             {
                 request.Headers["Client-ID"] = "9z58zy6ak0ejk9lme6dy6nyugydaes";
-                request.Headers["Authorization"] = TwitchAuthy;
+                if(!RequireBearerToken)
+                    request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+                else
+                    request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+
                 request.Timeout = 5000;
                 request.Method = "GET";
+
 
                 using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
                 using (Stream stream = response.GetResponseStream())

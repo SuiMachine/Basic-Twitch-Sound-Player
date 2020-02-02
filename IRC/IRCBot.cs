@@ -112,11 +112,20 @@ namespace BasicTwitchSoundPlayer.IRC
             {
                 if(e.Data.Channel != null && e.Data.Nick != null && e.Data.Message != null)
                 {
-                    ReadMessage msg;
+                    ReadMessage msg = new ReadMessage();
+                    if (e.Data.Tags.ContainsKey("custom-reward-id"))
+                    {
+                        Logger.LastRewardID = e.Data.Tags["custom-reward-id"];
+
+                        if (e.Data.Tags["custom-reward-id"] == programSettings.TTSRewardID)
+                            msg.msgType = MessageType.TTSReward;
+                        else
+                            msg.msgType = MessageType.Normal;
+                    }
                     msg.user = e.Data.Nick;
                     msg.message = e.Data.Message;
                     msg.rights = GetRoleFromTags(e);
-                    RunBot(msg);
+                    bool result = RunBot(msg);
                 }
             }
             catch(Exception ex)
@@ -164,6 +173,27 @@ namespace BasicTwitchSoundPlayer.IRC
         private bool RunBot(ReadMessage formattedMessage)
         {
             FormattedMessage = formattedMessage;
+
+            if(FormattedMessage.msgType == MessageType.TTSReward)
+            {
+                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+
+                if (programSettings.TTSLogic == TTSLogic.Restricted)
+                {
+                    if (FormattedMessage.rights >= programSettings.TTSRoleRequirement)
+                    {
+                        SndDB.PlayTTS(formattedMessage.user, formattedMessage.message);
+                    }
+                    else
+                        return true;
+                }
+                else
+                {
+                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message);
+                    return true;
+                }
+            }
+
 
             if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
             {
@@ -218,7 +248,17 @@ namespace BasicTwitchSoundPlayer.IRC
                 if(text.StartsWith("tts "))
                 {
                     parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1], privilage);
+
+                    if(programSettings.TTSLogic == TTSLogic.RewardIDAndCommand)
+                    {
+                        if (formattedMessage.rights >= TwitchRightsEnum.Mod)
+                            SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1]);
+                        return true;
+                    }
+
+                    return true;
+
+
                 }
                 else
                 {

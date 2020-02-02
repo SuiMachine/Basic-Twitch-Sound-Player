@@ -36,6 +36,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableVSSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectOnStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +51,7 @@
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enableVSSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tTSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -122,6 +123,13 @@
             this.runBotToolStripMenuItem.Text = "Run Bot";
             this.runBotToolStripMenuItem.Click += new System.EventHandler(this.RunBotToolStripMenuItem_Click);
             // 
+            // enableVSSToolStripMenuItem
+            // 
+            this.enableVSSToolStripMenuItem.Name = "enableVSSToolStripMenuItem";
+            this.enableVSSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableVSSToolStripMenuItem.Text = "Enable VSS";
+            this.enableVSSToolStripMenuItem.Click += new System.EventHandler(this.EnableVSSToolStripMenuItem_Click);
+            // 
             // connectOnStartupToolStripMenuItem
             // 
             this.connectOnStartupToolStripMenuItem.CheckOnClick = true;
@@ -156,7 +164,8 @@
             this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.databaseEditorToolStripMenuItem,
             this.vSSEditorToolStripMenuItem,
-            this.importFromBotnakToolStripMenuItem});
+            this.importFromBotnakToolStripMenuItem,
+            this.tTSToolStripMenuItem});
             this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
             this.soundsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.soundsToolStripMenuItem.Text = "Sounds";
@@ -237,12 +246,12 @@
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
-            // enableVSSToolStripMenuItem
+            // tTSToolStripMenuItem
             // 
-            this.enableVSSToolStripMenuItem.Name = "enableVSSToolStripMenuItem";
-            this.enableVSSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.enableVSSToolStripMenuItem.Text = "Enable VSS";
-            this.enableVSSToolStripMenuItem.Click += new System.EventHandler(this.EnableVSSToolStripMenuItem_Click);
+            this.tTSToolStripMenuItem.Name = "tTSToolStripMenuItem";
+            this.tTSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tTSToolStripMenuItem.Text = "TTS";
+            this.tTSToolStripMenuItem.Click += new System.EventHandler(this.tTSToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -293,6 +302,7 @@
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vSSEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableVSSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tTSToolStripMenuItem;
     }
 }
 

@@ -20,7 +20,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
         public string Password { get; set; }
         public string ChannelToJoin { get; set; }
         public string SpreadsheetID { get; set; }
-        public string VoiceSynthesizer { get; set; }
 
         public ConnectionSettingsForm(MainForm _parent, PrivateSettings _settingsRef)
         {
@@ -34,23 +33,11 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             this.TB_ChannelToJoin.DataBindings.Add("Text", this, "ChannelToJoin", false, DataSourceUpdateMode.OnPropertyChanged);
             this.TB_GoogleSpreadsheetID.DataBindings.Add("Text", this, "SpreadsheetID", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            using (var synthesizer = new SpeechSynthesizer())
-            {
-                var voices = synthesizer.GetInstalledVoices();
-                foreach(var voice in voices)
-                {
-                    CBox_VoiceSynthesizer.Items.Add(voice.VoiceInfo.Name);
-                }
-            }
-
-            this.CBox_VoiceSynthesizer.DataBindings.Add("Text", this, "VoiceSynthesizer", false, DataSourceUpdateMode.OnPropertyChanged);
-
             this.Server = _settingsRef.TwitchServer;
             this.Username = _settingsRef.TwitchUsername;
             this.Password = _settingsRef.TwitchPassword;
             this.ChannelToJoin = _settingsRef.TwitchChannelToJoin;
             this.SpreadsheetID = _settingsRef.GoogleSpreadsheetID;
-            this.VoiceSynthesizer = _settingsRef.VoiceSynthesizer;
         }
 
         private void CloseHttpListener()
@@ -118,7 +105,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
                 Process.Start("https://id.twitch.tv/oauth2/authorize?response_type=token" +
                     "&client_id=9z58zy6ak0ejk9lme6dy6nyugydaes" +
                     "&redirect_uri=http://127.0.0.1:43628/resp.html" +
-                    "&scope=chat_login+channel_subscriptions");
+                    "&scope=chat_login+channel_subscriptions+channel:read:subscriptions");
 
                 string pageContentRedirect = string.Join("\n", "<html>",
                         "<head>",

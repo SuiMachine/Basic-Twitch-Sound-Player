@@ -210,7 +210,6 @@ namespace BasicTwitchSoundPlayer
                 _programSettings.TwitchPassword = form.Password;
                 _programSettings.TwitchChannelToJoin = form.ChannelToJoin;
                 _programSettings.GoogleSpreadsheetID = form.SpreadsheetID;
-                _programSettings.VoiceSynthesizer = form.VoiceSynthesizer;
 
                 _programSettings.SaveSettings();
                 ReloadBot();
@@ -373,6 +372,20 @@ namespace BasicTwitchSoundPlayer
             }
             else
                 VSSPreview.Show();
+        }
+
+        private void tTSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsForms.TTSSettingsForm ttsSettings = new SettingsForms.TTSSettingsForm(_programSettings);
+            var result = ttsSettings.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                this._programSettings.TTSRoleRequirement = ttsSettings.RequiredRight;
+                this._programSettings.TTSRewardID = ttsSettings.CustomRewardID;
+                this._programSettings.VoiceSynthesizer = ttsSettings.VoiceSynthesizer;
+                this._programSettings.TTSLogic = ttsSettings.TTSLogic;
+                this._programSettings.SaveSettings();
+            }
         }
     }
 }

@@ -10,10 +10,11 @@ namespace BasicTwitchSoundPlayer
     public static class Logger
     {
         private static string FILE = "Log.txt";
+        public static string LastRewardID = "";
 
         public static void AddLine(string text)
         {
-            File.AppendText(string.Format("{0}: {1}\n", DateTime.Now.ToString(), text));
+            File.AppendAllText(FILE, string.Format("{0}: {1}\n", DateTime.Now.ToString(), text));
         }
     }
 }

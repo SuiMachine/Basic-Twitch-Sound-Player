@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.Structs;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -92,6 +93,12 @@ namespace BasicTwitchSoundPlayer
         public string GoogleSpreadsheetID { get; set; }
         [XmlElement]
         public string VoiceSynthesizer { get; set; }
+        [XmlElement]
+        public string TTSRewardID { get; set; }
+        [XmlElement]
+        public TwitchRightsEnum TTSRoleRequirement { get; set; }
+        [XmlElement]
+        public TTSLogic TTSLogic { get; set; }
         #endregion
 
         public PrivateSettings()
@@ -109,6 +116,9 @@ namespace BasicTwitchSoundPlayer
             TwitchChannelToJoin = "";
             GoogleSpreadsheetID = "";
             VoiceSynthesizer = "";
+            TTSRewardID = "";
+            TTSRoleRequirement = TwitchRightsEnum.Public;
+            TTSLogic = TTSLogic.RewardIDAndCommand;
         }
 
         #region Load/Save
