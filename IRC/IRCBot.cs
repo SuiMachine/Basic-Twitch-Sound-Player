@@ -161,15 +161,6 @@ namespace BasicTwitchSoundPlayer.IRC
             }
         }
 
-        private static bool Check(string toc)
-        {
-            if (FormattedMessage.message.StartsWith(toc, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return true;
-            }
-            return false;
-        }
-
         private bool RunBot(ReadMessage formattedMessage)
         {
             FormattedMessage = formattedMessage;
@@ -182,14 +173,14 @@ namespace BasicTwitchSoundPlayer.IRC
                 {
                     if (FormattedMessage.rights >= programSettings.TTSRoleRequirement)
                     {
-                        SndDB.PlayTTS(formattedMessage.user, formattedMessage.message);
+                        SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
                     }
                     else
                         return true;
                 }
                 else
                 {
-                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message);
+                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
                     return true;
                 }
             }

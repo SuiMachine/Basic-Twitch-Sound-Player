@@ -223,7 +223,7 @@ namespace BasicTwitchSoundPlayer
             return false;
         }
 
-        public bool PlayTTS(string user, string message)
+        public bool PlayTTS(string user, string message, bool IgnoreDelay = false)
         {
             //Check if our db has a user and if not add him
             if (!userDB.ContainsKey(user))
@@ -232,7 +232,7 @@ namespace BasicTwitchSoundPlayer
             }
 
             //check user cooldown
-            if (userDB[user] + TimeSpan.FromSeconds(delay) < DateTime.Now )
+            if (userDB[user] + TimeSpan.FromSeconds(delay) < DateTime.Now || IgnoreDelay)
             {
                 speechSynthesizer.SpeakAsync(string.Format("{0} says: {1}", user, message));
                 userDB[user] = DateTime.Now + TimeSpan.FromSeconds(30);
