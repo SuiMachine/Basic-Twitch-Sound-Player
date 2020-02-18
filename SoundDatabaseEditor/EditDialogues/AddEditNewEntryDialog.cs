@@ -142,7 +142,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
         {
             string[] fToAdd = (string[])e.Data.GetData(DataFormats.FileDrop);
             ListB_Files.Items.AddRange(fToAdd);
+            Verify();
         }
         #endregion
+
+        private void RB_Description_TextChanged(object sender, EventArgs e)
+        {
+            Verify();
+        }
     }
 }

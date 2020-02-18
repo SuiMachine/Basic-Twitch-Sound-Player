@@ -287,6 +287,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.RB_Description.Size = new System.Drawing.Size(445, 82);
             this.RB_Description.TabIndex = 2;
             this.RB_Description.Text = "";
+            this.RB_Description.TextChanged += new System.EventHandler(this.RB_Description_TextChanged);
             // 
             // AddEditNewEntryDialog
             // 
