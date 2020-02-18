@@ -25,7 +25,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         string ApplicationName = "Sui's Twitch Sound Player";
         public bool WasSuccess { get; private set; }
 
-        public GoogleSheetsExport(string spreadsheetId, char prefixCharacter, List<Structs.SoundEntry> soundsEntries)
+        public GoogleSheetsExport(string spreadsheetId, Structs.SoundRedemptionLogic soundRedemptionLogic, char prefixCharacter, List<Structs.SoundEntry> soundsEntries)
         {
             WasSuccess = false;
             var batchRequests = new BatchUpdateSpreadsheetRequest() { Requests = new List<Request>()};
@@ -107,7 +107,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                         };
                         rowData.Values.Add(new CellData
                         {
-                            UserEnteredValue = new ExtendedValue() { StringValue = prefixCharacter + sound.GetCommand() },
+                            UserEnteredValue = new ExtendedValue() { StringValue = (soundRedemptionLogic == Structs.SoundRedemptionLogic.ChannelPoints ? "" : prefixCharacter.ToString()) + sound.GetCommand() },
                             UserEnteredFormat = GetCellStyle(sound.GetRequirement())
                         });
                         rowData.Values.Add(new CellData
@@ -128,7 +128,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                         rowList.Add(rowData);
                     }
 
-                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = string.Format("({0}) Command (total: {1})", prefixCharacter, soundsEntries.Count )}, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
+                    rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = string.Format((soundRedemptionLogic != Structs.SoundRedemptionLogic.Legacy ? "Command (total: {1})" : "({0}) Command (total: {1})"), prefixCharacter, soundsEntries.Count )}, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
                     rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "File" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
                     rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Description" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });
                     rowList[0].Values.Add(new CellData() { UserEnteredValue = new ExtendedValue() { StringValue = "Updated (UTC)" }, UserEnteredFormat = GetCellStyle(Structs.TwitchRightsEnum.Disabled, ValueTypeFormatting.Header) });

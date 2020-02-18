@@ -45,13 +45,13 @@
             this.databaseEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vSSEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromBotnakToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tTSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tTSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -164,8 +164,8 @@
             this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.databaseEditorToolStripMenuItem,
             this.vSSEditorToolStripMenuItem,
-            this.importFromBotnakToolStripMenuItem,
-            this.tTSToolStripMenuItem});
+            this.tTSToolStripMenuItem,
+            this.importFromBotnakToolStripMenuItem});
             this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
             this.soundsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.soundsToolStripMenuItem.Text = "Sounds";
@@ -173,23 +173,30 @@
             // databaseEditorToolStripMenuItem
             // 
             this.databaseEditorToolStripMenuItem.Name = "databaseEditorToolStripMenuItem";
-            this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.databaseEditorToolStripMenuItem.Text = "Database Editor";
+            this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.databaseEditorToolStripMenuItem.Text = "Sound Database Editor";
             this.databaseEditorToolStripMenuItem.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
             // 
             // vSSEditorToolStripMenuItem
             // 
             this.vSSEditorToolStripMenuItem.Name = "vSSEditorToolStripMenuItem";
-            this.vSSEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.vSSEditorToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.vSSEditorToolStripMenuItem.Text = "VSS Editor";
             this.vSSEditorToolStripMenuItem.Click += new System.EventHandler(this.VSSEditorToolStripMenuItem_Click);
             // 
             // importFromBotnakToolStripMenuItem
             // 
             this.importFromBotnakToolStripMenuItem.Name = "importFromBotnakToolStripMenuItem";
-            this.importFromBotnakToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importFromBotnakToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.importFromBotnakToolStripMenuItem.Text = "Import from Botnak";
             this.importFromBotnakToolStripMenuItem.Click += new System.EventHandler(this.ImportFromBotnakToolStripMenuItem_Click);
+            // 
+            // tTSToolStripMenuItem
+            // 
+            this.tTSToolStripMenuItem.Name = "tTSToolStripMenuItem";
+            this.tTSToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.tTSToolStripMenuItem.Text = "TTS";
+            this.tTSToolStripMenuItem.Click += new System.EventHandler(this.tTSToolStripMenuItem_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -245,13 +252,6 @@
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
-            // 
-            // tTSToolStripMenuItem
-            // 
-            this.tTSToolStripMenuItem.Name = "tTSToolStripMenuItem";
-            this.tTSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.tTSToolStripMenuItem.Text = "TTS";
-            this.tTSToolStripMenuItem.Click += new System.EventHandler(this.tTSToolStripMenuItem_Click);
             // 
             // MainForm
             // 

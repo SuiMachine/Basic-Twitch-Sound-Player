@@ -166,7 +166,7 @@ namespace BasicTwitchSoundPlayer
         }
         #endregion
 
-        public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel)
+        public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel, bool IgnoreCooldowns = false)
         {
             if (user == null)
                 return false;
@@ -188,8 +188,9 @@ namespace BasicTwitchSoundPlayer
                 userDB.Add(user, DateTime.MinValue);
             }
 
+
             //check user cooldown
-            if(userDB[user]+TimeSpan.FromSeconds(delay) < DateTime.Now)
+            if(userDB[user]+TimeSpan.FromSeconds(delay) < DateTime.Now || IgnoreCooldowns)
             {
                 //iterate between all files in a sound list
                 for (int i = 0; i < soundlist.Count; i++)

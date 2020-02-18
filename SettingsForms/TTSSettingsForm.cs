@@ -61,6 +61,12 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
         private void B_OK_Click(object sender, EventArgs e)
         {
+            if(CustomRewardID == "")
+            {
+                MessageBox.Show("No Custom Reward Provided for TTS. Setting it to legacy method.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.TTSLogic = Structs.TTSLogic.Restricted;
+            }
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

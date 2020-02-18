@@ -115,12 +115,21 @@ namespace BasicTwitchSoundPlayer.IRC
                     ReadMessage msg = new ReadMessage();
                     if (e.Data.Tags.ContainsKey("custom-reward-id"))
                     {
-                        Logger.LastRewardID = e.Data.Tags["custom-reward-id"];
+                        if (programSettings.TTSLogic == TTSLogic.RewardIDAndCommand || programSettings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
+                        {
+                            var rewardID = e.Data.Tags["custom-reward-id"];
+                            Logger.LastRewardID = rewardID;
 
-                        if (e.Data.Tags["custom-reward-id"] == programSettings.TTSRewardID)
-                            msg.msgType = MessageType.TTSReward;
+                            if (rewardID == programSettings.TTSRewardID)
+                                msg.msgType = MessageType.TTSReward;
+                            else if (rewardID == programSettings.SoundRewardID)
+                                msg.msgType = MessageType.SoundReward;
+                            else
+                                msg.msgType = MessageType.Normal;
+                        }
                         else
                             msg.msgType = MessageType.Normal;
+
                     }
                     msg.user = e.Data.Nick;
                     msg.message = e.Data.Message;
@@ -165,101 +174,119 @@ namespace BasicTwitchSoundPlayer.IRC
         {
             FormattedMessage = formattedMessage;
 
-            if(FormattedMessage.msgType == MessageType.TTSReward)
+            switch(FormattedMessage.msgType)
             {
-                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-
-                if (programSettings.TTSLogic == TTSLogic.Restricted)
-                {
-                    if (FormattedMessage.rights >= programSettings.TTSRoleRequirement)
+                case MessageType.TTSReward:
                     {
-                        SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
+                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+
+                        if (programSettings.TTSLogic == TTSLogic.Restricted)
+                        {
+                            if (FormattedMessage.rights >= programSettings.TTSRoleRequirement)
+                            {
+                                SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
+                                return true;
+                            }
+                            else
+                                return true;
+                        }
+                        else
+                        {
+                            SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
+                            return true;
+                        }
+                    }
+                case MessageType.SoundReward:
+                    {
+                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+                        string text = formattedMessage.message.ToLower();
+                        if(text.StartsWith(PrefixChar.ToString()))
+                            text = text.Remove(0, 1);
+
+                        TwitchRightsEnum privilage = formattedMessage.rights;
+                        SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage, true);
+
+                        return true;
+
+                    }
+                default:
+                    if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
+                    {
+                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.Generic);
+                        //literally nothing else happens in your code if this is false
+                        return true;
                     }
                     else
+                    {
+                        TwitchRightsEnum privilage = formattedMessage.rights;
+                        string text = formattedMessage.message.Remove(0, 1).ToLower();
+
+                        //Mod Commands
+                        if (formattedMessage.rights >= TwitchRightsEnum.Mod || irc.moderators.Contains(formattedMessage.user))
+                        {
+                            if (text == "volume" || text.StartsWith("volume "))
+                            {
+                                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+                                SndDB.ChangeVolumeIRC(irc, text, parent);
+                                return true;
+                            }
+
+                            if (text == "delay" || text.StartsWith("delay "))
+                            {
+                                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+                                SndDB.ChangeDelay(irc, text);
+                                return true;
+                            }
+
+                            if (text == "stopallsounds")
+                            {
+                                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+                                SndDB.Stopallsounds();
+                                return true;
+                            }
+
+                            if (text.StartsWith("removesound "))
+                            {
+                                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+                                SndDB.RemoveSound(irc, text);
+                                return true;
+                            }
+
+                            if (text.StartsWith("suboverride"))
+                            {
+                                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+                                SndDB.ChangeSubOverride(irc, text);
+                                return true;
+                            }
+
+                        }
+
+                        //TTS
+                        if (text.StartsWith("tts "))
+                        {
+                            parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+
+                            if (programSettings.TTSLogic == TTSLogic.RewardIDAndCommand)
+                            {
+                                if (formattedMessage.rights >= TwitchRightsEnum.Mod)
+                                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1]);
+                                return true;
+                            }
+
+                            return true;
+                        } //SoundPlayback
+                        else
+                        {
+                            if(programSettings.SoundRedemptionLogic == SoundRedemptionLogic.Legacy || privilage == TwitchRightsEnum.Admin)
+                            {
+                                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+                                SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
+                            }
+                        }
+
                         return true;
-                }
-                else
-                {
-                    SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
-                    return true;
-                }
+                    }
             }
-
-
-            if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
-            {
-                parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, (int)LineType.Generic);
-                //literally nothing else happens in your code if this is false
-                return true;
-            }
-            else
-            {
-                TwitchRightsEnum privilage = formattedMessage.rights;
-                string text = formattedMessage.message.Remove(0, 1).ToLower();
-
-                if (irc.moderators.Contains(formattedMessage.user))
-                {
-                    if (text == "volume" || text.StartsWith("volume "))
-                    {
-                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-                        SndDB.ChangeVolumeIRC(irc, text, parent);
-                        return true;
-                    }
-
-                    if (text == "delay" || text.StartsWith("delay "))
-                    {
-                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-                        SndDB.ChangeDelay(irc, text);
-                        return true;
-                    }
-
-                    if (text == "stopallsounds")
-                    {
-                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-                        SndDB.Stopallsounds();
-                        return true;
-                    }
-
-                    if (text.StartsWith("removesound "))
-                    {
-                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-                        SndDB.RemoveSound(irc, text);
-                        return true;
-                    }
-
-                    if (text.StartsWith("suboverride"))
-                    {
-                        parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-                        SndDB.ChangeSubOverride(irc, text);
-                        return true;
-                    }
-
-                }
-
-                if(text.StartsWith("tts "))
-                {
-                    parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-
-                    if(programSettings.TTSLogic == TTSLogic.RewardIDAndCommand)
-                    {
-                        if (formattedMessage.rights >= TwitchRightsEnum.Mod)
-                            SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1]);
-                        return true;
-                    }
-
-                    return true;
-
-
-                }
-                else
-                {
-                    parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-                    SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
-                }
-
-                return true;
-            }
-
         }
 
         internal void UpdateVolume()

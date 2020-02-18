@@ -22,13 +22,15 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         private string spreadsheetId = "";
 
         public List<SoundEntry> Sounds;
+        private PrivateSettings ProgramSettings;
         char PrefixCharacter;
 
-        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter, string spreadsheetId)
+        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter, PrivateSettings ProgramSettings)
         {
             this.PrefixCharacter = PrefixCharacter;
             this.Sounds = Sounds;
-            this.spreadsheetId = spreadsheetId;
+            this.spreadsheetId = ProgramSettings.GoogleSpreadsheetID;
+            this.ProgramSettings = ProgramSettings;
             InitializeComponent();
         }
 
@@ -157,14 +159,70 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         }
         #endregion
 
-        private void B_ExportToHTML_Click(object sender, EventArgs e)
+        private string GetHTMLColor(TwitchRightsEnum twitchRightsEnum)
+        {
+            switch(twitchRightsEnum)
+            {
+                case TwitchRightsEnum.Admin:
+                    return "#FF0000";
+                case TwitchRightsEnum.Mod:
+                    return "#00FF00";
+                case TwitchRightsEnum.TrustedSub:
+                    return "#F0F0FF";
+                case TwitchRightsEnum.Public:
+                    return "#FFFF90";
+                default:
+                    return "#0000FF";
+            }
+        }
+
+        private void B_Sort_Click(object sender, EventArgs e)
+        {
+            sndTreeView.Sort();
+        }
+
+        private void B_Export_Click(object sender, EventArgs e)
+        {
+            using (EditDialogues.ExportDialog exDialog = new EditDialogues.ExportDialog())
+            {
+                var result = exDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    if (exDialog.ExportType == EditDialogues.ExportType.HTML)
+                    {
+                        this.ExportToHTML();
+                    }
+                    else
+                    {
+                        this.ExportToGoogleDoc();
+                    }
+                }
+            }
+        }
+
+        private void B_SoundPlayBackSettings_Click(object sender, EventArgs e)
+        {
+            using (EditDialogues.SoundPlaybackSettingsDialog spsDialog = new EditDialogues.SoundPlaybackSettingsDialog(ProgramSettings))
+            {
+                var result = spsDialog.ShowDialog();
+                if(result == DialogResult.OK)
+                {
+                    ProgramSettings.SoundRewardID = spsDialog.SoundRewardID;
+                    ProgramSettings.SoundRedemptionLogic = spsDialog.SoundLogic;
+                    ProgramSettings.SaveSettings();
+                }
+            }
+        }
+
+        #region ExportFunctions
+        private void ExportToHTML()
         {
             var dialog = new SaveFileDialog()
             {
                 Filter = "HTML file (*.html)|*.html"
             };
             DialogResult res = dialog.ShowDialog();
-            if(res == DialogResult.OK)
+            if (res == DialogResult.OK)
             {
                 var ExportSounds = TreeNodesToSoundsEntryList(sndTreeView);
                 StringBuilder sb = new StringBuilder();
@@ -186,7 +244,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 sb.AppendLine("<table cellspacing=\"0\" border=\"1\">");
                 sb.AppendLine("<colgroup span=\"3\" width=\"1000\"></colgroup>");
                 sb.AppendLine("<tr>" +
-                    "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command (total: " + ExportSounds.Count.ToString() +")</b></td>" +
+                    "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command (total: " + ExportSounds.Count.ToString() + ")</b></td>" +
                     "<td align=\"left\"><b>File</b></td>" +
                     "<td align=\"left\"><b>Description</b></td>" +
                     "<td align=\"left\"><b>Added (UTC)</b></td>" +
@@ -221,37 +279,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
         }
 
-        private string GetHTMLColor(TwitchRightsEnum twitchRightsEnum)
-        {
-            switch(twitchRightsEnum)
-            {
-                case TwitchRightsEnum.Admin:
-                    return "#FF0000";
-                case TwitchRightsEnum.Mod:
-                    return "#00FF00";
-                case TwitchRightsEnum.TrustedSub:
-                    return "#F0F0FF";
-                case TwitchRightsEnum.Public:
-                    return "#FFFF90";
-                default:
-                    return "#0000FF";
-            }
-        }
-
-        private void B_Sort_Click(object sender, EventArgs e)
-        {
-            sndTreeView.Sort();
-        }
-
-        private void B_ExportToSpreadsheet_Click(object sender, EventArgs e)
+        private void ExportToGoogleDoc()
         {
             var tmpSnd = TreeNodesToSoundsEntryList(sndTreeView);
 
-            GoogleSheetsExport sheet = new GoogleSheetsExport(spreadsheetId, PrefixCharacter, tmpSnd);
+            GoogleSheetsExport sheet = new GoogleSheetsExport(spreadsheetId, ProgramSettings.SoundRedemptionLogic, PrefixCharacter, tmpSnd);
             if (sheet.WasSuccess)
                 MessageBox.Show("New sound db successfully exported to Google Spreadsheet", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
+        #endregion
     }
 
     #region Extensions
