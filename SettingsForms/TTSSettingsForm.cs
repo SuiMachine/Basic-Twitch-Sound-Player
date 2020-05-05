@@ -18,6 +18,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
         public Structs.TwitchRightsEnum RequiredRight { get; set; }
         public Structs.TTSLogic TTSLogic { get; set; }
 
+        public Guid OutputDeviceGuid;
+
         public TTSSettingsForm(PrivateSettings settings)
         {
             this.VoiceSynthesizer = settings.VoiceSynthesizer;

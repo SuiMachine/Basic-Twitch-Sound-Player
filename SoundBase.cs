@@ -209,7 +209,7 @@ namespace BasicTwitchSoundPlayer
                                     return false;
                             }
                             //Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
-                            var player = new NSoundPlayer(soundlist[i].GetFile(rng), programSettings.Volume);
+                            var player = new NSoundPlayer(programSettings.OutputDevice, soundlist[i].GetFile(rng), programSettings.Volume);
                             var lenght = player.GetTimeLenght();
                             SoundPlayererStack.Add(player);
                             userDB[user] = DateTime.Now+lenght;
@@ -292,7 +292,7 @@ namespace BasicTwitchSoundPlayer
         public string fullFileName;
         private readonly string fileName;
 
-        public NSoundPlayer(string soundFile, float volume)
+        public NSoundPlayer(Guid SoundDevice, string soundFile, float volume)
         {
             fullFileName = soundFile;
             fileName = soundFile.Split('\\').Last();
@@ -307,14 +307,14 @@ namespace BasicTwitchSoundPlayer
                 {
                     case PlayerFormat.Vorbis:
                         VorbisFileReader = new NAudio.Vorbis.VorbisWaveReader(soundFile);
-                        directWaveOut = new DirectSoundOut(120);
+                        directWaveOut = new DirectSoundOut(SoundDevice, 120);
                         directWaveOut.Init(VorbisFileReader);
                         directWaveOut.Volume = volume;
                         directWaveOut.Play();
                         break;
                     default:
                         GenericFileReader = new AudioFileReader(soundFile);
-                        directWaveOut = new DirectSoundOut(120);
+                        directWaveOut = new DirectSoundOut(SoundDevice, 120);
                         directWaveOut.Init(GenericFileReader);
                         GenericFileReader.Volume = volume;
                         directWaveOut.Play();

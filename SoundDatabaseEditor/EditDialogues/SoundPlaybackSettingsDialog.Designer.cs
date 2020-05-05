@@ -46,15 +46,17 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.CBox_RedemptionLogic = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.TB_SoundRewardID = new System.Windows.Forms.TextBox();
-            this.B_UseLastRewardID = new System.Windows.Forms.Button();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.B_OK = new System.Windows.Forms.Button();
             this.B_Cancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.B_UseLastRewardID = new System.Windows.Forms.Button();
+            this.TB_SoundRewardID = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.CBox_RedemptionLogic = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.CB_OutputDevices = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -72,52 +74,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 100);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 127);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(130, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Sound Redemption Logic:";
-            // 
-            // CBox_RedemptionLogic
-            // 
-            this.CBox_RedemptionLogic.FormattingEnabled = true;
-            this.CBox_RedemptionLogic.Location = new System.Drawing.Point(145, 3);
-            this.CBox_RedemptionLogic.Name = "CBox_RedemptionLogic";
-            this.CBox_RedemptionLogic.Size = new System.Drawing.Size(225, 21);
-            this.CBox_RedemptionLogic.TabIndex = 1;
-            this.CBox_RedemptionLogic.SelectedIndexChanged += new System.EventHandler(this.CBox_RedemptionLogic_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 33);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Sound Reward ID:";
-            // 
-            // TB_SoundRewardID
-            // 
-            this.TB_SoundRewardID.Location = new System.Drawing.Point(110, 30);
-            this.TB_SoundRewardID.Name = "TB_SoundRewardID";
-            this.TB_SoundRewardID.Size = new System.Drawing.Size(234, 20);
-            this.TB_SoundRewardID.TabIndex = 1;
-            // 
-            // B_UseLastRewardID
-            // 
-            this.B_UseLastRewardID.Location = new System.Drawing.Point(350, 28);
-            this.B_UseLastRewardID.Name = "B_UseLastRewardID";
-            this.B_UseLastRewardID.Size = new System.Drawing.Size(116, 23);
-            this.B_UseLastRewardID.TabIndex = 2;
-            this.B_UseLastRewardID.Text = "Use last Reward ID";
-            this.B_UseLastRewardID.UseVisualStyleBackColor = true;
-            this.B_UseLastRewardID.Click += new System.EventHandler(this.B_UseLastRewardID_Click);
             // 
             // tableLayoutPanel5
             // 
@@ -127,7 +85,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.tableLayoutPanel5.Controls.Add(this.B_OK, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.B_Cancel, 1, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(287, 67);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(287, 94);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -158,6 +116,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.CB_OutputDevices);
+            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.B_UseLastRewardID);
             this.panel1.Controls.Add(this.TB_SoundRewardID);
             this.panel1.Controls.Add(this.label2);
@@ -166,14 +126,75 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(478, 58);
+            this.panel1.Size = new System.Drawing.Size(478, 85);
             this.panel1.TabIndex = 2;
+            // 
+            // B_UseLastRewardID
+            // 
+            this.B_UseLastRewardID.Location = new System.Drawing.Point(350, 55);
+            this.B_UseLastRewardID.Name = "B_UseLastRewardID";
+            this.B_UseLastRewardID.Size = new System.Drawing.Size(116, 23);
+            this.B_UseLastRewardID.TabIndex = 2;
+            this.B_UseLastRewardID.Text = "Use last Reward ID";
+            this.B_UseLastRewardID.UseVisualStyleBackColor = true;
+            this.B_UseLastRewardID.Click += new System.EventHandler(this.B_UseLastRewardID_Click);
+            // 
+            // TB_SoundRewardID
+            // 
+            this.TB_SoundRewardID.Location = new System.Drawing.Point(104, 57);
+            this.TB_SoundRewardID.Name = "TB_SoundRewardID";
+            this.TB_SoundRewardID.Size = new System.Drawing.Size(234, 20);
+            this.TB_SoundRewardID.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 60);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(95, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Sound Reward ID:";
+            // 
+            // CBox_RedemptionLogic
+            // 
+            this.CBox_RedemptionLogic.FormattingEnabled = true;
+            this.CBox_RedemptionLogic.Location = new System.Drawing.Point(139, 30);
+            this.CBox_RedemptionLogic.Name = "CBox_RedemptionLogic";
+            this.CBox_RedemptionLogic.Size = new System.Drawing.Size(225, 21);
+            this.CBox_RedemptionLogic.TabIndex = 1;
+            this.CBox_RedemptionLogic.SelectedIndexChanged += new System.EventHandler(this.CBox_RedemptionLogic_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Output device:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 33);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(130, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Sound Redemption Logic:";
+            // 
+            // CB_OutputDevices
+            // 
+            this.CB_OutputDevices.FormattingEnabled = true;
+            this.CB_OutputDevices.Location = new System.Drawing.Point(86, 3);
+            this.CB_OutputDevices.Name = "CB_OutputDevices";
+            this.CB_OutputDevices.Size = new System.Drawing.Size(380, 21);
+            this.CB_OutputDevices.TabIndex = 4;
             // 
             // SoundPlaybackSettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 100);
+            this.ClientSize = new System.Drawing.Size(484, 127);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -201,5 +222,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
         private System.Windows.Forms.TextBox TB_SoundRewardID;
         private System.Windows.Forms.Button B_UseLastRewardID;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ComboBox CB_OutputDevices;
+        private System.Windows.Forms.Label label3;
     }
 }

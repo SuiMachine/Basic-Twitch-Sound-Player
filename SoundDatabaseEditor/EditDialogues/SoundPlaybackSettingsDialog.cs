@@ -14,17 +14,37 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
     {
         public Structs.SoundRedemptionLogic SoundLogic { get; set; }
         public string SoundRewardID { get; set; }
+        public Guid SelectedDevice { get; set; }
 
         public SoundPlaybackSettingsDialog(PrivateSettings programSettings)
         {
             this.SoundRewardID = programSettings.SoundRewardID;
             this.SoundLogic = programSettings.SoundRedemptionLogic;
+            this.SelectedDevice = programSettings.OutputDevice;
             InitializeComponent();
 
             //Initialization stuff and bindings
             this.AddComboboxDataSources();
+            this.FillInOutputDevices();
             this.TB_SoundRewardID.DataBindings.Add("Text", this, "SoundRewardID", false, DataSourceUpdateMode.OnPropertyChanged);
             this.CBox_RedemptionLogic.DataBindings.Add("SelectedValue", this, "SoundLogic", false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        private void FillInOutputDevices()
+        {
+            bool deviceWasSelected = false;
+            foreach (var dev in NAudio.Wave.DirectSoundOut.Devices)
+            {
+                CB_OutputDevices.Items.Add(dev.Description);
+                if (dev.Guid == SelectedDevice && !deviceWasSelected)
+                {
+                    CB_OutputDevices.SelectedIndex = CB_OutputDevices.Items.Count - 1;
+                    deviceWasSelected = true;
+                }
+            }
+
+            if (!deviceWasSelected)
+                CB_OutputDevices.SelectedIndex = 0;
         }
 
         private void B_OK_Click(object sender, EventArgs e)
@@ -33,6 +53,15 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             {
                 MessageBox.Show("No reward ID was provided, setting the redemption method to Legacy.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SoundLogic = Structs.SoundRedemptionLogic.Legacy;
+            }
+
+            foreach (var dev in NAudio.Wave.DirectSoundOut.Devices)
+            {
+                if (dev.Description == CB_OutputDevices.SelectedItem.ToString())
+                {
+                    SelectedDevice = dev.Guid;
+                    break;
+                }
             }
 
             this.DialogResult = DialogResult.OK;

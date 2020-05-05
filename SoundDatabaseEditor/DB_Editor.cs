@@ -209,6 +209,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 {
                     ProgramSettings.SoundRewardID = spsDialog.SoundRewardID;
                     ProgramSettings.SoundRedemptionLogic = spsDialog.SoundLogic;
+                    ProgramSettings.OutputDevice = spsDialog.SelectedDevice;
                     ProgramSettings.SaveSettings();
                 }
             }

@@ -79,6 +79,8 @@ namespace BasicTwitchSoundPlayer
         [XmlElement]
         public int Delay { get; set; }
         [XmlElement]
+        public Guid OutputDevice { get; set; }
+        [XmlElement]
         public bool AllowUsersToUseSubSounds { get; set; }
 
         [XmlElement]
