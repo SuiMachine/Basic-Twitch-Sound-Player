@@ -50,13 +50,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.B_OK = new System.Windows.Forms.Button();
             this.B_Cancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.CB_OutputDevices = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.B_UseLastRewardID = new System.Windows.Forms.Button();
             this.TB_SoundRewardID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.CBox_RedemptionLogic = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.CB_OutputDevices = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -129,6 +129,23 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.panel1.Size = new System.Drawing.Size(478, 85);
             this.panel1.TabIndex = 2;
             // 
+            // CB_OutputDevices
+            // 
+            this.CB_OutputDevices.FormattingEnabled = true;
+            this.CB_OutputDevices.Location = new System.Drawing.Point(86, 3);
+            this.CB_OutputDevices.Name = "CB_OutputDevices";
+            this.CB_OutputDevices.Size = new System.Drawing.Size(380, 21);
+            this.CB_OutputDevices.TabIndex = 4;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 33);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(130, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Sound Redemption Logic:";
+            // 
             // B_UseLastRewardID
             // 
             this.B_UseLastRewardID.Location = new System.Drawing.Point(350, 55);
@@ -173,23 +190,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.label1.TabIndex = 0;
             this.label1.Text = "Output device:";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 33);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(130, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Sound Redemption Logic:";
-            // 
-            // CB_OutputDevices
-            // 
-            this.CB_OutputDevices.FormattingEnabled = true;
-            this.CB_OutputDevices.Location = new System.Drawing.Point(86, 3);
-            this.CB_OutputDevices.Name = "CB_OutputDevices";
-            this.CB_OutputDevices.Size = new System.Drawing.Size(380, 21);
-            this.CB_OutputDevices.TabIndex = 4;
-            // 
             // SoundPlaybackSettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -201,7 +201,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SoundPlaybackSettingsDialog";
-            this.Text = "SoundPlaybackSettingsDialog";
+            this.Text = "Sound Playback Settings";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
