@@ -30,7 +30,7 @@ namespace BasicTwitchSoundPlayer.IRC
         {
             if(BroadcasterID == null || BroadcasterID == "")
             {
-                string responseID = await GetNewUpdateAsync("users", "?login=" + Channel);
+                string responseID = await GetNewUpdateAsync("users", "?login=" + Channel, true);
                 if (responseID == null || responseID == "")
                     return new string[0];
                 else
