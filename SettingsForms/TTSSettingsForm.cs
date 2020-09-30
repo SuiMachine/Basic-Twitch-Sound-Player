@@ -44,10 +44,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             this.TB_CustomRewardID.DataBindings.Add("Text", this, "CustomRewardID", false, DataSourceUpdateMode.OnPropertyChanged);
             this.CBox_RequiredRole.DataBindings.Add("SelectedValue", this, "RequiredRight", false, DataSourceUpdateMode.OnPropertyChanged);
             this.CBox_TTSLogic.DataBindings.Add("SelectedValue", this, "TTSLogic", false, DataSourceUpdateMode.OnPropertyChanged);
-            TTSExplanation_Tooltip.SetToolTip(linkExplainLogic, "There are 2 logics available.\n" +
-                "1st - Require role & reward ID - means that the bot will check if correct reward ID was used and then it will check if the user has minimum specified role for reward (not recommended)\n" +
-                "2nd - Use role for !tts - means that anyone who uses the reward will be able to use the TTS and additionally anyone with a specified role (or higher) will be able to use !tts command (recommended)");
-
         }
 
         private void B_Test_Click(object sender, EventArgs e)
@@ -66,7 +62,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             if(CustomRewardID == "")
             {
                 MessageBox.Show("No Custom Reward Provided for TTS. Setting it to legacy method.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.TTSLogic = Structs.TTSLogic.Restricted;
+                this.TTSLogic = Structs.TTSLogic.RewardIDAndCommand;
             }
 
             this.DialogResult = DialogResult.OK;
@@ -83,5 +79,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
         {
             this.CustomRewardID = Logger.LastRewardID;
         }
-    }
+
+		private void linkExplainLogic_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+            System.Diagnostics.Process.Start("https://github.com/SuiMachine/Basic-Twitch-Sound-Player/wiki/Text-to-speech");
+		}
+	}
 }
