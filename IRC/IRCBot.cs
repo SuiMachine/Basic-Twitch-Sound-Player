@@ -23,7 +23,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
         public IRCBot(MainForm parentReference, PrivateSettings programSettings, SoundBase soundDb, char PrefixChar)
         {
-            irc = new OldIRCClient(parentReference, programSettings.TwitchServer, programSettings.TwitchUsername, programSettings.TwitchPassword, programSettings.TwitchChannelToJoin);
+            irc = new OldIRCClient(parentReference, programSettings.TwitchServer, programSettings.TwitchUsername, programSettings.TwitchPassword, programSettings.TwitchChannelToJoin, programSettings.SoundRewardID, programSettings.TTSRewardID);
             this.programSettings = programSettings;
             channelToJoin = programSettings.TwitchChannelToJoin;
             parent = parentReference;
@@ -303,6 +303,10 @@ namespace BasicTwitchSoundPlayer.IRC
         private void MeebyIrc_OnRegistered(object sender, EventArgs e)
         {
             parent.ThreadSafeAddPreviewText("! LOGIN VERIFIED", LineType.IrcCommand);
+            if(programSettings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
+			{
+                
+			}
         }
 
         private void MeebyIrc_OnDisconnected(object sender, EventArgs e)

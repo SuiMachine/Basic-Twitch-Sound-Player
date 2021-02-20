@@ -12,11 +12,25 @@ namespace BasicTwitchSoundPlayer.IRC
 {
     class KrakenConnections
     {
+        [Serializable]
+        public class ChannelAward
+		{
+            public string id = "";
+            public bool is_enabled = false;
+            public int cost = 0;
+            public string title = "";
+            public bool is_user_input_required = false;
+            public bool is_paused = false;
+            public bool should_redemptions_skip_request_queue = false;
+        }
+
         private string HELIXURI { get; set; }
         private string TwitchAuthy { get; set; }
         private string Channel { get; set; }
         private string BroadcasterID { get; set; }
-            
+
+        private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
+
         public KrakenConnections(string Channel, string TwitchAuthy)
         {
             this.TwitchAuthy = TwitchAuthy;
@@ -49,7 +63,6 @@ namespace BasicTwitchSoundPlayer.IRC
                     }
                     else
                         return new string[0];
-
                 }
             }
 
@@ -83,6 +96,90 @@ namespace BasicTwitchSoundPlayer.IRC
             return new string[0];
         }
 
+        public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid, string ttsredemptionid)
+        {
+			{
+                int endTimer = 5;
+                while((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+                    await Task.Delay(1000);
+                    endTimer--;
+                }
+            }
+
+
+            if (BroadcasterID == null || BroadcasterID == "")
+			{
+                mainForm.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify Channel Rewards!", LineType.IrcCommand);
+                return;
+			}
+
+            string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
+            if(response == null || response == "")
+			{
+                mainForm.ThreadSafeAddPreviewText("[ERROR] Incorrect response when verifying Channel Rewards!", LineType.IrcCommand);
+                return;
+            }
+            else
+			{
+                JObject jReader = JObject.Parse(response);
+                if (jReader["data"] != null)
+                {
+                    ChannelAward soundredemptionReward = null;
+                    ChannelAward ttsredemptionReward = null;
+
+                    var dataNode = jReader["data"];
+                    foreach(var customReward in dataNode)
+					{
+                        var parseNode = customReward.ToObject<ChannelAward>();
+                        if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
+                            soundredemptionReward = parseNode;
+                        else if (ttsredemptionid != null && parseNode.id.Equals(ttsredemptionid, StringComparison.InvariantCultureIgnoreCase))
+                            ttsredemptionReward = parseNode;
+                    }
+
+                    if(soundredemptionid != null && soundredemptionid != "")
+					{
+                        if(soundredemptionReward == null)
+						{
+                            mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with Sound Reward ID!", LineType.IrcCommand);
+                        }
+                        else
+						{
+                            if (!soundredemptionReward.is_enabled)
+                                mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward is not enabled!", LineType.IrcCommand);
+                            else if(soundredemptionReward.is_paused)
+                                mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward redemption is paused!", LineType.IrcCommand);
+                            else if(!soundredemptionReward.is_user_input_required)
+                                mainForm.ThreadSafeAddPreviewText("[ERROR] Sound reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
+                            else if (soundredemptionReward.should_redemptions_skip_request_queue)
+                                mainForm.ThreadSafeAddPreviewText("[WARNING] Sound redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
+                        }
+                    }
+
+                    if (ttsredemptionid != null && ttsredemptionid != "")
+                    {
+                        if (ttsredemptionReward == null)
+                        {
+                            mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with TTS Reward ID!", LineType.IrcCommand);
+                        }
+                        else
+						{
+                            if (!ttsredemptionReward.is_enabled)
+                                mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward is not enabled!", LineType.IrcCommand);
+                            else if (ttsredemptionReward.is_paused)
+                                mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward redemption is paused!", LineType.IrcCommand);
+                            else if (!ttsredemptionReward.is_user_input_required)
+                                mainForm.ThreadSafeAddPreviewText("[ERROR] TTS reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
+                            else if (ttsredemptionReward.should_redemptions_skip_request_queue)
+                                mainForm.ThreadSafeAddPreviewText("[WARNING] TTS redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
+                        }
+                    }
+                }
+            }
+
+        }
+
         private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false)
         {
             
@@ -90,7 +187,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
             try
             {
-                request.Headers["Client-ID"] = "9z58zy6ak0ejk9lme6dy6nyugydaes";
+                request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
                 if(!RequireBearerToken)
                     request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
                 else
@@ -113,6 +210,8 @@ namespace BasicTwitchSoundPlayer.IRC
                 return "";
             }
         }
+
+
         #endregion
     }
 }
