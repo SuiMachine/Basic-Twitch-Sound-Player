@@ -175,6 +175,17 @@ namespace BasicTwitchSoundPlayer.IRC
                                 mainForm.ThreadSafeAddPreviewText("[WARNING] TTS redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
                         }
                     }
+
+                    //Clear up redemption queue
+                    if(ttsredemptionReward != null || soundredemptionReward != null)
+					{
+                        //channel_points/custom_rewards/redemptions?broadcaster_id=274637212&reward_id=92af127c-7326-4483-a52b-b0da0be61c01&id=17fa2df1-ad76-4804-bfa5-a40ef63efe63
+                        if(soundredemptionReward != null)
+						{
+                            string response2 = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID, true);
+
+                        }
+                    }
                 }
             }
 

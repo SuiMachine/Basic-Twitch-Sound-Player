@@ -105,7 +105,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
                 Process.Start("https://id.twitch.tv/oauth2/authorize?response_type=token" +
                     "&client_id=9z58zy6ak0ejk9lme6dy6nyugydaes" +
                     "&redirect_uri=http://127.0.0.1:43628/resp.html" +
-                    "&scope=chat_login+channel_subscriptions+channel:read:subscriptions+channel:manage:redemptions");
+                    "&scope=chat_login+channel_subscriptions+channel:read:subscriptions+channel:read:redemptions+channel:manage:redemptions");
 
                 string pageContentRedirect = string.Join("\n", "<html>",
                         "<head>",
