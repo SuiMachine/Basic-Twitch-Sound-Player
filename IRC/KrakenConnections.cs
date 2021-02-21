@@ -246,7 +246,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								if (totalIDsToCancel > 0)
 								{
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
-	
+
 									UpdateRedemptionStatus(mainForm, ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
 
 								}
@@ -267,7 +267,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			var response = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + rewardID + "&status=UNFULFILLED&sort=NEWEST", true, true);
 
-			if(response != null && response != "")
+			if (response != null && response != "")
 			{
 				if (response.StartsWith("Error:"))
 				{
@@ -351,7 +351,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					}
 				}
 			}
-			else if(rewardType == RewardType.Sound)
+			else if (rewardType == RewardType.Sound)
 			{
 				var content = new Dictionary<string, string>()
 				{
@@ -480,7 +480,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				return "";
 			}
 		}
-
 
 		private string ConvertDictionaryToJsonString(Dictionary<string, string> bodyContent)
 		{

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Meebey.SmartIrc4net;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using Meebey.SmartIrc4net;
-using System.Linq;
-using System;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
