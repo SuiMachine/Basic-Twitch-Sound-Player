@@ -47,6 +47,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.B_Test = new System.Windows.Forms.Button();
 			this.linkExplainLogic = new System.Windows.Forms.LinkLabel();
 			this.B_UseLastRewardID = new System.Windows.Forms.Button();
+			this.B_VerifyPointsResponse = new System.Windows.Forms.Button();
+			this.B_CreateReward = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -121,6 +123,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.CBox_TTSLogic.Name = "CBox_TTSLogic";
 			this.CBox_TTSLogic.Size = new System.Drawing.Size(152, 21);
 			this.CBox_TTSLogic.TabIndex = 7;
+			this.CBox_TTSLogic.SelectedIndexChanged += new System.EventHandler(this.CBox_TTSLogic_SelectedIndexChanged);
 			// 
 			// CBox_VoiceSynthesizer
 			// 
@@ -188,11 +191,33 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.B_UseLastRewardID.UseVisualStyleBackColor = true;
 			this.B_UseLastRewardID.Click += new System.EventHandler(this.B_UseLastRewardID_Click);
 			// 
+			// B_VerifyPointsResponse
+			// 
+			this.B_VerifyPointsResponse.Location = new System.Drawing.Point(122, 114);
+			this.B_VerifyPointsResponse.Name = "B_VerifyPointsResponse";
+			this.B_VerifyPointsResponse.Size = new System.Drawing.Size(89, 23);
+			this.B_VerifyPointsResponse.TabIndex = 15;
+			this.B_VerifyPointsResponse.Text = "Verify Points ID";
+			this.B_VerifyPointsResponse.UseVisualStyleBackColor = true;
+			this.B_VerifyPointsResponse.Click += new System.EventHandler(this.B_VerifyPointsResponse_Click);
+			// 
+			// B_CreateReward
+			// 
+			this.B_CreateReward.Location = new System.Drawing.Point(10, 114);
+			this.B_CreateReward.Name = "B_CreateReward";
+			this.B_CreateReward.Size = new System.Drawing.Size(106, 23);
+			this.B_CreateReward.TabIndex = 16;
+			this.B_CreateReward.Text = "Create TTS reward";
+			this.B_CreateReward.UseVisualStyleBackColor = true;
+			this.B_CreateReward.Click += new System.EventHandler(this.B_CreateReward_Click);
+			// 
 			// TTSSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(479, 145);
+			this.ClientSize = new System.Drawing.Size(479, 143);
+			this.Controls.Add(this.B_CreateReward);
+			this.Controls.Add(this.B_VerifyPointsResponse);
 			this.Controls.Add(this.B_UseLastRewardID);
 			this.Controls.Add(this.linkExplainLogic);
 			this.Controls.Add(this.B_Test);
@@ -257,5 +282,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
         private System.Windows.Forms.Button B_Test;
         private System.Windows.Forms.LinkLabel linkExplainLogic;
         private System.Windows.Forms.Button B_UseLastRewardID;
-    }
+		private System.Windows.Forms.Button B_VerifyPointsResponse;
+		private System.Windows.Forms.Button B_CreateReward;
+	}
 }

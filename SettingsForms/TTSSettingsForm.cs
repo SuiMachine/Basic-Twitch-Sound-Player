@@ -20,12 +20,17 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
         public Guid OutputDeviceGuid;
 
-        public TTSSettingsForm(PrivateSettings settings)
+        private PrivateSettings SettingsReference;
+        private MainForm mainFormReference;
+
+        public TTSSettingsForm(MainForm mainFormReference, PrivateSettings settings)
         {
             this.VoiceSynthesizer = settings.VoiceSynthesizer;
             this.RequiredRight = settings.TTSRoleRequirement;
             this.CustomRewardID = settings.TTSRewardID;
             this.TTSLogic = settings.TTSLogic;
+            this.SettingsReference = settings;
+            this.mainFormReference = mainFormReference;
             InitializeComponent();
             this.AddComboboxDataSources();
 
@@ -84,5 +89,46 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		{
             System.Diagnostics.Process.Start("https://github.com/SuiMachine/Basic-Twitch-Sound-Player/wiki/Text-to-speech");
 		}
+
+		private void B_VerifyPointsResponse_Click(object sender, EventArgs e)
+		{
+            IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
+
+            var broadcasterTask = apiConnection.GetBroadcasterIDAsync();
+            var VerifyRewardsTask = apiConnection.VerifyChannelRewardsAsync(mainFormReference, null, TB_CustomRewardID.Text);
+            MessageBox.Show("Results should be displayed in main chat window within less than 5s. (Sorry, that was an afterthought)", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+		private void CBox_TTSLogic_SelectedIndexChanged(object sender, EventArgs e)
+		{
+            var value = (Structs.TTSLogic)CBox_TTSLogic.SelectedValue;
+
+            if(value == Structs.TTSLogic.Restricted)
+			{
+                B_VerifyPointsResponse.Enabled = true;
+                B_CreateReward.Enabled = true;
+            }
+            else
+			{
+                B_VerifyPointsResponse.Enabled = false;
+                B_CreateReward.Enabled = false;
+            }
+        }
+
+		private async void B_CreateReward_Click(object sender, EventArgs e)
+		{
+            var dialogResult = MessageBox.Show("Are you sure you want to create a new Reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+            if(dialogResult == DialogResult.Yes)
+			{
+                IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
+                var broadcasterTask = apiConnection.GetBroadcasterIDAsync();
+                var result = await apiConnection.CreateRewardAsync(IRC.KrakenConnections.RewardType.TTS);
+                if(result != null)
+				{
+                    TB_CustomRewardID.Text = result.id;
+                    MessageBox.Show("Successfully created a new reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+            }
+        }
 	}
 }

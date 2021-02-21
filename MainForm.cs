@@ -376,7 +376,7 @@ namespace BasicTwitchSoundPlayer
 
         private void tTSToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsForms.TTSSettingsForm ttsSettings = new SettingsForms.TTSSettingsForm(_programSettings);
+            SettingsForms.TTSSettingsForm ttsSettings = new SettingsForms.TTSSettingsForm(this, _programSettings);
             var result = ttsSettings.ShowDialog();
             if(result == DialogResult.OK)
             {

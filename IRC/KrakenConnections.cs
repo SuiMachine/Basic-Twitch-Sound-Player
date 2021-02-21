@@ -1,228 +1,404 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
-    class KrakenConnections
-    {
-        [Serializable]
-        public class ChannelAward
+	class KrakenConnections
+	{
+		public enum RewardType
 		{
-            public string id = "";
-            public bool is_enabled = false;
-            public int cost = 0;
-            public string title = "";
-            public bool is_user_input_required = false;
-            public bool is_paused = false;
-            public bool should_redemptions_skip_request_queue = false;
-        }
+			Sound,
+			TTS
+		}
 
-        private string HELIXURI { get; set; }
-        private string TwitchAuthy { get; set; }
-        private string Channel { get; set; }
-        private string BroadcasterID { get; set; }
+		[Serializable]
+		public class ChannelAward
+		{
+			public string id = "";
+			public bool is_enabled = false;
+			public int cost = 0;
+			public string title = "";
+			public bool is_user_input_required = false;
+			public bool is_paused = false;
+			public bool should_redemptions_skip_request_queue = false;
+		}
 
-        private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
+		private string HELIXURI { get; set; }
+		private string TwitchAuthy { get; set; }
+		private string Channel { get; set; }
+		private string BroadcasterID { get; set; }
 
-        public KrakenConnections(string Channel, string TwitchAuthy)
-        {
-            this.TwitchAuthy = TwitchAuthy;
-            this.Channel = Channel;
-            //KRAKENURI = "https://api.twitch.tv/kraken/channels/" + Channel.ToLower() + "/";
-            HELIXURI = "https://api.twitch.tv/helix/";
-        }
+		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
-        #region Async
-        public async Task<string[]> GetSubscribersAsync()
-        {
-            if(BroadcasterID == null || BroadcasterID == "")
-            {
-                string responseID = await GetNewUpdateAsync("users", "?login=" + Channel, true);
-                if (responseID == null || responseID == "")
-                    return new string[0];
-                else
-                {
-                    JObject jReader = JObject.Parse(responseID);
-                    if (jReader["data"] != null)
-                    {
-                        var dataNode = jReader["data"];
-                        var firstDataChild = dataNode.First;
-                        if (firstDataChild["id"] != null)
-                        {
-                            BroadcasterID = firstDataChild["id"].ToString();
-                        }
-                        else
-                            return new string[0];
-                    }
-                    else
-                        return new string[0];
-                }
-            }
+		public KrakenConnections(string Channel, string TwitchAuthy)
+		{
+			this.TwitchAuthy = TwitchAuthy;
+			this.Channel = Channel;
+			HELIXURI = "https://api.twitch.tv/helix/";
+		}
 
-            string response = await GetNewUpdateAsync("subscriptions", "?broadcaster_id=" + BroadcasterID, true);
-            if (response == null || response == "")
-            {
-                return new string[0];
-            }
-            else
-            {
-                JObject jReader = JObject.Parse(response);
-                if (jReader["data"] != null)
-                {
-                    var dataNode = jReader["data"];
-
-                    List<string> subscribers = new List<string>();
-
-                    foreach(var sub in dataNode)
-                    {
-                        if(sub["user_name"] != null)
-                        {
-                            var curSub = sub["user_name"].ToString();
-                            if (!subscribers.Contains(curSub))
-                                subscribers.Add(curSub);
-                        }
-                    }
-                    return subscribers.ToArray();
-                }
-            }
-
-            return new string[0];
-        }
-
-        public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid, string ttsredemptionid)
-        {
+		#region Async
+		public async Task GetBroadcasterIDAsync()
+		{
+			string responseID = await GetNewUpdateAsync("users", "?login=" + Channel, true);
+			if (responseID == null || responseID == "")
+				return;
+			else
 			{
-                int endTimer = 5;
-                while((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				JObject jReader = JObject.Parse(responseID);
+				if (jReader["data"] != null)
 				{
-                    await Task.Delay(1000);
-                    endTimer--;
-                }
-            }
+					var dataNode = jReader["data"];
+					var firstDataChild = dataNode.First;
+					if (firstDataChild["id"] != null)
+					{
+						BroadcasterID = firstDataChild["id"].ToString();
+					}
+					else
+						return;
+				}
+				else
+					return;
+			}
+		}
 
-
-            if (BroadcasterID == null || BroadcasterID == "")
+		public async Task<string[]> GetSubscribersAsync()
+		{
+			if (BroadcasterID == null || BroadcasterID == "")
 			{
-                mainForm.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify Channel Rewards!", LineType.IrcCommand);
-                return;
+				await GetBroadcasterIDAsync();
+			}
+			if (BroadcasterID == null || BroadcasterID == "")
+				throw new Exception("Didn't obtain broadcaster ID. Can't proceed!");
+
+			string response = await GetNewUpdateAsync("subscriptions", "?broadcaster_id=" + BroadcasterID, true);
+			if (response == null || response == "")
+			{
+				return new string[0];
+			}
+			else
+			{
+				JObject jReader = JObject.Parse(response);
+				if (jReader["data"] != null)
+				{
+					var dataNode = jReader["data"];
+
+					List<string> subscribers = new List<string>();
+
+					foreach (var sub in dataNode)
+					{
+						if (sub["user_name"] != null)
+						{
+							var curSub = sub["user_name"].ToString();
+							if (!subscribers.Contains(curSub))
+								subscribers.Add(curSub);
+						}
+					}
+					return subscribers.ToArray();
+				}
 			}
 
-            string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
-            if(response == null || response == "")
+			return new string[0];
+		}
+
+		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid, string ttsredemptionid)
+		{
 			{
-                mainForm.ThreadSafeAddPreviewText("[ERROR] Incorrect response when verifying Channel Rewards!", LineType.IrcCommand);
-                return;
-            }
-            else
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+
+			if (BroadcasterID == null || BroadcasterID == "")
 			{
-                JObject jReader = JObject.Parse(response);
-                if (jReader["data"] != null)
-                {
-                    ChannelAward soundredemptionReward = null;
-                    ChannelAward ttsredemptionReward = null;
+				mainForm.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify Channel Rewards!", LineType.IrcCommand);
+				return;
+			}
 
-                    var dataNode = jReader["data"];
-                    foreach(var customReward in dataNode)
+			string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
+			if (response == null || response == "")
+			{
+				mainForm.ThreadSafeAddPreviewText("[ERROR] Incorrect response when verifying Channel Rewards!", LineType.IrcCommand);
+				return;
+			}
+			else
+			{
+				JObject jReader = JObject.Parse(response);
+				if (jReader["data"] != null)
+				{
+					ChannelAward soundredemptionReward = null;
+					ChannelAward ttsredemptionReward = null;
+
+					var dataNode = jReader["data"];
+					foreach (var customReward in dataNode)
 					{
-                        var parseNode = customReward.ToObject<ChannelAward>();
-                        if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
-                            soundredemptionReward = parseNode;
-                        else if (ttsredemptionid != null && parseNode.id.Equals(ttsredemptionid, StringComparison.InvariantCultureIgnoreCase))
-                            ttsredemptionReward = parseNode;
-                    }
+						var parseNode = customReward.ToObject<ChannelAward>();
+						if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
+							soundredemptionReward = parseNode;
+						else if (ttsredemptionid != null && parseNode.id.Equals(ttsredemptionid, StringComparison.InvariantCultureIgnoreCase))
+							ttsredemptionReward = parseNode;
+					}
 
-                    if(soundredemptionid != null && soundredemptionid != "")
+					if (soundredemptionid != null && soundredemptionid != "")
 					{
-                        if(soundredemptionReward == null)
+						if (soundredemptionReward == null)
 						{
-                            mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with Sound Reward ID!", LineType.IrcCommand);
-                        }
-                        else
+							mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with Sound Reward ID!", LineType.IrcCommand);
+						}
+						else
 						{
-                            if (!soundredemptionReward.is_enabled)
-                                mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward is not enabled!", LineType.IrcCommand);
-                            else if(soundredemptionReward.is_paused)
-                                mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward redemption is paused!", LineType.IrcCommand);
-                            else if(!soundredemptionReward.is_user_input_required)
-                                mainForm.ThreadSafeAddPreviewText("[ERROR] Sound reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
-                            else if (soundredemptionReward.should_redemptions_skip_request_queue)
-                                mainForm.ThreadSafeAddPreviewText("[WARNING] Sound redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
-                        }
-                    }
+							if (!soundredemptionReward.is_enabled)
+								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward is not enabled!", LineType.IrcCommand);
+							else if (soundredemptionReward.is_paused)
+								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward redemption is paused!", LineType.IrcCommand);
+							else if (!soundredemptionReward.is_user_input_required)
+								mainForm.ThreadSafeAddPreviewText("[ERROR] Sound reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
+							else if (soundredemptionReward.should_redemptions_skip_request_queue)
+								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
+						}
+					}
 
-                    if (ttsredemptionid != null && ttsredemptionid != "")
-                    {
-                        if (ttsredemptionReward == null)
-                        {
-                            mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with TTS Reward ID!", LineType.IrcCommand);
-                        }
-                        else
-						{
-                            if (!ttsredemptionReward.is_enabled)
-                                mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward is not enabled!", LineType.IrcCommand);
-                            else if (ttsredemptionReward.is_paused)
-                                mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward redemption is paused!", LineType.IrcCommand);
-                            else if (!ttsredemptionReward.is_user_input_required)
-                                mainForm.ThreadSafeAddPreviewText("[ERROR] TTS reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
-                            else if (ttsredemptionReward.should_redemptions_skip_request_queue)
-                                mainForm.ThreadSafeAddPreviewText("[WARNING] TTS redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
-                        }
-                    }
-
-                    //Clear up redemption queue
-                    if(ttsredemptionReward != null || soundredemptionReward != null)
+					if (ttsredemptionid != null && ttsredemptionid != "")
 					{
-                        //channel_points/custom_rewards/redemptions?broadcaster_id=274637212&reward_id=92af127c-7326-4483-a52b-b0da0be61c01&id=17fa2df1-ad76-4804-bfa5-a40ef63efe63
-                        if(soundredemptionReward != null)
+						if (ttsredemptionReward == null)
 						{
-                            string response2 = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID, true);
+							mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with TTS Reward ID!", LineType.IrcCommand);
+						}
+						else
+						{
+							if (!ttsredemptionReward.is_enabled)
+								mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward is not enabled!", LineType.IrcCommand);
+							else if (ttsredemptionReward.is_paused)
+								mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward redemption is paused!", LineType.IrcCommand);
+							else if (!ttsredemptionReward.is_user_input_required)
+								mainForm.ThreadSafeAddPreviewText("[ERROR] TTS reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
+							else if (ttsredemptionReward.should_redemptions_skip_request_queue)
+								mainForm.ThreadSafeAddPreviewText("[WARNING] TTS redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
+						}
+					}
 
-                        }
-                    }
-                }
-            }
+					//Clear up redemption queue
+					if (ttsredemptionReward != null || soundredemptionReward != null)
+					{
+						if (soundredemptionReward != null)
+						{
+							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID, true, true);
 
-        }
+							//Should have thought this through...
+							if (pointsRewardResponse.StartsWith("Error: "))
+							{
 
-        private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false)
-        {
-            
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
+							}
+						}
 
-            try
-            {
-                request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
-                if(!RequireBearerToken)
-                    request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
-                else
-                    request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+						if (ttsredemptionReward != null)
+						{
+							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + ttsredemptionReward.id + "&status=UNFULFILLED", true, true);
 
-                request.Timeout = 5000;
-                request.Method = "GET";
+							//Should have thought this through...
+							if (pointsRewardResponse.StartsWith("Error: "))
+							{
+								mainForm.ThreadSafeAddPreviewText("[ERROR] Error verifying TTS award. It has ID, but bot doesn't have access to it. Maybe it was defined by a user instead of bot?", LineType.IrcCommand);
+								mainForm.ThreadSafeAddPreviewText("[ERROR] " + pointsRewardResponse, LineType.IrcCommand);
+							}
+							else
+							{
+								jReader = JObject.Parse(pointsRewardResponse);
+								dataNode = jReader["data"];
+
+								mainForm.ThreadSafeAddPreviewText("[Verification Status] TTS reward seems OK." + (dataNode.Count() > 0 ? " Clearing up request queue!" : " Request queue empty."), LineType.IrcCommand);
+
+								int totalIDsToCancel = dataNode.Count() > 50 ? 50 : dataNode.Count();
+								if (totalIDsToCancel > 0)
+								{
+									string cancelingString = "";
+
+									for (int i = 0; i < totalIDsToCancel; i++)
+									{
+										if (i > 0)
+											cancelingString += "&";
+										cancelingString += "id=" + dataNode.ElementAt(i)["id"];
+									}
+									await PatchNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + ttsredemptionReward.id + "&" + cancelingString, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", "CANCELED" } }), true);
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+		public async Task<ChannelAward> CreateRewardAsync(RewardType rewardType)
+		{
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return null;
+
+			if (rewardType == RewardType.TTS)
+			{
+				var content = new Dictionary<string, string>()
+				{
+					{ "title", "Send TTS message2"},
+					{"cost", "500" },
+					{"is_enabled", "true" },
+					{"prompt", "Read message using TTS" },
+					{"is_user_input_required", "true" },
+					{"should_redemptions_skip_request_queue", "false" }
+				};
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelAward>();
+						return newReward;
+					}
+				}
+			}
+			return null;
+		}
+
+		private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false, bool returnErrorCode = false)
+		{
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
+
+			try
+			{
+				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
+				if (!RequireBearerToken)
+					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+				else
+					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+
+				request.Timeout = 5000;
+				request.Method = "GET";
 
 
-                using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    return await reader.ReadToEndAsync();
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-                return "";
-            }
-        }
+				using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+				using (Stream stream = response.GetResponseStream())
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					return await reader.ReadToEndAsync();
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				if (returnErrorCode)
+				{
+					return "Error: " + e.Message;
+				}
+				return "";
+			}
+		}
+
+		private async Task<string> PostNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
+		{
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
+			request.ContentType = "application/json";
+			request.Method = "POST";
+
+			try
+			{
+				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
+				if (!RequireBearerToken)
+					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+				else
+					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
 
 
-        #endregion
-    }
+
+				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
+				{
+					streamWriter.Write(jsonContent);
+				}
+
+				var httpResponse = (HttpWebResponse)await request.GetResponseAsync();
+				using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+				{
+					var result = streamReader.ReadToEnd();
+					return result;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				MessageBox.Show(e.Message);
+				return "";
+			}
+		}
+		private async Task<string> PatchNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
+		{
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
+			request.ContentType = "application/json";
+			request.Method = "PATCH";
+
+			try
+			{
+				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
+				if (!RequireBearerToken)
+					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+				else
+					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+
+				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
+				{
+					streamWriter.Write(jsonContent);
+				}
+
+				var httpResponse = (HttpWebResponse)await request.GetResponseAsync();
+				using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+				{
+					var result = streamReader.ReadToEnd();
+					return result;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				MessageBox.Show(e.Message);
+				return "";
+			}
+		}
+
+
+		private string ConvertDictionaryToJsonString(Dictionary<string, string> bodyContent)
+		{
+			string jsonContent = "{";
+			for (int i = 0; i < bodyContent.Count; i++)
+			{
+				var keyPair = bodyContent.ElementAt(i);
+				jsonContent += $"\"{keyPair.Key}\":\"{keyPair.Value}\"";
+				if (i + 1 < bodyContent.Count)
+					jsonContent += ",\n";
+
+			}
+			jsonContent += "}";
+			return jsonContent;
+		}
+		#endregion
+	}
 }
