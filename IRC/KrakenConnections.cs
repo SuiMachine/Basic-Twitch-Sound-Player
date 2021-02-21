@@ -331,7 +331,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				var content = new Dictionary<string, string>()
 				{
-					{"title", "Send TTS message2"},
+					{"title", "Send TTS message"},
 					{"cost", "500" },
 					{"is_enabled", "true" },
 					{"prompt", "Read message using TTS" },
@@ -355,7 +355,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				var content = new Dictionary<string, string>()
 				{
-					{"title", "Play a sound2"},
+					{"title", "Play a sound"},
 					{"cost", "230" },
 					{"is_enabled", "true" },
 					{"prompt", "Plays a sound from available list. Make sure, you meet chat role requirements before using the command." },
