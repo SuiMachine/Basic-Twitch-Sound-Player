@@ -18,8 +18,15 @@ namespace BasicTwitchSoundPlayer.IRC
 			TTS
 		}
 
+		public enum RedemptionStates
+		{
+			UNFULFILLED,
+			FULFILLED,
+			CANCELED
+		}
+
 		[Serializable]
-		public class ChannelAward
+		public class ChannelReward
 		{
 			public string id = "";
 			public bool is_enabled = false;
@@ -119,7 +126,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 			}
 
-
 			if (BroadcasterID == null || BroadcasterID == "")
 			{
 				mainForm.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify Channel Rewards!", LineType.IrcCommand);
@@ -137,13 +143,13 @@ namespace BasicTwitchSoundPlayer.IRC
 				JObject jReader = JObject.Parse(response);
 				if (jReader["data"] != null)
 				{
-					ChannelAward soundredemptionReward = null;
-					ChannelAward ttsredemptionReward = null;
+					ChannelReward soundredemptionReward = null;
+					ChannelReward ttsredemptionReward = null;
 
 					var dataNode = jReader["data"];
 					foreach (var customReward in dataNode)
 					{
-						var parseNode = customReward.ToObject<ChannelAward>();
+						var parseNode = customReward.ToObject<ChannelReward>();
 						if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
 							soundredemptionReward = parseNode;
 						else if (ttsredemptionid != null && parseNode.id.Equals(ttsredemptionid, StringComparison.InvariantCultureIgnoreCase))
@@ -193,12 +199,29 @@ namespace BasicTwitchSoundPlayer.IRC
 					{
 						if (soundredemptionReward != null)
 						{
-							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID, true, true);
+							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + soundredemptionReward.id + "&status=UNFULFILLED", true, true);
+
 
 							//Should have thought this through...
 							if (pointsRewardResponse.StartsWith("Error: "))
 							{
+								mainForm.ThreadSafeAddPreviewText("[ERROR] Error verifying Sound award. It has ID, but bot doesn't have access to it. Maybe it was defined by a user instead of bot?", LineType.IrcCommand);
+								mainForm.ThreadSafeAddPreviewText("[ERROR] " + pointsRewardResponse, LineType.IrcCommand);
+							}
+							else
+							{
+								jReader = JObject.Parse(pointsRewardResponse);
+								dataNode = jReader["data"];
 
+								mainForm.ThreadSafeAddPreviewText("[Verification Status] Sound reward seems OK." + (dataNode.Count() > 0 ? " Clearing up request queue!" : " Request queue empty."), LineType.IrcCommand);
+
+								int totalIDsToCancel = dataNode.Count() > 50 ? 50 : dataNode.Count();
+								if (totalIDsToCancel > 0)
+								{
+									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
+
+									UpdateRedemptionStatus(mainForm, ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
+								}
 							}
 						}
 
@@ -222,25 +245,75 @@ namespace BasicTwitchSoundPlayer.IRC
 								int totalIDsToCancel = dataNode.Count() > 50 ? 50 : dataNode.Count();
 								if (totalIDsToCancel > 0)
 								{
-									string cancelingString = "";
+									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
+	
+									UpdateRedemptionStatus(mainForm, ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
 
-									for (int i = 0; i < totalIDsToCancel; i++)
-									{
-										if (i > 0)
-											cancelingString += "&";
-										cancelingString += "id=" + dataNode.ElementAt(i)["id"];
-									}
-									await PatchNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + ttsredemptionReward.id + "&" + cancelingString, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", "CANCELED" } }), true);
 								}
 							}
 						}
 					}
 				}
 			}
-
 		}
 
-		public async Task<ChannelAward> CreateRewardAsync(RewardType rewardType)
+		public async Task<ChannelReward[]> GetUnredeemedRewardsForUser(MainForm mainFormReference, string rewardID, string userID)
+		{
+			if (BroadcasterID == null | BroadcasterID == "")
+			{
+				mainFormReference.ThreadSafeAddPreviewText("Broadcaster ID is null or empty! Something is really wrong.", LineType.IrcCommand);
+				return null;
+			}
+
+			var response = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + rewardID + "&status=UNFULFILLED&sort=NEWEST", true, true);
+
+			if(response != null && response != "")
+			{
+				if (response.StartsWith("Error:"))
+				{
+					mainFormReference.ThreadSafeAddPreviewText("Error getting redeemed rewards for user!", LineType.IrcCommand);
+					mainFormReference.ThreadSafeAddPreviewText(response, LineType.IrcCommand);
+				}
+				else
+				{
+					var jsonParse = JObject.Parse(response);
+					var dataNode = jsonParse["data"];
+					int totalIDsToCancel = dataNode.Count() > 50 ? 50 : dataNode.Count();
+					if (totalIDsToCancel > 0)
+					{
+						var rewardsToUpdate = dataNode.Take(totalIDsToCancel).Where(x => x["user_id"].ToString() == userID).Select(y => y.ToObject<ChannelReward>()).ToArray();
+						return rewardsToUpdate;
+					}
+					return null;
+
+
+				}
+			}
+
+			return null;
+		}
+
+		public async void UpdateRedemptionStatus(MainForm mainFormReference, string RewardTypeID, string[] RewardRequestIDs, RedemptionStates redemptionState)
+		{
+			if (BroadcasterID == null | BroadcasterID == "")
+			{
+				mainFormReference.ThreadSafeAddPreviewText("Broadcaster ID is null or empty! Something is really wrong.", LineType.IrcCommand);
+				return;
+			}
+
+			string reformatIDs = "";
+
+			for (int i = 0; i < RewardRequestIDs.Length; i++)
+			{
+				if (i > 0)
+					reformatIDs += "&";
+				reformatIDs += "id=" + RewardRequestIDs[i];
+			}
+
+			var result = await PatchNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }), true);
+		}
+
+		public async Task<ChannelReward> CreateRewardAsync(RewardType rewardType)
 		{
 			{
 				int endTimer = 5;
@@ -258,7 +331,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				var content = new Dictionary<string, string>()
 				{
-					{ "title", "Send TTS message2"},
+					{"title", "Send TTS message2"},
 					{"cost", "500" },
 					{"is_enabled", "true" },
 					{"prompt", "Read message using TTS" },
@@ -273,7 +346,31 @@ namespace BasicTwitchSoundPlayer.IRC
 					var dataNode = jReader["data"].First;
 					if (dataNode["id"] != null)
 					{
-						var newReward = dataNode.ToObject<ChannelAward>();
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
+			else if(rewardType == RewardType.Sound)
+			{
+				var content = new Dictionary<string, string>()
+				{
+					{"title", "Play a sound2"},
+					{"cost", "230" },
+					{"is_enabled", "true" },
+					{"prompt", "Plays a sound from available list. Make sure, you meet chat role requirements before using the command." },
+					{"is_user_input_required", "true" },
+					{"should_redemptions_skip_request_queue", "false" }
+				};
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
 						return newReward;
 					}
 				}

@@ -80,23 +80,18 @@ namespace BasicTwitchSoundPlayer.SettingsForms
             this.Close();
         }
 
-        private void B_UseLastRewardID_Click(object sender, EventArgs e)
-        {
-            this.CustomRewardID = Logger.LastRewardID;
-        }
-
 		private void linkExplainLogic_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
             System.Diagnostics.Process.Start("https://github.com/SuiMachine/Basic-Twitch-Sound-Player/wiki/Text-to-speech");
 		}
 
-		private void B_VerifyPointsResponse_Click(object sender, EventArgs e)
+		private async void B_VerifyPointsResponse_Click(object sender, EventArgs e)
 		{
             IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
 
-            var broadcasterTask = apiConnection.GetBroadcasterIDAsync();
-            var VerifyRewardsTask = apiConnection.VerifyChannelRewardsAsync(mainFormReference, null, TB_CustomRewardID.Text);
-            MessageBox.Show("Results should be displayed in main chat window within less than 5s. (Sorry, that was an afterthought)", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await apiConnection.GetBroadcasterIDAsync();
+            await apiConnection.VerifyChannelRewardsAsync(mainFormReference, null, TB_CustomRewardID.Text);
+            MessageBox.Show("Results should be displayed in main chat window (Sorry, that was an afterthought)", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 		private void CBox_TTSLogic_SelectedIndexChanged(object sender, EventArgs e)

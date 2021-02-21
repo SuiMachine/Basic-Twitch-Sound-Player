@@ -118,14 +118,23 @@ namespace BasicTwitchSoundPlayer.IRC
                         if (programSettings.TTSLogic == TTSLogic.RewardIDAndCommand || programSettings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
                         {
                             var rewardID = e.Data.Tags["custom-reward-id"];
-                            Logger.LastRewardID = rewardID;
+                            msg.userID = e.Data.Tags["user-id"];
 
                             if (rewardID == programSettings.TTSRewardID)
+							{
                                 msg.msgType = MessageType.TTSReward;
+                                msg.RewardID = rewardID;
+                            }
                             else if (rewardID == programSettings.SoundRewardID)
+							{
                                 msg.msgType = MessageType.SoundReward;
+                                msg.RewardID = rewardID;
+                            }
                             else
+							{
                                 msg.msgType = MessageType.Normal;
+                                msg.RewardID = "";
+                            }
                         }
                         else
                             msg.msgType = MessageType.Normal;
@@ -184,7 +193,10 @@ namespace BasicTwitchSoundPlayer.IRC
                         {
                             if (FormattedMessage.rights >= programSettings.TTSRoleRequirement)
                             {
-                                SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
+                                if (SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true))
+                                    irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
+                                else
+                                    irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
                                 return true;
                             }
                             else
@@ -204,10 +216,14 @@ namespace BasicTwitchSoundPlayer.IRC
                             text = text.Remove(0, 1);
 
                         TwitchRightsEnum privilage = formattedMessage.rights;
-                        SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage, true);
+                        
+
+                        if (SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage, true))
+                            irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
+                        else
+                            irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
 
                         return true;
-
                     }
                 default:
                     if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))

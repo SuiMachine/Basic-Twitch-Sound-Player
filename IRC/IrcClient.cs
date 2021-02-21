@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Meebey.SmartIrc4net;
 using System.Linq;
+using System;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -12,9 +13,11 @@ namespace BasicTwitchSoundPlayer.IRC
 	struct ReadMessage
 	{
 		public string user;
+		public string userID;
 		public string message;
 		public BasicTwitchSoundPlayer.Structs.TwitchRightsEnum rights;
 		public BasicTwitchSoundPlayer.Structs.MessageType msgType;
+		public string RewardID;
 	}
 
 	class OldIRCClient
@@ -281,6 +284,13 @@ namespace BasicTwitchSoundPlayer.IRC
 		public void SaveIgnoredList()
 		{
 			File.WriteAllLines(@ignoredfile, ignorelist);
+		}
+
+		internal async void UpdateRedemptionStatus(ReadMessage formattedMessage, KrakenConnections.RedemptionStates redemptionStateToSet)
+		{
+			var rewards = await krakenConnection.GetUnredeemedRewardsForUser(parent, formattedMessage.RewardID, formattedMessage.userID);
+			parent.ThreadSafeAddPreviewText($"{(redemptionStateToSet == KrakenConnections.RedemptionStates.FULFILLED ? "Accepting" : "Denying")} requests for {formattedMessage.user}", LineType.IrcCommand);
+			krakenConnection.UpdateRedemptionStatus(parent, formattedMessage.RewardID, rewards.Select(x => x.id).ToArray(), redemptionStateToSet);
 		}
 		#endregion
 	}

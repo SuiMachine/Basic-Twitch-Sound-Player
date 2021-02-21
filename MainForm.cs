@@ -276,7 +276,7 @@ namespace BasicTwitchSoundPlayer
         #region SoundTree_Events
         private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter, _programSettings);
+            SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(this, soundDb.soundlist, PrefixCharacter, _programSettings);
             DialogResult res = scf.ShowDialog();
             if (res == DialogResult.OK)
             {

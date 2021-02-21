@@ -24,13 +24,15 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         public List<SoundEntry> Sounds;
         private PrivateSettings ProgramSettings;
         char PrefixCharacter;
+        private MainForm mainFormReference;
 
-        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter, PrivateSettings ProgramSettings)
+        public DB_Editor(MainForm mainFormReference, List<SoundEntry> Sounds, char PrefixCharacter, PrivateSettings ProgramSettings)
         {
             this.PrefixCharacter = PrefixCharacter;
             this.Sounds = Sounds;
             this.spreadsheetId = ProgramSettings.GoogleSpreadsheetID;
             this.ProgramSettings = ProgramSettings;
+            this.mainFormReference = mainFormReference;
             InitializeComponent();
         }
 
@@ -202,7 +204,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
         private void B_SoundPlayBackSettings_Click(object sender, EventArgs e)
         {
-            using (EditDialogues.SoundPlaybackSettingsDialog spsDialog = new EditDialogues.SoundPlaybackSettingsDialog(ProgramSettings))
+            using (EditDialogues.SoundPlaybackSettingsDialog spsDialog = new EditDialogues.SoundPlaybackSettingsDialog(mainFormReference, ProgramSettings))
             {
                 var result = spsDialog.ShowDialog();
                 if(result == DialogResult.OK)
