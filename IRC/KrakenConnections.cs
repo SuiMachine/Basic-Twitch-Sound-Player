@@ -220,7 +220,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								{
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
 
-									UpdateRedemptionStatus(mainForm, ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
+									UpdateRedemptionStatus(mainForm, soundredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
 								}
 							}
 						}
