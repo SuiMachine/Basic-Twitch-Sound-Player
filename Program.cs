@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer
 {
 	static class Program
 	{
+		static Mutex mutex;
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -16,7 +16,13 @@ namespace BasicTwitchSoundPlayer
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+
+			bool createdNew;
+			mutex = new Mutex(true, "BasicTwitchSoundPlayerMutex", out createdNew);
+			if (createdNew)
+				Application.Run(new MainForm());
+			else
+				Application.Exit();
 		}
 	}
 }
