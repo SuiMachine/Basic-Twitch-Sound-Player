@@ -1,13 +1,8 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using WebSocketSharp;
 
 namespace BasicTwitchSoundPlayer
@@ -24,7 +19,7 @@ namespace BasicTwitchSoundPlayer
 		private WebSocket client;
 		string currentVoice = "";
 		bool currentStatus = false;
-		List<string> VoicesAvailable = new List<string>();
+		Dictionary<string, string> VoicesAvailable = new Dictionary<string, string>();
 		Dictionary<string, string> ResponseHashes = new Dictionary<string, string>();
 
 		public bool ConnectedToVoiceMod { get; private set; }
@@ -193,7 +188,9 @@ namespace BasicTwitchSoundPlayer
 							{
 								if (voice["favorited"].Value<bool>())
 								{
-									VoicesAvailable.Add(voice["friendlyName"].Value<string>());
+									var id = voice["id"].Value<string>();
+									var friendlyName = voice["friendlyName"].Value<string>();
+									VoicesAvailable.Add(friendlyName, id);
 								}
 							}
 							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
@@ -217,11 +214,44 @@ namespace BasicTwitchSoundPlayer
 								{ "payload", new JObject() }
 							};
 							client.Send(disableRequest.ToString());
-							currentStatus = false;
 						}
 					}
 				}
 			}
+		}
+
+		public bool SetVoice(string voice)
+		{
+			if (Disposed)
+				return false;
+			if (currentVoice != voice && VoicesAvailable.TryGetValue(voice, out var voiceID))
+			{
+				if (!currentStatus)
+				{
+					var enableRequest = new JObject()
+					{
+							{ "action", "toggleVoiceChanger" },
+							{ "id", Guid.NewGuid().ToString() },
+							{ "payload", new JObject() }
+					};
+					client.Send(enableRequest.ToString());
+				}
+
+				var message = new JObject()
+				{
+					{ "action", "loadVoice" },
+					{ "id", Guid.NewGuid().ToString() },
+					{ "payload", new JObject()
+						{
+							{ "voiceID", voiceID }
+						}
+					}
+				};
+
+				client.Send(message.ToString());
+				return true;
+			}
+			return false;
 		}
 
 		private void Client_OnOpen(object sender, EventArgs e)
