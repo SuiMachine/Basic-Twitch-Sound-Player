@@ -1,0 +1,250 @@
+﻿using BasicTwitchSoundPlayer.IRC;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using WebSocketSharp;
+
+namespace BasicTwitchSoundPlayer
+{
+	public class VoiceModHandling : IDisposable
+	{
+		public bool Disposed { get; private set; }
+		private string VoiceModAPIKey;
+
+		private IRCBot iRCBot;
+		private PrivateSettings programSettings;
+		private MainForm parent;
+
+		private WebSocket client;
+		string currentVoice = "";
+		bool currentStatus = false;
+		List<string> VoicesAvailable = new List<string>();
+		Dictionary<string, string> ResponseHashes = new Dictionary<string, string>();
+
+		public bool ConnectedToVoiceMod { get; private set; }
+
+		public VoiceModHandling(IRCBot iRCBot, PrivateSettings programSettings, MainForm parent)
+		{
+			this.iRCBot = iRCBot;
+			this.VoiceModAPIKey = programSettings.VoiceModAPIKey;
+			this.programSettings = programSettings;
+			this.parent = parent;
+
+			Disposed = false;
+			parent.ThreadSafeAddPreviewText("VoiceMod key configured - let's see if we can connect...", LineType.IrcCommand);
+			ConnectToVoiceMod();
+		}
+
+		private void ConnectToVoiceMod()
+		{
+			try
+			{
+				client = new WebSocket(programSettings.VoiceModAdressPort);
+				client.OnMessage += Client_OnMessage;
+				client.OnOpen += Client_OnOpen;
+				client.OnClose += Client_OnClose;
+				client.Connect();
+
+				var message = new JObject()
+				{
+					{ "id", "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6" },
+					{ "action", "registerClient" },
+					{ "payload", new JObject()
+						{
+							{ "clientKey", VoiceModAPIKey }
+						}
+					}
+				};
+
+				client.Send(message.ToString());
+			}
+			catch (Exception ex)
+			{
+				parent.ThreadSafeAddPreviewText($"Failed to connect to voicemod: {ex}", LineType.IrcCommand);
+				ConnectedToVoiceMod = false;
+				Dispose();
+			}
+		}
+
+		private void Client_OnMessage(object sender, MessageEventArgs e)
+		{
+			//Should have probably used enums......................
+			//Oh well.
+
+			var json = JObject.Parse(e.Data);
+			var msg = json["msg"];
+			if (msg != null)
+			{
+				var value = msg.Value<string>();
+				parent.ThreadSafeAddPreviewText($"VoiceMod response: {value}", LineType.IrcCommand);
+			}
+			else
+			{
+				var action = json["action"];
+				if (action != null)
+				{
+					var value = action.Value<string>();
+					if (value == "registerClient")
+					{
+						var statusCode = json["payload"]?["status"]?["code"] ?? null;
+						if (statusCode != null)
+						{
+							var code = statusCode.Value<int>();
+							//Successfully registered
+							if (code == 200)
+							{
+								ConnectedToVoiceMod = true;
+								parent.ThreadSafeAddPreviewText($"Client registered in VoiceMod", LineType.IrcCommand);
+
+								var voicedRequest = new JObject()
+								{
+									{ "action", "getVoices" },
+									{ "id", Guid.NewGuid().ToString() },
+									{ "payload", new JObject() }
+								};
+
+								client.Send(voicedRequest.ToString());
+
+								var message = new JObject()
+								{
+									{ "action", "loadVoice" },
+									{ "id", Guid.NewGuid().ToString() },
+									{ "payload", new JObject()
+										{
+											{ "voiceID", "nofx" }
+										}
+									}
+								};
+
+								client.Send(message.ToString());
+							}
+							else
+							{
+								parent.ThreadSafeAddPreviewText($"Failed to register VoiceMod client - response code was {code}", LineType.IrcCommand);
+							}
+						}
+						else
+						{
+							parent.ThreadSafeAddPreviewText($"Failed to register VoiceMod client - there was no status code?", LineType.IrcCommand);
+						}
+					}
+					else if (value == "voiceChangerDisabledEvent")
+					{
+						currentStatus = false;
+						Debug.WriteLine($"Set current status to {currentStatus}");
+					}
+					else if (value == "voiceChangerEnabledEvent")
+					{
+						currentStatus = true;
+						Debug.WriteLine($"Set current status to {currentStatus}");
+					}
+					else if (value == "voiceLoadedEvent")
+					{
+						var payload = json["payload"];
+						if (payload != null)
+						{
+							var voiceId = payload["voiceId"];
+							if (voiceId != null)
+							{
+								currentVoice = voiceId.Value<string>();
+								if (currentVoice == "nofx")
+								{
+									var statusRequest = new JObject()
+									{
+										{ "action", "getVoiceChangerStatus" },
+										{ "id", Guid.NewGuid().ToString() },
+										{ "payload", new JObject() }
+									};
+									client.Send(statusRequest.ToString());
+								}
+								else
+								{
+									parent.ThreadSafeAddPreviewText($"Set VoiceMod to \"{voiceId.Value<string>()}\"", LineType.IrcCommand);
+								}
+							}
+							else
+							{
+								parent.ThreadSafeAddPreviewText($"Set VoiceMod to unknown voice?", LineType.IrcCommand);
+							}
+						}
+						else
+						{
+							parent.ThreadSafeAddPreviewText($"Empty payload?", LineType.IrcCommand);
+						}
+
+					}
+					else if (value == "backgroundEffectsEnabledEvent" || value == "hearMySelfDisabledEvent")
+					{
+						//Just don't do anything... unless....
+					}
+					else if (value == "getVoices")
+					{
+						var voices = json["payload"]?["voices"];
+						if (voices != null)
+						{
+							VoicesAvailable.Clear();
+							foreach (var voice in voices)
+							{
+								if (voice["favorited"].Value<bool>())
+								{
+									VoicesAvailable.Add(voice["friendlyName"].Value<string>());
+								}
+							}
+							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
+						}
+						else
+							parent.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.IrcCommand);
+					}
+				}
+				else if (json["actionType"] != null)
+				{
+					var value = json["actionType"].Value<string>();
+					if (value == "toggleVoiceChanger")
+					{
+						var newValue = json["actionObject"]?["value"];
+						if (newValue != null && newValue.Value<bool>() == true && currentVoice == "nofx")
+						{
+							var disableRequest = new JObject()
+							{
+								{ "action", "toggleVoiceChanger" },
+								{ "id", Guid.NewGuid().ToString() },
+								{ "payload", new JObject() }
+							};
+							client.Send(disableRequest.ToString());
+							currentStatus = false;
+						}
+					}
+				}
+			}
+		}
+
+		private void Client_OnOpen(object sender, EventArgs e)
+		{
+			parent.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
+		}
+
+		private void Client_OnClose(object sender, CloseEventArgs e)
+		{
+			parent.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.IrcCommand);
+		}
+
+		public void Dispose()
+		{
+			if (!this.Disposed)
+			{
+				client.Close();
+				client.OnMessage -= Client_OnMessage;
+				client.OnOpen -= Client_OnOpen;
+				client.OnClose -= Client_OnClose;
+
+				this.Disposed = true;
+			}
+		}
+	}
+}
