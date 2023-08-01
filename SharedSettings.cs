@@ -108,6 +108,12 @@ namespace BasicTwitchSoundPlayer
 		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
 		[XmlElement]
 		public string SoundRewardID { get; set; }
+
+		[XmlElement]
+		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
+		[XmlElement]
+		public string VoiceModRewardID { get; set; }
+
 		#endregion
 
 		public PrivateSettings()
@@ -132,6 +138,8 @@ namespace BasicTwitchSoundPlayer
 			TTSLogic = TTSLogic.RewardIDAndCommand;
 			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
+			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints;
+			VoiceModRewardID = "";
 		}
 
 		#region Load/Save

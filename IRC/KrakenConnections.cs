@@ -15,7 +15,8 @@ namespace BasicTwitchSoundPlayer.IRC
 		public enum RewardType
 		{
 			Sound,
-			TTS
+			TTS,
+			VoiceMod
 		}
 
 		public enum RedemptionStates
@@ -359,6 +360,30 @@ namespace BasicTwitchSoundPlayer.IRC
 					{"cost", "230" },
 					{"is_enabled", "true" },
 					{"prompt", "Plays a sound from available list. Make sure, you meet chat role requirements before using the command." },
+					{"is_user_input_required", "true" },
+					{"should_redemptions_skip_request_queue", "false" }
+				};
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
+			else if(rewardType == RewardType.VoiceMod)
+			{
+				var content = new Dictionary<string, string>()
+				{
+					{"title", "Set voice for 30 seconds"},
+					{"cost", "750" },
+					{"is_enabled", "true" },
+					{"prompt", "Sets a voice." },
 					{"is_user_input_required", "true" },
 					{"should_redemptions_skip_request_queue", "false" }
 				};

@@ -53,6 +53,11 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.TB_VoiceModApiKey = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
+			this.CB_VoiceModRedemptionLogic = new System.Windows.Forms.ComboBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.B_CreateVoiceModReward = new System.Windows.Forms.Button();
+			this.TB_VoiceModRewardID = new System.Windows.Forms.TextBox();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -72,11 +77,12 @@
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 4;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 66F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 348);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 171F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 118F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(368, 369);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -87,17 +93,18 @@
 			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 296);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 329);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 60);
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(362, 40);
 			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// B_Save
 			// 
 			this.B_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_Save.Location = new System.Drawing.Point(36, 18);
+			this.B_Save.Location = new System.Drawing.Point(53, 8);
 			this.B_Save.Name = "B_Save";
 			this.B_Save.Size = new System.Drawing.Size(75, 23);
 			this.B_Save.TabIndex = 0;
@@ -108,7 +115,7 @@
 			// B_Cancel
 			// 
 			this.B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_Cancel.Location = new System.Drawing.Point(183, 18);
+			this.B_Cancel.Location = new System.Drawing.Point(234, 8);
 			this.B_Cancel.Name = "B_Cancel";
 			this.B_Cancel.Size = new System.Drawing.Size(75, 23);
 			this.B_Cancel.TabIndex = 1;
@@ -133,12 +140,12 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(294, 190);
+			this.panel1.Size = new System.Drawing.Size(362, 165);
 			this.panel1.TabIndex = 1;
 			// 
 			// B_GetLoginData
 			// 
-			this.B_GetLoginData.Location = new System.Drawing.Point(93, 162);
+			this.B_GetLoginData.Location = new System.Drawing.Point(221, 136);
 			this.B_GetLoginData.Name = "B_GetLoginData";
 			this.B_GetLoginData.Size = new System.Drawing.Size(132, 23);
 			this.B_GetLoginData.TabIndex = 11;
@@ -170,7 +177,7 @@
 			// 
 			this.TB_Username.Location = new System.Drawing.Point(93, 61);
 			this.TB_Username.Name = "TB_Username";
-			this.TB_Username.Size = new System.Drawing.Size(198, 20);
+			this.TB_Username.Size = new System.Drawing.Size(260, 20);
 			this.TB_Username.TabIndex = 8;
 			this.TB_Username.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
@@ -178,7 +185,7 @@
 			// 
 			this.TB_ChannelToJoin.Location = new System.Drawing.Point(93, 136);
 			this.TB_ChannelToJoin.Name = "TB_ChannelToJoin";
-			this.TB_ChannelToJoin.Size = new System.Drawing.Size(198, 20);
+			this.TB_ChannelToJoin.Size = new System.Drawing.Size(122, 20);
 			this.TB_ChannelToJoin.TabIndex = 7;
 			this.TB_ChannelToJoin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
@@ -187,7 +194,7 @@
 			this.TB_Password.Enabled = false;
 			this.TB_Password.Location = new System.Drawing.Point(93, 87);
 			this.TB_Password.Name = "TB_Password";
-			this.TB_Password.Size = new System.Drawing.Size(198, 20);
+			this.TB_Password.Size = new System.Drawing.Size(260, 20);
 			this.TB_Password.TabIndex = 6;
 			this.TB_Password.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.TB_Password.UseSystemPasswordChar = true;
@@ -197,7 +204,7 @@
 			this.TB_Port.Enabled = false;
 			this.TB_Port.Location = new System.Drawing.Point(93, 35);
 			this.TB_Port.Name = "TB_Port";
-			this.TB_Port.Size = new System.Drawing.Size(198, 20);
+			this.TB_Port.Size = new System.Drawing.Size(260, 20);
 			this.TB_Port.TabIndex = 5;
 			this.TB_Port.Text = "6667";
 			this.TB_Port.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -233,7 +240,7 @@
 			// 
 			this.TB_Server.Location = new System.Drawing.Point(93, 9);
 			this.TB_Server.Name = "TB_Server";
-			this.TB_Server.Size = new System.Drawing.Size(198, 20);
+			this.TB_Server.Size = new System.Drawing.Size(260, 20);
 			this.TB_Server.TabIndex = 1;
 			this.TB_Server.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
@@ -251,16 +258,16 @@
 			this.panel2.Controls.Add(this.TB_GoogleSpreadsheetID);
 			this.panel2.Controls.Add(this.label6);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(3, 199);
+			this.panel2.Location = new System.Drawing.Point(3, 174);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(294, 29);
+			this.panel2.Size = new System.Drawing.Size(362, 31);
 			this.panel2.TabIndex = 2;
 			// 
 			// TB_GoogleSpreadsheetID
 			// 
 			this.TB_GoogleSpreadsheetID.Location = new System.Drawing.Point(101, 3);
 			this.TB_GoogleSpreadsheetID.Name = "TB_GoogleSpreadsheetID";
-			this.TB_GoogleSpreadsheetID.Size = new System.Drawing.Size(190, 20);
+			this.TB_GoogleSpreadsheetID.Size = new System.Drawing.Size(252, 20);
 			this.TB_GoogleSpreadsheetID.TabIndex = 1;
 			// 
 			// label6
@@ -274,21 +281,26 @@
 			// 
 			// panel3
 			// 
+			this.panel3.Controls.Add(this.TB_VoiceModRewardID);
+			this.panel3.Controls.Add(this.B_CreateVoiceModReward);
+			this.panel3.Controls.Add(this.label10);
+			this.panel3.Controls.Add(this.label9);
+			this.panel3.Controls.Add(this.CB_VoiceModRedemptionLogic);
 			this.panel3.Controls.Add(this.TB_VoiceMod_AdressPort);
 			this.panel3.Controls.Add(this.label8);
 			this.panel3.Controls.Add(this.TB_VoiceModApiKey);
 			this.panel3.Controls.Add(this.label7);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel3.Location = new System.Drawing.Point(3, 234);
+			this.panel3.Location = new System.Drawing.Point(3, 211);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(294, 56);
+			this.panel3.Size = new System.Drawing.Size(362, 112);
 			this.panel3.TabIndex = 3;
 			// 
 			// TB_VoiceMod_AdressPort
 			// 
 			this.TB_VoiceMod_AdressPort.Location = new System.Drawing.Point(101, 29);
 			this.TB_VoiceMod_AdressPort.Name = "TB_VoiceMod_AdressPort";
-			this.TB_VoiceMod_AdressPort.Size = new System.Drawing.Size(190, 20);
+			this.TB_VoiceMod_AdressPort.Size = new System.Drawing.Size(252, 20);
 			this.TB_VoiceMod_AdressPort.TabIndex = 6;
 			// 
 			// label8
@@ -305,7 +317,7 @@
 			this.TB_VoiceModApiKey.Location = new System.Drawing.Point(101, 3);
 			this.TB_VoiceModApiKey.Name = "TB_VoiceModApiKey";
 			this.TB_VoiceModApiKey.PasswordChar = '*';
-			this.TB_VoiceModApiKey.Size = new System.Drawing.Size(190, 20);
+			this.TB_VoiceModApiKey.Size = new System.Drawing.Size(252, 20);
 			this.TB_VoiceModApiKey.TabIndex = 3;
 			// 
 			// label7
@@ -317,11 +329,56 @@
 			this.label7.TabIndex = 2;
 			this.label7.Text = "Voice Mod Key";
 			// 
+			// CB_VoiceModRedemptionLogic
+			// 
+			this.CB_VoiceModRedemptionLogic.FormattingEnabled = true;
+			this.CB_VoiceModRedemptionLogic.Location = new System.Drawing.Point(101, 55);
+			this.CB_VoiceModRedemptionLogic.Name = "CB_VoiceModRedemptionLogic";
+			this.CB_VoiceModRedemptionLogic.Size = new System.Drawing.Size(252, 21);
+			this.CB_VoiceModRedemptionLogic.TabIndex = 7;
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(9, 58);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(92, 13);
+			this.label9.TabIndex = 8;
+			this.label9.Text = "Redemption logic:";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(9, 86);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(61, 13);
+			this.label10.TabIndex = 9;
+			this.label10.Text = "Reward ID:";
+			// 
+			// B_CreateVoiceModReward
+			// 
+			this.B_CreateVoiceModReward.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.B_CreateVoiceModReward.Location = new System.Drawing.Point(278, 81);
+			this.B_CreateVoiceModReward.Name = "B_CreateVoiceModReward";
+			this.B_CreateVoiceModReward.Size = new System.Drawing.Size(75, 23);
+			this.B_CreateVoiceModReward.TabIndex = 10;
+			this.B_CreateVoiceModReward.Text = "Create";
+			this.B_CreateVoiceModReward.UseVisualStyleBackColor = true;
+			this.B_CreateVoiceModReward.Click += new System.EventHandler(this.B_CreateVoiceModReward_Click);
+			// 
+			// TB_VoiceModRewardID
+			// 
+			this.TB_VoiceModRewardID.Location = new System.Drawing.Point(76, 82);
+			this.TB_VoiceModRewardID.Name = "TB_VoiceModRewardID";
+			this.TB_VoiceModRewardID.PasswordChar = '*';
+			this.TB_VoiceModRewardID.Size = new System.Drawing.Size(190, 20);
+			this.TB_VoiceModRewardID.TabIndex = 11;
+			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(300, 348);
+			this.ClientSize = new System.Drawing.Size(368, 369);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -367,5 +424,10 @@
 		private System.Windows.Forms.Panel panel3;
 		private System.Windows.Forms.TextBox TB_VoiceMod_AdressPort;
 		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.TextBox TB_VoiceModRewardID;
+		private System.Windows.Forms.Button B_CreateVoiceModReward;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.ComboBox CB_VoiceModRedemptionLogic;
 	}
 }
