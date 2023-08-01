@@ -20,7 +20,7 @@ namespace BasicTwitchSoundPlayer
 		string currentVoice = "";
 		bool currentStatus = false;
 		Dictionary<string, string> VoicesAvailable = new Dictionary<string, string>();
-		Dictionary<string, string> ResponseHashes = new Dictionary<string, string>();
+		System.Timers.Timer timer;
 
 		public bool ConnectedToVoiceMod { get; private set; }
 
@@ -224,7 +224,35 @@ namespace BasicTwitchSoundPlayer
 		{
 			if (Disposed)
 				return false;
-			if (currentVoice != voice && VoicesAvailable.TryGetValue(voice, out var voiceID))
+			if (voice == null || voice == "nofx")
+			{
+				if (currentStatus)
+				{
+					var enableRequest = new JObject()
+					{
+							{ "action", "toggleVoiceChanger" },
+							{ "id", Guid.NewGuid().ToString() },
+							{ "payload", new JObject() }
+					};
+					client.Send(enableRequest.ToString());
+				}
+				var message = new JObject()
+				{
+					{ "action", "loadVoice" },
+					{ "id", Guid.NewGuid().ToString() },
+					{ "payload", new JObject()
+						{
+							{ "voiceID", "nofx" }
+						}
+					}
+				};
+				client.Send(message.ToString());
+
+				currentVoice = "nofx";
+				if (timer != null)
+					timer.Stop();
+			}
+			else if (currentVoice != voice && VoicesAvailable.TryGetValue(voice, out var voiceID))
 			{
 				if (!currentStatus)
 				{
@@ -248,10 +276,25 @@ namespace BasicTwitchSoundPlayer
 					}
 				};
 
+				currentVoice = voice;
 				client.Send(message.ToString());
+				if (timer != null)
+				{
+					timer.Stop();
+					timer.Dispose();
+				}
+
+				timer = new System.Timers.Timer(30 * 1000);
+				timer.Start();
+				timer.Elapsed += ReturnToDefault;
 				return true;
 			}
 			return false;
+		}
+
+		private void ReturnToDefault(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			SetVoice(null);
 		}
 
 		private void Client_OnOpen(object sender, EventArgs e)

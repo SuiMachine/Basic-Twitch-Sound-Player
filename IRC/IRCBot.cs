@@ -136,6 +136,11 @@ namespace BasicTwitchSoundPlayer.IRC
 								msg.msgType = MessageType.SoundReward;
 								msg.RewardID = rewardID;
 							}
+							else if(rewardID == programSettings.VoiceModRewardID)
+							{
+								msg.msgType = MessageType.VoiceModReward;
+								msg.RewardID = rewardID;
+							}
 							else
 							{
 								msg.msgType = MessageType.Normal;
@@ -228,6 +233,24 @@ namespace BasicTwitchSoundPlayer.IRC
 							irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
 						else
 							irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
+
+						return true;
+					}
+				case MessageType.VoiceModReward:
+					{
+						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+						if (programSettings.VoiceModRedemptionLogic == VoiceModLogic.Legacy)
+						{
+							parent.ThreadSafeAddPreviewText("Not implemented - tell me to add it, if you want", LineType.IrcCommand);
+						}
+						else
+						{
+							var trim = formattedMessage.message.Trim();
+							if(voiceModHandler.SetVoice(trim))
+								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
+							else
+								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
+						}
 
 						return true;
 					}

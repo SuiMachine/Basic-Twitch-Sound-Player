@@ -207,6 +207,9 @@ namespace BasicTwitchSoundPlayer
 				_programSettings.VoiceModAPIKey = form.VoiceModApiKey;
 				_programSettings.VoiceModAdressPort = form.VoiceModAdressPort;
 
+				_programSettings.VoiceModRedemptionLogic = form.VoiceModRedemptionLogic;
+				_programSettings.VoiceModRewardID = form.VoiceModRewardID;
+
 				_programSettings.SaveSettings();
 				ReloadBot();
 			}

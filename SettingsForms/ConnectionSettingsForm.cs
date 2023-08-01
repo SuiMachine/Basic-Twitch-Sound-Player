@@ -25,7 +25,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public string VoiceModApiKey { get; set; }
 		public string VoiceModAdressPort { get; set; }
 		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
-
 		public string VoiceModRewardID { get; set; }
 
 
