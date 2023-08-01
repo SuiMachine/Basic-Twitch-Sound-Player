@@ -1,13 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.WebSockets;
 using System.Security.Principal;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
@@ -25,7 +21,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public string SpreadsheetID { get; set; }
 		public string VoiceModApiKey { get; set; }
 		public string VoiceModAdressPort { get; set; }
-
 
 		public ConnectionSettingsForm(MainForm _parent, PrivateSettings _settingsRef)
 		{
@@ -174,69 +169,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				{
 					MessageBox.Show("Failed to obtain new login data!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
-			}
-		}
-
-		private Task voiceModRegisteringTask;
-
-		private void B_Register_Click(object sender, EventArgs e)
-		{
-			if (voiceModRegisteringTask != null && voiceModRegisteringTask.Status == TaskStatus.Running)
-				return;
-
-			voiceModRegisteringTask = Task.Run(RegisterVoiceModTask);
-		}
-
-		private async Task RegisterVoiceModTask()
-		{
-			try
-			{
-				using (var client = new System.Net.WebSockets.ClientWebSocket())
-				{
-					var url = new Uri(VoiceModAdressPort);
-					var cancelationToken = new CancellationTokenSource();
-					cancelationToken.CancelAfter(5000);
-					await client.ConnectAsync(url, cancelationToken.Token);
-
-					var message = new JObject()
-					{
-						{ "id", "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6" },
-						{ "action", "registerClient" },
-						{ "payload", new JObject()
-							{
-								{ "clientKey", VoiceModApiKey }
-							}
-						}
-
-					};
-
-
-					ArraySegment<byte> toSend = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message.ToString()));
-					await client.SendAsync(toSend, System.Net.WebSockets.WebSocketMessageType.Text, true, cancelationToken.Token);
-
-					var receiveBuffer = new byte[512];
-					var offset = 0;
-					var dataPerPacket = 10;
-
-					while (true)
-					{
-						ArraySegment<byte> bytesReceived = new ArraySegment<byte>(receiveBuffer, offset, dataPerPacket);
-						WebSocketReceiveResult result = await client.ReceiveAsync(bytesReceived, cancelationToken.Token);
-						//Partial data received
-						offset += result.Count;
-						if (result.EndOfMessage)
-							break;
-					}
-					MessageBox.Show(Encoding.UTF8.GetString(receiveBuffer, 0, offset), "Responded with...", MessageBoxButtons.OK);
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			finally
-			{
-				voiceModRegisteringTask = null;
 			}
 		}
 	}

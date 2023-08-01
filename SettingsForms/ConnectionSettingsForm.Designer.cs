@@ -46,14 +46,13 @@
 			this.TB_Server = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.TB_VoiceModApiKey = new System.Windows.Forms.TextBox();
-			this.label7 = new System.Windows.Forms.Label();
 			this.TB_GoogleSpreadsheetID = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.panel3 = new System.Windows.Forms.Panel();
-			this.B_Register = new System.Windows.Forms.Button();
-			this.label8 = new System.Windows.Forms.Label();
 			this.TB_VoiceMod_AdressPort = new System.Windows.Forms.TextBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.TB_VoiceModApiKey = new System.Windows.Forms.TextBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -75,9 +74,9 @@
 			this.tableLayoutPanel1.RowCount = 4;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 196F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 422);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 66F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 348);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -88,17 +87,17 @@
 			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 354);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 296);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 65);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 60);
 			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// B_Save
 			// 
 			this.B_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_Save.Location = new System.Drawing.Point(36, 21);
+			this.B_Save.Location = new System.Drawing.Point(36, 18);
 			this.B_Save.Name = "B_Save";
 			this.B_Save.Size = new System.Drawing.Size(75, 23);
 			this.B_Save.TabIndex = 0;
@@ -109,7 +108,7 @@
 			// B_Cancel
 			// 
 			this.B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_Cancel.Location = new System.Drawing.Point(183, 21);
+			this.B_Cancel.Location = new System.Drawing.Point(183, 18);
 			this.B_Cancel.Name = "B_Cancel";
 			this.B_Cancel.Size = new System.Drawing.Size(75, 23);
 			this.B_Cancel.TabIndex = 1;
@@ -257,23 +256,6 @@
 			this.panel2.Size = new System.Drawing.Size(294, 29);
 			this.panel2.TabIndex = 2;
 			// 
-			// TB_VoiceModApiKey
-			// 
-			this.TB_VoiceModApiKey.Location = new System.Drawing.Point(101, 3);
-			this.TB_VoiceModApiKey.Name = "TB_VoiceModApiKey";
-			this.TB_VoiceModApiKey.PasswordChar = '*';
-			this.TB_VoiceModApiKey.Size = new System.Drawing.Size(190, 20);
-			this.TB_VoiceModApiKey.TabIndex = 3;
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(9, 6);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(79, 13);
-			this.label7.TabIndex = 2;
-			this.label7.Text = "Voice Mod Key";
-			// 
 			// TB_GoogleSpreadsheetID
 			// 
 			this.TB_GoogleSpreadsheetID.Location = new System.Drawing.Point(101, 3);
@@ -294,24 +276,20 @@
 			// 
 			this.panel3.Controls.Add(this.TB_VoiceMod_AdressPort);
 			this.panel3.Controls.Add(this.label8);
-			this.panel3.Controls.Add(this.B_Register);
 			this.panel3.Controls.Add(this.TB_VoiceModApiKey);
 			this.panel3.Controls.Add(this.label7);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel3.Location = new System.Drawing.Point(3, 234);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(294, 114);
+			this.panel3.Size = new System.Drawing.Size(294, 56);
 			this.panel3.TabIndex = 3;
 			// 
-			// B_Register
+			// TB_VoiceMod_AdressPort
 			// 
-			this.B_Register.Location = new System.Drawing.Point(183, 70);
-			this.B_Register.Name = "B_Register";
-			this.B_Register.Size = new System.Drawing.Size(75, 23);
-			this.B_Register.TabIndex = 4;
-			this.B_Register.Text = "Register";
-			this.B_Register.UseVisualStyleBackColor = true;
-			this.B_Register.Click += new System.EventHandler(this.B_Register_Click);
+			this.TB_VoiceMod_AdressPort.Location = new System.Drawing.Point(101, 29);
+			this.TB_VoiceMod_AdressPort.Name = "TB_VoiceMod_AdressPort";
+			this.TB_VoiceMod_AdressPort.Size = new System.Drawing.Size(190, 20);
+			this.TB_VoiceMod_AdressPort.TabIndex = 6;
 			// 
 			// label8
 			// 
@@ -322,18 +300,28 @@
 			this.label8.TabIndex = 5;
 			this.label8.Text = "Adress / Port";
 			// 
-			// TB_VoiceMod_AdressPort
+			// TB_VoiceModApiKey
 			// 
-			this.TB_VoiceMod_AdressPort.Location = new System.Drawing.Point(101, 29);
-			this.TB_VoiceMod_AdressPort.Name = "TB_VoiceMod_AdressPort";
-			this.TB_VoiceMod_AdressPort.Size = new System.Drawing.Size(190, 20);
-			this.TB_VoiceMod_AdressPort.TabIndex = 6;
+			this.TB_VoiceModApiKey.Location = new System.Drawing.Point(101, 3);
+			this.TB_VoiceModApiKey.Name = "TB_VoiceModApiKey";
+			this.TB_VoiceModApiKey.PasswordChar = '*';
+			this.TB_VoiceModApiKey.Size = new System.Drawing.Size(190, 20);
+			this.TB_VoiceModApiKey.TabIndex = 3;
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(9, 6);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(79, 13);
+			this.label7.TabIndex = 2;
+			this.label7.Text = "Voice Mod Key";
 			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(300, 422);
+			this.ClientSize = new System.Drawing.Size(300, 348);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -377,7 +365,6 @@
 		private System.Windows.Forms.TextBox TB_VoiceModApiKey;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.Button B_Register;
 		private System.Windows.Forms.TextBox TB_VoiceMod_AdressPort;
 		private System.Windows.Forms.Label label8;
 	}
