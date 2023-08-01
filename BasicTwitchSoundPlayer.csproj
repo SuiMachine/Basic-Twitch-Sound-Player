@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="SoundDatabaseEditor\GoogleSheetsExport.cs" />
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
+    <Compile Include="VoiceMod\VoiceModStructs.cs" />
     <Compile Include="VSS\Dialogs\AddEditVSSGroup.cs">
       <SubType>Form</SubType>
     </Compile>

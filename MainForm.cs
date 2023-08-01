@@ -204,6 +204,8 @@ namespace BasicTwitchSoundPlayer
 				_programSettings.TwitchPassword = form.Password;
 				_programSettings.TwitchChannelToJoin = form.ChannelToJoin;
 				_programSettings.GoogleSpreadsheetID = form.SpreadsheetID;
+				_programSettings.VoiceModAPIKey = form.VoiceModApiKey;
+				_programSettings.VoiceModAdressPort = form.VoiceModAdressPort;
 
 				_programSettings.SaveSettings();
 				ReloadBot();

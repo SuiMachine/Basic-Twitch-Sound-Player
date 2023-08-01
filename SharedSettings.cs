@@ -93,6 +93,10 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string GoogleSpreadsheetID { get; set; }
 		[XmlElement]
+		public string VoiceModAPIKey { get; set; }
+		[XmlElement]
+		public string VoiceModAdressPort { get; set; }
+		[XmlElement]
 		public string VoiceSynthesizer { get; set; }
 		[XmlElement]
 		public string TTSRewardID { get; set; }
@@ -119,6 +123,8 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
+			VoiceModAPIKey = "";
+			VoiceModAdressPort = "ws://localhost:59129/v1";
 			GoogleSpreadsheetID = "";
 			VoiceSynthesizer = "";
 			TTSRewardID = "";

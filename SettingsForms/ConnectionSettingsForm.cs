@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Speech.Synthesis;
+using System.Threading;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
 {
@@ -20,6 +21,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public string Password { get; set; }
 		public string ChannelToJoin { get; set; }
 		public string SpreadsheetID { get; set; }
+		public string VoiceModApiKey { get; set; }
+		public string VoiceModAdressPort { get; set; }
+
 
 		public ConnectionSettingsForm(MainForm _parent, PrivateSettings _settingsRef)
 		{
@@ -27,17 +31,21 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this._parent = _parent;
 			this._settingsRef = _settingsRef;
 
-			this.TB_Server.DataBindings.Add("Text", this, "Server", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_Username.DataBindings.Add("Text", this, "Username", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_Password.DataBindings.Add("Text", this, "Password", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_ChannelToJoin.DataBindings.Add("Text", this, "ChannelToJoin", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_GoogleSpreadsheetID.DataBindings.Add("Text", this, "SpreadsheetID", false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_Server.DataBindings.Add("Text", this, nameof(Server), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_Username.DataBindings.Add("Text", this, nameof(Username), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_Password.DataBindings.Add("Text", this, nameof(Password), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_ChannelToJoin.DataBindings.Add("Text", this, nameof(ChannelToJoin), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_GoogleSpreadsheetID.DataBindings.Add("Text", this, nameof(SpreadsheetID), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_VoiceModApiKey.DataBindings.Add("Text", this, nameof(VoiceModApiKey), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_VoiceMod_AdressPort.DataBindings.Add("Text", this, nameof(VoiceModAdressPort), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			this.Server = _settingsRef.TwitchServer;
 			this.Username = _settingsRef.TwitchUsername;
 			this.Password = _settingsRef.TwitchPassword;
 			this.ChannelToJoin = _settingsRef.TwitchChannelToJoin;
 			this.SpreadsheetID = _settingsRef.GoogleSpreadsheetID;
+			this.VoiceModApiKey = _settingsRef.VoiceModAPIKey;
+			this.VoiceModAdressPort = _settingsRef.VoiceModAdressPort;
 		}
 
 		private void CloseHttpListener()
@@ -164,6 +172,37 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				{
 					MessageBox.Show("Failed to obtain new login data!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
+			}
+		}
+
+		private void B_Register_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				using(var client = new System.Net.WebSockets.ClientWebSocket())
+				{
+					var url = new Uri(VoiceModAdressPort);
+					var canceledationTokenTimeout = new CancellationTokenSource();
+					canceledationTokenTimeout.CancelAfter(5000);
+					var task = client.ConnectAsync(url, canceledationTokenTimeout.Token);
+
+					var message = new Newtonsoft.Json.Linq.JArray();
+					message["id"] = "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6";
+					message["action"] = "registerClient";
+					message["payload"] = new Newtonsoft.Json.Linq.JObject()
+					{
+					};
+
+					var stringMessage = message.ToString();
+
+					task.Wait();
+					var result = task.IsCompleted;
+
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 	}
