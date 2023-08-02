@@ -245,7 +245,7 @@ namespace BasicTwitchSoundPlayer.IRC
 						}
 						else
 						{
-							var trim = formattedMessage.message.Trim();
+							var trim = formattedMessage.message.Replace("\"", "").Trim();
 							if(voiceModHandler.SetVoice(trim))
 								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
 							else

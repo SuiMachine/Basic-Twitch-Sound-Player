@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using WebSocketSharp;
 
 namespace BasicTwitchSoundPlayer
@@ -194,6 +195,7 @@ namespace BasicTwitchSoundPlayer
 								}
 							}
 							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
+							parent.ThreadSafeAddPreviewText($"Voiced available: {string.Join(",", VoicesAvailable.Select(x => x.Key))}", LineType.IrcCommand);
 						}
 						else
 							parent.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.IrcCommand);
