@@ -70,10 +70,10 @@ namespace BasicTwitchSoundPlayer
 		private static PrivateSettings m_Instance;
 		public static PrivateSettings GetInstance()
 		{
-			if(m_Instance == null)
-			{
+			if (m_Instance == null)
+				m_Instance = LoadSettings();
 
-			}
+			return m_Instance;
 		}
 
 		#region Properties
@@ -138,13 +138,13 @@ namespace BasicTwitchSoundPlayer
 		}
 
 		#region Load/Save
-		public static PrivateSettings LoadSettings()
+		private static PrivateSettings LoadSettings()
 		{
 			if (File.Exists(CONFIGFILE))
 			{
 				PrivateSettings obj;
 				XmlSerializer serializer = new XmlSerializer(typeof(PrivateSettings));
-				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open); //Extension is NOT *.xml on purpose so that in case of streaming monitor, it's not tied to normal text editors, as it contains authy token (password).
+				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
 				obj = (PrivateSettings)serializer.Deserialize(fs);
 				fs.Close();
 				return obj;
@@ -166,6 +166,31 @@ namespace BasicTwitchSoundPlayer
 	[Serializable]
 	public class VoiceModConfig
 	{
+		private const string CONFIGFILE = "VoiceModConfig.xml";
+		private static VoiceModConfig m_Instance;
+		public static VoiceModConfig GetInstance()
+		{
+			if (m_Instance == null)
+				m_Instance = LoadSettings();
+
+			return m_Instance;
+		}
+
+		private static VoiceModConfig LoadSettings()
+		{
+			if (File.Exists(CONFIGFILE))
+			{
+				VoiceModConfig obj;
+				XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
+				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
+				obj = (VoiceModConfig)serializer.Deserialize(fs);
+				fs.Close();
+				return obj;
+			}
+			else
+				return new VoiceModConfig();
+		}
+
 		public string APIKey { get; set; }
 		public string AdressPort { get; set; }
 		public VoiceModLogic VoiceModRedemptionLogic { get; set; }

@@ -35,25 +35,27 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public Extensions.OverridenColorTable CustomColorTable { get; set; }
 
 
-		public ColorSettingsForm(PrivateSettings _programSettings)
+		public ColorSettingsForm()
 		{
 			InitializeComponent();
 
-			FormBackground = _programSettings.Colors.FormBackground;
-			FormTextColor = _programSettings.Colors.FormTextColor;
+			var settings = PrivateSettings.GetInstance();
 
-			MenuStripBarBackground = _programSettings.Colors.MenuStripBarBackground;
-			MenuStripBarText = _programSettings.Colors.MenuStripBarText;
+			FormBackground = settings.Colors.FormBackground;
+			FormTextColor = settings.Colors.FormTextColor;
 
-			MenuStripBackground = _programSettings.Colors.MenuStripBackground;
-			MenuStripText = _programSettings.Colors.MenuStripText;
-			MenuStripBackgroundSelected = _programSettings.Colors.MenuStripBackgroundSelected;
+			MenuStripBarBackground = settings.Colors.MenuStripBarBackground;
+			MenuStripBarText = settings.Colors.MenuStripBarText;
 
-			LineColorBackground = _programSettings.Colors.LineColorBackground;
-			LineColorGeneric = _programSettings.Colors.LineColorGeneric;
-			LineColorIrcCommand = _programSettings.Colors.LineColorIrcCommand;
-			LineColorModeration = _programSettings.Colors.LineColorModeration;
-			LineColorSoundPlayback = _programSettings.Colors.LineColorSoundPlayback;
+			MenuStripBackground = settings.Colors.MenuStripBackground;
+			MenuStripText = settings.Colors.MenuStripText;
+			MenuStripBackgroundSelected = settings.Colors.MenuStripBackgroundSelected;
+
+			LineColorBackground = settings.Colors.LineColorBackground;
+			LineColorGeneric = settings.Colors.LineColorGeneric;
+			LineColorIrcCommand = settings.Colors.LineColorIrcCommand;
+			LineColorModeration = settings.Colors.LineColorModeration;
+			LineColorSoundPlayback = settings.Colors.LineColorSoundPlayback;
 
 			CustomColorTable = new Extensions.OverridenColorTable();
 

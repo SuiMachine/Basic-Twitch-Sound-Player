@@ -16,5 +16,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		{
 			InitializeComponent();
 		}
+
+		private void VoiceModIntegration_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

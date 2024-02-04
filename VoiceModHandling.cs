@@ -12,15 +12,14 @@ namespace BasicTwitchSoundPlayer
 	{
 		public static bool IsConfigured()
 		{
-			if(Instance == null)
-				VoiceMOd
+			return VoiceModConfig.GetInstance().APIKey != "";
 		}
+
 		private static VoiceModHandling Instance;
 
 		public bool Disposed { get; private set; }
 
 		private IRCBot iRCBot;
-		private PrivateSettings programSettings;
 		private MainForm parent;
 
 		private WebSocket client;
@@ -35,15 +34,14 @@ namespace BasicTwitchSoundPlayer
 		{
 			if(Instance == null)
 			{
-				Instance = new VoiceModHandling(programSettings);
+				Instance = new VoiceModHandling();
 			}
 			return Instance;
 		}
 
-		private VoiceModHandling(PrivateSettings programSettings, MainForm parent)
+		private VoiceModHandling()
 		{
-			this.programSettings = programSettings;
-			this.parent = parent;
+			this.parent = MainForm.Instance;
 
 			Disposed = false;
 			parent.ThreadSafeAddPreviewText("VoiceMod key configured - let's see if we can connect...", LineType.IrcCommand);
@@ -54,7 +52,8 @@ namespace BasicTwitchSoundPlayer
 		{
 			try
 			{
-				client = new WebSocket(programSettings.VoiceSynthesizer);
+				var voiceModConf = VoiceModConfig.GetInstance();
+				client = new WebSocket(voiceModConf.AdressPort);
 				client.OnMessage += Client_OnMessage;
 				client.OnOpen += Client_OnOpen;
 				client.OnClose += Client_OnClose;
@@ -66,7 +65,7 @@ namespace BasicTwitchSoundPlayer
 					{ "action", "registerClient" },
 					{ "payload", new JObject()
 						{
-							{ "clientKey", VoiceModAPIKey }
+							{ "clientKey", voiceModConf.APIKey }
 						}
 					}
 				};
@@ -342,10 +341,14 @@ namespace BasicTwitchSoundPlayer
 
 		public bool CheckIDs(string rewardID)
 		{
-			foreach(var reward in programSettings.VoiceModConfig.Rewards)
+			var config = VoiceModConfig.GetInstance();
+			foreach(var reward in config.Rewards)
 			{
-
+				if (reward.RewardID == rewardID)
+					return true;
 			}
+
+			return false;
 		}
 	}
 }

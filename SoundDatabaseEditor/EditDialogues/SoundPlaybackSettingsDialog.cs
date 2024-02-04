@@ -15,16 +15,15 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 		public Structs.SoundRedemptionLogic SoundLogic { get; set; }
 		public string SoundRewardID { get; set; }
 		public Guid SelectedDevice { get; set; }
-		private PrivateSettings programSettings;
-		private MainForm mainFormReference;
 
-		public SoundPlaybackSettingsDialog(MainForm mainForm, PrivateSettings programSettings)
+		public SoundPlaybackSettingsDialog()
 		{
-			this.SoundRewardID = programSettings.SoundRewardID;
-			this.SoundLogic = programSettings.SoundRedemptionLogic;
-			this.SelectedDevice = programSettings.OutputDevice;
-			this.programSettings = programSettings;
-			this.mainFormReference = mainForm;
+			var settings = PrivateSettings.GetInstance();
+
+			this.SoundRewardID = settings.SoundRewardID;
+			this.SoundLogic = settings.SoundRedemptionLogic;
+			this.SelectedDevice = settings.OutputDevice;
+
 			InitializeComponent();
 
 			//Initialization stuff and bindings
@@ -91,7 +90,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			var dialogResult = MessageBox.Show("Are you sure you want to create a new Reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 			if (dialogResult == DialogResult.Yes)
 			{
-				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(programSettings.TwitchUsername, programSettings.TwitchPassword);
+				var settings = PrivateSettings.GetInstance();
+				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 				await apiConnection.GetBroadcasterIDAsync();
 				var result = await apiConnection.CreateRewardAsync(IRC.KrakenConnections.RewardType.Sound);
 				if (result != null)
@@ -104,10 +104,12 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private async void B_VerifyReward_Click(object sender, EventArgs e)
 		{
-			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(programSettings.TwitchUsername, programSettings.TwitchPassword);
+			var settings = PrivateSettings.GetInstance();
+
+			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 
 			await apiConnection.GetBroadcasterIDAsync();
-			await apiConnection.VerifyChannelRewardsAsync(mainFormReference, TB_SoundRewardID.Text, null);
+			await apiConnection.VerifyChannelRewardsAsync(MainForm.Instance, TB_SoundRewardID.Text, null);
 			MessageBox.Show("Results should be displayed in main chat window (Sorry, that was an afterthought)", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}

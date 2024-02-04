@@ -10,7 +10,6 @@ namespace BasicTwitchSoundPlayer
 {
 	public partial class VSS_PreviewWindow : Form
 	{
-		PrivateSettings _programSettings { get; set; }
 		VSS.VSS_Entry_Group VSSdb { get; set; }
 		VSS.VSS_Entry_Group CurrentNode { get; set; }
 		private VSS_Preview preview;
@@ -34,12 +33,11 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public VSS_PreviewWindow(PrivateSettings _programSettings, VSS.VSS_Entry_Group VSSdb)
+		public VSS_PreviewWindow(VSS.VSS_Entry_Group VSSdb)
 		{
 			InitializeComponent();
 			m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
 			directWaveOut = new DirectSoundOut(60);
-			this._programSettings = _programSettings;
 			this.VSSdb = new VSS.VSS_Entry_Group("ROOTNODE", Keys.NoName);
 			this.VSSdb.Nodes.Add(VSSdb);
 			this.CurrentNode = VSSdb;
@@ -48,6 +46,7 @@ namespace BasicTwitchSoundPlayer
 			SetToRoot();
 			m_GlobalHook.KeyDown += M_GlobalHook_KeyDown;
 		}
+
 		private void M_GlobalHook_KeyDown(object sender, KeyEventArgs e)
 		{
 			foreach (var child in CurrentNode.Nodes)
@@ -98,8 +97,9 @@ namespace BasicTwitchSoundPlayer
 
 		private void UpdateColors()
 		{
-			this.BackColor = _programSettings.Colors.FormBackground;
-			this.ForeColor = _programSettings.Colors.FormTextColor;
+			var settings = PrivateSettings.GetInstance();
+			this.BackColor = settings.Colors.FormBackground;
+			this.ForeColor = settings.Colors.FormTextColor;
 		}
 
 		private void AddDisplayElement(VSS.VSS_Entry_Group NodeToDrawFrom)

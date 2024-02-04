@@ -96,6 +96,7 @@
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "VoiceModIntegration";
 			this.Text = "VoiceMod Integration";
+			this.Load += new System.EventHandler(this.VoiceModIntegration_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.tableLayoutPanel2.ResumeLayout(false);

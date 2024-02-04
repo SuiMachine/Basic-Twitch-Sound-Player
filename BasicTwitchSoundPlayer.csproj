@@ -135,6 +135,12 @@
     <Compile Include="SettingsForms\TTSSettingsForm.Designer.cs">
       <DependentUpon>TTSSettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingsForms\VoiceModIntegration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\VoiceModIntegration.Designer.cs">
+      <DependentUpon>VoiceModIntegration.cs</DependentUpon>
+    </Compile>
     <Compile Include="SharedSettings.cs" />
     <Compile Include="SoundBase.cs" />
     <Compile Include="SoundDatabaseEditor\BotnakImporter.cs" />
@@ -221,6 +227,9 @@
     <EmbeddedResource Include="SettingsForms\TTSSettingsForm.resx">
       <DependentUpon>TTSSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForms\VoiceModIntegration.resx">
+      <DependentUpon>VoiceModIntegration.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SoundDatabaseEditor\DB_Editor.resx">
       <DependentUpon>DB_Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -266,9 +275,7 @@
   <ItemGroup>
     <Content Include="sound_player_icon_bundled.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="VoiceMod\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

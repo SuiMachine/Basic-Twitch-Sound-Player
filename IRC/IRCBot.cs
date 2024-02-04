@@ -15,17 +15,16 @@ namespace BasicTwitchSoundPlayer.IRC
 		private static ReadMessage FormattedMessage;
 		private string channelToJoin;
 		private char PrefixChar;
-		private VoiceModHandling voiceModHandler;
 
 		private SoundBase SndDB { get; set; }
-		PrivateSettings programSettings;
 
-		public IRCBot(MainForm parentReference, PrivateSettings programSettings, SoundBase soundDb, char PrefixChar)
+		public IRCBot(SoundBase soundDb, char PrefixChar)
 		{
-			irc = new OldIRCClient(parentReference, programSettings.TwitchServer, programSettings.TwitchUsername, programSettings.TwitchPassword, programSettings.TwitchChannelToJoin, programSettings.SoundRewardID, programSettings.TTSRewardID);
-			this.programSettings = programSettings;
-			channelToJoin = programSettings.TwitchChannelToJoin;
-			parent = parentReference;
+			var privateSettings = PrivateSettings.GetInstance();
+
+			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin, privateSettings.SoundRewardID, privateSettings.TTSRewardID);
+			channelToJoin = privateSettings.TwitchChannelToJoin;
+			parent = MainForm.Instance;
 			this.PrefixChar = PrefixChar;
 			SndDB = soundDb;
 		}
@@ -47,7 +46,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public void StopBot()
 		{
 			SndDB.Close();
-			programSettings.SaveSettings();
+			PrivateSettings.GetInstance().SaveSettings();
 			irc.SaveIgnoredList();
 			irc.SaveTrustedList();
 			irc.SaveSuperMods();
@@ -102,7 +101,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 			irc.meebyIrc.RfcJoin("#" + channel);
 
-			VoiceModHandling.GetInstance(programSettings, parent).SetIrcReference(this);
+			VoiceModHandling.GetInstance().SetIrcReference(this);
 		}
 
 		private void MeebyIrc_OnRawMessage(object sender, IrcEventArgs e)
@@ -114,22 +113,23 @@ namespace BasicTwitchSoundPlayer.IRC
 					ReadMessage msg = new ReadMessage();
 					if (e.Data.Tags.ContainsKey("custom-reward-id"))
 					{
-						if (programSettings.TTSLogic == TTSLogic.RewardIDAndCommand || programSettings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
+						var settings = PrivateSettings.GetInstance();
+						if (settings.TTSLogic == TTSLogic.RewardIDAndCommand || settings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
 						{
 							var rewardID = e.Data.Tags["custom-reward-id"];
 							msg.userID = e.Data.Tags["user-id"];
 
-							if (rewardID == programSettings.TTSRewardID)
+							if (rewardID == settings.TTSRewardID)
 							{
 								msg.msgType = MessageType.TTSReward;
 								msg.RewardID = rewardID;
 							}
-							else if (rewardID == programSettings.SoundRewardID)
+							else if (rewardID == settings.SoundRewardID)
 							{
 								msg.msgType = MessageType.SoundReward;
 								msg.RewardID = rewardID;
 							}
-							else if(VoiceModHandling.GetInstance(programSettings, parent).CheckIDs(rewardID ))
+							else if(VoiceModHandling.GetInstance().CheckIDs(rewardID))
 							{
 								msg.msgType = MessageType.VoiceModReward;
 								msg.RewardID = rewardID;
@@ -187,15 +187,17 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			FormattedMessage = formattedMessage;
 
+			var settings = PrivateSettings.GetInstance();
+
 			switch (FormattedMessage.msgType)
 			{
 				case MessageType.TTSReward:
 					{
 						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
 
-						if (programSettings.TTSLogic == TTSLogic.Restricted)
+						if (settings.TTSLogic == TTSLogic.Restricted)
 						{
-							if (FormattedMessage.rights >= programSettings.TTSRoleRequirement)
+							if (FormattedMessage.rights >= settings.TTSRoleRequirement)
 							{
 								if (SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true))
 									irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
@@ -232,14 +234,14 @@ namespace BasicTwitchSoundPlayer.IRC
 				case MessageType.VoiceModReward:
 					{
 						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-						if (programSettings.VoiceModRedemptionLogic == VoiceModLogic.Legacy)
+						if (VoiceModConfig.GetInstance().VoiceModRedemptionLogic == VoiceModLogic.Legacy)
 						{
 							parent.ThreadSafeAddPreviewText("Not implemented - tell me to add it, if you want", LineType.IrcCommand);
 						}
 						else
 						{
 							var trim = formattedMessage.message.Replace("\"", "").Trim();
-							if(voiceModHandler.SetVoice(trim))
+							if(VoiceModHandling.GetInstance().SetVoice(trim))
 								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
 							else
 								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
@@ -304,7 +306,7 @@ namespace BasicTwitchSoundPlayer.IRC
 						{
 							parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
 
-							if (programSettings.TTSLogic == TTSLogic.RewardIDAndCommand)
+							if (settings.TTSLogic == TTSLogic.RewardIDAndCommand)
 							{
 								if (formattedMessage.rights >= TwitchRightsEnum.Mod)
 									SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1]);
@@ -315,7 +317,7 @@ namespace BasicTwitchSoundPlayer.IRC
 						} //SoundPlayback
 						else
 						{
-							if (programSettings.SoundRedemptionLogic == SoundRedemptionLogic.Legacy || privilage == TwitchRightsEnum.Admin)
+							if (settings.SoundRedemptionLogic == SoundRedemptionLogic.Legacy || privilage == TwitchRightsEnum.Admin)
 							{
 								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
 								SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
@@ -329,7 +331,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		internal void UpdateVolume()
 		{
-			SndDB.ChangeVolume(programSettings.Volume);
+			SndDB.ChangeVolume(PrivateSettings.GetInstance().Volume);
 		}
 
 		#region EventHandlers
@@ -341,7 +343,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnRegistered(object sender, EventArgs e)
 		{
 			parent.ThreadSafeAddPreviewText("! LOGIN VERIFIED", LineType.IrcCommand);
-			if (programSettings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
+			if (PrivateSettings.GetInstance().SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
 			{
 
 			}

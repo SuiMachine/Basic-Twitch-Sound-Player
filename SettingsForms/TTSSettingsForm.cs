@@ -20,16 +20,16 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		public Guid OutputDeviceGuid;
 
-		private PrivateSettings SettingsReference;
 		private MainForm mainFormReference;
 
-		public TTSSettingsForm(MainForm mainFormReference, PrivateSettings settings)
+		public TTSSettingsForm(MainForm mainFormReference)
 		{
+			var settings = PrivateSettings.GetInstance();
+
 			this.VoiceSynthesizer = settings.VoiceSynthesizer;
 			this.RequiredRight = settings.TTSRoleRequirement;
 			this.CustomRewardID = settings.TTSRewardID;
 			this.TTSLogic = settings.TTSLogic;
-			this.SettingsReference = settings;
 			this.mainFormReference = mainFormReference;
 			InitializeComponent();
 			this.AddComboboxDataSources();
@@ -87,7 +87,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private async void B_VerifyPointsResponse_Click(object sender, EventArgs e)
 		{
-			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
+			var settings = PrivateSettings.GetInstance();
+
+			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 
 			await apiConnection.GetBroadcasterIDAsync();
 			await apiConnection.VerifyChannelRewardsAsync(mainFormReference, null, TB_CustomRewardID.Text);
@@ -115,7 +117,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var dialogResult = MessageBox.Show("Are you sure you want to create a new Reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 			if (dialogResult == DialogResult.Yes)
 			{
-				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
+				var settings = PrivateSettings.GetInstance();
+				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 				var broadcasterTask = apiConnection.GetBroadcasterIDAsync();
 				var result = await apiConnection.CreateRewardAsync(IRC.KrakenConnections.RewardType.TTS);
 				if (result != null)
