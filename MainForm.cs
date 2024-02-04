@@ -17,6 +17,8 @@ namespace BasicTwitchSoundPlayer
 
 	public partial class MainForm : Form
 	{
+		public static MainForm Instance { get; private set; }
+
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
 		public delegate void SetVolumeSlider(int valuee);       //used to safely change the slider position
 
@@ -30,6 +32,7 @@ namespace BasicTwitchSoundPlayer
 
 		public MainForm()
 		{
+			Instance = this;
 			InitializeComponent();
 		}
 
@@ -204,12 +207,6 @@ namespace BasicTwitchSoundPlayer
 				_programSettings.TwitchPassword = form.Password;
 				_programSettings.TwitchChannelToJoin = form.ChannelToJoin;
 				_programSettings.GoogleSpreadsheetID = form.SpreadsheetID;
-				_programSettings.VoiceModAPIKey = form.VoiceModApiKey;
-				_programSettings.VoiceModAdressPort = form.VoiceModAdressPort;
-
-				_programSettings.VoiceModRedemptionLogic = form.VoiceModRedemptionLogic;
-				_programSettings.VoiceModRewardID = form.VoiceModRewardID;
-
 				_programSettings.SaveSettings();
 				ReloadBot();
 			}

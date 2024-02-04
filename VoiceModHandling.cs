@@ -10,8 +10,14 @@ namespace BasicTwitchSoundPlayer
 {
 	public class VoiceModHandling : IDisposable
 	{
+		public static bool IsConfigured()
+		{
+			if(Instance == null)
+				VoiceMOd
+		}
+		private static VoiceModHandling Instance;
+
 		public bool Disposed { get; private set; }
-		private string VoiceModAPIKey;
 
 		private IRCBot iRCBot;
 		private PrivateSettings programSettings;
@@ -25,10 +31,17 @@ namespace BasicTwitchSoundPlayer
 
 		public bool ConnectedToVoiceMod { get; private set; }
 
-		public VoiceModHandling(IRCBot iRCBot, PrivateSettings programSettings, MainForm parent)
+		public static VoiceModHandling GetInstance()
 		{
-			this.iRCBot = iRCBot;
-			this.VoiceModAPIKey = programSettings.VoiceModAPIKey;
+			if(Instance == null)
+			{
+				Instance = new VoiceModHandling(programSettings);
+			}
+			return Instance;
+		}
+
+		private VoiceModHandling(PrivateSettings programSettings, MainForm parent)
+		{
 			this.programSettings = programSettings;
 			this.parent = parent;
 
@@ -41,7 +54,7 @@ namespace BasicTwitchSoundPlayer
 		{
 			try
 			{
-				client = new WebSocket(programSettings.VoiceModAdressPort);
+				client = new WebSocket(programSettings.VoiceSynthesizer);
 				client.OnMessage += Client_OnMessage;
 				client.OnOpen += Client_OnOpen;
 				client.OnClose += Client_OnClose;
@@ -319,6 +332,19 @@ namespace BasicTwitchSoundPlayer
 				client.OnClose -= Client_OnClose;
 
 				this.Disposed = true;
+			}
+		}
+
+		public void SetIrcReference(IRCBot iRCBot)
+		{
+			this.iRCBot = iRCBot;
+		}
+
+		public bool CheckIDs(string rewardID)
+		{
+			foreach(var reward in programSettings.VoiceModConfig.Rewards)
+			{
+
 			}
 		}
 	}

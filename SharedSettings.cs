@@ -1,5 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.Structs;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Xml;
@@ -66,6 +67,14 @@ namespace BasicTwitchSoundPlayer
 	public class PrivateSettings
 	{
 		public const string CONFIGFILE = "Config.xml";
+		private static PrivateSettings m_Instance;
+		public static PrivateSettings GetInstance()
+		{
+			if(m_Instance == null)
+			{
+
+			}
+		}
 
 		#region Properties
 		[XmlElement]
@@ -93,10 +102,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string GoogleSpreadsheetID { get; set; }
 		[XmlElement]
-		public string VoiceModAPIKey { get; set; }
-		[XmlElement]
-		public string VoiceModAdressPort { get; set; }
-		[XmlElement]
 		public string VoiceSynthesizer { get; set; }
 		[XmlElement]
 		public string TTSRewardID { get; set; }
@@ -108,12 +113,6 @@ namespace BasicTwitchSoundPlayer
 		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
 		[XmlElement]
 		public string SoundRewardID { get; set; }
-
-		[XmlElement]
-		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
-		[XmlElement]
-		public string VoiceModRewardID { get; set; }
-
 		#endregion
 
 		public PrivateSettings()
@@ -129,8 +128,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			VoiceModAPIKey = "";
-			VoiceModAdressPort = "ws://localhost:59129/v1";
 			GoogleSpreadsheetID = "";
 			VoiceSynthesizer = "";
 			TTSRewardID = "";
@@ -138,8 +135,6 @@ namespace BasicTwitchSoundPlayer
 			TTSLogic = TTSLogic.RewardIDAndCommand;
 			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
-			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints;
-			VoiceModRewardID = "";
 		}
 
 		#region Load/Save
@@ -166,5 +161,49 @@ namespace BasicTwitchSoundPlayer
 			fw.Close();
 		}
 		#endregion
+	}
+
+	[Serializable]
+	public class VoiceModConfig
+	{
+		public string APIKey { get; set; }
+		public string AdressPort { get; set; }
+		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
+
+		public List<VoiceModReward> Rewards = new List<VoiceModReward>();
+
+		public VoiceModConfig()
+		{
+			APIKey = "";
+			AdressPort = "ws://localhost:59129/v1";
+
+		}
+
+		[Serializable]
+		public class VoiceModReward
+		{
+			[XmlAttribute]
+			public string InVoiceModID { get; set; }
+			[XmlAttribute]
+			public string RewardID { get; set; }
+			[XmlAttribute]
+			public int RewardPrice { get; set; }
+			[XmlAttribute]
+			public int RewardCooldown { get; set; }
+			[XmlAttribute]
+			public bool Enabled { get; set; }
+			[XmlElement]
+			public string RewardText { get; set; }
+
+			public VoiceModReward()
+			{
+				InVoiceModID = "";
+				RewardID = "";
+				RewardPrice = 240;
+				RewardCooldown = 60;
+				Enabled = true;
+				RewardText = "";
+			}
+		}
 	}
 }

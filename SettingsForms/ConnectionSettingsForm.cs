@@ -22,10 +22,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public string Password { get; set; }
 		public string ChannelToJoin { get; set; }
 		public string SpreadsheetID { get; set; }
-		public string VoiceModApiKey { get; set; }
-		public string VoiceModAdressPort { get; set; }
-		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
-		public string VoiceModRewardID { get; set; }
 
 
 		public ConnectionSettingsForm(MainForm _parent, PrivateSettings _settingsRef)
@@ -41,20 +37,12 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.TB_Password.DataBindings.Add("Text", this, nameof(Password), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_ChannelToJoin.DataBindings.Add("Text", this, nameof(ChannelToJoin), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_GoogleSpreadsheetID.DataBindings.Add("Text", this, nameof(SpreadsheetID), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_VoiceModApiKey.DataBindings.Add("Text", this, nameof(VoiceModApiKey), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_VoiceMod_AdressPort.DataBindings.Add("Text", this, nameof(VoiceModAdressPort), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_VoiceModRewardID.DataBindings.Add("Text", this, nameof(VoiceModRewardID), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.CB_VoiceModRedemptionLogic.DataBindings.Add("SelectedValue", this, nameof(VoiceModRedemptionLogic), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			this.Server = _settingsRef.TwitchServer;
 			this.Username = _settingsRef.TwitchUsername;
 			this.Password = _settingsRef.TwitchPassword;
 			this.ChannelToJoin = _settingsRef.TwitchChannelToJoin;
 			this.SpreadsheetID = _settingsRef.GoogleSpreadsheetID;
-			this.VoiceModApiKey = _settingsRef.VoiceModAPIKey;
-			this.VoiceModAdressPort = _settingsRef.VoiceModAdressPort;
-			this.VoiceModRedemptionLogic = _settingsRef.VoiceModRedemptionLogic;
-			this.VoiceModRewardID = _settingsRef.VoiceModRewardID;
 		}
 
 		private void AddComboboxDataSources()

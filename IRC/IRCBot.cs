@@ -102,14 +102,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 			irc.meebyIrc.RfcJoin("#" + channel);
 
-			if (programSettings.VoiceModAPIKey == "")
-			{
-				parent.ThreadSafeAddPreviewText("No VoiceMod configured - this is OK.", LineType.IrcCommand);
-			}
-			else
-			{
-				voiceModHandler = new VoiceModHandling(this, programSettings, parent);
-			}
+			VoiceModHandling.GetInstance(programSettings, parent).SetIrcReference(this);
 		}
 
 		private void MeebyIrc_OnRawMessage(object sender, IrcEventArgs e)
@@ -136,7 +129,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								msg.msgType = MessageType.SoundReward;
 								msg.RewardID = rewardID;
 							}
-							else if(rewardID == programSettings.VoiceModRewardID)
+							else if(VoiceModHandling.GetInstance(programSettings, parent).CheckIDs(rewardID ))
 							{
 								msg.msgType = MessageType.VoiceModReward;
 								msg.RewardID = rewardID;
