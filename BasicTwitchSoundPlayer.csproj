@@ -93,6 +93,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <HintPath>packages\WebSocketSharp.1.0.3-rc11\lib\websocket-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +164,7 @@
     </Compile>
     <Compile Include="SoundDatabaseEditor\GoogleSheetsExport.cs" />
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
+    <Compile Include="VoiceModHandling.cs" />
     <Compile Include="VSS\Dialogs\AddEditVSSGroup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -261,6 +265,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="sound_player_icon_bundled.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VoiceMod\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

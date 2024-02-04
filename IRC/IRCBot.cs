@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
-	class IRCBot
+	public class IRCBot
 	{
 		public bool BotRunning;
 		private OldIRCClient irc;
@@ -15,6 +15,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private static ReadMessage FormattedMessage;
 		private string channelToJoin;
 		private char PrefixChar;
+		private VoiceModHandling voiceModHandler;
 
 		private SoundBase SndDB { get; set; }
 		PrivateSettings programSettings;
@@ -100,6 +101,15 @@ namespace BasicTwitchSoundPlayer.IRC
 			//Request capabilities - https://dev.twitch.tv/docs/irc/guide/#twitch-irc-capabilities
 			irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 			irc.meebyIrc.RfcJoin("#" + channel);
+
+			if (programSettings.VoiceModAPIKey == "")
+			{
+				parent.ThreadSafeAddPreviewText("No VoiceMod configured - this is OK.", LineType.IrcCommand);
+			}
+			else
+			{
+				voiceModHandler = new VoiceModHandling(this, programSettings, parent);
+			}
 		}
 
 		private void MeebyIrc_OnRawMessage(object sender, IrcEventArgs e)
@@ -124,6 +134,11 @@ namespace BasicTwitchSoundPlayer.IRC
 							else if (rewardID == programSettings.SoundRewardID)
 							{
 								msg.msgType = MessageType.SoundReward;
+								msg.RewardID = rewardID;
+							}
+							else if(rewardID == programSettings.VoiceModRewardID)
+							{
+								msg.msgType = MessageType.VoiceModReward;
 								msg.RewardID = rewardID;
 							}
 							else
@@ -218,6 +233,24 @@ namespace BasicTwitchSoundPlayer.IRC
 							irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
 						else
 							irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
+
+						return true;
+					}
+				case MessageType.VoiceModReward:
+					{
+						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
+						if (programSettings.VoiceModRedemptionLogic == VoiceModLogic.Legacy)
+						{
+							parent.ThreadSafeAddPreviewText("Not implemented - tell me to add it, if you want", LineType.IrcCommand);
+						}
+						else
+						{
+							var trim = formattedMessage.message.Replace("\"", "").Trim();
+							if(voiceModHandler.SetVoice(trim))
+								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
+							else
+								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
+						}
 
 						return true;
 					}

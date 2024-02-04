@@ -25,6 +25,14 @@ namespace BasicTwitchSoundPlayer.Structs
 		RewardIDAndCommand
 	}
 
+	public enum VoiceModLogic
+	{
+		[Description("Legacy (command and user cooldowns)")]
+		Legacy,
+		[Description("Twitch channel points")]
+		ChannelPoints
+	}
+
 	public enum SoundRedemptionLogic
 	{
 		[Description("Legacy (command and user cooldowns)")]
@@ -37,7 +45,8 @@ namespace BasicTwitchSoundPlayer.Structs
 	{
 		Normal,
 		TTSReward,
-		SoundReward
+		SoundReward,
+		VoiceModReward
 	}
 
 	static class TwitchRightsExtensions

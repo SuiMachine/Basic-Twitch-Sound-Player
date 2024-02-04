@@ -93,6 +93,10 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string GoogleSpreadsheetID { get; set; }
 		[XmlElement]
+		public string VoiceModAPIKey { get; set; }
+		[XmlElement]
+		public string VoiceModAdressPort { get; set; }
+		[XmlElement]
 		public string VoiceSynthesizer { get; set; }
 		[XmlElement]
 		public string TTSRewardID { get; set; }
@@ -104,6 +108,12 @@ namespace BasicTwitchSoundPlayer
 		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
 		[XmlElement]
 		public string SoundRewardID { get; set; }
+
+		[XmlElement]
+		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
+		[XmlElement]
+		public string VoiceModRewardID { get; set; }
+
 		#endregion
 
 		public PrivateSettings()
@@ -119,6 +129,8 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
+			VoiceModAPIKey = "";
+			VoiceModAdressPort = "ws://localhost:59129/v1";
 			GoogleSpreadsheetID = "";
 			VoiceSynthesizer = "";
 			TTSRewardID = "";
@@ -126,6 +138,8 @@ namespace BasicTwitchSoundPlayer
 			TTSLogic = TTSLogic.RewardIDAndCommand;
 			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
+			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints;
+			VoiceModRewardID = "";
 		}
 
 		#region Load/Save
