@@ -65,21 +65,21 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 			var RewardPrice = new DataGridViewTextBoxColumn();
 			RewardPrice.Name = "Price";
-			RewardPrice.Width = 32;
+			RewardPrice.Width = 60;
 			RewardPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 			RewardPrice.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(RewardPrice);
 
 			var RewardCooldown = new DataGridViewTextBoxColumn();
 			RewardCooldown.Name = "Cooldown";
-			RewardCooldown.Width = 32;
+			RewardCooldown.Width = 60;
 			RewardCooldown.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 			RewardCooldown.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(RewardCooldown);
 
 			var EnabledField = new DataGridViewTextBoxColumn();
 			EnabledField.Name = "Enabled";
-			EnabledField.Width = 32;
+			EnabledField.Width = 60;
 			EnabledField.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 			EnabledField.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(EnabledField);
