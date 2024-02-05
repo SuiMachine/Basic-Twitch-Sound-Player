@@ -15,8 +15,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public enum RewardType
 		{
 			Sound,
-			TTS,
-			VoiceMod
+			TTS
 		}
 
 		public enum RedemptionStates
@@ -376,30 +375,48 @@ namespace BasicTwitchSoundPlayer.IRC
 					}
 				}
 			}
-			else if(rewardType == RewardType.VoiceMod)
-			{
-				var content = new Dictionary<string, string>()
-				{
-					{"title", "Set voice for 30 seconds"},
-					{"cost", "750" },
-					{"is_enabled", "true" },
-					{"prompt", "Sets a voice." },
-					{"is_user_input_required", "true" },
-					{"should_redemptions_skip_request_queue", "false" }
-				};
+			return null;
+		}
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
-				if (response != "")
+		public async Task<ChannelReward> CreateRewardVoiceModAsync(VoiceModConfig.VoiceModReward reward)
+		{
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
 				{
-					JObject jReader = JObject.Parse(response);
-					var dataNode = jReader["data"].First;
-					if (dataNode["id"] != null)
-					{
-						var newReward = dataNode.ToObject<ChannelReward>();
-						return newReward;
-					}
+					await Task.Delay(1000);
+					endTimer--;
 				}
 			}
+
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return null;
+
+			var content = new Dictionary<string, string>()
+			{
+					{"title", reward.VoiceModFriendlyName },
+					{"cost", reward.RewardPrice.ToString() },
+					{"is_enabled", reward.Enabled.ToString().ToLower() },
+					{"prompt", reward.RewardText.Replace("\"", "\\\"") },
+					{"is_user_input_required", "false" },
+					{"should_redemptions_skip_request_queue", "false" },
+					{"is_global_cooldown_enabled", "true" },
+					{"global_cooldown_seconds", reward.RewardCooldown.ToString()}
+			};
+
+
+			var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
+			if (response != "")
+			{
+				JObject jReader = JObject.Parse(response);
+				var dataNode = jReader["data"].First;
+				if (dataNode["id"] != null)
+				{
+					var newReward = dataNode.ToObject<ChannelReward>();
+					return newReward;
+				}
+			}
+			
 			return null;
 		}
 
@@ -435,6 +452,8 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 				return "";
 			}
+
+
 		}
 
 		private async Task<string> PostNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)

@@ -126,7 +126,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private void VoiceModIntegration_Load(object sender, EventArgs e)
 		{
-			ConnectionStateChanged(false);
+			ConnectionStateChanged(VoiceModHandling.GetInstance().ConnectedToVoiceMod);
 			VoiceModHandling.GetInstance().OnConnectionStateChanged += ConnectionStateChanged;
 			VoiceModHandling.GetInstance().OnListOfVoicesReceived += VoicedReceived;
 
@@ -230,6 +230,32 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			}
 
 			MessageBox.Show("Done", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		private async void B_CreateMissingRewards_Click(object sender, EventArgs e)
+		{
+/*			if(MainForm.Instance.TwitchBot == null)
+			{
+				MessageBox.Show("Bot must be connected before setting up awards", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}*/
+
+			var result = MessageBox.Show("Are you sure you want to do that?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (result == DialogResult.No)
+				return;
+
+
+			var settings = PrivateSettings.GetInstance();
+			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
+			await apiConnection.GetBroadcasterIDAsync();
+
+			var voices = VoiceModConfig.GetInstance();
+			var voice = voices.Rewards[0];
+			var resultReward = await apiConnection.CreateRewardVoiceModAsync(voice);
+			if(resultReward != null)
+			{
+				voice.RewardID = resultReward.id;
+			}
 		}
 	}
 }

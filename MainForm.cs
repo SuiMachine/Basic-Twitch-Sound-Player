@@ -22,7 +22,7 @@ namespace BasicTwitchSoundPlayer
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
 		public delegate void SetVolumeSlider(int valuee);       //used to safely change the slider position
 
-		IRC.IRCBot TwitchBot;
+		public IRC.IRCBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundBase soundDb;

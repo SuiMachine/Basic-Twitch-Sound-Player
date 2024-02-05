@@ -42,9 +42,10 @@
 			this.B_Connect = new System.Windows.Forms.Button();
 			this.B_Disconnect = new System.Windows.Forms.Button();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_CreateMissingRewards = new System.Windows.Forms.Button();
+			this.B_ImportFavourites = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
 			this.VoicesDataGrid = new System.Windows.Forms.DataGridView();
-			this.B_ImportFavourites = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -210,12 +211,14 @@
 			// 
 			// tableLayoutPanel6
 			// 
-			this.tableLayoutPanel6.ColumnCount = 3;
+			this.tableLayoutPanel6.ColumnCount = 4;
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 84F));
+			this.tableLayoutPanel6.Controls.Add(this.B_CreateMissingRewards, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.B_ImportFavourites, 0, 0);
-			this.tableLayoutPanel6.Controls.Add(this.B_Save, 2, 0);
+			this.tableLayoutPanel6.Controls.Add(this.B_Save, 3, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel6.Location = new System.Drawing.Point(4, 416);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -223,6 +226,26 @@
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel6.Size = new System.Drawing.Size(638, 30);
 			this.tableLayoutPanel6.TabIndex = 4;
+			// 
+			// B_CreateMissingRewards
+			// 
+			this.B_CreateMissingRewards.Location = new System.Drawing.Point(113, 3);
+			this.B_CreateMissingRewards.Name = "B_CreateMissingRewards";
+			this.B_CreateMissingRewards.Size = new System.Drawing.Size(101, 23);
+			this.B_CreateMissingRewards.TabIndex = 5;
+			this.B_CreateMissingRewards.Text = "Create missing rewards";
+			this.B_CreateMissingRewards.UseVisualStyleBackColor = true;
+			this.B_CreateMissingRewards.Click += new System.EventHandler(this.B_CreateMissingRewards_Click);
+			// 
+			// B_ImportFavourites
+			// 
+			this.B_ImportFavourites.Location = new System.Drawing.Point(3, 3);
+			this.B_ImportFavourites.Name = "B_ImportFavourites";
+			this.B_ImportFavourites.Size = new System.Drawing.Size(101, 23);
+			this.B_ImportFavourites.TabIndex = 4;
+			this.B_ImportFavourites.Text = "Import favourites";
+			this.B_ImportFavourites.UseVisualStyleBackColor = true;
+			this.B_ImportFavourites.Click += new System.EventHandler(this.B_ImportFavourites_Click);
 			// 
 			// B_Save
 			// 
@@ -242,16 +265,6 @@
 			this.VoicesDataGrid.Name = "VoicesDataGrid";
 			this.VoicesDataGrid.Size = new System.Drawing.Size(638, 246);
 			this.VoicesDataGrid.TabIndex = 5;
-			// 
-			// B_ImportFavourites
-			// 
-			this.B_ImportFavourites.Location = new System.Drawing.Point(3, 3);
-			this.B_ImportFavourites.Name = "B_ImportFavourites";
-			this.B_ImportFavourites.Size = new System.Drawing.Size(101, 23);
-			this.B_ImportFavourites.TabIndex = 4;
-			this.B_ImportFavourites.Text = "Import favourites";
-			this.B_ImportFavourites.UseVisualStyleBackColor = true;
-			this.B_ImportFavourites.Click += new System.EventHandler(this.B_ImportFavourites_Click);
 			// 
 			// VoiceModIntegrationForm
 			// 
@@ -296,5 +309,6 @@
 		private System.Windows.Forms.Button B_Save;
 		private System.Windows.Forms.DataGridView VoicesDataGrid;
 		private System.Windows.Forms.Button B_ImportFavourites;
+		private System.Windows.Forms.Button B_CreateMissingRewards;
 	}
 }
