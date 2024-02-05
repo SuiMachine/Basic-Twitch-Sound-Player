@@ -39,6 +39,7 @@
 			this.enableVSSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.connectOnStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.voiceModIntegrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,6 @@
 			this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.voiceModIntegrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -146,6 +146,13 @@
 			this.connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.connectionSettingsToolStripMenuItem.Text = "Connection settings";
 			this.connectionSettingsToolStripMenuItem.Click += new System.EventHandler(this.ConnectionSettingsToolStripMenuItem_Click);
+			// 
+			// voiceModIntegrationToolStripMenuItem
+			// 
+			this.voiceModIntegrationToolStripMenuItem.Name = "voiceModIntegrationToolStripMenuItem";
+			this.voiceModIntegrationToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.voiceModIntegrationToolStripMenuItem.Text = "VoiceMod integration";
+			this.voiceModIntegrationToolStripMenuItem.Click += new System.EventHandler(this.voiceModIntegrationToolStripMenuItem_Click);
 			// 
 			// colorSettingsToolStripMenuItem
 			// 
@@ -254,12 +261,6 @@
 			this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
-			// 
-			// voiceModIntegrationToolStripMenuItem
-			// 
-			this.voiceModIntegrationToolStripMenuItem.Name = "voiceModIntegrationToolStripMenuItem";
-			this.voiceModIntegrationToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.voiceModIntegrationToolStripMenuItem.Text = "VoiceMod integration";
 			// 
 			// MainForm
 			// 

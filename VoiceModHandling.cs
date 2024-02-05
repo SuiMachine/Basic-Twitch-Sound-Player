@@ -10,6 +10,27 @@ namespace BasicTwitchSoundPlayer
 {
 	public class VoiceModHandling : IDisposable
 	{
+		public class VoiceInformation
+		{
+			public string ID { get; private set; } = "";
+			public string FriendlyName { get; private set; } = "";
+			public bool IsFavourite { get; private set; } = false;
+			public bool IsEnabled { get; private set; } = false;
+			public string BitmapCheckSum { get; private set; } = "";
+
+			public VoiceInformation(string ID, string FriendlyName, string BitmapCheckSum, bool IsFavourite, bool IsEnabled)
+			{
+				this.ID = ID;
+				this.FriendlyName = FriendlyName;
+				this.BitmapCheckSum = BitmapCheckSum;
+				this.IsFavourite = IsFavourite;
+				this.IsEnabled = IsEnabled;
+			}
+		}
+
+		public Action<bool> OnConnectionStateChanged;
+		public Action OnListOfVoicesReceived;
+
 		public static bool IsConfigured()
 		{
 			return VoiceModConfig.GetInstance().APIKey != "";
@@ -25,14 +46,14 @@ namespace BasicTwitchSoundPlayer
 		private WebSocket client;
 		string currentVoice = "";
 		bool currentStatus = false;
-		Dictionary<string, string> VoicesAvailable = new Dictionary<string, string>();
+		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
 
 		public bool ConnectedToVoiceMod { get; private set; }
 
 		public static VoiceModHandling GetInstance()
 		{
-			if(Instance == null)
+			if (Instance == null)
 			{
 				Instance = new VoiceModHandling();
 			}
@@ -44,33 +65,29 @@ namespace BasicTwitchSoundPlayer
 			this.parent = MainForm.Instance;
 
 			Disposed = false;
-			parent.ThreadSafeAddPreviewText("VoiceMod key configured - let's see if we can connect...", LineType.IrcCommand);
 			ConnectToVoiceMod();
 		}
 
-		private void ConnectToVoiceMod()
+		public void ConnectToVoiceMod()
 		{
+			if (ConnectedToVoiceMod)
+				return;
+
 			try
 			{
 				var voiceModConf = VoiceModConfig.GetInstance();
+				
 				client = new WebSocket(voiceModConf.AdressPort);
 				client.OnMessage += Client_OnMessage;
 				client.OnOpen += Client_OnOpen;
 				client.OnClose += Client_OnClose;
-				client.Connect();
-
-				var message = new JObject()
+				if(IsConfigured())
 				{
-					{ "id", "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6" },
-					{ "action", "registerClient" },
-					{ "payload", new JObject()
-						{
-							{ "clientKey", voiceModConf.APIKey }
-						}
-					}
-				};
-
-				client.Send(message.ToString());
+					parent.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.IrcCommand);
+					client.ConnectAsync();
+				}
+				else
+					parent.ThreadSafeAddPreviewText("VoiceMod is not configured - this is OK, unless you want to use it", LineType.IrcCommand);
 			}
 			catch (Exception ex)
 			{
@@ -193,21 +210,23 @@ namespace BasicTwitchSoundPlayer
 					}
 					else if (value == "getVoices")
 					{
-						var voices = json["payload"]?["voices"];
+						var voices = json["payload"]?["voices"]; 
 						if (voices != null)
 						{
 							VoicesAvailable.Clear();
 							foreach (var voice in voices)
 							{
-								if (voice["favorited"].Value<bool>())
-								{
-									var id = voice["id"].Value<string>();
-									var friendlyName = voice["friendlyName"].Value<string>();
-									VoicesAvailable.Add(friendlyName, id);
-								}
+								var id = voice["id"].Value<string>();
+								var friendlyName = voice["friendlyName"].Value<string>();
+								var favourite = voice["favorited"].Value<bool>();
+								var checksum = voice["bitmapChecksum"].Value<string>();
+								var enabled = voice["isEnabled"].Value<bool>();
+
+								var information = new VoiceInformation(id, friendlyName, checksum, favourite, enabled);
+								VoicesAvailable.Add(friendlyName, information);
 							}
 							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
-							parent.ThreadSafeAddPreviewText($"Voiced available: {string.Join(", ", VoicesAvailable.Select(x => "\"" + x.Key + "\""))}", LineType.IrcCommand);
+							OnListOfVoicesReceived?.Invoke();
 						}
 						else
 							parent.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.IrcCommand);
@@ -285,7 +304,7 @@ namespace BasicTwitchSoundPlayer
 					{ "id", Guid.NewGuid().ToString() },
 					{ "payload", new JObject()
 						{
-							{ "voiceID", voiceID }
+							{ "voiceID", voiceID.ID }
 						}
 					}
 				};
@@ -314,11 +333,27 @@ namespace BasicTwitchSoundPlayer
 		private void Client_OnOpen(object sender, EventArgs e)
 		{
 			parent.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
+			ConnectedToVoiceMod = true;
+			OnConnectionStateChanged?.Invoke(true);
+
+			var message = new JObject()
+				{
+					{ "id", "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6" },
+					{ "action", "registerClient" },
+					{ "payload", new JObject()
+						{
+							{ "clientKey", VoiceModConfig.GetInstance().APIKey }
+						}
+					}
+				};
+
+			client.Send(message.ToString());
 		}
 
 		private void Client_OnClose(object sender, CloseEventArgs e)
 		{
 			parent.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.IrcCommand);
+			ConnectedToVoiceMod = false;
 		}
 
 		public void Dispose()
@@ -342,13 +377,21 @@ namespace BasicTwitchSoundPlayer
 		public bool CheckIDs(string rewardID)
 		{
 			var config = VoiceModConfig.GetInstance();
-			foreach(var reward in config.Rewards)
+			foreach (var reward in config.Rewards)
 			{
 				if (reward.RewardID == rewardID)
 					return true;
 			}
 
 			return false;
+		}
+
+		public void Disconnect()
+		{
+			if(client != null)
+			{
+				client.Close();
+			}
 		}
 	}
 }

@@ -191,24 +191,32 @@ namespace BasicTwitchSoundPlayer
 				return new VoiceModConfig();
 		}
 
+		public void Save()
+		{
+			XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
+			StreamWriter fw = new StreamWriter(CONFIGFILE);
+			serializer.Serialize(fw, this);
+			fw.Close();
+		}
+
 		public string APIKey { get; set; }
 		public string AdressPort { get; set; }
 		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
 
-		public List<VoiceModReward> Rewards = new List<VoiceModReward>();
+		public List<VoiceModReward> Rewards { get; set; } = new List<VoiceModReward>();
 
 		public VoiceModConfig()
 		{
 			APIKey = "";
 			AdressPort = "ws://localhost:59129/v1";
-
+			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints; //Other currently not supported
 		}
 
 		[Serializable]
 		public class VoiceModReward
 		{
 			[XmlAttribute]
-			public string InVoiceModID { get; set; }
+			public string VoiceModFriendlyName { get; set; }
 			[XmlAttribute]
 			public string RewardID { get; set; }
 			[XmlAttribute]
@@ -217,12 +225,12 @@ namespace BasicTwitchSoundPlayer
 			public int RewardCooldown { get; set; }
 			[XmlAttribute]
 			public bool Enabled { get; set; }
-			[XmlElement]
+			[XmlText]
 			public string RewardText { get; set; }
 
 			public VoiceModReward()
 			{
-				InVoiceModID = "";
+				VoiceModFriendlyName = "";
 				RewardID = "";
 				RewardPrice = 240;
 				RewardCooldown = 60;

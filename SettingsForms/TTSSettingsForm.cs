@@ -45,10 +45,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			}
 
 			//bindings
-			this.CBox_VoiceSynthesizer.DataBindings.Add("Text", this, "VoiceSynthesizer", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_CustomRewardID.DataBindings.Add("Text", this, "CustomRewardID", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.CBox_RequiredRole.DataBindings.Add("SelectedValue", this, "RequiredRight", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.CBox_TTSLogic.DataBindings.Add("SelectedValue", this, "TTSLogic", false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CBox_VoiceSynthesizer.DataBindings.Add("Text", this, nameof(VoiceSynthesizer), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_CustomRewardID.DataBindings.Add("Text", this, nameof(CustomRewardID), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CBox_RequiredRole.DataBindings.Add("SelectedValue", this, nameof(RequiredRight), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CBox_TTSLogic.DataBindings.Add("SelectedValue", this, nameof(TTSLogic), false, DataSourceUpdateMode.OnPropertyChanged);
 		}
 
 		private void B_Test_Click(object sender, EventArgs e)
@@ -127,6 +127,11 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 					MessageBox.Show("Successfully created a new reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 			}
+		}
+
+		private void TTSSettingsForm_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

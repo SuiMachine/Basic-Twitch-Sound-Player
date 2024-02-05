@@ -399,5 +399,15 @@ namespace BasicTwitchSoundPlayer
 				settings.SaveSettings();
 			}
 		}
+
+		private void voiceModIntegrationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();
+			var result = form.ShowDialog();
+			if(result == DialogResult.OK)
+			{
+				
+			}
+		}
 	}
 }
