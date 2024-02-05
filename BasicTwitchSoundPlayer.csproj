@@ -105,6 +105,7 @@
     <Compile Include="Extensions\Numbers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
+    <Compile Include="Interfaces\IVoiceModeRewardBindingInterface.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">

@@ -1,4 +1,5 @@
-﻿using BasicTwitchSoundPlayer.Structs;
+﻿using BasicTwitchSoundPlayer.Interfaces;
+using BasicTwitchSoundPlayer.Structs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -213,7 +214,7 @@ namespace BasicTwitchSoundPlayer
 		}
 
 		[Serializable]
-		public class VoiceModReward
+		public class VoiceModReward : IVoiceModeRewardBindingInterface
 		{
 			[XmlAttribute]
 			public string VoiceModFriendlyName { get; set; }
@@ -236,6 +237,19 @@ namespace BasicTwitchSoundPlayer
 				RewardCooldown = 60;
 				Enabled = true;
 				RewardText = "";
+			}
+
+			public object Clone()
+			{
+				return new VoiceModReward()
+				{
+					VoiceModFriendlyName = this.VoiceModFriendlyName,
+					RewardID = this.RewardID,
+					RewardPrice = this.RewardPrice,
+					RewardCooldown = this.RewardCooldown,
+					Enabled = this.Enabled,
+					RewardText = this.RewardText
+				};
 			}
 		}
 	}
