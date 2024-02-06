@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,7 +40,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string HELIXURI { get; set; }
 		private string TwitchAuthy { get; set; }
 		private string Channel { get; set; }
-		private string BroadcasterID { get; set; }
+		public string BroadcasterID { get; set; }
 		public Task SubscribingToEvents { get; internal set; }
 
 		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
@@ -222,7 +221,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								{
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
 
-									UpdateRedemptionStatus(mainForm, soundredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
+									UpdateRedemptionStatus(soundredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
 								}
 							}
 						}
@@ -249,7 +248,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								{
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
 
-									UpdateRedemptionStatus(mainForm, ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
+									UpdateRedemptionStatus(ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
 
 								}
 							}
@@ -295,11 +294,11 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
-		public async void UpdateRedemptionStatus(MainForm mainFormReference, string RewardTypeID, string[] RewardRequestIDs, RedemptionStates redemptionState)
+		public async void UpdateRedemptionStatus(string RewardTypeID, string[] RewardRequestIDs, RedemptionStates redemptionState)
 		{
 			if (BroadcasterID == null | BroadcasterID == "")
 			{
-				mainFormReference.ThreadSafeAddPreviewText("Broadcaster ID is null or empty! Something is really wrong.", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText("Broadcaster ID is null or empty! Something is really wrong.", LineType.IrcCommand);
 				return;
 			}
 
@@ -592,46 +591,6 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 
 			return list;
-
-		}
-
-		public async Task SubscribeEvents()
-		{
-			{
-				int endTimer = 5;
-				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
-				{
-					await Task.Delay(1000);
-					endTimer--;
-				}
-			}
-
-			if (BroadcasterID == null || BroadcasterID == "")
-			{
-				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify VoiceMod Rewards!", LineType.IrcCommand);
-				return;
-			}
-
-			var convert = JsonConvert.SerializeObject(new Dictionary<string, string>()
-			{
-				{ "type", "user.update" },
-				{ "version", "1" },
-				{ "condition", JsonConvert.SerializeObject(new Dictionary<string, string>()
-					{
-						{"user_id", BroadcasterID }
-					})
-				},
-				{ "transport", JsonConvert.SerializeObject(new Dictionary<string, string>()
-					{
-						{ "method", "websocket" },
-						{ "session_id", "AQoQexAWVYKSTIu4ec_2VAxyuhAB" }
-					}
-				)}
-			});
-
-
-			string response = await PostNewUpdateAsync("eventsub/subscriptions",  "", convert, true);
-
 
 		}
 	}

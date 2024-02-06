@@ -1,10 +1,14 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.Structs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Interop;
+using TwitchLib.PubSub;
+using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 using WebSocketSharp;
 
 namespace BasicTwitchSoundPlayer
@@ -51,7 +55,8 @@ namespace BasicTwitchSoundPlayer
 		bool currentStatus = false;
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
-		private WebSocketSharp.WebSocket TwitchWebSocket { get; set; }
+		private bool Playing = false;
+		private TwitchPubSub TwitchPubSubClient{ get; set; }
 
 
 		public bool ConnectedToVoiceMod { get; private set; }
@@ -258,7 +263,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public bool SetVoice(string voice)
+		public bool SetVoice(string voice, float lenght)
 		{
 			if (Disposed)
 				return false;
@@ -322,8 +327,9 @@ namespace BasicTwitchSoundPlayer
 					timer.Dispose();
 				}
 
-				timer = new System.Timers.Timer(30 * 1000);
+				timer = new System.Timers.Timer(lenght * 1000);
 				timer.Start();
+				Playing = true;
 				timer.Elapsed += ReturnToDefault;
 				return true;
 			}
@@ -332,7 +338,8 @@ namespace BasicTwitchSoundPlayer
 
 		private void ReturnToDefault(object sender, System.Timers.ElapsedEventArgs e)
 		{
-			SetVoice(null);
+			Playing = false;
+			SetVoice(null, 0);
 		}
 
 		private void Client_OnOpen(object sender, EventArgs e)
@@ -378,57 +385,73 @@ namespace BasicTwitchSoundPlayer
 		{
 			this.iRCBot = iRCBot;
 
-			SubscribingTask = Task.Run(GetaAndSocket);
+			SubscribingTask = Task.Run(CreateSessionAndSocket);
 		}
 
-		public async Task GetaAndSocket()
+		public async Task CreateSessionAndSocket()
 		{
 			while (!iRCBot.BotRunning || iRCBot.irc == null || !iRCBot.irc.ConnectedStatus)
 				await Task.Delay(2500);
 
 			var rewards = await iRCBot.irc.krakenConnection.GetRewardsList();
-			TwitchWebSocket = new WebSocket("wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30");
-			TwitchWebSocket.OnOpen += TwitchWebSocket_OnOpen;
-			TwitchWebSocket.OnClose += TwitchWebSocket_OnClose;
-			TwitchWebSocket.OnMessage += TwitchWebSocket_OnMessage;
-			TwitchWebSocket.OnError += TwitchWebSocket_OnError;
-			TwitchWebSocket.ConnectAsync();
+
+			TwitchPubSubClient = new TwitchPubSub();
+			TwitchPubSubClient.OnPubSubServiceConnected += TwitchPubSubClient_OnPubSubServiceConnected;
+			TwitchPubSubClient.OnListenResponse += TwitchPubSubClient_OnListenResponse;
+			TwitchPubSubClient.OnChannelPointsRewardRedeemed += TwitchPubSubClient_OnChannelPointsRewardRedeemed;
+
+			TwitchPubSubClient.ListenToChannelPoints(iRCBot.irc.krakenConnection.BroadcasterID);
+			TwitchPubSubClient.Connect();
 		}
 
-		private void TwitchWebSocket_OnError(object sender, ErrorEventArgs e)
+		private void TwitchPubSubClient_OnChannelPointsRewardRedeemed(object sender, TwitchLib.PubSub.Events.OnChannelPointsRewardRedeemedArgs e)
 		{
-			Debug.WriteLine("Error");
-
+			var reward = VoiceModHandling.GetInstance().CheckIDs(e.RewardRedeemed.Redemption.Reward.Id);
+			if (reward != null)
+			{
+				if(e.RewardRedeemed.Redemption.Status == "UNFULFILLED")
+				{
+					if(Playing)
+					{
+						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
+						{
+							e.RewardRedeemed.Redemption.Id,
+						}, KrakenConnections.RedemptionStates.CANCELED);
+					}
+					else
+					{
+						SetVoice(reward.VoiceModFriendlyName, reward.RewardLenght);
+						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
+						{
+							e.RewardRedeemed.Redemption.Id,
+						}, KrakenConnections.RedemptionStates.FULFILLED);
+					}
+				}
+			}
 		}
 
-		private void TwitchWebSocket_OnOpen(object sender, EventArgs e)
+		private void TwitchPubSubClient_OnListenResponse(object sender, TwitchLib.PubSub.Events.OnListenResponseArgs e)
 		{
-			Debug.WriteLine("Open");
-			SocketConnected = true;
+			if (!e.Successful)
+				throw new Exception($"Failed to listen! Response: {e.Response}");
 		}
 
-		private void TwitchWebSocket_OnClose(object sender, CloseEventArgs e)
+		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)
 		{
-			Debug.WriteLine("Close");
-			SocketConnected = false;
+			var auth = "oauth:" + PrivateSettings.GetInstance().TwitchPassword;
+			TwitchPubSubClient.SendTopics(oauth: auth);
 		}
 
-		private void TwitchWebSocket_OnMessage(object sender, MessageEventArgs e)
-		{
-			Debug.WriteLine("Meessage");
-
-		}
-
-		public bool CheckIDs(string rewardID)
+		public VoiceModConfig.VoiceModReward CheckIDs(string rewardID)
 		{
 			var config = VoiceModConfig.GetInstance();
 			foreach (var reward in config.Rewards)
 			{
 				if (reward.RewardID == rewardID)
-					return true;
+					return reward;
 			}
 
-			return false;
+			return null;
 		}
 
 		public void Disconnect()
@@ -440,6 +463,10 @@ namespace BasicTwitchSoundPlayer
 			{
 				client.Close();
 			}
+
+			TwitchPubSubClient.OnPubSubServiceConnected -= TwitchPubSubClient_OnPubSubServiceConnected;
+			TwitchPubSubClient.OnListenResponse -= TwitchPubSubClient_OnListenResponse;
+			TwitchPubSubClient.OnChannelPointsRewardRedeemed -= TwitchPubSubClient_OnChannelPointsRewardRedeemed;
 		}
 	}
 }

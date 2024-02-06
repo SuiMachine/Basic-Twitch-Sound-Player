@@ -225,6 +225,8 @@ namespace BasicTwitchSoundPlayer
 			[XmlAttribute]
 			public int RewardCooldown { get; set; }
 			[XmlAttribute]
+			public int RewardLenght { get; set; }
+			[XmlAttribute]
 			public bool Enabled { get; set; }
 			[XmlText]
 			public string RewardText { get; set; }
@@ -236,6 +238,7 @@ namespace BasicTwitchSoundPlayer
 				VoiceModFriendlyName = "";
 				RewardID = "";
 				RewardPrice = 240;
+				RewardLenght = 30;
 				RewardCooldown = 60;
 				Enabled = true;
 				RewardText = "";
