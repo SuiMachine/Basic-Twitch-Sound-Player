@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static BasicTwitchSoundPlayer.VoiceModConfig;
 
@@ -15,12 +16,16 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 
 		#region Grid_Constants
-		int COLUMNINDEX_VOICENAME = 0;
-		int COLUMNINDEX_REWARD_ID = 1;
-		int COLUMNINDEX_REWARD_PRICE = 2;
-		int COLUMNINDEX_REWARD_COOLDOWN = 3;
-		int COLUMNINDEX_ENABLED = 4;
-		int COLUMNINDEX_REWARD_TEXT = 5;
+		enum TABLE_COLUMS
+		{
+			COLUMNINDEX_VOICENAME,
+			COLUMNINDEX_REWARD_NAME,
+			COLUMNINDEX_REWARD_PRICE,
+			COLUMNINDEX_REWARD_COOLDOWN,
+			COLUMNINDEX_REWARD_DURATION,
+			COLUMNINDEX_ENABLED,
+			COLUMNINDEX_REWARD_TEXT
+		}
 		#endregion
 
 
@@ -42,26 +47,29 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			VoicesDataGrid.Columns.Clear();
 			VoiceModRewardBinding = new BindingList<IVoiceModeRewardBindingInterface>(VoiceModConfig.GetInstance().Rewards.Cast<IVoiceModeRewardBindingInterface>().ToList()) { AllowNew = true, AllowRemove = true };
 			VoicesDataGrid.AutoGenerateColumns = false;
+			VoicesDataGrid.MultiSelect = false;
 			VoicesDataGrid.AutoSize = true;
 			VoicesDataGrid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
 			VoicesDataGrid.DataSource = VoiceModRewardBinding;
 
 			VoicesDataGrid.CellFormatting += VoicesDataGrid_CellFormatting;
-
+			VoicesDataGrid.DoubleClick += VoicesDataGrid_DoubleClick;
+			VoicesDataGrid.KeyDown += VoicesDataGrid_KeyDown;
 
 			var nameColumn = new DataGridViewTextBoxColumn();
 			nameColumn.Name = "Voice Name";
-			nameColumn.Width = 350;
+			nameColumn.Width = 120;
 			nameColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 			nameColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(nameColumn);
 
-			var rewardIDColumn = new DataGridViewTextBoxColumn();
-			rewardIDColumn.Name = "Reward ID";
-			rewardIDColumn.Width = 350;
-			rewardIDColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-			rewardIDColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-			VoicesDataGrid.Columns.Add(rewardIDColumn);
+
+			var rewardName = new DataGridViewTextBoxColumn();
+			rewardName.Name = "Reward Name";
+			rewardName.Width = 350;
+			rewardName.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			rewardName.SortMode = DataGridViewColumnSortMode.NotSortable;
+			VoicesDataGrid.Columns.Add(rewardName);
 
 			var RewardPrice = new DataGridViewTextBoxColumn();
 			RewardPrice.Name = "Price";
@@ -69,6 +77,13 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			RewardPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 			RewardPrice.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(RewardPrice);
+
+			var durationColumn = new DataGridViewTextBoxColumn();
+			durationColumn.Name = "Duration";
+			durationColumn.Width = 80;
+			durationColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			durationColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+			VoicesDataGrid.Columns.Add(durationColumn);
 
 			var RewardCooldown = new DataGridViewTextBoxColumn();
 			RewardCooldown.Name = "Cooldown";
@@ -92,34 +107,75 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			VoicesDataGrid.Columns.Add(RewardText);
 		}
 
+		private void VoicesDataGrid_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.KeyCode == Keys.Delete)
+			{
+				var row = VoicesDataGrid.CurrentRow.Index;
+				var config = VoiceModConfig.GetInstance();
+
+				if (row >= 0 && row < config.Rewards.Count)
+				{
+					config.Rewards.RemoveAt(row);
+					VoicesDataGrid.Invalidate();
+				}
+			}
+		}
+
 		private void VoicesDataGrid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
 		{
 			var config = VoiceModConfig.GetInstance();
-			if(e.RowIndex < config.Rewards.Count)
+			if (e.RowIndex < config.Rewards.Count)
 			{
-				if(e.ColumnIndex == COLUMNINDEX_VOICENAME)
+				if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_VOICENAME)
 				{
 					e.Value = config.Rewards[e.RowIndex].VoiceModFriendlyName;
 				}
-				else if (e.ColumnIndex == COLUMNINDEX_REWARD_ID)
+				else if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_REWARD_NAME)
 				{
-					e.Value = config.Rewards[e.RowIndex].RewardID;
+					e.Value = config.Rewards[e.RowIndex].RewardTitle;
 				}
-				else if (e.ColumnIndex == COLUMNINDEX_REWARD_PRICE)
+				else if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_REWARD_PRICE)
 				{
-					e.Value = config.Rewards[e.RowIndex].RewardPrice;
+					e.Value = config.Rewards[e.RowIndex].RewardCost;
 				}
-				else if (e.ColumnIndex == COLUMNINDEX_REWARD_COOLDOWN)
+				else if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_REWARD_COOLDOWN)
 				{
 					e.Value = config.Rewards[e.RowIndex].RewardCooldown;
 				}
-				else if (e.ColumnIndex == COLUMNINDEX_ENABLED)
+				else if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_REWARD_DURATION)
+				{
+					e.Value = config.Rewards[e.RowIndex].RewardDuration;
+				}
+				else if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_ENABLED)
 				{
 					e.Value = config.Rewards[e.RowIndex].Enabled;
 				}
-				else if (e.ColumnIndex == COLUMNINDEX_REWARD_TEXT)
+				else if (e.ColumnIndex == (int)TABLE_COLUMS.COLUMNINDEX_REWARD_TEXT)
 				{
-					e.Value = config.Rewards[e.RowIndex].RewardText;
+					e.Value = config.Rewards[e.RowIndex].RewardDescription;
+				}
+			}
+		}
+
+		private void VoicesDataGrid_DoubleClick(object sender, EventArgs e)
+		{
+			var config = VoiceModConfig.GetInstance();
+			var row = VoicesDataGrid.CurrentRow.Index;
+			if (row >= 0 && row < config.Rewards.Count)
+			{
+				var form = new EditForm.VoiceModEditForm(config.Rewards[row]);
+				var result = form.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					var sound = config.Rewards[row];
+					sound.RewardTitle = form.RewardName;
+					sound.RewardCooldown = form.RewardCooldown;
+					sound.Enabled = form.RewardEnabled;
+					sound.RewardDuration = form.RewardDuration;
+					sound.RewardCost = form.RewardPrice;
+					sound.RewardDescription = form.RewardText;
+					VoicesDataGrid.InvalidateRow(row);
 				}
 			}
 		}
@@ -138,8 +194,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			VoiceModHandling.GetInstance().OnListOfVoicesReceived -= VoicedReceived;
 
 			VoicesDataGrid.CellFormatting -= VoicesDataGrid_CellFormatting;
-
-
+			VoicesDataGrid.DoubleClick -= VoicesDataGrid_DoubleClick;
 		}
 
 		private void ConnectionStateChanged(bool connected)
@@ -172,10 +227,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		{
 			var voices = VoiceModHandling.GetInstance().VoicesAvailable;
 			var config = VoiceModConfig.GetInstance();
-			for(int i=0; i< config.Rewards.Count; i++)
+			for (int i = 0; i < config.Rewards.Count; i++)
 			{
 				var reward = config.Rewards[i];
-				if(!voices.TryGetValue(reward.VoiceModFriendlyName, out var _))
+				if (!voices.TryGetValue(reward.VoiceModFriendlyName, out var _))
 				{
 					config.Rewards.RemoveAt(i);
 					i--;
@@ -209,37 +264,38 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var voices = VoiceModHandling.GetInstance().VoicesAvailable;
 
 			var config = VoiceModConfig.GetInstance();
-			foreach(var voice in voices.Values)
+			foreach (var voice in voices.Values)
 			{
-				if(voice.IsEnabled && voice.IsFavourite)
+				//Skip clean voice!
+				if (voice.ID == "nofx")
+					continue;
+
+				if (voice.IsEnabled && voice.IsFavourite)
 				{
 					var find = config.Rewards.Find(x => x.VoiceModFriendlyName == voice.FriendlyName);
-					if(find == null)
+					if (find == null)
 					{
 						config.Rewards.Add(new VoiceModConfig.VoiceModReward()
 						{
+							RewardTitle = $"Set voice to \"{voice.FriendlyName}\"",
 							VoiceModFriendlyName = voice.FriendlyName,
 							Enabled = voice.IsEnabled,
 							RewardID = "",
 							RewardCooldown = 60,
-							RewardPrice = 240,
-							RewardText = $"Set voice to \"{voice.FriendlyName}\""
+							RewardDuration = 30,
+							RewardCost = 240,
+							RewardDescription = $"Set voice to \"{voice.FriendlyName}\" for {30} seconds."
 						});
 					}
 				}
 			}
 
 			MessageBox.Show("Done", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			VoicesDataGrid.Invalidate();
 		}
 
 		private async void B_CreateMissingRewards_Click(object sender, EventArgs e)
 		{
-/*			if(MainForm.Instance.TwitchBot == null)
-			{
-				MessageBox.Show("Bot must be connected before setting up awards", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}*/
-
 			var result = MessageBox.Show("Are you sure you want to do that?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.No)
 				return;
@@ -250,14 +306,20 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			await apiConnection.GetBroadcasterIDAsync();
 
 			var voices = VoiceModConfig.GetInstance();
-			var voice = voices.Rewards[0];
-			var resultReward = await apiConnection.CreateRewardVoiceModAsync(voice);
-			if(resultReward != null)
+			foreach (var voice in voices.Rewards)
 			{
-				voice.RewardID = resultReward.id;
-				voice.IsSetup = true;
+				if(apiConnection.CachedRewards == null)
+					_ = await apiConnection.GetRewardsList();
+				var resultReward = await apiConnection.CreateOrUpdateRewardVoiceModAsync(voice);
+				if (resultReward != null)
+				{
+					voice.RewardID = resultReward.id;
+					voice.IsSetup = true;
+				}
+				await Task.Delay(2000);
 			}
 
+			MessageBox.Show("Done!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}
 }

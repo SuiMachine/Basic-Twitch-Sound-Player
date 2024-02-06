@@ -6,9 +6,9 @@ namespace BasicTwitchSoundPlayer.Interfaces
 	{
 		string VoiceModFriendlyName { get; set; }
 		string RewardID { get; set; }
-		int RewardPrice { get; set; }
+		int RewardCost { get; set; }
 		int RewardCooldown { get; set; }
 		bool Enabled { get; set; }
-		string RewardText { get; set; }
+		string RewardDescription { get; set; }
 	}
 }

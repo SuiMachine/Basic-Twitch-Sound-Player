@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,6 +36,21 @@ namespace BasicTwitchSoundPlayer.IRC
 			public bool is_user_input_required = false;
 			public bool is_paused = false;
 			public bool should_redemptions_skip_request_queue = false;
+			public bool is_global_cooldown_enabled;
+			public int global_cooldown_seconds;
+
+			public static bool Differs(ChannelReward l, ChannelReward r)
+			{
+				return l.id != r.id
+					|| l.is_enabled != r.is_enabled
+					|| l.cost != r.cost
+					|| l.title != r.title
+					|| l.is_user_input_required != r.is_user_input_required
+					|| l.is_paused != r.is_paused
+					|| l.should_redemptions_skip_request_queue != r.should_redemptions_skip_request_queue
+					|| l.is_global_cooldown_enabled != r.is_global_cooldown_enabled
+					|| l.global_cooldown_seconds != r.global_cooldown_seconds;
+			}
 		}
 
 		private string HELIXURI { get; set; }
@@ -42,6 +58,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string Channel { get; set; }
 		public string BroadcasterID { get; set; }
 		public Task SubscribingToEvents { get; internal set; }
+		public List<ChannelReward> CachedRewards { get; internal set; }
 
 		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
@@ -379,8 +396,11 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
-		public async Task<ChannelReward> CreateRewardVoiceModAsync(VoiceModConfig.VoiceModReward reward)
+		public async Task<ChannelReward> CreateOrUpdateRewardVoiceModAsync(VoiceModConfig.VoiceModReward reward)
 		{
+			if (CachedRewards == null)
+				return null;
+
 			{
 				int endTimer = 5;
 				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
@@ -393,31 +413,69 @@ namespace BasicTwitchSoundPlayer.IRC
 			if ((BroadcasterID == null || BroadcasterID == ""))
 				return null;
 
-			var content = new Dictionary<string, string>()
-			{
-					{"title", reward.VoiceModFriendlyName },
-					{"cost", reward.RewardPrice.ToString() },
-					{"is_enabled", reward.Enabled.ToString().ToLower() },
-					{"prompt", reward.RewardText.Replace("\"", "\\\"") },
-					{"is_user_input_required", "false" },
-					{"should_redemptions_skip_request_queue", "false" },
-					{"is_global_cooldown_enabled", "true" },
-					{"global_cooldown_seconds", reward.RewardCooldown.ToString()}
-			};
+			ChannelReward currentReward = CachedRewards.Find(x => x.id == reward.RewardID); ;
 
-
-			var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
-			if (response != "")
+			if (currentReward != null)
 			{
-				JObject jReader = JObject.Parse(response);
-				var dataNode = jReader["data"].First;
-				if (dataNode["id"] != null)
+				var newReward = new ChannelReward()
 				{
-					var newReward = dataNode.ToObject<ChannelReward>();
+					title = reward.RewardTitle,
+					id = reward.RewardID,
+					is_enabled = reward.Enabled,
+					is_global_cooldown_enabled = true,
+					is_paused = false,
+					global_cooldown_seconds = reward.RewardCooldown,
+					cost = reward.RewardCost,
+					is_user_input_required = false,
+					should_redemptions_skip_request_queue = false,
+				};
+
+				if (ChannelReward.Differs(currentReward, newReward))
+				{
+					var json = JsonConvert.SerializeObject(newReward);
+
+					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					if(response != "")
+					{
+						JObject jReader = JObject.Parse(response);
+						var dataNode = jReader["data"].First;
+						if (dataNode["id"] != null)
+						{
+							newReward = dataNode.ToObject<ChannelReward>();
+							return newReward;
+						}
+					}
 					return newReward;
 				}
+				return newReward;
 			}
-			
+			else
+			{
+				var content = new Dictionary<string, string>()
+				{
+						{"title", reward.VoiceModFriendlyName },
+						{"cost", reward.RewardCost.ToString() },
+						{"is_enabled", reward.Enabled.ToString().ToLower() },
+						{"prompt", reward.RewardDescription.Replace("\"", "\\\"") },
+						{"is_user_input_required", "false" },
+						{"should_redemptions_skip_request_queue", "false" },
+						{"is_global_cooldown_enabled", "true" },
+						{"global_cooldown_seconds", reward.RewardCooldown.ToString()}
+				};
+
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
 			return null;
 		}
 
@@ -555,7 +613,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 
 			var rewards = VoiceModConfig.GetInstance().Rewards;
-			foreach(var reward in rewards)
+			foreach (var reward in rewards)
 			{
 				reward.IsSetup = false;
 			}
@@ -578,18 +636,19 @@ namespace BasicTwitchSoundPlayer.IRC
 			if (jReader["data"] != null)
 			{
 				var dataNode = jReader["data"];
-				foreach(var customReward in dataNode)
+				foreach (var customReward in dataNode)
 				{
 					var parseNode = customReward.ToObject<ChannelReward>();
 
 					var find = rewards.Find(x => x.RewardID == parseNode.id);
-					if(find != null)
+					if (find != null)
 					{
 						list.Add(parseNode);
 					}
 				}
 			}
 
+			CachedRewards = list;
 			return list;
 
 		}

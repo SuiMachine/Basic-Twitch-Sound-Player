@@ -420,7 +420,7 @@ namespace BasicTwitchSoundPlayer
 					}
 					else
 					{
-						SetVoice(reward.VoiceModFriendlyName, reward.RewardLenght);
+						SetVoice(reward.VoiceModFriendlyName, reward.RewardDuration);
 						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
 						{
 							e.RewardRedeemed.Redemption.Id,

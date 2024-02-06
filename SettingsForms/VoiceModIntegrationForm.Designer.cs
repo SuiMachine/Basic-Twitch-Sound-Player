@@ -42,7 +42,7 @@
 			this.B_Connect = new System.Windows.Forms.Button();
 			this.B_Disconnect = new System.Windows.Forms.Button();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-			this.B_CreateMissingRewards = new System.Windows.Forms.Button();
+			this.B_UpdateTwitchRewards = new System.Windows.Forms.Button();
 			this.B_ImportFavourites = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
 			this.VoicesDataGrid = new System.Windows.Forms.DataGridView();
@@ -213,10 +213,10 @@
 			// 
 			this.tableLayoutPanel6.ColumnCount = 4;
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 143F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 84F));
-			this.tableLayoutPanel6.Controls.Add(this.B_CreateMissingRewards, 0, 0);
+			this.tableLayoutPanel6.Controls.Add(this.B_UpdateTwitchRewards, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.B_ImportFavourites, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.B_Save, 3, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -227,15 +227,15 @@
 			this.tableLayoutPanel6.Size = new System.Drawing.Size(638, 30);
 			this.tableLayoutPanel6.TabIndex = 4;
 			// 
-			// B_CreateMissingRewards
+			// B_UpdateTwitchRewards
 			// 
-			this.B_CreateMissingRewards.Location = new System.Drawing.Point(113, 3);
-			this.B_CreateMissingRewards.Name = "B_CreateMissingRewards";
-			this.B_CreateMissingRewards.Size = new System.Drawing.Size(101, 23);
-			this.B_CreateMissingRewards.TabIndex = 5;
-			this.B_CreateMissingRewards.Text = "Create missing rewards";
-			this.B_CreateMissingRewards.UseVisualStyleBackColor = true;
-			this.B_CreateMissingRewards.Click += new System.EventHandler(this.B_CreateMissingRewards_Click);
+			this.B_UpdateTwitchRewards.Location = new System.Drawing.Point(113, 3);
+			this.B_UpdateTwitchRewards.Name = "B_UpdateTwitchRewards";
+			this.B_UpdateTwitchRewards.Size = new System.Drawing.Size(131, 23);
+			this.B_UpdateTwitchRewards.TabIndex = 5;
+			this.B_UpdateTwitchRewards.Text = "Update Twitch Rewards";
+			this.B_UpdateTwitchRewards.UseVisualStyleBackColor = true;
+			this.B_UpdateTwitchRewards.Click += new System.EventHandler(this.B_CreateMissingRewards_Click);
 			// 
 			// B_ImportFavourites
 			// 
@@ -309,6 +309,6 @@
 		private System.Windows.Forms.Button B_Save;
 		private System.Windows.Forms.DataGridView VoicesDataGrid;
 		private System.Windows.Forms.Button B_ImportFavourites;
-		private System.Windows.Forms.Button B_CreateMissingRewards;
+		private System.Windows.Forms.Button B_UpdateTwitchRewards;
 	}
 }

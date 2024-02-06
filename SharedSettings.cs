@@ -219,29 +219,32 @@ namespace BasicTwitchSoundPlayer
 			[XmlAttribute]
 			public string VoiceModFriendlyName { get; set; }
 			[XmlAttribute]
+			public string RewardTitle { get; set; }
+			[XmlAttribute]
 			public string RewardID { get; set; }
 			[XmlAttribute]
-			public int RewardPrice { get; set; }
+			public int RewardCost { get; set; }
 			[XmlAttribute]
 			public int RewardCooldown { get; set; }
 			[XmlAttribute]
-			public int RewardLenght { get; set; }
+			public int RewardDuration { get; set; }
 			[XmlAttribute]
 			public bool Enabled { get; set; }
 			[XmlText]
-			public string RewardText { get; set; }
+			public string RewardDescription { get; set; }
 			[XmlIgnore]
 			public bool IsSetup = false;
 
 			public VoiceModReward()
 			{
 				VoiceModFriendlyName = "";
+				RewardTitle = "";
 				RewardID = "";
-				RewardPrice = 240;
-				RewardLenght = 30;
+				RewardCost = 240;
+				RewardDuration = 30;
 				RewardCooldown = 60;
 				Enabled = true;
-				RewardText = "";
+				RewardDescription = "";
 			}
 
 			public object Clone()
@@ -249,11 +252,13 @@ namespace BasicTwitchSoundPlayer
 				return new VoiceModReward()
 				{
 					VoiceModFriendlyName = this.VoiceModFriendlyName,
+					RewardTitle = this.RewardTitle,
 					RewardID = this.RewardID,
-					RewardPrice = this.RewardPrice,
+					RewardCost = this.RewardCost,
 					RewardCooldown = this.RewardCooldown,
+					RewardDuration = this.RewardDuration,
 					Enabled = this.Enabled,
-					RewardText = this.RewardText
+					RewardDescription = this.RewardDescription
 				};
 			}
 		}
