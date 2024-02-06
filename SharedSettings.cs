@@ -228,6 +228,8 @@ namespace BasicTwitchSoundPlayer
 			public bool Enabled { get; set; }
 			[XmlText]
 			public string RewardText { get; set; }
+			[XmlIgnore]
+			public bool IsSetup = false;
 
 			public VoiceModReward()
 			{

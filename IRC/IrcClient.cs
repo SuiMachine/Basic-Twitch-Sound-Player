@@ -9,17 +9,17 @@ using System.Timers;
 namespace BasicTwitchSoundPlayer.IRC
 {
 	//Some of the functions here may be a bit weird. Often the reason is, they were changed to use SmartIRC4Net from my original TCP socket client
-	struct ReadMessage
+	public struct ReadMessage
 	{
 		public string user;
 		public string userID;
 		public string message;
-		public BasicTwitchSoundPlayer.Structs.TwitchRightsEnum rights;
-		public BasicTwitchSoundPlayer.Structs.MessageType msgType;
+		public Structs.TwitchRightsEnum rights;
+		public Structs.MessageType msgType;
 		public string RewardID;
 	}
 
-	class OldIRCClient
+	public class OldIRCClient
 	{
 		MainForm parent;
 		public bool ConnectedStatus = true;
@@ -38,7 +38,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public List<string> ignorelist = new List<string>();
 		public List<string> trustedUsers = new List<string>();
 		public string[] subscribers = new string[0];
-		private KrakenConnections krakenConnection;
+		public KrakenConnections krakenConnection { get; private set; }
 		private Timer krakenUpdateTimer;
 
 		//Because I really don't want to rewrite half of this

@@ -10,7 +10,7 @@ namespace BasicTwitchSoundPlayer.IRC
 	public class IRCBot
 	{
 		public bool BotRunning;
-		private OldIRCClient irc;
+		public OldIRCClient irc;
 		private MainForm parent;
 		private static ReadMessage FormattedMessage;
 		private string channelToJoin;
@@ -129,7 +129,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								msg.msgType = MessageType.SoundReward;
 								msg.RewardID = rewardID;
 							}
-							else if(VoiceModHandling.GetInstance().CheckIDs(rewardID))
+							else if (VoiceModHandling.GetInstance().CheckIDs(rewardID))
 							{
 								msg.msgType = MessageType.VoiceModReward;
 								msg.RewardID = rewardID;
@@ -241,7 +241,7 @@ namespace BasicTwitchSoundPlayer.IRC
 						else
 						{
 							var trim = formattedMessage.message.Replace("\"", "").Trim();
-							if(VoiceModHandling.GetInstance().SetVoice(trim))
+							if (VoiceModHandling.GetInstance().SetVoice(trim))
 								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
 							else
 								irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);

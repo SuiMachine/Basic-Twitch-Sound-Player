@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace BasicTwitchSoundPlayer
@@ -30,6 +31,7 @@ namespace BasicTwitchSoundPlayer
 
 		public Action<bool> OnConnectionStateChanged;
 		public Action OnListOfVoicesReceived;
+		private Task SubscribingTask;
 
 		public static bool IsConfigured()
 		{
@@ -39,6 +41,7 @@ namespace BasicTwitchSoundPlayer
 		private static VoiceModHandling Instance;
 
 		public bool Disposed { get; private set; }
+		public bool SocketConnected { get; private set; }
 
 		private IRCBot iRCBot;
 		private MainForm parent;
@@ -48,6 +51,8 @@ namespace BasicTwitchSoundPlayer
 		bool currentStatus = false;
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
+		private WebSocketSharp.WebSocket TwitchWebSocket { get; set; }
+
 
 		public bool ConnectedToVoiceMod { get; private set; }
 
@@ -372,6 +377,46 @@ namespace BasicTwitchSoundPlayer
 		public void SetIrcReference(IRCBot iRCBot)
 		{
 			this.iRCBot = iRCBot;
+
+			SubscribingTask = Task.Run(GetaAndSocket);
+		}
+
+		public async Task GetaAndSocket()
+		{
+			while (!iRCBot.BotRunning || iRCBot.irc == null || !iRCBot.irc.ConnectedStatus)
+				await Task.Delay(2500);
+
+			var rewards = await iRCBot.irc.krakenConnection.GetRewardsList();
+			TwitchWebSocket = new WebSocket("wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30");
+			TwitchWebSocket.OnOpen += TwitchWebSocket_OnOpen;
+			TwitchWebSocket.OnClose += TwitchWebSocket_OnClose;
+			TwitchWebSocket.OnMessage += TwitchWebSocket_OnMessage;
+			TwitchWebSocket.OnError += TwitchWebSocket_OnError;
+			TwitchWebSocket.ConnectAsync();
+		}
+
+		private void TwitchWebSocket_OnError(object sender, ErrorEventArgs e)
+		{
+			Debug.WriteLine("Error");
+
+		}
+
+		private void TwitchWebSocket_OnOpen(object sender, EventArgs e)
+		{
+			Debug.WriteLine("Open");
+			SocketConnected = true;
+		}
+
+		private void TwitchWebSocket_OnClose(object sender, CloseEventArgs e)
+		{
+			Debug.WriteLine("Close");
+			SocketConnected = false;
+		}
+
+		private void TwitchWebSocket_OnMessage(object sender, MessageEventArgs e)
+		{
+			Debug.WriteLine("Meessage");
+
 		}
 
 		public bool CheckIDs(string rewardID)
@@ -388,6 +433,9 @@ namespace BasicTwitchSoundPlayer
 
 		public void Disconnect()
 		{
+			if (SubscribingTask != null)
+				SubscribingTask.Dispose();
+
 			if(client != null)
 			{
 				client.Close();

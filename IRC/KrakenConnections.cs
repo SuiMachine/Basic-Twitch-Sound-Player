@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
-	class KrakenConnections
+	public class KrakenConnections
 	{
 		public enum RewardType
 		{
@@ -41,6 +42,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string TwitchAuthy { get; set; }
 		private string Channel { get; set; }
 		private string BroadcasterID { get; set; }
+		public Task SubscribingToEvents { get; internal set; }
 
 		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
@@ -539,6 +541,98 @@ namespace BasicTwitchSoundPlayer.IRC
 			jsonContent += "}";
 			return jsonContent;
 		}
+
 		#endregion
+
+		public async Task<List<ChannelReward>> GetRewardsList()
+		{
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			var rewards = VoiceModConfig.GetInstance().Rewards;
+			foreach(var reward in rewards)
+			{
+				reward.IsSetup = false;
+			}
+
+			if (BroadcasterID == null || BroadcasterID == "")
+			{
+				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify VoiceMod Rewards!", LineType.IrcCommand);
+				return null;
+			}
+
+			string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
+			if (response == null || response == "")
+			{
+				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] Incorrect response when verifying Channel Rewards!", LineType.IrcCommand);
+				return null;
+			}
+
+			List<ChannelReward> list = new List<ChannelReward>();
+			JObject jReader = JObject.Parse(response);
+			if (jReader["data"] != null)
+			{
+				var dataNode = jReader["data"];
+				foreach(var customReward in dataNode)
+				{
+					var parseNode = customReward.ToObject<ChannelReward>();
+
+					var find = rewards.Find(x => x.RewardID == parseNode.id);
+					if(find != null)
+					{
+						list.Add(parseNode);
+					}
+				}
+			}
+
+			return list;
+
+		}
+
+		public async Task SubscribeEvents()
+		{
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			if (BroadcasterID == null || BroadcasterID == "")
+			{
+				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify VoiceMod Rewards!", LineType.IrcCommand);
+				return;
+			}
+
+			var convert = JsonConvert.SerializeObject(new Dictionary<string, string>()
+			{
+				{ "type", "user.update" },
+				{ "version", "1" },
+				{ "condition", JsonConvert.SerializeObject(new Dictionary<string, string>()
+					{
+						{"user_id", BroadcasterID }
+					})
+				},
+				{ "transport", JsonConvert.SerializeObject(new Dictionary<string, string>()
+					{
+						{ "method", "websocket" },
+						{ "session_id", "AQoQexAWVYKSTIu4ec_2VAxyuhAB" }
+					}
+				)}
+			});
+
+
+			string response = await PostNewUpdateAsync("eventsub/subscriptions",  "", convert, true);
+
+
+		}
 	}
 }

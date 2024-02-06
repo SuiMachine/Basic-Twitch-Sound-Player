@@ -190,10 +190,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                     {
                         this.ExportToHTML();
                     }
-                    else
-                    {
-                        this.ExportToGoogleDoc();
-                    }
                 }
             }
         }
@@ -276,17 +272,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 hSound.GetDateAdded().ToString(),
                 GetHTMLColor(hSound.GetRequirement())
                 );
-
-        }
-
-        private void ExportToGoogleDoc()
-        {
-            var tmpSnd = TreeNodesToSoundsEntryList(sndTreeView);
-
-            var settings = PrivateSettings.GetInstance();
-            GoogleSheetsExport sheet = new GoogleSheetsExport(spreadsheetId, settings.SoundRedemptionLogic, PrefixCharacter, tmpSnd);
-            if (sheet.WasSuccess)
-                MessageBox.Show("New sound db successfully exported to Google Spreadsheet", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
         #endregion

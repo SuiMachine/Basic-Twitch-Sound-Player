@@ -26,8 +26,6 @@ namespace BasicTwitchSoundPlayer
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundBase soundDb;
-		VSS.VSS_Entry_Group VSSdb;
-		VSS_PreviewWindow VSSPreview;
 
 		public MainForm()
 		{
@@ -44,7 +42,6 @@ namespace BasicTwitchSoundPlayer
 			trackBar_Volume.Value = valrr;
 			L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
 			soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), settings);
-			VSSdb = SoundStorage.VSSStorageXML.LoadVSSBase(Path.Combine("SoundDBs", "VSS.xml"));
 
 			if (settings.Autostart)
 			{
@@ -363,27 +360,6 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 		#endregion
-
-		private void VSSEditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			VSS.VSS_BindingsEditor scf = new VSS.VSS_BindingsEditor(VSSdb);
-			DialogResult res = scf.ShowDialog();
-			if (res == DialogResult.OK)
-			{
-				SoundStorage.VSSStorageXML.SaveVSSBase(Path.Combine("SoundDBs", "VSS.xml"), scf.VSS_RootEntry);
-			}
-		}
-
-		private void EnableVSSToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (VSSPreview == null || VSSPreview.IsDisposed)
-			{
-				VSSPreview = new VSS_PreviewWindow(VSSdb);
-				VSSPreview.Show();
-			}
-			else
-				VSSPreview.Show();
-		}
 
 		private void tTSToolStripMenuItem_Click(object sender, EventArgs e)
 		{

@@ -255,7 +255,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			if(resultReward != null)
 			{
 				voice.RewardID = resultReward.id;
+				voice.IsSetup = true;
 			}
+
 		}
 	}
 }
