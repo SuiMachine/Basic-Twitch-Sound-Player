@@ -4,6 +4,10 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Interop;
@@ -56,8 +60,8 @@ namespace BasicTwitchSoundPlayer
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
 		private bool Playing = false;
-		private TwitchPubSub TwitchPubSubClient{ get; set; }
-
+		private TwitchPubSub TwitchPubSubClient { get; set; }
+		private (string request, string voiceID) awaitingBitmap;
 
 		public bool ConnectedToVoiceMod { get; private set; }
 
@@ -86,12 +90,12 @@ namespace BasicTwitchSoundPlayer
 			try
 			{
 				var voiceModConf = VoiceModConfig.GetInstance();
-				
+
 				client = new WebSocket(voiceModConf.AdressPort);
 				client.OnMessage += Client_OnMessage;
 				client.OnOpen += Client_OnOpen;
 				client.OnClose += Client_OnClose;
-				if(IsConfigured())
+				if (IsConfigured())
 				{
 					parent.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.IrcCommand);
 					client.ConnectAsync();
@@ -220,7 +224,7 @@ namespace BasicTwitchSoundPlayer
 					}
 					else if (value == "getVoices")
 					{
-						var voices = json["payload"]?["voices"]; 
+						var voices = json["payload"]?["voices"];
 						if (voices != null)
 						{
 							VoicesAvailable.Clear();
@@ -259,8 +263,76 @@ namespace BasicTwitchSoundPlayer
 							client.Send(disableRequest.ToString());
 						}
 					}
+					else if(value == "getBitmap")
+					{
+						var result = json["actionObject"]?["result"]?["transparent"];
+						if(result != null)
+						{
+							var actionID = json["actionID"].Value<string>();
+							if(awaitingBitmap.request == actionID)
+							{
+								var byteData = Convert.FromBase64String(result.ToString());
+								StoreThumbnails(awaitingBitmap.voiceID, byteData);
+							}
+						}
+						awaitingBitmap = default;
+					}
 				}
 			}
+		}
+
+		private void StoreThumbnails(string voiceID, byte[] pngBytes)
+		{
+			//Safer path?
+			voiceID.Replace(':', '_').Replace(' ', '_');
+
+			var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+			if (!Directory.Exists(folderPath))
+				Directory.CreateDirectory(folderPath);
+
+			Image newImage;
+			using(var ms = new MemoryStream(pngBytes))
+			{
+				newImage = Image.FromStream(ms);
+			}
+
+			
+			StoreThumbnail(newImage, 112, Path.Combine(folderPath, voiceID + "_112.png"));
+			StoreThumbnail(newImage, 56, Path.Combine(folderPath, voiceID + "_56.png"));
+			StoreThumbnail(newImage, 28, Path.Combine(folderPath, voiceID + "_28.png"));
+
+
+			//var path56 = Path.Combine(folderPath, voiceID + "_112.png");
+
+
+		}
+
+		private void StoreThumbnail(Image sourceImage, int size, string path)
+		{
+			var destRect = new Rectangle(0, 0, size, size);
+			var destImage = new Bitmap(size, size);
+
+			destImage.SetResolution(size, size);
+
+			using (var graphics = Graphics.FromImage(destImage))
+			{
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using (var wrapMode = new ImageAttributes())
+				{
+					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(sourceImage, destRect, 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel, wrapMode);
+				}
+			}
+
+			if(File.Exists(path))
+				File.Delete(path);
+			destImage.Save(path);
+			destImage.Dispose();
 		}
 
 		public bool SetVoice(string voice, float lenght)
@@ -409,9 +481,9 @@ namespace BasicTwitchSoundPlayer
 			var reward = VoiceModHandling.GetInstance().CheckIDs(e.RewardRedeemed.Redemption.Reward.Id);
 			if (reward != null)
 			{
-				if(e.RewardRedeemed.Redemption.Status == "UNFULFILLED")
+				if (e.RewardRedeemed.Redemption.Status == "UNFULFILLED")
 				{
-					if(Playing)
+					if (Playing)
 					{
 						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
 						{
@@ -459,7 +531,7 @@ namespace BasicTwitchSoundPlayer
 			if (SubscribingTask != null)
 				SubscribingTask.Dispose();
 
-			if(client != null)
+			if (client != null)
 			{
 				client.Close();
 			}
@@ -467,6 +539,34 @@ namespace BasicTwitchSoundPlayer
 			TwitchPubSubClient.OnPubSubServiceConnected -= TwitchPubSubClient_OnPubSubServiceConnected;
 			TwitchPubSubClient.OnListenResponse -= TwitchPubSubClient_OnListenResponse;
 			TwitchPubSubClient.OnChannelPointsRewardRedeemed -= TwitchPubSubClient_OnChannelPointsRewardRedeemed;
+		}
+
+		internal async Task DownloadImages()
+		{
+			var voices = VoiceModConfig.GetInstance().Rewards.ToArray();
+			foreach (var voice in voices)
+			{
+				if (VoicesAvailable.TryGetValue(voice.VoiceModFriendlyName, out var voiceInfo))
+				{
+					var guid = Guid.NewGuid().ToString();
+					var message = new JObject()
+					{
+						{ "id", guid },
+						{ "action", "getBitmap" },
+						{ "payload", new JObject()
+							{
+								{ "voiceID", voiceInfo.ID }
+							}
+						}
+					};
+					awaitingBitmap = (guid, voiceInfo.FriendlyName);
+
+					client.Send(message.ToString());
+					while (awaitingBitmap != default)
+						await Task.Delay(100);
+				}
+			}
+			Process.Start(Path.Combine(Directory.GetCurrentDirectory(), "Images"));
 		}
 	}
 }

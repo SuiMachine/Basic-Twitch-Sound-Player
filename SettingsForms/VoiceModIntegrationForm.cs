@@ -78,19 +78,19 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			RewardPrice.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(RewardPrice);
 
-			var durationColumn = new DataGridViewTextBoxColumn();
-			durationColumn.Name = "Duration";
-			durationColumn.Width = 80;
-			durationColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-			durationColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-			VoicesDataGrid.Columns.Add(durationColumn);
-
 			var RewardCooldown = new DataGridViewTextBoxColumn();
 			RewardCooldown.Name = "Cooldown";
 			RewardCooldown.Width = 60;
 			RewardCooldown.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 			RewardCooldown.SortMode = DataGridViewColumnSortMode.NotSortable;
 			VoicesDataGrid.Columns.Add(RewardCooldown);
+
+			var durationColumn = new DataGridViewTextBoxColumn();
+			durationColumn.Name = "Duration";
+			durationColumn.Width = 80;
+			durationColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			durationColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+			VoicesDataGrid.Columns.Add(durationColumn);
 
 			var EnabledField = new DataGridViewTextBoxColumn();
 			EnabledField.Name = "Enabled";
@@ -212,6 +212,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				B_Connect.Enabled = false;
 				B_Disconnect.Enabled = true;
 				B_ImportFavourites.Enabled = true;
+				B_Add.Enabled = true;
+				B_Images.Enabled = true;
 			}
 			else
 			{
@@ -220,6 +222,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				B_Connect.Enabled = true;
 				B_Disconnect.Enabled = false;
 				B_ImportFavourites.Enabled = false;
+				B_Add.Enabled = false;
+				B_Images.Enabled = false;
 			}
 		}
 
@@ -275,6 +279,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 					var find = config.Rewards.Find(x => x.VoiceModFriendlyName == voice.FriendlyName);
 					if (find == null)
 					{
+						var duration = 60;
 						config.Rewards.Add(new VoiceModConfig.VoiceModReward()
 						{
 							RewardTitle = $"Set voice to \"{voice.FriendlyName}\"",
@@ -282,9 +287,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 							Enabled = voice.IsEnabled,
 							RewardID = "",
 							RewardCooldown = 60,
-							RewardDuration = 30,
-							RewardCost = 240,
-							RewardDescription = $"Set voice to \"{voice.FriendlyName}\" for {30} seconds."
+							RewardDuration = duration,
+							RewardCost = 50,
+							RewardDescription = $"Set voice to \"{voice.FriendlyName}\" for {duration} seconds (powered by VoiceMod)"
 						});
 					}
 				}
@@ -320,6 +325,16 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			}
 
 			MessageBox.Show("Done!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		private void B_Add_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("To be implemented?", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+		private async void B_Images_ClickAsync(object sender, EventArgs e)
+		{
+			await VoiceModHandling.GetInstance().DownloadImages();
 		}
 	}
 }

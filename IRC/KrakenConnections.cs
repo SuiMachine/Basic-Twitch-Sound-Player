@@ -451,20 +451,20 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 			else
 			{
-				var content = new Dictionary<string, string>()
+				var jObject = new JObject()
 				{
-						{"title", reward.VoiceModFriendlyName },
-						{"cost", reward.RewardCost.ToString() },
-						{"is_enabled", reward.Enabled.ToString().ToLower() },
-						{"prompt", reward.RewardDescription.Replace("\"", "\\\"") },
-						{"is_user_input_required", "false" },
-						{"should_redemptions_skip_request_queue", "false" },
-						{"is_global_cooldown_enabled", "true" },
-						{"global_cooldown_seconds", reward.RewardCooldown.ToString()}
-				};
+					{"title", reward.RewardTitle },
+					{"cost", reward.RewardCost },
+					{"is_enabled", reward.Enabled.ToString().ToLower() },
+					{"prompt", reward.RewardDescription },
+					{"is_user_input_required", "false" },
+					{"should_redemptions_skip_request_queue", "false" },
+					{"is_global_cooldown_enabled", "true" },
+					{"global_cooldown_seconds", reward.RewardCooldown }
+				}.ToString();
 
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);

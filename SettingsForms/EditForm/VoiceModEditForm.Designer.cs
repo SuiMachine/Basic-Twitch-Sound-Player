@@ -31,6 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VoiceModEditForm));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_GenerateDescription = new System.Windows.Forms.Button();
 			this.B_OK = new System.Windows.Forms.Button();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -50,7 +51,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.TB_Name = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.B_GenerateDescription = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -91,6 +91,16 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(507, 30);
 			this.tableLayoutPanel2.TabIndex = 0;
+			// 
+			// B_GenerateDescription
+			// 
+			this.B_GenerateDescription.Location = new System.Drawing.Point(3, 3);
+			this.B_GenerateDescription.Name = "B_GenerateDescription";
+			this.B_GenerateDescription.Size = new System.Drawing.Size(116, 23);
+			this.B_GenerateDescription.TabIndex = 2;
+			this.B_GenerateDescription.Text = "Generate description";
+			this.B_GenerateDescription.UseVisualStyleBackColor = true;
+			this.B_GenerateDescription.Click += new System.EventHandler(this.B_GenerateDescription_Click);
 			// 
 			// B_OK
 			// 
@@ -313,16 +323,6 @@
 			this.label1.Size = new System.Drawing.Size(76, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Reward name:";
-			// 
-			// B_GenerateDescription
-			// 
-			this.B_GenerateDescription.Location = new System.Drawing.Point(3, 3);
-			this.B_GenerateDescription.Name = "B_GenerateDescription";
-			this.B_GenerateDescription.Size = new System.Drawing.Size(116, 23);
-			this.B_GenerateDescription.TabIndex = 2;
-			this.B_GenerateDescription.Text = "Generate description";
-			this.B_GenerateDescription.UseVisualStyleBackColor = true;
-			this.B_GenerateDescription.Click += new System.EventHandler(this.B_GenerateDescription_Click);
 			// 
 			// VoiceModEditForm
 			// 

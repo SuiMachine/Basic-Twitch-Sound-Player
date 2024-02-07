@@ -42,9 +42,11 @@
 			this.B_Connect = new System.Windows.Forms.Button();
 			this.B_Disconnect = new System.Windows.Forms.Button();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_Save = new System.Windows.Forms.Button();
 			this.B_UpdateTwitchRewards = new System.Windows.Forms.Button();
 			this.B_ImportFavourites = new System.Windows.Forms.Button();
-			this.B_Save = new System.Windows.Forms.Button();
+			this.B_Add = new System.Windows.Forms.Button();
+			this.B_Images = new System.Windows.Forms.Button();
 			this.VoicesDataGrid = new System.Windows.Forms.DataGridView();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -211,14 +213,18 @@
 			// 
 			// tableLayoutPanel6
 			// 
-			this.tableLayoutPanel6.ColumnCount = 4;
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 143F));
+			this.tableLayoutPanel6.ColumnCount = 6;
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 96F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 84F));
-			this.tableLayoutPanel6.Controls.Add(this.B_UpdateTwitchRewards, 0, 0);
-			this.tableLayoutPanel6.Controls.Add(this.B_ImportFavourites, 0, 0);
-			this.tableLayoutPanel6.Controls.Add(this.B_Save, 3, 0);
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel6.Controls.Add(this.B_Save, 5, 0);
+			this.tableLayoutPanel6.Controls.Add(this.B_UpdateTwitchRewards, 2, 0);
+			this.tableLayoutPanel6.Controls.Add(this.B_ImportFavourites, 1, 0);
+			this.tableLayoutPanel6.Controls.Add(this.B_Add, 0, 0);
+			this.tableLayoutPanel6.Controls.Add(this.B_Images, 3, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel6.Location = new System.Drawing.Point(4, 416);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -227,11 +233,21 @@
 			this.tableLayoutPanel6.Size = new System.Drawing.Size(638, 30);
 			this.tableLayoutPanel6.TabIndex = 4;
 			// 
+			// B_Save
+			// 
+			this.B_Save.Location = new System.Drawing.Point(560, 3);
+			this.B_Save.Name = "B_Save";
+			this.B_Save.Size = new System.Drawing.Size(75, 23);
+			this.B_Save.TabIndex = 3;
+			this.B_Save.Text = "Save";
+			this.B_Save.UseVisualStyleBackColor = true;
+			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
+			// 
 			// B_UpdateTwitchRewards
 			// 
-			this.B_UpdateTwitchRewards.Location = new System.Drawing.Point(113, 3);
+			this.B_UpdateTwitchRewards.Location = new System.Drawing.Point(157, 3);
 			this.B_UpdateTwitchRewards.Name = "B_UpdateTwitchRewards";
-			this.B_UpdateTwitchRewards.Size = new System.Drawing.Size(131, 23);
+			this.B_UpdateTwitchRewards.Size = new System.Drawing.Size(132, 23);
 			this.B_UpdateTwitchRewards.TabIndex = 5;
 			this.B_UpdateTwitchRewards.Text = "Update Twitch Rewards";
 			this.B_UpdateTwitchRewards.UseVisualStyleBackColor = true;
@@ -239,7 +255,7 @@
 			// 
 			// B_ImportFavourites
 			// 
-			this.B_ImportFavourites.Location = new System.Drawing.Point(3, 3);
+			this.B_ImportFavourites.Location = new System.Drawing.Point(50, 3);
 			this.B_ImportFavourites.Name = "B_ImportFavourites";
 			this.B_ImportFavourites.Size = new System.Drawing.Size(101, 23);
 			this.B_ImportFavourites.TabIndex = 4;
@@ -247,15 +263,25 @@
 			this.B_ImportFavourites.UseVisualStyleBackColor = true;
 			this.B_ImportFavourites.Click += new System.EventHandler(this.B_ImportFavourites_Click);
 			// 
-			// B_Save
+			// B_Add
 			// 
-			this.B_Save.Location = new System.Drawing.Point(557, 3);
-			this.B_Save.Name = "B_Save";
-			this.B_Save.Size = new System.Drawing.Size(75, 23);
-			this.B_Save.TabIndex = 3;
-			this.B_Save.Text = "Save";
-			this.B_Save.UseVisualStyleBackColor = true;
-			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
+			this.B_Add.Location = new System.Drawing.Point(3, 3);
+			this.B_Add.Name = "B_Add";
+			this.B_Add.Size = new System.Drawing.Size(41, 23);
+			this.B_Add.TabIndex = 6;
+			this.B_Add.Text = "Add";
+			this.B_Add.UseVisualStyleBackColor = true;
+			this.B_Add.Click += new System.EventHandler(this.B_Add_Click);
+			// 
+			// B_Images
+			// 
+			this.B_Images.Location = new System.Drawing.Point(295, 3);
+			this.B_Images.Name = "B_Images";
+			this.B_Images.Size = new System.Drawing.Size(90, 23);
+			this.B_Images.TabIndex = 7;
+			this.B_Images.Text = "Get images";
+			this.B_Images.UseVisualStyleBackColor = true;
+			this.B_Images.Click += new System.EventHandler(this.B_Images_ClickAsync);
 			// 
 			// VoicesDataGrid
 			// 
@@ -310,5 +336,7 @@
 		private System.Windows.Forms.DataGridView VoicesDataGrid;
 		private System.Windows.Forms.Button B_ImportFavourites;
 		private System.Windows.Forms.Button B_UpdateTwitchRewards;
+		private System.Windows.Forms.Button B_Add;
+		private System.Windows.Forms.Button B_Images;
 	}
 }

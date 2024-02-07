@@ -56,7 +56,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms.EditForm
 			if (result == DialogResult.Yes)
 			{
 				RewardName = $"Set voice to \"{VoiceName}\"";
-				RewardText = $"Set the voice to \"{VoiceName}\" for {RewardDuration} seconds";
+				RewardText = $"Set the voice to \"{VoiceName}\" for {RewardDuration} seconds (powered by VoiceMod)";
 				TB_Name.Text = RewardName;
 				RB_Description.Text = RewardText;
 			}
