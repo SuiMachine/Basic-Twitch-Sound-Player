@@ -4,8 +4,7 @@ Basic Sound player for Twitch written in C#.
 
 Known issues / incomplete features
 -------
-  * VSS may play out 2nd sound incorrectly, if the sound frequency or format is different than previously played sound.
-  * Google will tell you that the application is unverified. Sorry, can't be bothered to verify it with google, especially if I keep the code on Github.
+  * Some forms related to voice mod need some work with invalidating data.
 
 Credits
 -------
