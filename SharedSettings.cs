@@ -1,5 +1,7 @@
-﻿using BasicTwitchSoundPlayer.Structs;
+﻿using BasicTwitchSoundPlayer.Interfaces;
+using BasicTwitchSoundPlayer.Structs;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Xml;
@@ -66,6 +68,14 @@ namespace BasicTwitchSoundPlayer
 	public class PrivateSettings
 	{
 		public const string CONFIGFILE = "Config.xml";
+		private static PrivateSettings m_Instance;
+		public static PrivateSettings GetInstance()
+		{
+			if (m_Instance == null)
+				m_Instance = LoadSettings();
+
+			return m_Instance;
+		}
 
 		#region Properties
 		[XmlElement]
@@ -93,10 +103,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string GoogleSpreadsheetID { get; set; }
 		[XmlElement]
-		public string VoiceModAPIKey { get; set; }
-		[XmlElement]
-		public string VoiceModAdressPort { get; set; }
-		[XmlElement]
 		public string VoiceSynthesizer { get; set; }
 		[XmlElement]
 		public string TTSRewardID { get; set; }
@@ -108,12 +114,6 @@ namespace BasicTwitchSoundPlayer
 		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
 		[XmlElement]
 		public string SoundRewardID { get; set; }
-
-		[XmlElement]
-		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
-		[XmlElement]
-		public string VoiceModRewardID { get; set; }
-
 		#endregion
 
 		public PrivateSettings()
@@ -129,8 +129,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			VoiceModAPIKey = "";
-			VoiceModAdressPort = "ws://localhost:59129/v1";
 			GoogleSpreadsheetID = "";
 			VoiceSynthesizer = "";
 			TTSRewardID = "";
@@ -138,18 +136,16 @@ namespace BasicTwitchSoundPlayer
 			TTSLogic = TTSLogic.RewardIDAndCommand;
 			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
-			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints;
-			VoiceModRewardID = "";
 		}
 
 		#region Load/Save
-		public static PrivateSettings LoadSettings()
+		private static PrivateSettings LoadSettings()
 		{
 			if (File.Exists(CONFIGFILE))
 			{
 				PrivateSettings obj;
 				XmlSerializer serializer = new XmlSerializer(typeof(PrivateSettings));
-				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open); //Extension is NOT *.xml on purpose so that in case of streaming monitor, it's not tied to normal text editors, as it contains authy token (password).
+				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
 				obj = (PrivateSettings)serializer.Deserialize(fs);
 				fs.Close();
 				return obj;
@@ -166,5 +162,105 @@ namespace BasicTwitchSoundPlayer
 			fw.Close();
 		}
 		#endregion
+	}
+
+	[Serializable]
+	public class VoiceModConfig
+	{
+		private const string CONFIGFILE = "VoiceModConfig.xml";
+		private static VoiceModConfig m_Instance;
+		public static VoiceModConfig GetInstance()
+		{
+			if (m_Instance == null)
+				m_Instance = LoadSettings();
+
+			return m_Instance;
+		}
+
+		private static VoiceModConfig LoadSettings()
+		{
+			if (File.Exists(CONFIGFILE))
+			{
+				VoiceModConfig obj;
+				XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
+				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
+				obj = (VoiceModConfig)serializer.Deserialize(fs);
+				fs.Close();
+				return obj;
+			}
+			else
+				return new VoiceModConfig();
+		}
+
+		public void Save()
+		{
+			XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
+			StreamWriter fw = new StreamWriter(CONFIGFILE);
+			serializer.Serialize(fw, this);
+			fw.Close();
+		}
+
+		public string APIKey { get; set; }
+		public string AdressPort { get; set; }
+		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
+
+		public List<VoiceModReward> Rewards { get; set; } = new List<VoiceModReward>();
+
+		public VoiceModConfig()
+		{
+			APIKey = "";
+			AdressPort = "ws://localhost:59129/v1";
+			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints; //Other currently not supported
+		}
+
+		[Serializable]
+		public class VoiceModReward : IVoiceModeRewardBindingInterface
+		{
+			[XmlAttribute]
+			public string VoiceModFriendlyName { get; set; }
+			[XmlAttribute]
+			public string RewardTitle { get; set; }
+			[XmlAttribute]
+			public string RewardID { get; set; }
+			[XmlAttribute]
+			public int RewardCost { get; set; }
+			[XmlAttribute]
+			public int RewardCooldown { get; set; }
+			[XmlAttribute]
+			public int RewardDuration { get; set; }
+			[XmlAttribute]
+			public bool Enabled { get; set; }
+			[XmlText]
+			public string RewardDescription { get; set; }
+			[XmlIgnore]
+			public bool IsSetup = false;
+
+			public VoiceModReward()
+			{
+				VoiceModFriendlyName = "";
+				RewardTitle = "";
+				RewardID = "";
+				RewardCost = 240;
+				RewardDuration = 30;
+				RewardCooldown = 60;
+				Enabled = true;
+				RewardDescription = "";
+			}
+
+			public object Clone()
+			{
+				return new VoiceModReward()
+				{
+					VoiceModFriendlyName = this.VoiceModFriendlyName,
+					RewardTitle = this.RewardTitle,
+					RewardID = this.RewardID,
+					RewardCost = this.RewardCost,
+					RewardCooldown = this.RewardCooldown,
+					RewardDuration = this.RewardDuration,
+					Enabled = this.Enabled,
+					RewardDescription = this.RewardDescription
+				};
+			}
+		}
 	}
 }

@@ -17,34 +17,33 @@ namespace BasicTwitchSoundPlayer
 
 	public partial class MainForm : Form
 	{
+		public static MainForm Instance { get; private set; }
+
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
 		public delegate void SetVolumeSlider(int valuee);       //used to safely change the slider position
 
-		IRC.IRCBot TwitchBot;
+		public IRC.IRCBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
-		PrivateSettings _programSettings;
 		SoundBase soundDb;
-		VSS.VSS_Entry_Group VSSdb;
-		VSS_PreviewWindow VSSPreview;
 
 		public MainForm()
 		{
+			Instance = this;
 			InitializeComponent();
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			_programSettings = PrivateSettings.LoadSettings();
+			var settings = PrivateSettings.GetInstance();
 			UpdateColors();
-			connectOnStartupToolStripMenuItem.Checked = _programSettings.Autostart;
-			int valrr = Convert.ToInt32(100 * _programSettings.Volume);
+			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
+			int valrr = Convert.ToInt32(100 * settings.Volume);
 			trackBar_Volume.Value = valrr;
 			L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
-			soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), _programSettings);
-			VSSdb = SoundStorage.VSSStorageXML.LoadVSSBase(Path.Combine("SoundDBs", "VSS.xml"));
+			soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), settings);
 
-			if (_programSettings.Autostart)
+			if (settings.Autostart)
 			{
 				StartBot();
 			}
@@ -52,7 +51,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void StartBot()
 		{
-			TwitchBot = new IRC.IRCBot(this, _programSettings, soundDb, PrefixCharacter);
+			TwitchBot = new IRC.IRCBot(soundDb, PrefixCharacter);
 			TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
 			TwitchBotThread.Start();
 		}
@@ -70,30 +69,31 @@ namespace BasicTwitchSoundPlayer
 			}
 			else
 			{
+				var settings = PrivateSettings.GetInstance();
 				RB_Preview.AppendText(text + "\n");
 				RB_Preview.Select(RB_Preview.Text.Length - text.Length - 1, text.Length);
 
 				switch (type)
 				{
 					case LineType.Generic:
-						RB_Preview.SelectionColor = _programSettings.Colors.LineColorGeneric;
+						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
 
 					case LineType.IrcCommand:
-						RB_Preview.SelectionColor = _programSettings.Colors.LineColorIrcCommand;
+						RB_Preview.SelectionColor = settings.Colors.LineColorIrcCommand;
 						break;
 
 					case LineType.ModCommand:
-						RB_Preview.SelectionColor = _programSettings.Colors.LineColorModeration;
+						RB_Preview.SelectionColor = settings.Colors.LineColorModeration;
 						break;
 
 
 					case LineType.SoundCommand:
-						RB_Preview.SelectionColor = _programSettings.Colors.LineColorSoundPlayback;
+						RB_Preview.SelectionColor = settings.Colors.LineColorSoundPlayback;
 						break;
 
 					default:
-						RB_Preview.SelectionColor = _programSettings.Colors.LineColorGeneric;
+						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
 
 				}
@@ -133,7 +133,9 @@ namespace BasicTwitchSoundPlayer
 			if (TwitchBot != null)
 				TwitchBot.StopBot();
 			trayIcon.Visible = false;
-			_programSettings.SaveSettings();
+			var settings = PrivateSettings.GetInstance();
+
+			settings.SaveSettings();
 			System.Environment.Exit(0);
 		}
 		#endregion
@@ -153,7 +155,9 @@ namespace BasicTwitchSoundPlayer
 		private void TrackBar_Volume_Scroll(object sender, EventArgs e)
 		{
 			L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
-			_programSettings.Volume = trackBar_Volume.Value / 100f;
+			var settings = PrivateSettings.GetInstance();
+
+			settings.Volume = trackBar_Volume.Value / 100f;
 			if (TwitchBot != null)
 				TwitchBot.UpdateVolume();
 		}
@@ -189,28 +193,27 @@ namespace BasicTwitchSoundPlayer
 		private void ConnectOnStartupToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
 			var CastedSender = (ToolStripMenuItem)sender;
-			_programSettings.Autostart = CastedSender.Checked;
-			_programSettings.SaveSettings();
+			var settings = PrivateSettings.GetInstance();
+
+			settings.Autostart = CastedSender.Checked;
+			settings.SaveSettings();
 		}
 
 		private void ConnectionSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SettingsForms.ConnectionSettingsForm form = new SettingsForms.ConnectionSettingsForm(this, _programSettings);
+			SettingsForms.ConnectionSettingsForm form = new SettingsForms.ConnectionSettingsForm(this);
+
+			var setings = PrivateSettings.GetInstance();
+
 			DialogResult res = form.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				_programSettings.TwitchServer = form.Server;
-				_programSettings.TwitchUsername = form.Username;
-				_programSettings.TwitchPassword = form.Password;
-				_programSettings.TwitchChannelToJoin = form.ChannelToJoin;
-				_programSettings.GoogleSpreadsheetID = form.SpreadsheetID;
-				_programSettings.VoiceModAPIKey = form.VoiceModApiKey;
-				_programSettings.VoiceModAdressPort = form.VoiceModAdressPort;
-
-				_programSettings.VoiceModRedemptionLogic = form.VoiceModRedemptionLogic;
-				_programSettings.VoiceModRewardID = form.VoiceModRewardID;
-
-				_programSettings.SaveSettings();
+				setings.TwitchServer = form.Server;
+				setings.TwitchUsername = form.Username;
+				setings.TwitchPassword = form.Password;
+				setings.TwitchChannelToJoin = form.ChannelToJoin;
+				setings.GoogleSpreadsheetID = form.SpreadsheetID;
+				setings.SaveSettings();
 				ReloadBot();
 			}
 		}
@@ -243,24 +246,25 @@ namespace BasicTwitchSoundPlayer
 
 		private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SettingsForms.ColorSettingsForm csf = new SettingsForms.ColorSettingsForm(_programSettings);
+			SettingsForms.ColorSettingsForm csf = new SettingsForms.ColorSettingsForm();
 			DialogResult res = csf.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				_programSettings.Colors.FormBackground = csf.FormBackground;
-				_programSettings.Colors.FormTextColor = csf.FormTextColor;
-				_programSettings.Colors.MenuStripBarBackground = csf.MenuStripBarBackground;
-				_programSettings.Colors.MenuStripBarText = csf.MenuStripBarText;
-				_programSettings.Colors.MenuStripBackground = csf.MenuStripBackground;
-				_programSettings.Colors.MenuStripText = csf.MenuStripText;
-				_programSettings.Colors.MenuStripBackgroundSelected = csf.MenuStripBackgroundSelected;
+				var settings = PrivateSettings.GetInstance();
+				settings.Colors.FormBackground = csf.FormBackground;
+				settings.Colors.FormTextColor = csf.FormTextColor;
+				settings.Colors.MenuStripBarBackground = csf.MenuStripBarBackground;
+				settings.Colors.MenuStripBarText = csf.MenuStripBarText;
+				settings.Colors.MenuStripBackground = csf.MenuStripBackground;
+				settings.Colors.MenuStripText = csf.MenuStripText;
+				settings.Colors.MenuStripBackgroundSelected = csf.MenuStripBackgroundSelected;
 
-				_programSettings.Colors.LineColorBackground = csf.LineColorBackground;
-				_programSettings.Colors.LineColorGeneric = csf.LineColorGeneric;
-				_programSettings.Colors.LineColorIrcCommand = csf.LineColorIrcCommand;
-				_programSettings.Colors.LineColorModeration = csf.LineColorModeration;
-				_programSettings.Colors.LineColorSoundPlayback = csf.LineColorSoundPlayback;
-				_programSettings.SaveSettings();
+				settings.Colors.LineColorBackground = csf.LineColorBackground;
+				settings.Colors.LineColorGeneric = csf.LineColorGeneric;
+				settings.Colors.LineColorIrcCommand = csf.LineColorIrcCommand;
+				settings.Colors.LineColorModeration = csf.LineColorModeration;
+				settings.Colors.LineColorSoundPlayback = csf.LineColorSoundPlayback;
+				settings.SaveSettings();
 				UpdateColors();
 			}
 		}
@@ -275,7 +279,7 @@ namespace BasicTwitchSoundPlayer
 		#region SoundTree_Events
 		private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(this, soundDb.soundlist, PrefixCharacter, _programSettings);
+			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
 			DialogResult res = scf.ShowDialog();
 			if (res == DialogResult.OK)
 			{
@@ -314,29 +318,34 @@ namespace BasicTwitchSoundPlayer
 		#region ColorThemeOverrideFunctions
 		private void UpdateColors()
 		{
+			var settings = PrivateSettings.GetInstance();
+
 			var CustomColorTable = new Extensions.OverridenColorTable()
 			{
 				UseSystemColors = false,
 				ColorMenuBorder = Color.Black,
-				ColorMenuBarBackground = _programSettings.Colors.MenuStripBarBackground,
-				ColorMenuItemSelected = _programSettings.Colors.MenuStripBackgroundSelected,
-				ColorMenuBackground = _programSettings.Colors.MenuStripBackground,
+				ColorMenuBarBackground = settings.Colors.MenuStripBarBackground,
+				ColorMenuItemSelected = settings.Colors.MenuStripBackgroundSelected,
+				ColorMenuBackground = settings.Colors.MenuStripBackground,
 
-				TextColor = _programSettings.Colors.MenuStripText
+				TextColor = settings.Colors.MenuStripText
 			};
 
-			this.BackColor = _programSettings.Colors.FormBackground;
-			this.ForeColor = _programSettings.Colors.FormTextColor;
+			this.BackColor = settings.Colors.FormBackground;
+			this.ForeColor = settings.Colors.FormTextColor;
 			menuStrip1.Renderer = new ToolStripProfessionalRenderer(CustomColorTable);
-			menuStrip1.ForeColor = _programSettings.Colors.MenuStripBarText;
+			menuStrip1.ForeColor = settings.Colors.MenuStripBarText;
 			ReColorChildren(menuStrip1);
 
-			RB_Preview.BackColor = _programSettings.Colors.LineColorBackground;
+			RB_Preview.BackColor = settings.Colors.LineColorBackground;
 			RB_Preview.Clear();
 		}
 
 		private void ReColorChildren(MenuStrip menuStrip1)
 		{
+			var settings = PrivateSettings.GetInstance();
+
+
 			for (int i = 0; i < menuStrip1.Items.Count; i++)
 			{
 				if (menuStrip1.Items[1].GetType() == typeof(ToolStripMenuItem))
@@ -344,46 +353,36 @@ namespace BasicTwitchSoundPlayer
 					var TempCast = (ToolStripMenuItem)menuStrip1.Items[i];
 					foreach (ToolStripItem child in TempCast.DropDownItems)
 					{
-						child.BackColor = _programSettings.Colors.MenuStripBackground;
-						child.ForeColor = _programSettings.Colors.MenuStripText;
+						child.BackColor = settings.Colors.MenuStripBackground;
+						child.ForeColor = settings.Colors.MenuStripText;
 					}
 				}
 			}
 		}
 		#endregion
 
-		private void VSSEditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			VSS.VSS_BindingsEditor scf = new VSS.VSS_BindingsEditor(VSSdb);
-			DialogResult res = scf.ShowDialog();
-			if (res == DialogResult.OK)
-			{
-				SoundStorage.VSSStorageXML.SaveVSSBase(Path.Combine("SoundDBs", "VSS.xml"), scf.VSS_RootEntry);
-			}
-		}
-
-		private void EnableVSSToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (VSSPreview == null || VSSPreview.IsDisposed)
-			{
-				VSSPreview = new VSS_PreviewWindow(_programSettings, VSSdb);
-				VSSPreview.Show();
-			}
-			else
-				VSSPreview.Show();
-		}
-
 		private void tTSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SettingsForms.TTSSettingsForm ttsSettings = new SettingsForms.TTSSettingsForm(this, _programSettings);
+			SettingsForms.TTSSettingsForm ttsSettings = new SettingsForms.TTSSettingsForm(this);
 			var result = ttsSettings.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				this._programSettings.TTSRoleRequirement = ttsSettings.RequiredRight;
-				this._programSettings.TTSRewardID = ttsSettings.CustomRewardID;
-				this._programSettings.VoiceSynthesizer = ttsSettings.VoiceSynthesizer;
-				this._programSettings.TTSLogic = ttsSettings.TTSLogic;
-				this._programSettings.SaveSettings();
+				var settings = PrivateSettings.GetInstance();
+				settings.TTSRoleRequirement = ttsSettings.RequiredRight;
+				settings.TTSRewardID = ttsSettings.CustomRewardID;
+				settings.VoiceSynthesizer = ttsSettings.VoiceSynthesizer;
+				settings.TTSLogic = ttsSettings.TTSLogic;
+				settings.SaveSettings();
+			}
+		}
+
+		private void voiceModIntegrationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();
+			var result = form.ShowDialog();
+			if(result == DialogResult.OK)
+			{
+				
 			}
 		}
 	}

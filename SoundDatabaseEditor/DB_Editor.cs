@@ -22,17 +22,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         private string spreadsheetId = "";
 
         public List<SoundEntry> Sounds;
-        private PrivateSettings ProgramSettings;
         char PrefixCharacter;
-        private MainForm mainFormReference;
 
-        public DB_Editor(MainForm mainFormReference, List<SoundEntry> Sounds, char PrefixCharacter, PrivateSettings ProgramSettings)
+        public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter)
         {
             this.PrefixCharacter = PrefixCharacter;
             this.Sounds = Sounds;
-            this.spreadsheetId = ProgramSettings.GoogleSpreadsheetID;
-            this.ProgramSettings = ProgramSettings;
-            this.mainFormReference = mainFormReference;
+            this.spreadsheetId = PrivateSettings.GetInstance().GoogleSpreadsheetID;
             InitializeComponent();
         }
 
@@ -194,25 +190,22 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                     {
                         this.ExportToHTML();
                     }
-                    else
-                    {
-                        this.ExportToGoogleDoc();
-                    }
                 }
             }
         }
 
         private void B_SoundPlayBackSettings_Click(object sender, EventArgs e)
         {
-            using (EditDialogues.SoundPlaybackSettingsDialog spsDialog = new EditDialogues.SoundPlaybackSettingsDialog(mainFormReference, ProgramSettings))
+            using (EditDialogues.SoundPlaybackSettingsDialog spsDialog = new EditDialogues.SoundPlaybackSettingsDialog())
             {
                 var result = spsDialog.ShowDialog();
                 if(result == DialogResult.OK)
                 {
-                    ProgramSettings.SoundRewardID = spsDialog.SoundRewardID;
-                    ProgramSettings.SoundRedemptionLogic = spsDialog.SoundLogic;
-                    ProgramSettings.OutputDevice = spsDialog.SelectedDevice;
-                    ProgramSettings.SaveSettings();
+                    var setings = PrivateSettings.GetInstance();
+					setings.SoundRewardID = spsDialog.SoundRewardID;
+					setings.SoundRedemptionLogic = spsDialog.SoundLogic;
+					setings.OutputDevice = spsDialog.SelectedDevice;
+					setings.SaveSettings();
                 }
             }
         }
@@ -279,16 +272,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 hSound.GetDateAdded().ToString(),
                 GetHTMLColor(hSound.GetRequirement())
                 );
-
-        }
-
-        private void ExportToGoogleDoc()
-        {
-            var tmpSnd = TreeNodesToSoundsEntryList(sndTreeView);
-
-            GoogleSheetsExport sheet = new GoogleSheetsExport(spreadsheetId, ProgramSettings.SoundRedemptionLogic, PrefixCharacter, tmpSnd);
-            if (sheet.WasSuccess)
-                MessageBox.Show("New sound db successfully exported to Google Spreadsheet", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
         #endregion

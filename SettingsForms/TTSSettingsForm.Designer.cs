@@ -225,6 +225,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.MaximizeBox = false;
 			this.Name = "TTSSettingsForm";
 			this.Text = "Text to Speech Settings";
+			this.Load += new System.EventHandler(this.TTSSettingsForm_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

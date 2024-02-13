@@ -45,8 +45,7 @@ namespace BasicTwitchSoundPlayer.Structs
 	{
 		Normal,
 		TTSReward,
-		SoundReward,
-		VoiceModReward
+		SoundReward
 	}
 
 	static class TwitchRightsExtensions

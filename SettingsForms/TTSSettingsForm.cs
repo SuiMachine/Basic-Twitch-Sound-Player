@@ -20,16 +20,16 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		public Guid OutputDeviceGuid;
 
-		private PrivateSettings SettingsReference;
 		private MainForm mainFormReference;
 
-		public TTSSettingsForm(MainForm mainFormReference, PrivateSettings settings)
+		public TTSSettingsForm(MainForm mainFormReference)
 		{
+			var settings = PrivateSettings.GetInstance();
+
 			this.VoiceSynthesizer = settings.VoiceSynthesizer;
 			this.RequiredRight = settings.TTSRoleRequirement;
 			this.CustomRewardID = settings.TTSRewardID;
 			this.TTSLogic = settings.TTSLogic;
-			this.SettingsReference = settings;
 			this.mainFormReference = mainFormReference;
 			InitializeComponent();
 			this.AddComboboxDataSources();
@@ -45,10 +45,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			}
 
 			//bindings
-			this.CBox_VoiceSynthesizer.DataBindings.Add("Text", this, "VoiceSynthesizer", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_CustomRewardID.DataBindings.Add("Text", this, "CustomRewardID", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.CBox_RequiredRole.DataBindings.Add("SelectedValue", this, "RequiredRight", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.CBox_TTSLogic.DataBindings.Add("SelectedValue", this, "TTSLogic", false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CBox_VoiceSynthesizer.DataBindings.Add("Text", this, nameof(VoiceSynthesizer), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_CustomRewardID.DataBindings.Add("Text", this, nameof(CustomRewardID), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CBox_RequiredRole.DataBindings.Add("SelectedValue", this, nameof(RequiredRight), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CBox_TTSLogic.DataBindings.Add("SelectedValue", this, nameof(TTSLogic), false, DataSourceUpdateMode.OnPropertyChanged);
 		}
 
 		private void B_Test_Click(object sender, EventArgs e)
@@ -87,7 +87,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private async void B_VerifyPointsResponse_Click(object sender, EventArgs e)
 		{
-			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
+			var settings = PrivateSettings.GetInstance();
+
+			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 
 			await apiConnection.GetBroadcasterIDAsync();
 			await apiConnection.VerifyChannelRewardsAsync(mainFormReference, null, TB_CustomRewardID.Text);
@@ -115,7 +117,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var dialogResult = MessageBox.Show("Are you sure you want to create a new Reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 			if (dialogResult == DialogResult.Yes)
 			{
-				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(SettingsReference.TwitchUsername, SettingsReference.TwitchPassword);
+				var settings = PrivateSettings.GetInstance();
+				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 				var broadcasterTask = apiConnection.GetBroadcasterIDAsync();
 				var result = await apiConnection.CreateRewardAsync(IRC.KrakenConnections.RewardType.TTS);
 				if (result != null)
@@ -124,6 +127,11 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 					MessageBox.Show("Successfully created a new reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 			}
+		}
+
+		private void TTSSettingsForm_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
