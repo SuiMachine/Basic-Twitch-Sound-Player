@@ -1,4 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.Interfaces;
+using BasicTwitchSoundPlayer.SettingsForms.EditForm;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -109,7 +110,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private void VoicesDataGrid_KeyDown(object sender, KeyEventArgs e)
 		{
-			if(e.KeyCode == Keys.Delete)
+			if (e.KeyCode == Keys.Delete)
 			{
 				var row = VoicesDataGrid.CurrentRow.Index;
 				var config = VoiceModConfig.GetInstance();
@@ -313,7 +314,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var voices = VoiceModConfig.GetInstance();
 			foreach (var voice in voices.Rewards)
 			{
-				if(apiConnection.CachedRewards == null)
+				if (apiConnection.CachedRewards == null)
 					_ = await apiConnection.GetRewardsList();
 				var resultReward = await apiConnection.CreateOrUpdateRewardVoiceModAsync(voice);
 				if (resultReward != null)
@@ -329,7 +330,26 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private void B_Add_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("To be implemented?", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			var form = new VoiceModAddForm();
+			var result = form.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var voiceAdd = form.SelectedVoice;
+				var reward = new VoiceModReward()
+				{
+					VoiceModFriendlyName = voiceAdd.FriendlyName,
+					Enabled = true,
+					RewardDescription = form.Description,
+					RewardCooldown = form.Cooldown,
+					RewardCost = form.Price,
+					RewardDuration = form.Duration,
+					RewardID = voiceAdd.ID,
+					RewardTitle = form.RewardName
+				};
+				VoiceModConfig.GetInstance().Rewards.Add(reward);
+				VoicesDataGrid.Invalidate();
+				VoicesDataGrid.Refresh();
+			}
 		}
 
 		private async void B_Images_ClickAsync(object sender, EventArgs e)

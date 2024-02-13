@@ -25,13 +25,11 @@ namespace BasicTwitchSoundPlayer
 			public string FriendlyName { get; private set; } = "";
 			public bool IsFavourite { get; private set; } = false;
 			public bool IsEnabled { get; private set; } = false;
-			public string BitmapCheckSum { get; private set; } = "";
 
 			public VoiceInformation(string ID, string FriendlyName, string BitmapCheckSum, bool IsFavourite, bool IsEnabled)
 			{
 				this.ID = ID;
 				this.FriendlyName = FriendlyName;
-				this.BitmapCheckSum = BitmapCheckSum;
 				this.IsFavourite = IsFavourite;
 				this.IsEnabled = IsEnabled;
 			}

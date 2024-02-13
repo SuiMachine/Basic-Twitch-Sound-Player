@@ -158,6 +158,12 @@
     <Compile Include="SettingsForms\ConnectionSettingsForm.Designer.cs">
       <DependentUpon>ConnectionSettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingsForms\EditForm\VoiceModAddForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\EditForm\VoiceModAddForm.Designer.cs">
+      <DependentUpon>VoiceModAddForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForms\EditForm\VoiceModEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\ConnectionSettingsForm.resx">
       <DependentUpon>ConnectionSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForms\EditForm\VoiceModAddForm.resx">
+      <DependentUpon>VoiceModAddForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\EditForm\VoiceModEditForm.resx">
       <DependentUpon>VoiceModEditForm.cs</DependentUpon>
