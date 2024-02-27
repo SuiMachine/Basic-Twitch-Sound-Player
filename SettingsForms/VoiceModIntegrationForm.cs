@@ -41,6 +41,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.TB_Address.DataBindings.Add("Text", conf, nameof(conf.AdressPort), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_API_KEY.DataBindings.Add("Text", conf, nameof(conf.APIKey), false, DataSourceUpdateMode.OnPropertyChanged);
 
+			VoicesDataGrid.CellFormatting += VoicesDataGrid_CellFormatting;
+			VoicesDataGrid.DoubleClick += VoicesDataGrid_DoubleClick;
+			VoicesDataGrid.KeyDown += VoicesDataGrid_KeyDown;
 		}
 
 		private void CreateVoiceModBinding()
@@ -53,9 +56,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			VoicesDataGrid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
 			VoicesDataGrid.DataSource = VoiceModRewardBinding;
 
-			VoicesDataGrid.CellFormatting += VoicesDataGrid_CellFormatting;
-			VoicesDataGrid.DoubleClick += VoicesDataGrid_DoubleClick;
-			VoicesDataGrid.KeyDown += VoicesDataGrid_KeyDown;
+
 
 			var nameColumn = new DataGridViewTextBoxColumn();
 			nameColumn.Name = "Voice Name";
@@ -108,6 +109,12 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			VoicesDataGrid.Columns.Add(RewardText);
 		}
 
+		private void RegenerateDataBinding()
+		{
+			VoiceModRewardBinding = new BindingList<IVoiceModeRewardBindingInterface>(VoiceModConfig.GetInstance().Rewards.Cast<IVoiceModeRewardBindingInterface>().ToList()) { AllowNew = true, AllowRemove = true };
+			VoicesDataGrid.DataSource = VoiceModRewardBinding;
+		}
+
 		private void VoicesDataGrid_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete)
@@ -119,6 +126,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				{
 					config.Rewards.RemoveAt(row);
 					VoicesDataGrid.Invalidate();
+					RegenerateDataBinding();
 				}
 			}
 		}
@@ -349,6 +357,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				VoiceModConfig.GetInstance().Rewards.Add(reward);
 				VoicesDataGrid.Invalidate();
 				VoicesDataGrid.Refresh();
+				RegenerateDataBinding();
 			}
 		}
 
