@@ -215,7 +215,7 @@
 			this.NumBox_Cooldown.Size = new System.Drawing.Size(47, 20);
 			this.NumBox_Cooldown.TabIndex = 9;
 			this.NumBox_Cooldown.Value = new decimal(new int[] {
-            15,
+            1,
             0,
             0,
             0});

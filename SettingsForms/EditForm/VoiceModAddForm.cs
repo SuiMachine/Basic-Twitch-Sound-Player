@@ -14,7 +14,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms.EditForm
 		public string Description { get; set; }
 		public int Price { get; set; } = 240;
 		public int Duration { get; set; } = 30;
-		public int Cooldown { get; set; } = 60;
+		public int Cooldown { get; set; } = 1;
 
 
 

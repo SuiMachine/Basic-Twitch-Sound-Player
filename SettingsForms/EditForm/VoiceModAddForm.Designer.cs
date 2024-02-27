@@ -34,11 +34,8 @@
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.B_Add = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.ComboBox_Voice = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.TB_Reward_Name = new System.Windows.Forms.TextBox();
-			this.B_Generate = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
+			this.RB_Description = new System.Windows.Forms.RichTextBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.CB_Enabled = new System.Windows.Forms.CheckBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.NumBox_Cooldown = new System.Windows.Forms.NumericUpDown();
@@ -47,8 +44,11 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.NumBox_Price = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.RB_Description = new System.Windows.Forms.RichTextBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.B_Generate = new System.Windows.Forms.Button();
+			this.TB_Reward_Name = new System.Windows.Forms.TextBox();
+			this.ComboBox_Voice = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -131,49 +131,22 @@
 			this.panel1.Size = new System.Drawing.Size(507, 205);
 			this.panel1.TabIndex = 1;
 			// 
-			// ComboBox_Voice
+			// RB_Description
 			// 
-			this.ComboBox_Voice.FormattingEnabled = true;
-			this.ComboBox_Voice.Location = new System.Drawing.Point(102, 9);
-			this.ComboBox_Voice.Name = "ComboBox_Voice";
-			this.ComboBox_Voice.Size = new System.Drawing.Size(262, 21);
-			this.ComboBox_Voice.TabIndex = 1;
-			this.ComboBox_Voice.SelectedIndexChanged += new System.EventHandler(this.ComboBox_Voice_SelectedIndexChanged);
+			this.RB_Description.Location = new System.Drawing.Point(0, 100);
+			this.RB_Description.Name = "RB_Description";
+			this.RB_Description.Size = new System.Drawing.Size(501, 96);
+			this.RB_Description.TabIndex = 21;
+			this.RB_Description.Text = "";
 			// 
-			// label1
+			// label7
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 12);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(87, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Select the voice:";
-			// 
-			// TB_Reward_Name
-			// 
-			this.TB_Reward_Name.Location = new System.Drawing.Point(91, 36);
-			this.TB_Reward_Name.Name = "TB_Reward_Name";
-			this.TB_Reward_Name.Size = new System.Drawing.Size(406, 20);
-			this.TB_Reward_Name.TabIndex = 2;
-			// 
-			// B_Generate
-			// 
-			this.B_Generate.Location = new System.Drawing.Point(370, 7);
-			this.B_Generate.Name = "B_Generate";
-			this.B_Generate.Size = new System.Drawing.Size(127, 23);
-			this.B_Generate.TabIndex = 3;
-			this.B_Generate.Text = "Generate description";
-			this.B_Generate.UseVisualStyleBackColor = true;
-			this.B_Generate.Click += new System.EventHandler(this.B_Generate_Click);
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(9, 39);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(76, 13);
-			this.label2.TabIndex = 4;
-			this.label2.Text = "Reward name:";
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(9, 84);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(60, 13);
+			this.label7.TabIndex = 20;
+			this.label7.Text = "Description";
 			// 
 			// CB_Enabled
 			// 
@@ -210,7 +183,7 @@
 			this.NumBox_Cooldown.Size = new System.Drawing.Size(47, 20);
 			this.NumBox_Cooldown.TabIndex = 17;
 			this.NumBox_Cooldown.Value = new decimal(new int[] {
-            15,
+            1,
             0,
             0,
             0});
@@ -286,22 +259,49 @@
 			this.label3.TabIndex = 12;
 			this.label3.Text = "Price:";
 			// 
-			// label7
+			// label2
 			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(9, 84);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(60, 13);
-			this.label7.TabIndex = 20;
-			this.label7.Text = "Description";
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(9, 39);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(76, 13);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "Reward name:";
 			// 
-			// RB_Description
+			// B_Generate
 			// 
-			this.RB_Description.Location = new System.Drawing.Point(0, 100);
-			this.RB_Description.Name = "RB_Description";
-			this.RB_Description.Size = new System.Drawing.Size(501, 96);
-			this.RB_Description.TabIndex = 21;
-			this.RB_Description.Text = "";
+			this.B_Generate.Location = new System.Drawing.Point(370, 7);
+			this.B_Generate.Name = "B_Generate";
+			this.B_Generate.Size = new System.Drawing.Size(127, 23);
+			this.B_Generate.TabIndex = 3;
+			this.B_Generate.Text = "Generate description";
+			this.B_Generate.UseVisualStyleBackColor = true;
+			this.B_Generate.Click += new System.EventHandler(this.B_Generate_Click);
+			// 
+			// TB_Reward_Name
+			// 
+			this.TB_Reward_Name.Location = new System.Drawing.Point(91, 36);
+			this.TB_Reward_Name.Name = "TB_Reward_Name";
+			this.TB_Reward_Name.Size = new System.Drawing.Size(406, 20);
+			this.TB_Reward_Name.TabIndex = 2;
+			// 
+			// ComboBox_Voice
+			// 
+			this.ComboBox_Voice.FormattingEnabled = true;
+			this.ComboBox_Voice.Location = new System.Drawing.Point(102, 9);
+			this.ComboBox_Voice.Name = "ComboBox_Voice";
+			this.ComboBox_Voice.Size = new System.Drawing.Size(262, 21);
+			this.ComboBox_Voice.TabIndex = 1;
+			this.ComboBox_Voice.SelectedIndexChanged += new System.EventHandler(this.ComboBox_Voice_SelectedIndexChanged);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(9, 12);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(87, 13);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Select the voice:";
 			// 
 			// VoiceModAddForm
 			// 

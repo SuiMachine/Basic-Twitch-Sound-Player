@@ -29,6 +29,14 @@ namespace BasicTwitchSoundPlayer.IRC
 		[Serializable]
 		public class ChannelReward
 		{
+			[Serializable]
+			public class Glocal_Cooldown_Setting
+			{
+				public bool is_enabled;
+				public int global_cooldown_seconds;
+			}
+
+
 			public string id = "";
 			public bool is_enabled = false;
 			public int cost = 0;
@@ -36,8 +44,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			public bool is_user_input_required = false;
 			public bool is_paused = false;
 			public bool should_redemptions_skip_request_queue = false;
-			public bool is_global_cooldown_enabled;
-			public int global_cooldown_seconds;
+			public Glocal_Cooldown_Setting global_cooldown_setting;
 
 			public static bool Differs(ChannelReward l, ChannelReward r)
 			{
@@ -48,8 +55,8 @@ namespace BasicTwitchSoundPlayer.IRC
 					|| l.is_user_input_required != r.is_user_input_required
 					|| l.is_paused != r.is_paused
 					|| l.should_redemptions_skip_request_queue != r.should_redemptions_skip_request_queue
-					|| l.is_global_cooldown_enabled != r.is_global_cooldown_enabled
-					|| l.global_cooldown_seconds != r.global_cooldown_seconds;
+					|| l.global_cooldown_setting.is_enabled != r.global_cooldown_setting.is_enabled
+					|| l.global_cooldown_setting.global_cooldown_seconds != r.global_cooldown_setting.global_cooldown_seconds;
 			}
 		}
 
@@ -422,12 +429,16 @@ namespace BasicTwitchSoundPlayer.IRC
 					title = reward.RewardTitle,
 					id = reward.RewardID,
 					is_enabled = reward.Enabled,
-					is_global_cooldown_enabled = true,
 					is_paused = false,
-					global_cooldown_seconds = reward.RewardCooldown,
 					cost = reward.RewardCost,
 					is_user_input_required = false,
 					should_redemptions_skip_request_queue = false,
+
+					global_cooldown_setting = new ChannelReward.Glocal_Cooldown_Setting()
+					{
+						is_enabled = true,
+						global_cooldown_seconds = reward.RewardCooldown * 60,
+					}
 				};
 
 				if (ChannelReward.Differs(currentReward, newReward))
@@ -460,7 +471,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					{"is_user_input_required", "false" },
 					{"should_redemptions_skip_request_queue", "false" },
 					{"is_global_cooldown_enabled", "true" },
-					{"global_cooldown_seconds", reward.RewardCooldown }
+					{"global_cooldown_seconds", reward.RewardCooldown * 60 }
 				}.ToString();
 
 

@@ -239,7 +239,7 @@ namespace BasicTwitchSoundPlayer
 				RewardID = "";
 				RewardCost = 240;
 				RewardDuration = 30;
-				RewardCooldown = 60;
+				RewardCooldown = 1;
 				Enabled = true;
 				RewardDescription = "";
 			}

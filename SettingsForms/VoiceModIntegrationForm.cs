@@ -295,7 +295,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 							VoiceModFriendlyName = voice.FriendlyName,
 							Enabled = voice.IsEnabled,
 							RewardID = "",
-							RewardCooldown = 60,
+							RewardCooldown = 1,
 							RewardDuration = duration,
 							RewardCost = 50,
 							RewardDescription = $"Set voice to \"{voice.FriendlyName}\" for {duration} seconds (powered by VoiceMod)"
