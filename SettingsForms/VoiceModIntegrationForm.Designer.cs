@@ -285,6 +285,7 @@
 			// 
 			// VoicesDataGrid
 			// 
+			this.VoicesDataGrid.AllowUserToAddRows = false;
 			this.VoicesDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.VoicesDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.VoicesDataGrid.Location = new System.Drawing.Point(4, 163);
