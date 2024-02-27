@@ -1,25 +1,20 @@
-﻿using System;
+﻿using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.Structs;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.Structs;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 {
-    public partial class DB_Editor : Form
+	public partial class DB_Editor : Form
     {
         public const string NodeNameEntry = "Entry";
         public const string NodeNameFiles = "Files";
         public const string NodeNameRequirements = "Requirement";
         public const string NodeDescription = "Description";
         public const string NodeNameDateAdded = "DateAdded";
-        private string spreadsheetId = "";
 
         public List<SoundEntry> Sounds;
         char PrefixCharacter;
@@ -28,7 +23,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         {
             this.PrefixCharacter = PrefixCharacter;
             this.Sounds = Sounds;
-            this.spreadsheetId = PrivateSettings.GetInstance().GoogleSpreadsheetID;
             InitializeComponent();
         }
 

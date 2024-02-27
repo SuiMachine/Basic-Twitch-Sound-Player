@@ -101,8 +101,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string TwitchChannelToJoin { get; set; }
 		[XmlElement]
-		public string GoogleSpreadsheetID { get; set; }
-		[XmlElement]
 		public string VoiceSynthesizer { get; set; }
 		[XmlElement]
 		public string TTSRewardID { get; set; }
@@ -129,7 +127,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			GoogleSpreadsheetID = "";
 			VoiceSynthesizer = "";
 			TTSRewardID = "";
 			TTSRoleRequirement = TwitchRightsEnum.Public;

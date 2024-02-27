@@ -212,7 +212,6 @@ namespace BasicTwitchSoundPlayer
 				setings.TwitchUsername = form.Username;
 				setings.TwitchPassword = form.Password;
 				setings.TwitchChannelToJoin = form.ChannelToJoin;
-				setings.GoogleSpreadsheetID = form.SpreadsheetID;
 				setings.SaveSettings();
 				ReloadBot();
 			}
