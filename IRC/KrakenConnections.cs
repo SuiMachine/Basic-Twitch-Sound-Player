@@ -464,14 +464,17 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				var jObject = new JObject()
 				{
-					{"title", reward.RewardTitle },
-					{"cost", reward.RewardCost },
-					{"is_enabled", reward.Enabled.ToString().ToLower() },
-					{"prompt", reward.RewardDescription },
-					{"is_user_input_required", "false" },
-					{"should_redemptions_skip_request_queue", "false" },
-					{"is_global_cooldown_enabled", "true" },
-					{"global_cooldown_seconds", reward.RewardCooldown * 60 }
+					["title"] = reward.RewardTitle,
+					["cost"] = reward.RewardCost,
+					["is_enabled"] = reward.Enabled.ToString().ToLower(),
+					["prompt"] = reward.RewardDescription,
+					["is_user_input_required"] = "false",
+					["should_redemptions_skip_request_queue"] = "false",
+					["global_cooldown_setting"] = new JObject()
+					{
+						["is_global_cooldown_enabled"] = "true",
+						["global_cooldown_seconds"] = reward.RewardCooldown * 60
+					}
 				}.ToString();
 
 
