@@ -41,9 +41,6 @@
     <ApplicationIcon>sound_player_icon_bundled.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>Libaries\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Meebey.SmartIrc4net, Version=0.4.5.0, Culture=neutral, PublicKeyToken=7868485fbf407e0f, processorArchitecture=MSIL">
       <HintPath>packages\SmartIrc4net.1.1\lib\Meebey.SmartIrc4net.dll</HintPath>
     </Reference>
