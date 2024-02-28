@@ -175,6 +175,11 @@
         <member name="P:TwitchLib.Communication.Clients.TcpClient.IsConnected">
             <inheritdoc/>
         </member>
+        <member name="M:TwitchLib.Communication.Clients.TcpClient.#ctor(TwitchLib.Communication.Interfaces.IClientOptions,Microsoft.Extensions.Logging.ILogger{TwitchLib.Communication.Clients.TcpClient})">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Clients.TcpClient"/>.
+            </summary>
+        </member>
         <member name="M:TwitchLib.Communication.Clients.TcpClient.ClientSendAsync(System.String)">
             <inheritdoc/>
         </member>
@@ -187,6 +192,17 @@
         <member name="M:TwitchLib.Communication.Clients.TcpClient.CloseClient">
             <inheritdoc/>
         </member>
+        <member name="P:TwitchLib.Communication.Clients.WebSocketClient.Url">
+            <inheritdoc/>
+        </member>
+        <member name="P:TwitchLib.Communication.Clients.WebSocketClient.IsConnected">
+            <inheritdoc/>
+        </member>
+        <member name="M:TwitchLib.Communication.Clients.WebSocketClient.#ctor(TwitchLib.Communication.Interfaces.IClientOptions,Microsoft.Extensions.Logging.ILogger{TwitchLib.Communication.Clients.WebSocketClient})">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Clients.WebSocketClient"/>.
+            </summary>
+        </member>
         <member name="M:TwitchLib.Communication.Clients.WebSocketClient.ClientSendAsync(System.String)">
             <inheritdoc/>
         </member>
@@ -198,6 +214,31 @@
         </member>
         <member name="M:TwitchLib.Communication.Clients.WebSocketClient.CloseClient">
             <inheritdoc/>
+        </member>
+        <member name="M:TwitchLib.Communication.Events.OnErrorEventArgs.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Events.OnErrorEventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:TwitchLib.Communication.Events.OnFatalErrorEventArgs.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Events.OnFatalErrorEventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:TwitchLib.Communication.Events.OnFatalErrorEventArgs.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Events.OnFatalErrorEventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:TwitchLib.Communication.Events.OnMessageEventArgs.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Events.OnMessageEventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:TwitchLib.Communication.Events.OnSendFailedEventArgs.#ctor(System.Exception,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Events.OnSendFailedEventArgs"/>.
+            </summary>
         </member>
         <member name="T:TwitchLib.Communication.Extensions.LogExtensions">
             <summary>
@@ -339,6 +380,7 @@
         </member>
         <member name="M:TwitchLib.Communication.Models.ClientOptions.#ctor(TwitchLib.Communication.Models.ReconnectionPolicy,System.Boolean,System.UInt32,TwitchLib.Communication.Enums.ClientType)">
             <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Models.ClientOptions"/>.
             </summary>
             <param name="reconnectionPolicy">
                 your own <see cref="P:TwitchLib.Communication.Models.ClientOptions.ReconnectionPolicy"/>
@@ -358,6 +400,11 @@
         <member name="T:TwitchLib.Communication.Models.NoReconnectionPolicy">
             <summary>
                This policy should be used to omit reconnect-attempts.
+            </summary>
+        </member>
+        <member name="M:TwitchLib.Communication.Models.NoReconnectionPolicy.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TwitchLib.Communication.Models.NoReconnectionPolicy"/>.
             </summary>
         </member>
         <member name="T:TwitchLib.Communication.Models.ReconnectionPolicy">
