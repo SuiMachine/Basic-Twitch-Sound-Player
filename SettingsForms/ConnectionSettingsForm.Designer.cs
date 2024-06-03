@@ -45,6 +45,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.TB_Server = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.CB_DebugMode = new System.Windows.Forms.CheckBox();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -60,10 +61,10 @@
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 171F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 172F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(368, 214);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(368, 217);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -74,12 +75,12 @@
 			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 174);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 175);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(362, 40);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(362, 39);
 			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// B_Save
@@ -106,6 +107,7 @@
 			// 
 			// panel1
 			// 
+			this.panel1.Controls.Add(this.CB_DebugMode);
 			this.panel1.Controls.Add(this.B_GetLoginData);
 			this.panel1.Controls.Add(this.CB_ShowPassword);
 			this.panel1.Controls.Add(this.label5);
@@ -121,7 +123,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(362, 165);
+			this.panel1.Size = new System.Drawing.Size(362, 166);
 			this.panel1.TabIndex = 1;
 			// 
 			// B_GetLoginData
@@ -234,11 +236,21 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Server:";
 			// 
+			// CB_DebugMode
+			// 
+			this.CB_DebugMode.AutoSize = true;
+			this.CB_DebugMode.Location = new System.Drawing.Point(201, 113);
+			this.CB_DebugMode.Name = "CB_DebugMode";
+			this.CB_DebugMode.Size = new System.Drawing.Size(87, 17);
+			this.CB_DebugMode.TabIndex = 12;
+			this.CB_DebugMode.Text = "Debug mode";
+			this.CB_DebugMode.UseVisualStyleBackColor = true;
+			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(368, 214);
+			this.ClientSize = new System.Drawing.Size(368, 217);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -272,5 +284,6 @@
         private System.Windows.Forms.TextBox TB_Username;
         private System.Windows.Forms.CheckBox CB_ShowPassword;
         private System.Windows.Forms.Button B_GetLoginData;
+		private System.Windows.Forms.CheckBox CB_DebugMode;
 	}
 }

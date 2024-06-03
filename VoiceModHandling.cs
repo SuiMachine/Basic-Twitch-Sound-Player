@@ -33,6 +33,8 @@ namespace BasicTwitchSoundPlayer
 				this.IsFavourite = IsFavourite;
 				this.IsEnabled = IsEnabled;
 			}
+
+
 		}
 
 		public Action<bool> OnConnectionStateChanged;
@@ -174,11 +176,22 @@ namespace BasicTwitchSoundPlayer
 					else if (value == "voiceChangerDisabledEvent")
 					{
 						currentStatus = false;
+						if (PrivateSettings.GetInstance().Debug_mode)
+							parent.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.IrcCommand);
 						Debug.WriteLine($"Set current status to {currentStatus}");
+
+						Playing = false;
+						if(timer != null && timer.Enabled)
+						{
+							timer.Dispose();
+							timer = null;
+						}
 					}
 					else if (value == "voiceChangerEnabledEvent")
 					{
 						currentStatus = true;
+						if (PrivateSettings.GetInstance().Debug_mode)
+							parent.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.IrcCommand);
 						Debug.WriteLine($"Set current status to {currentStatus}");
 					}
 					else if (value == "voiceLoadedEvent")
@@ -235,7 +248,8 @@ namespace BasicTwitchSoundPlayer
 								var enabled = voice["isEnabled"].Value<bool>();
 
 								var information = new VoiceInformation(id, friendlyName, checksum, favourite, enabled);
-								VoicesAvailable.Add(friendlyName, information);
+								if (!VoicesAvailable.ContainsKey(friendlyName))
+									VoicesAvailable.Add(friendlyName, information);
 							}
 							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
 							OnListOfVoicesReceived?.Invoke();
@@ -261,13 +275,13 @@ namespace BasicTwitchSoundPlayer
 							client.Send(disableRequest.ToString());
 						}
 					}
-					else if(value == "getBitmap")
+					else if (value == "getBitmap")
 					{
 						var result = json["actionObject"]?["result"]?["transparent"];
-						if(result != null)
+						if (result != null)
 						{
 							var actionID = json["actionID"].Value<string>();
-							if(awaitingBitmap.request == actionID)
+							if (awaitingBitmap.request == actionID)
 							{
 								var byteData = Convert.FromBase64String(result.ToString());
 								StoreThumbnails(awaitingBitmap.voiceID, byteData);
@@ -289,20 +303,15 @@ namespace BasicTwitchSoundPlayer
 				Directory.CreateDirectory(folderPath);
 
 			Image newImage;
-			using(var ms = new MemoryStream(pngBytes))
+			using (var ms = new MemoryStream(pngBytes))
 			{
 				newImage = Image.FromStream(ms);
 			}
 
-			
+
 			StoreThumbnail(newImage, 112, Path.Combine(folderPath, voiceID + "_112.png"));
 			StoreThumbnail(newImage, 56, Path.Combine(folderPath, voiceID + "_56.png"));
 			StoreThumbnail(newImage, 28, Path.Combine(folderPath, voiceID + "_28.png"));
-
-
-			//var path56 = Path.Combine(folderPath, voiceID + "_112.png");
-
-
 		}
 
 		private void StoreThumbnail(Image sourceImage, int size, string path)
@@ -327,7 +336,7 @@ namespace BasicTwitchSoundPlayer
 				}
 			}
 
-			if(File.Exists(path))
+			if (File.Exists(path))
 				File.Delete(path);
 			destImage.Save(path);
 			destImage.Dispose();
@@ -419,15 +428,15 @@ namespace BasicTwitchSoundPlayer
 			OnConnectionStateChanged?.Invoke(true);
 
 			var message = new JObject()
-				{
-					{ "id", "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6" },
-					{ "action", "registerClient" },
-					{ "payload", new JObject()
-						{
-							{ "clientKey", VoiceModConfig.GetInstance().APIKey }
-						}
+			{
+				{ "id", "ff7d7f15-0cbf-4c44-bc31-b56e0a6c9fa6" },
+				{ "action", "registerClient" },
+				{ "payload", new JObject()
+					{
+						{ "clientKey", VoiceModConfig.GetInstance().APIKey }
 					}
-				};
+				}
+			};
 
 			client.Send(message.ToString());
 		}

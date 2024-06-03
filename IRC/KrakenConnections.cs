@@ -310,8 +310,6 @@ namespace BasicTwitchSoundPlayer.IRC
 						return rewardsToUpdate;
 					}
 					return null;
-
-
 				}
 			}
 
@@ -335,7 +333,17 @@ namespace BasicTwitchSoundPlayer.IRC
 				reformatIDs += "id=" + RewardRequestIDs[i];
 			}
 
+			if (PrivateSettings.GetInstance().Debug_mode)
+				MainForm.Instance.ThreadSafeAddPreviewText($"Updating reward {string.Join(", ", RewardRequestIDs)} with status {redemptionState}", LineType.IrcCommand);
 			var result = await PatchNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }), true);
+
+			if (result != "")
+			{
+				if (PrivateSettings.GetInstance().Debug_mode)
+				{
+
+				}
+			}
 		}
 
 		public async Task<ChannelReward> CreateRewardAsync(RewardType rewardType)
@@ -446,7 +454,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					var json = JsonConvert.SerializeObject(newReward);
 
 					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
-					if(response != "")
+					if (response != "")
 					{
 						JObject jReader = JObject.Parse(response);
 						var dataNode = jReader["data"].First;

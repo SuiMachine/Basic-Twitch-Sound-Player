@@ -82,6 +82,8 @@ namespace BasicTwitchSoundPlayer
 		public ColorStruct Colors { get; set; }
 
 		[XmlElement]
+		public bool Debug_mode { get; set; }
+		[XmlElement]
 		public bool Autostart { get; set; }
 		[XmlElement]
 		public float Volume { get; set; }
@@ -117,6 +119,7 @@ namespace BasicTwitchSoundPlayer
 		public PrivateSettings()
 		{
 			//NOTE: Make sure everything is initialized first!
+			Debug_mode = false;
 			Autostart = false;
 			AllowUsersToUseSubSounds = false;
 			Volume = 0.5f;

@@ -203,16 +203,17 @@ namespace BasicTwitchSoundPlayer
 		{
 			SettingsForms.ConnectionSettingsForm form = new SettingsForms.ConnectionSettingsForm(this);
 
-			var setings = PrivateSettings.GetInstance();
+			var settings = PrivateSettings.GetInstance();
 
 			DialogResult res = form.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				setings.TwitchServer = form.Server;
-				setings.TwitchUsername = form.Username;
-				setings.TwitchPassword = form.Password;
-				setings.TwitchChannelToJoin = form.ChannelToJoin;
-				setings.SaveSettings();
+				settings.TwitchServer = form.Server;
+				settings.TwitchUsername = form.Username;
+				settings.TwitchPassword = form.Password;
+				settings.TwitchChannelToJoin = form.ChannelToJoin;
+				settings.Debug_mode = form.DebugMode;
+				settings.SaveSettings();
 				ReloadBot();
 			}
 		}

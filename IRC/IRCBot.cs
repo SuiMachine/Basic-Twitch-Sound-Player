@@ -369,7 +369,8 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private void MeebyIrc_OnReadLine(object sender, Meebey.SmartIrc4net.ReadLineEventArgs e)
 		{
-			//Console.WriteLine("onReadLine Event:" + e.Line);
+/*			if (PrivateSettings.GetInstance().Debug_mode)
+				parent.ThreadSafeAddPreviewText($"Raw message: {e.Line}", LineType.IrcCommand);*/
 		}
 
 		private void MeebyIrc_OnPart(object sender, PartEventArgs e)
