@@ -1,5 +1,4 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.Structs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,9 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Interop;
 using TwitchLib.PubSub;
-using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 using WebSocketSharp;
 
 namespace BasicTwitchSoundPlayer
@@ -25,16 +22,16 @@ namespace BasicTwitchSoundPlayer
 			public string FriendlyName { get; private set; } = "";
 			public bool IsFavourite { get; private set; } = false;
 			public bool IsEnabled { get; private set; } = false;
+			public JToken Parameters { get; set; } = null;
 
-			public VoiceInformation(string ID, string FriendlyName, string BitmapCheckSum, bool IsFavourite, bool IsEnabled)
+			public VoiceInformation(string ID, string FriendlyName, bool IsFavourite, bool IsEnabled, JToken Parameters)
 			{
 				this.ID = ID;
 				this.FriendlyName = FriendlyName;
 				this.IsFavourite = IsFavourite;
 				this.IsEnabled = IsEnabled;
+				this.Parameters = Parameters;
 			}
-
-
 		}
 
 		public Action<bool> OnConnectionStateChanged;
@@ -244,12 +241,20 @@ namespace BasicTwitchSoundPlayer
 								var id = voice["id"].Value<string>();
 								var friendlyName = voice["friendlyName"].Value<string>();
 								var favourite = voice["favorited"].Value<bool>();
-								var checksum = voice["bitmapChecksum"].Value<string>();
 								var enabled = voice["isEnabled"].Value<bool>();
 
-								var information = new VoiceInformation(id, friendlyName, checksum, favourite, enabled);
-								if (!VoicesAvailable.ContainsKey(friendlyName))
+								var parameters = voice["parameters"];
+								
+								var information = new VoiceInformation(id, friendlyName, favourite, enabled, parameters);
+								if (!VoicesAvailable.TryGetValue(friendlyName, out VoiceInformation voiceInformation))
 									VoicesAvailable.Add(friendlyName, information);
+								else
+								{
+									if(voiceInformation.Parameters == null || voiceInformation.Parameters.Count() == 0)
+									{
+										voiceInformation.Parameters = parameters;
+									}
+								}
 							}
 							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
 							OnListOfVoicesReceived?.Invoke();
@@ -409,10 +414,34 @@ namespace BasicTwitchSoundPlayer
 				timer = new System.Timers.Timer(lenght * 1000);
 				timer.Start();
 				Playing = true;
+
+				if(voiceID.Parameters != null && voiceID.Parameters.Count() > 0)
+					SetParameters(voiceID.Parameters);
 				timer.Elapsed += ReturnToDefault;
 				return true;
 			}
 			return false;
+		}
+
+		private void SetParameters(JToken parameters)
+		{
+			try
+			{
+				var message = new JObject()
+				{
+					{ "action", "loadVoice" },
+					{ "id", Guid.NewGuid().ToString() },
+					{ "payload", new JObject()
+						{
+							{ "voiceID", voiceID.ID }
+						}
+					}
+				};
+			}
+			catch(Exception ex)
+			{ 
+
+			}
 		}
 
 		private void ReturnToDefault(object sender, System.Timers.ElapsedEventArgs e)
