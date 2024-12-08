@@ -46,7 +46,7 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.databaseEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.importFromBotnakToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.voiceModSettings = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
 			this.label18 = new System.Windows.Forms.Label();
@@ -268,22 +268,22 @@
 			// 
 			this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.databaseEditorToolStripMenuItem,
-            this.importFromBotnakToolStripMenuItem});
+            this.voiceModSettings});
 			this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
-			this.soundsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-			this.soundsToolStripMenuItem.Text = "Sounds";
+			this.soundsToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
+			this.soundsToolStripMenuItem.Text = "Rewards";
 			// 
 			// databaseEditorToolStripMenuItem
 			// 
 			this.databaseEditorToolStripMenuItem.Name = "databaseEditorToolStripMenuItem";
-			this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.databaseEditorToolStripMenuItem.Text = "Database Editor";
+			this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.databaseEditorToolStripMenuItem.Text = "Sounds";
 			// 
-			// importFromBotnakToolStripMenuItem
+			// voiceModSettings
 			// 
-			this.importFromBotnakToolStripMenuItem.Name = "importFromBotnakToolStripMenuItem";
-			this.importFromBotnakToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.importFromBotnakToolStripMenuItem.Text = "Import from Botnak";
+			this.voiceModSettings.Name = "voiceModSettings";
+			this.voiceModSettings.Size = new System.Drawing.Size(180, 22);
+			this.voiceModSettings.Text = "VoiceMod";
 			// 
 			// tableLayoutPanel7
 			// 
@@ -828,7 +828,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem soundsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databaseEditorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromBotnakToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem voiceModSettings;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.Button B_ColorLinesSoundPlayback;
         private System.Windows.Forms.Button B_ColorLinesModeration;

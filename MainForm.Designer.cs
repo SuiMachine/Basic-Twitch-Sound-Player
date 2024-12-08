@@ -38,12 +38,11 @@
 			this.runBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.connectOnStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.voiceModIntegrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.databaseEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.importFromBotnakToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.soundSettings = new System.Windows.Forms.ToolStripMenuItem();
+			this.voiceModSettings = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -106,7 +105,6 @@
             this.runBotToolStripMenuItem,
             this.connectOnStartupToolStripMenuItem,
             this.connectionSettingsToolStripMenuItem,
-            this.voiceModIntegrationToolStripMenuItem,
             this.colorSettingsToolStripMenuItem,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -117,7 +115,7 @@
 			// 
 			this.runBotToolStripMenuItem.CheckOnClick = true;
 			this.runBotToolStripMenuItem.Name = "runBotToolStripMenuItem";
-			this.runBotToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.runBotToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.runBotToolStripMenuItem.Text = "Run Bot";
 			this.runBotToolStripMenuItem.Click += new System.EventHandler(this.RunBotToolStripMenuItem_Click);
 			// 
@@ -125,60 +123,53 @@
 			// 
 			this.connectOnStartupToolStripMenuItem.CheckOnClick = true;
 			this.connectOnStartupToolStripMenuItem.Name = "connectOnStartupToolStripMenuItem";
-			this.connectOnStartupToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.connectOnStartupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.connectOnStartupToolStripMenuItem.Text = "Connect on Startup";
 			this.connectOnStartupToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ConnectOnStartupToolStripMenuItem_CheckedChanged);
 			// 
 			// connectionSettingsToolStripMenuItem
 			// 
 			this.connectionSettingsToolStripMenuItem.Name = "connectionSettingsToolStripMenuItem";
-			this.connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.connectionSettingsToolStripMenuItem.Text = "Connection settings";
 			this.connectionSettingsToolStripMenuItem.Click += new System.EventHandler(this.ConnectionSettingsToolStripMenuItem_Click);
-			// 
-			// voiceModIntegrationToolStripMenuItem
-			// 
-			this.voiceModIntegrationToolStripMenuItem.Name = "voiceModIntegrationToolStripMenuItem";
-			this.voiceModIntegrationToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.voiceModIntegrationToolStripMenuItem.Text = "VoiceMod integration";
-			this.voiceModIntegrationToolStripMenuItem.Click += new System.EventHandler(this.voiceModIntegrationToolStripMenuItem_Click);
 			// 
 			// colorSettingsToolStripMenuItem
 			// 
 			this.colorSettingsToolStripMenuItem.Name = "colorSettingsToolStripMenuItem";
-			this.colorSettingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.colorSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.colorSettingsToolStripMenuItem.Text = "Color settings";
 			this.colorSettingsToolStripMenuItem.Click += new System.EventHandler(this.ColorSettingsToolStripMenuItem_Click);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
 			// 
 			// soundsToolStripMenuItem
 			// 
 			this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.databaseEditorToolStripMenuItem,
-            this.importFromBotnakToolStripMenuItem});
+            this.soundSettings,
+            this.voiceModSettings});
 			this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
-			this.soundsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-			this.soundsToolStripMenuItem.Text = "Sounds";
+			this.soundsToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
+			this.soundsToolStripMenuItem.Text = "Rewards";
 			// 
-			// databaseEditorToolStripMenuItem
+			// soundSettings
 			// 
-			this.databaseEditorToolStripMenuItem.Name = "databaseEditorToolStripMenuItem";
-			this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-			this.databaseEditorToolStripMenuItem.Text = "Sound Database Editor";
-			this.databaseEditorToolStripMenuItem.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
+			this.soundSettings.Name = "soundSettings";
+			this.soundSettings.Size = new System.Drawing.Size(180, 22);
+			this.soundSettings.Text = "Sounds";
+			this.soundSettings.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
 			// 
-			// importFromBotnakToolStripMenuItem
+			// voiceModSettings
 			// 
-			this.importFromBotnakToolStripMenuItem.Name = "importFromBotnakToolStripMenuItem";
-			this.importFromBotnakToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-			this.importFromBotnakToolStripMenuItem.Text = "Import from Botnak";
-			this.importFromBotnakToolStripMenuItem.Click += new System.EventHandler(this.ImportFromBotnakToolStripMenuItem_Click);
+			this.voiceModSettings.Name = "voiceModSettings";
+			this.voiceModSettings.Size = new System.Drawing.Size(180, 22);
+			this.voiceModSettings.Text = "VoiceMod";
+			this.voiceModSettings.Click += new System.EventHandler(this.voiceModSettings_Click);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -274,15 +265,14 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripMenuItem soundsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colorSettingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem databaseEditorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromBotnakToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem soundSettings;
         private System.Windows.Forms.ToolStripMenuItem connectOnStartupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runBotToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip trayMenu;
         private System.Windows.Forms.ToolStripMenuItem showProgramToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem voiceModIntegrationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem voiceModSettings;
 	}
 }
 

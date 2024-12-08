@@ -193,7 +193,6 @@
     </Compile>
     <Compile Include="SharedSettings.cs" />
     <Compile Include="SoundBase.cs" />
-    <Compile Include="SoundDatabaseEditor\BotnakImporter.cs" />
     <Compile Include="SoundDatabaseEditor\DB_Editor.cs">
       <SubType>Form</SubType>
     </Compile>

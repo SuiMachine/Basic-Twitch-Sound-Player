@@ -276,25 +276,6 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
-		#region SoundTree_Events
-		private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
-			DialogResult res = scf.ShowDialog();
-			if (res == DialogResult.OK)
-			{
-				soundDb.soundlist = scf.Sounds;
-				soundDb.Save();
-			}
-		}
-
-		private void ImportFromBotnakToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			List<BasicTwitchSoundPlayer.Structs.SoundEntry> importedEntries = BotnakImporter.ImportFiles();
-			soundDb.Marge(importedEntries);
-		}
-		#endregion
-
 		#region TrayIcon_Events
 		private void ShowProgramToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -361,13 +342,24 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
-		private void voiceModIntegrationToolStripMenuItem_Click(object sender, EventArgs e)
+		private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
+			DialogResult res = scf.ShowDialog();
+			if (res == DialogResult.OK)
+			{
+				soundDb.soundlist = scf.Sounds;
+				soundDb.Save();
+			}
+		}
+
+		private void voiceModSettings_Click(object sender, EventArgs e)
 		{
 			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();
 			var result = form.ShowDialog();
-			if(result == DialogResult.OK)
+			if (result == DialogResult.OK)
 			{
-				
+
 			}
 		}
 	}
