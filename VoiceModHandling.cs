@@ -415,33 +415,10 @@ namespace BasicTwitchSoundPlayer
 				timer.Start();
 				Playing = true;
 
-				if(voiceID.Parameters != null && voiceID.Parameters.Count() > 0)
-					SetParameters(voiceID.Parameters);
 				timer.Elapsed += ReturnToDefault;
 				return true;
 			}
 			return false;
-		}
-
-		private void SetParameters(JToken parameters)
-		{
-			try
-			{
-				var message = new JObject()
-				{
-					{ "action", "loadVoice" },
-					{ "id", Guid.NewGuid().ToString() },
-					{ "payload", new JObject()
-						{
-							{ "voiceID", voiceID.ID }
-						}
-					}
-				};
-			}
-			catch(Exception ex)
-			{ 
-
-			}
 		}
 
 		private void ReturnToDefault(object sender, System.Timers.ElapsedEventArgs e)

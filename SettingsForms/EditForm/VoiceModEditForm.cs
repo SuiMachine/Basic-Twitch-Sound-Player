@@ -35,7 +35,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms.EditForm
 			NumBox_Cooldown.DataBindings.Add("Value", this, nameof(RewardCooldown), false, DataSourceUpdateMode.OnPropertyChanged);
 			NumBox_Duration.DataBindings.Add("Value", this, nameof(RewardDuration), false, DataSourceUpdateMode.OnPropertyChanged);
 			CB_Enabled.DataBindings.Add("Checked", this, nameof(RewardEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-			RB_Description.DataBindings.Add("Text", this, nameof(RewardText), false, DataSourceUpdateMode.OnPropertyChanged);
+			RB_Description.DataBindings.Add("Text", this, nameof(RewardText), false, DataSourceUpdateMode.OnValidation);
 		}
 
 		private void B_Cancel_Click(object sender, System.EventArgs e)
