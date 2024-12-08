@@ -320,6 +320,11 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			await apiConnection.GetBroadcasterIDAsync();
 
 			var voices = VoiceModConfig.GetInstance();
+			var voicesCountForProgressBar = voices.Rewards.Count;
+			if (voicesCountForProgressBar <= 0)
+				voicesCountForProgressBar = 1;
+
+			int counter = 0;
 			foreach (var voice in voices.Rewards)
 			{
 				if (apiConnection.CachedRewards == null)
@@ -330,8 +335,11 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 					voice.RewardID = resultReward.id;
 					voice.IsSetup = true;
 				}
+				counter++;
+				UpdateProgressBar(counter, voicesCountForProgressBar);
 				await Task.Delay(2000);
 			}
+			UpdateProgressBar(0, voicesCountForProgressBar);
 
 			MessageBox.Show("Done!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
@@ -364,6 +372,21 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		private async void B_Images_ClickAsync(object sender, EventArgs e)
 		{
 			await VoiceModHandling.GetInstance().DownloadImages();
+		}
+
+		private void UpdateProgressBar(int current, int max)
+		{
+			if(this.ProgressBar_Update.InvokeRequired)
+			{
+				this.ProgressBar_Update.Invoke(new Action(() =>
+				{
+					UpdateProgressBar(current, max);
+				}));
+				return;
+			}
+
+			this.ProgressBar_Update.Value = current;
+			this.ProgressBar_Update.Maximum = max;
 		}
 	}
 }
