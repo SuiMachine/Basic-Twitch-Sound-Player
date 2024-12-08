@@ -173,7 +173,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var row = VoicesDataGrid.CurrentRow.Index;
 			if (row >= 0 && row < config.Rewards.Count)
 			{
-				var form = new EditForm.VoiceModEditForm(config.Rewards[row]);
+				var form = new VoiceModEditForm(config.Rewards[row]);
 				var result = form.ShowDialog();
 				if (result == DialogResult.OK)
 				{

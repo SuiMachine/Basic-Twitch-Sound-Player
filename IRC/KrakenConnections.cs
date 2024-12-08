@@ -36,11 +36,11 @@ namespace BasicTwitchSoundPlayer.IRC
 				public int global_cooldown_seconds;
 			}
 
-
 			public string id = "";
 			public bool is_enabled = false;
 			public int cost = 0;
 			public string title = "";
+			public string prompt = "";
 			public bool is_user_input_required = false;
 			public bool is_paused = false;
 			public bool should_redemptions_skip_request_queue = false;
@@ -660,9 +660,9 @@ namespace BasicTwitchSoundPlayer.IRC
 				var dataNode = jReader["data"];
 				foreach (var customReward in dataNode)
 				{
-					var parseNode = customReward.ToObject<ChannelReward>();
+					ChannelReward parseNode = customReward.ToObject<ChannelReward>();
 
-					var find = rewards.Find(x => x.RewardID == parseNode.id);
+					VoiceModConfig.VoiceModReward find = rewards.Find(x => x.RewardID == parseNode.id);
 					if (find != null)
 					{
 						list.Add(parseNode);
