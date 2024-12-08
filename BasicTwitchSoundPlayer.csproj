@@ -205,12 +205,6 @@
     <Compile Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.Designer.cs">
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="SoundDatabaseEditor\EditDialogues\ExportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SoundDatabaseEditor\EditDialogues\ExportDialog.Designer.cs">
-      <DependentUpon>ExportDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="SoundDatabaseEditor\EditDialogues\SoundPlaybackSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -255,9 +249,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\AddEditNewEntryDialog.resx">
       <DependentUpon>AddEditNewEntryDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\ExportDialog.resx">
-      <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SoundDatabaseEditor\EditDialogues\SoundPlaybackSettingsDialog.resx">
       <DependentUpon>SoundPlaybackSettingsDialog.cs</DependentUpon>

@@ -173,21 +173,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
             sndTreeView.Sort();
         }
 
-        private void B_Export_Click(object sender, EventArgs e)
-        {
-            using (EditDialogues.ExportDialog exDialog = new EditDialogues.ExportDialog())
-            {
-                var result = exDialog.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    if (exDialog.ExportType == EditDialogues.ExportType.HTML)
-                    {
-                        this.ExportToHTML();
-                    }
-                }
-            }
-        }
-
         private void B_SoundPlayBackSettings_Click(object sender, EventArgs e)
         {
             using (EditDialogues.SoundPlaybackSettingsDialog spsDialog = new EditDialogues.SoundPlaybackSettingsDialog())
@@ -203,72 +188,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 }
             }
         }
-
-        #region ExportFunctions
-        private void ExportToHTML()
-        {
-            var dialog = new SaveFileDialog()
-            {
-                Filter = "HTML file (*.html)|*.html"
-            };
-            DialogResult res = dialog.ShowDialog();
-            if (res == DialogResult.OK)
-            {
-                var ExportSounds = TreeNodesToSoundsEntryList(sndTreeView);
-                StringBuilder sb = new StringBuilder();
-
-                sb.AppendLine("<!DOCTYPE HTML PUBLIC \" -//W3C//DTD HTML 4.0 Transitional//EN\">");
-                sb.AppendLine("");
-                sb.AppendLine("<html>");
-                sb.AppendLine("<head>");
-                sb.AppendLine("	<meta http-equiv=\"content - type\" content=\"text / html; charset = windows - 1250\"/>");
-                sb.AppendLine("<title></title>");
-                sb.AppendLine("<style type=\"text / css\">");
-                sb.AppendLine("\t\tbody, div, table, thead, tbody, tfoot, tr, th, td, p { font - family:\"Arial\"; font - size:x - small }");
-                sb.AppendLine("\t\ta.comment-indicator:hover + comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em;  } ");
-                sb.AppendLine("\t\ta.comment - indicator { background: red; display: inline - block; border: 1px solid black; width: 0.5em; height: 0.5em; }");
-                sb.AppendLine("comment { display:none;  } ");
-                sb.AppendLine("</style>");
-                sb.AppendLine("</head>");
-                sb.AppendLine("<body>");
-                sb.AppendLine("<table cellspacing=\"0\" border=\"1\">");
-                sb.AppendLine("<colgroup span=\"3\" width=\"1000\"></colgroup>");
-                sb.AppendLine("<tr>" +
-                    "<td height=\"21\" align=\"left\"><b>(" + PrefixCharacter + ") Command (total: " + ExportSounds.Count.ToString() + ")</b></td>" +
-                    "<td align=\"left\"><b>File</b></td>" +
-                    "<td align=\"left\"><b>Description</b></td>" +
-                    "<td align=\"left\"><b>Added (UTC)</b></td>" +
-                    "</tr>");
-                foreach (var snd in ExportSounds)
-                {
-                    sb.AppendLine(GetTableRowForFile(snd));
-                }
-                sb.AppendLine("</table>");
-                sb.AppendLine("</body>");
-                sb.AppendLine("</html>");
-                System.IO.File.WriteAllText(dialog.FileName, sb.ToString());
-                System.Diagnostics.Process.Start(dialog.FileName);
-            }
-        }
-
-        private string GetTableRowForFile(SoundEntry hSound)
-        {
-            return string.Format("<tr>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{0}{1}</td>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{2}</td>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{3}</td>" +
-                "<td height=\"21\" align=\"left\" bgcolor=\"{5}\">{4}</td>" +
-                "</tr>",
-                PrefixCharacter,
-                hSound.GetCommand(),
-                hSound.GetAllFiles().Length > 1 ? "multiple" : System.IO.Path.GetFileNameWithoutExtension(hSound.GetAllFiles().First()),
-                hSound.GetDescription(),
-                hSound.GetDateAdded().ToString(),
-                GetHTMLColor(hSound.GetRequirement())
-                );
-
-        }
-        #endregion
     }
 
     #region Extensions
