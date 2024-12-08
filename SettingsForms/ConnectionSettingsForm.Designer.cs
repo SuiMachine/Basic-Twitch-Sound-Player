@@ -33,6 +33,7 @@
 			this.B_Save = new System.Windows.Forms.Button();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.CB_DebugMode = new System.Windows.Forms.CheckBox();
 			this.B_GetLoginData = new System.Windows.Forms.Button();
 			this.CB_ShowPassword = new System.Windows.Forms.CheckBox();
 			this.label5 = new System.Windows.Forms.Label();
@@ -45,10 +46,13 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.TB_Server = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.CB_DebugMode = new System.Windows.Forms.CheckBox();
+			this.CB_Websocket = new System.Windows.Forms.CheckBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.Num_PortUsed = new System.Windows.Forms.NumericUpDown();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_PortUsed)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -61,10 +65,10 @@
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 172F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 219F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(368, 217);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(368, 296);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -75,18 +79,18 @@
 			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 175);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 222);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(362, 39);
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(362, 71);
 			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// B_Save
 			// 
 			this.B_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_Save.Location = new System.Drawing.Point(53, 8);
+			this.B_Save.Location = new System.Drawing.Point(53, 24);
 			this.B_Save.Name = "B_Save";
 			this.B_Save.Size = new System.Drawing.Size(75, 23);
 			this.B_Save.TabIndex = 0;
@@ -97,7 +101,7 @@
 			// B_Cancel
 			// 
 			this.B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_Cancel.Location = new System.Drawing.Point(234, 8);
+			this.B_Cancel.Location = new System.Drawing.Point(234, 24);
 			this.B_Cancel.Name = "B_Cancel";
 			this.B_Cancel.Size = new System.Drawing.Size(75, 23);
 			this.B_Cancel.TabIndex = 1;
@@ -107,6 +111,9 @@
 			// 
 			// panel1
 			// 
+			this.panel1.Controls.Add(this.Num_PortUsed);
+			this.panel1.Controls.Add(this.label6);
+			this.panel1.Controls.Add(this.CB_Websocket);
 			this.panel1.Controls.Add(this.CB_DebugMode);
 			this.panel1.Controls.Add(this.B_GetLoginData);
 			this.panel1.Controls.Add(this.CB_ShowPassword);
@@ -123,8 +130,18 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(362, 166);
+			this.panel1.Size = new System.Drawing.Size(362, 213);
 			this.panel1.TabIndex = 1;
+			// 
+			// CB_DebugMode
+			// 
+			this.CB_DebugMode.AutoSize = true;
+			this.CB_DebugMode.Location = new System.Drawing.Point(201, 113);
+			this.CB_DebugMode.Name = "CB_DebugMode";
+			this.CB_DebugMode.Size = new System.Drawing.Size(87, 17);
+			this.CB_DebugMode.TabIndex = 12;
+			this.CB_DebugMode.Text = "Debug mode";
+			this.CB_DebugMode.UseVisualStyleBackColor = true;
 			// 
 			// B_GetLoginData
 			// 
@@ -236,21 +253,53 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Server:";
 			// 
-			// CB_DebugMode
+			// CB_Websocket
 			// 
-			this.CB_DebugMode.AutoSize = true;
-			this.CB_DebugMode.Location = new System.Drawing.Point(201, 113);
-			this.CB_DebugMode.Name = "CB_DebugMode";
-			this.CB_DebugMode.Size = new System.Drawing.Size(87, 17);
-			this.CB_DebugMode.TabIndex = 12;
-			this.CB_DebugMode.Text = "Debug mode";
-			this.CB_DebugMode.UseVisualStyleBackColor = true;
+			this.CB_Websocket.AutoSize = true;
+			this.CB_Websocket.Location = new System.Drawing.Point(93, 162);
+			this.CB_Websocket.Name = "CB_Websocket";
+			this.CB_Websocket.Size = new System.Drawing.Size(133, 17);
+			this.CB_Websocket.TabIndex = 13;
+			this.CB_Websocket.Text = "Run websocket server";
+			this.CB_Websocket.UseVisualStyleBackColor = true;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(9, 188);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(59, 13);
+			this.label6.TabIndex = 15;
+			this.label6.Text = "Listen port:";
+			// 
+			// Num_PortUsed
+			// 
+			this.Num_PortUsed.Location = new System.Drawing.Point(93, 185);
+			this.Num_PortUsed.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.Num_PortUsed.Minimum = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
+			this.Num_PortUsed.Name = "Num_PortUsed";
+			this.Num_PortUsed.Size = new System.Drawing.Size(260, 20);
+			this.Num_PortUsed.TabIndex = 17;
+			this.Num_PortUsed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.Num_PortUsed.Value = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
 			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(368, 217);
+			this.ClientSize = new System.Drawing.Size(368, 296);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -261,6 +310,7 @@
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_PortUsed)).EndInit();
 			this.ResumeLayout(false);
 
         }
@@ -285,5 +335,8 @@
         private System.Windows.Forms.CheckBox CB_ShowPassword;
         private System.Windows.Forms.Button B_GetLoginData;
 		private System.Windows.Forms.CheckBox CB_DebugMode;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.CheckBox CB_Websocket;
+		private System.Windows.Forms.NumericUpDown Num_PortUsed;
 	}
 }

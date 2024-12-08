@@ -12,7 +12,9 @@ namespace BasicTwitchSoundPlayer
 		Generic,
 		IrcCommand,
 		ModCommand,
-		SoundCommand
+		SoundCommand,
+		VoiceMod,
+		WebSocket
 	}
 
 	public partial class MainForm : Form
@@ -20,12 +22,13 @@ namespace BasicTwitchSoundPlayer
 		public static MainForm Instance { get; private set; }
 
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
-		public delegate void SetVolumeSlider(int valuee);       //used to safely change the slider position
+		public delegate void SetVolumeSlider(int value);       //used to safely change the slider position
 
 		public IRC.IRCBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundBase soundDb;
+		WebSocketsServer webSockets;
 
 		public MainForm()
 		{
@@ -36,6 +39,7 @@ namespace BasicTwitchSoundPlayer
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			var settings = PrivateSettings.GetInstance();
+			webSockets = new WebSocketsServer();
 			UpdateColors();
 			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
 			int valrr = Convert.ToInt32(100 * settings.Volume);
@@ -47,6 +51,9 @@ namespace BasicTwitchSoundPlayer
 			{
 				StartBot();
 			}
+
+			if (settings.RunWebSocketsServer)
+				webSockets.Start();
 		}
 
 		private void StartBot()
@@ -134,8 +141,9 @@ namespace BasicTwitchSoundPlayer
 				TwitchBot.StopBot();
 			trayIcon.Visible = false;
 			var settings = PrivateSettings.GetInstance();
-
 			settings.SaveSettings();
+			this.webSockets.Stop();
+
 			System.Environment.Exit(0);
 		}
 		#endregion
@@ -213,6 +221,8 @@ namespace BasicTwitchSoundPlayer
 				settings.TwitchPassword = form.Password;
 				settings.TwitchChannelToJoin = form.ChannelToJoin;
 				settings.Debug_mode = form.DebugMode;
+				settings.WebSocketsServerPort = form.WebsocketPort;
+				settings.RunWebSocketsServer = form.RunWebsocket;
 				settings.SaveSettings();
 				ReloadBot();
 			}
@@ -220,10 +230,13 @@ namespace BasicTwitchSoundPlayer
 
 		private void ReloadBot()
 		{
+			webSockets.Stop();
+			if (PrivateSettings.GetInstance().RunWebSocketsServer)
+				webSockets.Start();
+
 			if (TwitchBot != null && TwitchBot.BotRunning)
 				StopBot();
 
-			//TODO: Add update to SoundBase for VoiceSynthesizer
 			StartBot();
 		}
 
@@ -272,6 +285,7 @@ namespace BasicTwitchSoundPlayer
 		private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.StopBot();
+			this.webSockets.Stop();
 			this.Close();
 		}
 		#endregion

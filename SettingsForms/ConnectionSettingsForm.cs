@@ -21,6 +21,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public string Password { get; set; }
 		public string ChannelToJoin { get; set; }
 		public bool DebugMode { get; set; }
+		public int WebsocketPort { get; set; }
+
+		public bool RunWebsocket { get; set; }
+
 
 
 		public ConnectionSettingsForm(MainForm _parent)
@@ -36,12 +40,16 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.TB_Password.DataBindings.Add("Text", this, nameof(Password), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_ChannelToJoin.DataBindings.Add("Text", this, nameof(ChannelToJoin), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.CB_DebugMode.DataBindings.Add("Checked", this, nameof(DebugMode), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.Num_PortUsed.DataBindings.Add("Value", this, nameof(WebsocketPort), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.CB_Websocket.DataBindings.Add("Checked", this, nameof(RunWebsocket), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			this.Server = settings.TwitchServer;
 			this.Username = settings.TwitchUsername;
 			this.Password = settings.TwitchPassword;
 			this.ChannelToJoin = settings.TwitchChannelToJoin;
 			this.DebugMode = settings.Debug_mode;
+			this.WebsocketPort = settings.WebSocketsServerPort;
+			this.RunWebsocket = settings.RunWebSocketsServer;
 		}
 
 		private void CloseHttpListener()
