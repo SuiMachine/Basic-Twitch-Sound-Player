@@ -107,6 +107,8 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
 		[XmlElement]
+		public int WebSocketsServer { get; set; }
+		[XmlElement]
 		public string SoundRewardID { get; set; }
 		#endregion
 
@@ -127,6 +129,7 @@ namespace BasicTwitchSoundPlayer
 			VoiceSynthesizer = "";
 			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
+			WebSocketsServer = 8005;
 		}
 
 		#region Load/Save
