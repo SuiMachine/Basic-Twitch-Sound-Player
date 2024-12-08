@@ -193,7 +193,6 @@ namespace BasicTwitchSoundPlayer
 
 		public string APIKey { get; set; }
 		public string AdressPort { get; set; }
-		public VoiceModLogic VoiceModRedemptionLogic { get; set; }
 
 		public List<VoiceModReward> Rewards { get; set; } = new List<VoiceModReward>();
 
@@ -201,7 +200,6 @@ namespace BasicTwitchSoundPlayer
 		{
 			APIKey = "";
 			AdressPort = "ws://localhost:59129/v1";
-			VoiceModRedemptionLogic = VoiceModLogic.ChannelPoints; //Other currently not supported
 		}
 
 		[Serializable]
