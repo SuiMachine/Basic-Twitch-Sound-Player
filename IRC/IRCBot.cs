@@ -114,24 +114,19 @@ namespace BasicTwitchSoundPlayer.IRC
 					if (e.Data.Tags.ContainsKey("custom-reward-id"))
 					{
 						var settings = PrivateSettings.GetInstance();
-						if (settings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
-						{
-							var rewardID = e.Data.Tags["custom-reward-id"];
-							msg.userID = e.Data.Tags["user-id"];
+						var rewardID = e.Data.Tags["custom-reward-id"];
+						msg.userID = e.Data.Tags["user-id"];
 
-							if (rewardID == settings.SoundRewardID)
-							{
-								msg.msgType = MessageType.SoundReward;
-								msg.RewardID = rewardID;
-							}
-							else
-							{
-								msg.msgType = MessageType.Normal;
-								msg.RewardID = "";
-							}
+						if (rewardID == settings.SoundRewardID)
+						{
+							msg.msgType = MessageType.SoundReward;
+							msg.RewardID = rewardID;
 						}
 						else
+						{
 							msg.msgType = MessageType.Normal;
+							msg.RewardID = "";
+						}
 
 					}
 					msg.user = e.Data.Nick;
@@ -269,10 +264,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnRegistered(object sender, EventArgs e)
 		{
 			parent.ThreadSafeAddPreviewText("! LOGIN VERIFIED", LineType.IrcCommand);
-			if (PrivateSettings.GetInstance().SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
-			{
-
-			}
 		}
 
 		private void MeebyIrc_OnDisconnected(object sender, EventArgs e)

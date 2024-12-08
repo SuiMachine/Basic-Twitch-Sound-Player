@@ -1,33 +1,57 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
+using System.Diagnostics;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
 namespace BasicTwitchSoundPlayer
 {
-	public class WebSocketsServer
+	public class WebSocketsListener
 	{
-		private TcpListener m_server;
-		private Thread m_serverThread;
-
-		public void Start()
+		public class SetRewardsStatus : WebSocketBehavior
 		{
-			if (m_serverThread == null)
+			protected override void OnMessage(MessageEventArgs e)
 			{
-				m_serverThread = new Thread(new ThreadStart(() =>
+				if(e.Data.ToLower() == "false")
 				{
-					SpinThread("127.0.0.1", PrivateSettings.GetInstance().WebSocketsServerPort);
-				}));
-				m_serverThread.Start();
+					Debug.WriteLine("Setting redeems to false");
+				}
+				else
+				{
+					Debug.WriteLine("Setting redeems to true");
+				}
 			}
 		}
 
-		private void SpinThread(string ip, int port)
+		private WebSocketServer m_server;
+
+		public void Start()
 		{
-			try
+			if(m_server == null)
 			{
+				try
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText("Starting web server", LineType.WebSocket);
+					m_server = new WebSocketServer(PrivateSettings.GetInstance().WebSocketsServerPort);
+					m_server.AddWebSocketService<SetRewardsStatus>("/SetRewards");
+					m_server.Start();
+					MainForm.Instance.ThreadSafeAddPreviewText($"WebSocket started - listening on {m_server.Address}:{m_server.Port}", LineType.WebSocket);
+
+				}
+				catch (Exception e)
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText($"Failed to open WebSocket server - {e.Message}", LineType.WebSocket);
+					return;
+				}
+			}
+		}
+
+		private void SpinThread(object obj)
+		{
+/*			try
+			{
+				cancellationToken = new CancellationTokenSource();
 				MainForm.Instance.ThreadSafeAddPreviewText("Starting web server", LineType.WebSocket);
-				m_server = new TcpListener(IPAddress.Parse(ip), port);
+				m_server = new TcpListener(IPAddress.Parse("127.0.0.1"), PrivateSettings.GetInstance().WebSocketsServerPort);
 				m_server.Start();
 				MainForm.Instance.ThreadSafeAddPreviewText($"WebSocket started - listening on port {PrivateSettings.GetInstance().WebSocketsServerPort}", LineType.WebSocket);
 			}
@@ -35,17 +59,18 @@ namespace BasicTwitchSoundPlayer
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText($"Failed to open WebSocket server - {e.Message}", LineType.WebSocket);
 				m_server = null;
-				m_serverThread = null;
+				cancellationToken = null;
 				return;
 			}
 
-
 			TcpClient client = m_server.AcceptTcpClient();
 			NetworkStream stream = client.GetStream();
-			while(true)
+			while (true)
 			{
-				while(!stream.DataAvailable)
+				while (!stream.DataAvailable)
 				{
+					if (cancellationToken.IsCancellationRequested)
+						return;
 					Thread.Sleep(250);
 				}
 
@@ -53,17 +78,17 @@ namespace BasicTwitchSoundPlayer
 				stream.Read(bytes, 0, bytes.Length);
 				var str = BitConverter.ToString(bytes);
 
-			}
+			}*/
 		}
 
 		public void Stop()
 		{
-			if (m_serverThread != null)
-				m_serverThread.Abort();
 			if (m_server != null)
-				m_server.Stop();
-
-			m_server = null;
+			{
+				m_server.Stop(CloseStatusCode.Normal, "Intentional shutdown");
+				System.Threading.Thread.Sleep(200);
+				m_server = null;
+			}
 		}
 	}
 }

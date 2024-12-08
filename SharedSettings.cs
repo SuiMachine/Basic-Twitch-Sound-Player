@@ -103,8 +103,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string TwitchChannelToJoin { get; set; }
 		[XmlElement]
-		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
-		[XmlElement]
 		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
 		public int WebSocketsServerPort { get; set; }
@@ -126,7 +124,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;

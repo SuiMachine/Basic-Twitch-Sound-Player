@@ -28,7 +28,7 @@ namespace BasicTwitchSoundPlayer
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundBase soundDb;
-		WebSocketsServer webSockets;
+		WebSocketsListener webSockets;
 
 		public MainForm()
 		{
@@ -39,7 +39,7 @@ namespace BasicTwitchSoundPlayer
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			var settings = PrivateSettings.GetInstance();
-			webSockets = new WebSocketsServer();
+			webSockets = new WebSocketsListener();
 			UpdateColors();
 			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
 			int valrr = Convert.ToInt32(100 * settings.Volume);
