@@ -109,7 +109,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 
 			await apiConnection.GetBroadcasterIDAsync();
-			await apiConnection.VerifyChannelRewardsAsync(MainForm.Instance, TB_SoundRewardID.Text, null);
+			await apiConnection.VerifyChannelRewardsAsync(MainForm.Instance, TB_SoundRewardID.Text);
 			MessageBox.Show("Results should be displayed in main chat window (Sorry, that was an afterthought)", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}

@@ -361,21 +361,6 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
-		private void tTSToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SettingsForms.TTSSettingsForm ttsSettings = new SettingsForms.TTSSettingsForm(this);
-			var result = ttsSettings.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var settings = PrivateSettings.GetInstance();
-				settings.TTSRoleRequirement = ttsSettings.RequiredRight;
-				settings.TTSRewardID = ttsSettings.CustomRewardID;
-				settings.VoiceSynthesizer = ttsSettings.VoiceSynthesizer;
-				settings.TTSLogic = ttsSettings.TTSLogic;
-				settings.SaveSettings();
-			}
-		}
-
 		private void voiceModIntegrationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();

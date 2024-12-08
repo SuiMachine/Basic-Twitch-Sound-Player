@@ -45,7 +45,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public IrcClient meebyIrc = new IrcClient();
 
 		#region Constructor
-		public OldIRCClient(MainForm parentReference, string Server, string Username, string Password, string Channel, string SoundRewardID = null, string TTSRewardID = null)
+		public OldIRCClient(MainForm parentReference, string Server, string Username, string Password, string Channel, string SoundRewardID = null)
 		{
 			parent = parentReference;
 			Config_Server = Server;
@@ -70,9 +70,9 @@ namespace BasicTwitchSoundPlayer.IRC
 				krakenUpdateTimer.Elapsed += KrakenUpdateTimer_Elapsed;
 				krakenUpdateTimer.Interval = 10;
 
-				if (SoundRewardID != null || TTSRewardID != null)
+				if (SoundRewardID != null)
 				{
-					Task run = krakenConnection.VerifyChannelRewardsAsync(parentReference, SoundRewardID, TTSRewardID);
+					Task run = krakenConnection.VerifyChannelRewardsAsync(parentReference, SoundRewardID);
 					Debug.WriteLine("Verifying reward IDs.");
 				}
 			}

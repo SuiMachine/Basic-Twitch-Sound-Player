@@ -17,14 +17,6 @@ namespace BasicTwitchSoundPlayer.Structs
 		Admin,
 	}
 
-	public enum TTSLogic
-	{
-		[Description("Require role & reward ID")]
-		Restricted,
-		[Description("Use role for !tts")]
-		RewardIDAndCommand
-	}
-
 	public enum VoiceModLogic
 	{
 		[Description("Legacy (command and user cooldowns)")]
@@ -44,7 +36,6 @@ namespace BasicTwitchSoundPlayer.Structs
 	public enum MessageType
 	{
 		Normal,
-		TTSReward,
 		SoundReward
 	}
 

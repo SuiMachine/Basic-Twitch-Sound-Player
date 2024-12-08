@@ -105,12 +105,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string VoiceSynthesizer { get; set; }
 		[XmlElement]
-		public string TTSRewardID { get; set; }
-		[XmlElement]
-		public TwitchRightsEnum TTSRoleRequirement { get; set; }
-		[XmlElement]
-		public TTSLogic TTSLogic { get; set; }
-		[XmlElement]
 		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
 		[XmlElement]
 		public string SoundRewardID { get; set; }
@@ -131,9 +125,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
 			VoiceSynthesizer = "";
-			TTSRewardID = "";
-			TTSRoleRequirement = TwitchRightsEnum.Public;
-			TTSLogic = TTSLogic.RewardIDAndCommand;
 			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
 		}

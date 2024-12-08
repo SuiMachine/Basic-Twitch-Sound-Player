@@ -16,7 +16,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		public enum RewardType
 		{
 			Sound,
-			TTS
 		}
 
 		public enum RedemptionStates
@@ -141,7 +140,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			return new string[0];
 		}
 
-		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid, string ttsredemptionid)
+		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid)
 		{
 			{
 				int endTimer = 5;
@@ -170,7 +169,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				if (jReader["data"] != null)
 				{
 					ChannelReward soundredemptionReward = null;
-					ChannelReward ttsredemptionReward = null;
 
 					var dataNode = jReader["data"];
 					foreach (var customReward in dataNode)
@@ -178,8 +176,6 @@ namespace BasicTwitchSoundPlayer.IRC
 						var parseNode = customReward.ToObject<ChannelReward>();
 						if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
 							soundredemptionReward = parseNode;
-						else if (ttsredemptionid != null && parseNode.id.Equals(ttsredemptionid, StringComparison.InvariantCultureIgnoreCase))
-							ttsredemptionReward = parseNode;
 					}
 
 					if (soundredemptionid != null && soundredemptionid != "")
@@ -201,27 +197,8 @@ namespace BasicTwitchSoundPlayer.IRC
 						}
 					}
 
-					if (ttsredemptionid != null && ttsredemptionid != "")
-					{
-						if (ttsredemptionReward == null)
-						{
-							mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with TTS Reward ID!", LineType.IrcCommand);
-						}
-						else
-						{
-							if (!ttsredemptionReward.is_enabled)
-								mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward is not enabled!", LineType.IrcCommand);
-							else if (ttsredemptionReward.is_paused)
-								mainForm.ThreadSafeAddPreviewText("[WARNING] TTS reward redemption is paused!", LineType.IrcCommand);
-							else if (!ttsredemptionReward.is_user_input_required)
-								mainForm.ThreadSafeAddPreviewText("[ERROR] TTS reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
-							else if (ttsredemptionReward.should_redemptions_skip_request_queue)
-								mainForm.ThreadSafeAddPreviewText("[WARNING] TTS redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
-						}
-					}
-
 					//Clear up redemption queue
-					if (ttsredemptionReward != null || soundredemptionReward != null)
+					if (soundredemptionReward != null)
 					{
 						if (soundredemptionReward != null)
 						{
@@ -247,34 +224,6 @@ namespace BasicTwitchSoundPlayer.IRC
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
 
 									UpdateRedemptionStatus(soundredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
-								}
-							}
-						}
-
-						if (ttsredemptionReward != null)
-						{
-							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + ttsredemptionReward.id + "&status=UNFULFILLED", true, true);
-
-							//Should have thought this through...
-							if (pointsRewardResponse.StartsWith("Error: "))
-							{
-								mainForm.ThreadSafeAddPreviewText("[ERROR] Error verifying TTS award. It has ID, but bot doesn't have access to it. Maybe it was defined by a user instead of bot?", LineType.IrcCommand);
-								mainForm.ThreadSafeAddPreviewText("[ERROR] " + pointsRewardResponse, LineType.IrcCommand);
-							}
-							else
-							{
-								jReader = JObject.Parse(pointsRewardResponse);
-								dataNode = jReader["data"];
-
-								mainForm.ThreadSafeAddPreviewText("[Verification Status] TTS reward seems OK." + (dataNode.Count() > 0 ? " Clearing up request queue!" : " Request queue empty."), LineType.IrcCommand);
-
-								int totalIDsToCancel = dataNode.Count() > 50 ? 50 : dataNode.Count();
-								if (totalIDsToCancel > 0)
-								{
-									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
-
-									UpdateRedemptionStatus(ttsredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
-
 								}
 							}
 						}
@@ -361,31 +310,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			if ((BroadcasterID == null || BroadcasterID == ""))
 				return null;
 
-			if (rewardType == RewardType.TTS)
-			{
-				var content = new Dictionary<string, string>()
-				{
-					{"title", "Send TTS message"},
-					{"cost", "500" },
-					{"is_enabled", "true" },
-					{"prompt", "Read message using TTS" },
-					{"is_user_input_required", "true" },
-					{"should_redemptions_skip_request_queue", "false" }
-				};
-
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
-				if (response != "")
-				{
-					JObject jReader = JObject.Parse(response);
-					var dataNode = jReader["data"].First;
-					if (dataNode["id"] != null)
-					{
-						var newReward = dataNode.ToObject<ChannelReward>();
-						return newReward;
-					}
-				}
-			}
-			else if (rewardType == RewardType.Sound)
+			if (rewardType == RewardType.Sound)
 			{
 				var content = new Dictionary<string, string>()
 				{

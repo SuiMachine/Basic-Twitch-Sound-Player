@@ -43,7 +43,6 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.databaseEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tTSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importFromBotnakToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -162,7 +161,6 @@
 			// 
 			this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.databaseEditorToolStripMenuItem,
-            this.tTSToolStripMenuItem,
             this.importFromBotnakToolStripMenuItem});
 			this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
 			this.soundsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
@@ -174,13 +172,6 @@
 			this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
 			this.databaseEditorToolStripMenuItem.Text = "Sound Database Editor";
 			this.databaseEditorToolStripMenuItem.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
-			// 
-			// tTSToolStripMenuItem
-			// 
-			this.tTSToolStripMenuItem.Name = "tTSToolStripMenuItem";
-			this.tTSToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-			this.tTSToolStripMenuItem.Text = "TTS";
-			this.tTSToolStripMenuItem.Click += new System.EventHandler(this.tTSToolStripMenuItem_Click);
 			// 
 			// importFromBotnakToolStripMenuItem
 			// 
@@ -291,7 +282,6 @@
         private System.Windows.Forms.ContextMenuStrip trayMenu;
         private System.Windows.Forms.ToolStripMenuItem showProgramToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tTSToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem voiceModIntegrationToolStripMenuItem;
 	}
 }

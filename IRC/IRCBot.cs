@@ -22,7 +22,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			var privateSettings = PrivateSettings.GetInstance();
 
-			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin, privateSettings.SoundRewardID, privateSettings.TTSRewardID);
+			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin, privateSettings.SoundRewardID);
 			channelToJoin = privateSettings.TwitchChannelToJoin;
 			parent = MainForm.Instance;
 			this.PrefixChar = PrefixChar;
@@ -114,17 +114,12 @@ namespace BasicTwitchSoundPlayer.IRC
 					if (e.Data.Tags.ContainsKey("custom-reward-id"))
 					{
 						var settings = PrivateSettings.GetInstance();
-						if (settings.TTSLogic == TTSLogic.RewardIDAndCommand || settings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
+						if (settings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
 						{
 							var rewardID = e.Data.Tags["custom-reward-id"];
 							msg.userID = e.Data.Tags["user-id"];
 
-							if (rewardID == settings.TTSRewardID)
-							{
-								msg.msgType = MessageType.TTSReward;
-								msg.RewardID = rewardID;
-							}
-							else if (rewardID == settings.SoundRewardID)
+							if (rewardID == settings.SoundRewardID)
 							{
 								msg.msgType = MessageType.SoundReward;
 								msg.RewardID = rewardID;
@@ -186,29 +181,6 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			switch (FormattedMessage.msgType)
 			{
-				case MessageType.TTSReward:
-					{
-						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-
-						if (settings.TTSLogic == TTSLogic.Restricted)
-						{
-							if (FormattedMessage.rights >= settings.TTSRoleRequirement)
-							{
-								if (SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true))
-									irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
-								else
-									irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
-								return true;
-							}
-							else
-								return true;
-						}
-						else
-						{
-							SndDB.PlayTTS(formattedMessage.user, formattedMessage.message, true);
-							return true;
-						}
-					}
 				case MessageType.SoundReward:
 					{
 						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
@@ -276,29 +248,6 @@ namespace BasicTwitchSoundPlayer.IRC
 								return true;
 							}
 
-						}
-
-						//TTS
-						if (text.StartsWith("tts "))
-						{
-							parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-
-							if (settings.TTSLogic == TTSLogic.RewardIDAndCommand)
-							{
-								if (formattedMessage.rights >= TwitchRightsEnum.Mod)
-									SndDB.PlayTTS(formattedMessage.user, formattedMessage.message.Split(new char[] { ' ' }, 2)[1]);
-								return true;
-							}
-
-							return true;
-						} //SoundPlayback
-						else
-						{
-							if (settings.SoundRedemptionLogic == SoundRedemptionLogic.Legacy || privilage == TwitchRightsEnum.Admin)
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-								SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage);
-							}
 						}
 
 						return true;

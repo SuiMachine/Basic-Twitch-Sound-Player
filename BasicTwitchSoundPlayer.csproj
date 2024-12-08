@@ -117,7 +117,6 @@
       <HintPath>packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Speech" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -186,12 +185,6 @@
     <Compile Include="SettingsForms\EditForm\VoiceModEditForm.Designer.cs">
       <DependentUpon>VoiceModEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SettingsForms\TTSSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SettingsForms\TTSSettingsForm.Designer.cs">
-      <DependentUpon>TTSSettingsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="SettingsForms\VoiceModIntegrationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,9 +247,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\EditForm\VoiceModEditForm.resx">
       <DependentUpon>VoiceModEditForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForms\TTSSettingsForm.resx">
-      <DependentUpon>TTSSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\VoiceModIntegrationForm.resx">
       <DependentUpon>VoiceModIntegrationForm.cs</DependentUpon>
