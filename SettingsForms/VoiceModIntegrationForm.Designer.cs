@@ -76,7 +76,7 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(646, 450);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 561);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// L_Status
@@ -86,7 +86,7 @@
 			this.L_Status.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.L_Status.Location = new System.Drawing.Point(4, 1);
 			this.L_Status.Name = "L_Status";
-			this.L_Status.Size = new System.Drawing.Size(638, 43);
+			this.L_Status.Size = new System.Drawing.Size(776, 43);
 			this.L_Status.TabIndex = 1;
 			this.L_Status.Text = "L_Status";
 			this.L_Status.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -104,7 +104,7 @@
 			this.tableLayoutPanel2.RowCount = 2;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(638, 69);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(776, 69);
 			this.tableLayoutPanel2.TabIndex = 2;
 			// 
 			// tableLayoutPanel4
@@ -119,7 +119,7 @@
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(632, 29);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(770, 29);
 			this.tableLayoutPanel4.TabIndex = 1;
 			// 
 			// label2
@@ -138,7 +138,7 @@
 			this.TB_API_KEY.Location = new System.Drawing.Point(177, 3);
 			this.TB_API_KEY.Name = "TB_API_KEY";
 			this.TB_API_KEY.PasswordChar = '*';
-			this.TB_API_KEY.Size = new System.Drawing.Size(452, 20);
+			this.TB_API_KEY.Size = new System.Drawing.Size(590, 20);
 			this.TB_API_KEY.TabIndex = 1;
 			// 
 			// tableLayoutPanel3
@@ -153,7 +153,7 @@
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 			this.tableLayoutPanel3.RowCount = 1;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(632, 28);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(770, 28);
 			this.tableLayoutPanel3.TabIndex = 0;
 			// 
 			// label1
@@ -171,7 +171,7 @@
 			this.TB_Address.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TB_Address.Location = new System.Drawing.Point(177, 3);
 			this.TB_Address.Name = "TB_Address";
-			this.TB_Address.Size = new System.Drawing.Size(452, 20);
+			this.TB_Address.Size = new System.Drawing.Size(590, 20);
 			this.TB_Address.TabIndex = 1;
 			// 
 			// tableLayoutPanel5
@@ -187,12 +187,12 @@
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(638, 32);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(776, 32);
 			this.tableLayoutPanel5.TabIndex = 3;
 			// 
 			// B_Connect
 			// 
-			this.B_Connect.Location = new System.Drawing.Point(322, 3);
+			this.B_Connect.Location = new System.Drawing.Point(391, 3);
 			this.B_Connect.Name = "B_Connect";
 			this.B_Connect.Size = new System.Drawing.Size(75, 23);
 			this.B_Connect.TabIndex = 2;
@@ -203,7 +203,7 @@
 			// B_Disconnect
 			// 
 			this.B_Disconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.B_Disconnect.Location = new System.Drawing.Point(241, 3);
+			this.B_Disconnect.Location = new System.Drawing.Point(310, 3);
 			this.B_Disconnect.Name = "B_Disconnect";
 			this.B_Disconnect.Size = new System.Drawing.Size(75, 23);
 			this.B_Disconnect.TabIndex = 0;
@@ -226,16 +226,16 @@
 			this.tableLayoutPanel6.Controls.Add(this.B_Add, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.B_Images, 3, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel6.Location = new System.Drawing.Point(4, 416);
+			this.tableLayoutPanel6.Location = new System.Drawing.Point(4, 527);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(638, 30);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(776, 30);
 			this.tableLayoutPanel6.TabIndex = 4;
 			// 
 			// B_Save
 			// 
-			this.B_Save.Location = new System.Drawing.Point(560, 3);
+			this.B_Save.Location = new System.Drawing.Point(698, 3);
 			this.B_Save.Name = "B_Save";
 			this.B_Save.Size = new System.Drawing.Size(75, 23);
 			this.B_Save.TabIndex = 3;
@@ -290,16 +290,17 @@
 			this.VoicesDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.VoicesDataGrid.Location = new System.Drawing.Point(4, 163);
 			this.VoicesDataGrid.Name = "VoicesDataGrid";
-			this.VoicesDataGrid.Size = new System.Drawing.Size(638, 246);
+			this.VoicesDataGrid.Size = new System.Drawing.Size(776, 357);
 			this.VoicesDataGrid.TabIndex = 5;
 			// 
 			// VoiceModIntegrationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(646, 450);
+			this.ClientSize = new System.Drawing.Size(784, 561);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(800, 600);
 			this.Name = "VoiceModIntegrationForm";
 			this.Text = "VoiceMod Integration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VoiceModIntegrationForm_FormClosing);
