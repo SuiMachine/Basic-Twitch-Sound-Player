@@ -199,6 +199,12 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private void VoiceModIntegrationForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if(this.ProgressBar_Update.Value > 0)
+			{
+				e.Cancel = true;
+				return;
+			}
+
 			VoiceModHandling.GetInstance().OnConnectionStateChanged -= ConnectionStateChanged;
 			VoiceModHandling.GetInstance().OnListOfVoicesReceived -= VoicedReceived;
 
@@ -313,7 +319,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var result = MessageBox.Show("Are you sure you want to do that?", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.No)
 				return;
-
 
 			var settings = PrivateSettings.GetInstance();
 			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
