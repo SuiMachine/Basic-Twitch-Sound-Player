@@ -52,6 +52,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					|| l.is_enabled != r.is_enabled
 					|| l.cost != r.cost
 					|| l.title != r.title
+					|| l.prompt != r.prompt
 					|| l.is_user_input_required != r.is_user_input_required
 					|| l.is_paused != r.is_paused
 					|| l.should_redemptions_skip_request_queue != r.should_redemptions_skip_request_queue
@@ -435,6 +436,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				var newReward = new ChannelReward()
 				{
 					title = reward.RewardTitle,
+					prompt = reward.RewardDescription,
 					id = reward.RewardID,
 					is_enabled = reward.Enabled,
 					is_paused = false,
