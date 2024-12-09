@@ -208,41 +208,12 @@ namespace BasicTwitchSoundPlayer.IRC
 						//Mod Commands
 						if (formattedMessage.rights >= TwitchRightsEnum.Mod || irc.moderators.Contains(formattedMessage.user))
 						{
-							if (text == "volume" || text.StartsWith("volume "))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.ChangeVolumeIRC(irc, text, parent);
-								return true;
-							}
-
-							if (text == "delay" || text.StartsWith("delay "))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.ChangeDelay(irc, text);
-								return true;
-							}
-
 							if (text == "stopallsounds")
 							{
 								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.Stopallsounds();
+								SndDB.StopAllSounds();
 								return true;
 							}
-
-							if (text.StartsWith("removesound "))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.RemoveSound(irc, text);
-								return true;
-							}
-
-							if (text.StartsWith("suboverride"))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.ChangeSubOverride(irc, text);
-								return true;
-							}
-
 						}
 
 						return true;

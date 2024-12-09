@@ -43,6 +43,8 @@ namespace BasicTwitchSoundPlayer
 		public ColorWrapper LineColorModeration { get; set; }
 		[XmlElement]
 		public ColorWrapper LineColorSoundPlayback { get; set; }
+		[XmlElement]
+		public ColorWrapper LineColorWebSocket { get; set; }
 
 		public ColorStruct()
 		{
@@ -61,6 +63,7 @@ namespace BasicTwitchSoundPlayer
 			LineColorIrcCommand = Color.DarkGreen;
 			LineColorModeration = Color.DarkBlue;
 			LineColorSoundPlayback = Color.DarkOrange;
+			LineColorWebSocket = Color.DarkMagenta;
 		}
 	}
 
@@ -92,9 +95,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public Guid OutputDevice { get; set; }
 		[XmlElement]
-		public bool AllowUsersToUseSubSounds { get; set; }
-
-		[XmlElement]
 		public string TwitchServer { get; set; }
 		[XmlElement]
 		public string TwitchUsername { get; set; }
@@ -115,7 +115,6 @@ namespace BasicTwitchSoundPlayer
 			//NOTE: Make sure everything is initialized first!
 			Debug_mode = false;
 			Autostart = false;
-			AllowUsersToUseSubSounds = false;
 			Volume = 0.5f;
 			Delay = 15;
 			this.Colors = new ColorStruct();

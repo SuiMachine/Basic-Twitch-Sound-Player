@@ -7,31 +7,60 @@ namespace BasicTwitchSoundPlayer
 {
 	public class WebSocketsListener
 	{
+		#region End Points logic
+		public class AdjustVolume : WebSocketBehavior
+		{
+			protected override void OnMessage(MessageEventArgs e)
+			{
+				if (int.TryParse(e.Data, out var change))
+				{
+					var val = Mathf.Clamp(MainForm.Instance.GetVolume() + change, 0, 100);
+					MainForm.Instance.SetVolume(val);
+				}
+				else
+					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
+			}
+		}
+
 		public class SetRewardsStatus : WebSocketBehavior
 		{
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				if(e.Data.ToLower() == "false")
+				if (e.Data.ToLower() == "enabled")
 				{
 					Debug.WriteLine("Setting redeems to false");
 				}
-				else
+				else if (e.Data.ToLower() == "disabled")
 				{
 					Debug.WriteLine("Setting redeems to true");
 				}
 			}
 		}
 
+		public class SetVolume : WebSocketBehavior
+		{
+			protected override void OnMessage(MessageEventArgs e)
+			{
+				if (int.TryParse(e.Data, out var change))
+					MainForm.Instance.SetVolume(change);
+				else
+					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
+			}
+		}
+		#endregion
+
 		private WebSocketServer m_server;
 
 		public void Start()
 		{
-			if(m_server == null)
+			if (m_server == null)
 			{
 				try
 				{
 					MainForm.Instance.ThreadSafeAddPreviewText("Starting web server", LineType.WebSocket);
 					m_server = new WebSocketServer(PrivateSettings.GetInstance().WebSocketsServerPort);
+					m_server.AddWebSocketService<AdjustVolume>("/AdjustVolume");
+					m_server.AddWebSocketService<SetVolume>("/SetVolume");
 					m_server.AddWebSocketService<SetRewardsStatus>("/SetRewards");
 					m_server.Start();
 					MainForm.Instance.ThreadSafeAddPreviewText($"WebSocket started - listening on {m_server.Address}:{m_server.Port}", LineType.WebSocket);
@@ -43,42 +72,6 @@ namespace BasicTwitchSoundPlayer
 					return;
 				}
 			}
-		}
-
-		private void SpinThread(object obj)
-		{
-/*			try
-			{
-				cancellationToken = new CancellationTokenSource();
-				MainForm.Instance.ThreadSafeAddPreviewText("Starting web server", LineType.WebSocket);
-				m_server = new TcpListener(IPAddress.Parse("127.0.0.1"), PrivateSettings.GetInstance().WebSocketsServerPort);
-				m_server.Start();
-				MainForm.Instance.ThreadSafeAddPreviewText($"WebSocket started - listening on port {PrivateSettings.GetInstance().WebSocketsServerPort}", LineType.WebSocket);
-			}
-			catch (Exception e)
-			{
-				MainForm.Instance.ThreadSafeAddPreviewText($"Failed to open WebSocket server - {e.Message}", LineType.WebSocket);
-				m_server = null;
-				cancellationToken = null;
-				return;
-			}
-
-			TcpClient client = m_server.AcceptTcpClient();
-			NetworkStream stream = client.GetStream();
-			while (true)
-			{
-				while (!stream.DataAvailable)
-				{
-					if (cancellationToken.IsCancellationRequested)
-						return;
-					Thread.Sleep(250);
-				}
-
-				byte[] bytes = new byte[client.Available];
-				stream.Read(bytes, 0, bytes.Length);
-				var str = BitConverter.ToString(bytes);
-
-			}*/
 		}
 
 		public void Stop()

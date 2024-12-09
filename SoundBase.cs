@@ -1,5 +1,4 @@
-﻿using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.SoundStorage;
+﻿using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs;
 using NAudio.Wave;
 using System;
@@ -12,137 +11,47 @@ namespace BasicTwitchSoundPlayer
 {
 	public class SoundBase
 	{
-		private readonly Random rng;
-		public List<SoundEntry> soundlist;
-		private List<NSoundPlayer> SoundPlayererStack;
-		private PrivateSettings programSettings;
-		private Dictionary<string, DateTime> userDB;
-		private int delay;
-		private readonly string SoundBaseFile;
+		private readonly Random m_RNG;
+		public List<SoundEntry> SoundList;
+		private List<NSoundPlayer> m_SoundPlayerStack;
+		private PrivateSettings m_ProgramSettings;
+		private Dictionary<string, DateTime> m_UserDB;
+		private int m_Delay;
+		private readonly string m_SoundBaseFile;
 
 
 		#region ConstructorRelated
 		public SoundBase(string importPath, PrivateSettings programSettings)
 		{
-			this.programSettings = programSettings;
-			userDB = new Dictionary<string, DateTime>();
-			SoundPlayererStack = new List<NSoundPlayer>();
-			rng = new Random();
-			this.delay = programSettings.Delay;
-			this.SoundBaseFile = importPath;
+			this.m_ProgramSettings = programSettings;
+			m_UserDB = new Dictionary<string, DateTime>();
+			m_SoundPlayerStack = new List<NSoundPlayer>();
+			m_RNG = new Random();
+			this.m_Delay = programSettings.Delay;
+			this.m_SoundBaseFile = importPath;
 
-			soundlist = SoundStorageXML.LoadSoundBase(importPath);
+			SoundList = SoundStorageXML.LoadSoundBase(importPath);
 		}
 		#endregion
 
 		#region changePropertyFunctions
-		internal void ChangeVolumeIRC(IRC.OldIRCClient ircBot, string poopedString, MainForm formReference)
+		internal void StopAllSounds()
 		{
-			if (!poopedString.Contains(" "))
-			{
-				ircBot.SendChatMessage("The Volume is: " + Convert.ToInt32(programSettings.Volume * 100).ToString() + "%");
-			}
-			else
-			{
-				string[] splice = poopedString.Split(new char[] { ' ' }, 2);
-				if (float.TryParse(splice[1], out float volume))
-				{
-					volume = volume / 100f;
-					if (volume < 1.0f && volume >= 0.01f)
-					{
-						for (int i = 0; i < SoundPlayererStack.Count; i++)
-						{
-							if (!SoundPlayererStack[i].DonePlaying())
-							{
-								SoundPlayererStack[i].SetVolume(volume);
-							}
-						}
-						formReference.ThreadSafeMoveSlider((int)(volume * 100));
-						ircBot.SendChatMessage("Updated volume to: " + Convert.ToInt32(volume * 100).ToString() + "%");
-					}
-				}
-			}
-		}
-
-		internal void ChangeSubOverride(OldIRCClient irc, string poopedString)
-		{
-			if (!poopedString.Contains(" "))
-			{
-				irc.SendChatMessage("Subscriber override is " + (programSettings.AllowUsersToUseSubSounds ? "enabled" : "disabled") + ".");
-			}
-			else
-			{
-				string[] splice = poopedString.Split(new char[] { ' ' }, 2);
-				if (bool.TryParse(splice[1], out bool result))
-				{
-					programSettings.AllowUsersToUseSubSounds = result;
-					irc.SendChatMessage("Subscriber override is now " + (programSettings.AllowUsersToUseSubSounds ? "enabled" : "disabled") + ".");
-				}
-				else
-				{
-					irc.SendChatMessage("Failed to parse a bool value.");
-				}
-			}
-		}
-
-
-		internal void Stopallsounds()
-		{
-			foreach (NSoundPlayer player in SoundPlayererStack)
+			foreach (NSoundPlayer player in m_SoundPlayerStack)
 			{
 				if (player != null)
 					player.Dispose();
 			}
-			SoundPlayererStack.Clear();
-		}
-
-		internal void RemoveSound(IRC.OldIRCClient irc, string text)
-		{
-			text = text.Split(' ').Last();
-			if (text.StartsWith("!"))
-				text = text.Remove(0, 1);
-
-			for (int i = 0; i < soundlist.Count; i++)
-			{
-				if (soundlist[i].GetCommand() == text)
-				{
-					soundlist.RemoveAt(i);
-					SoundStorageXML.SaveSoundBase(SoundBaseFile, soundlist);
-					irc.SendChatMessage("Removed sound entry #" + i.ToString() + ".");
-					return;
-				}
-			}
-			irc.SendChatMessage("Nothing found.");
-		}
-
-		internal void ChangeDelay(IRC.OldIRCClient ircBot, string poopedString)
-		{
-			if (!poopedString.Contains(" "))
-			{
-				ircBot.SendChatMessage("The delay is: " + delay.ToString() + " second(s).");
-			}
-			else
-			{
-				string[] splice = poopedString.Split(new char[] { ' ' }, 2);
-				if (int.TryParse(splice[1], out int delay))
-				{
-					if (delay >= 0 && delay < 1800)
-					{
-						this.delay = delay;
-						programSettings.Delay = delay;
-						ircBot.SendChatMessage("Updated delay to: " + delay.ToString() + " second(s).");
-					}
-				}
-			}
+			m_SoundPlayerStack.Clear();
 		}
 
 		internal void ChangeVolume(float volume)
 		{
-			for (int i = 0; i < SoundPlayererStack.Count; i++)
+			for (int i = 0; i < m_SoundPlayerStack.Count; i++)
 			{
-				if (!SoundPlayererStack[i].DonePlaying())
+				if (!m_SoundPlayerStack[i].DonePlaying())
 				{
-					SoundPlayererStack[i].SetVolume(volume);
+					m_SoundPlayerStack[i].SetVolume(volume);
 				}
 			}
 		}
@@ -154,47 +63,47 @@ namespace BasicTwitchSoundPlayer
 				return false;
 
 			//Iterate through existing sound players
-			for (int i = SoundPlayererStack.Count - 1; i >= 0; i--)
+			for (int i = m_SoundPlayerStack.Count - 1; i >= 0; i--)
 			{
 				//Dispose of the ones which finished playing
-				if (SoundPlayererStack[i].DonePlaying())
+				if (m_SoundPlayerStack[i].DonePlaying())
 				{
-					SoundPlayererStack[i].Dispose();
-					SoundPlayererStack.RemoveAt(i);
+					m_SoundPlayerStack[i].Dispose();
+					m_SoundPlayerStack.RemoveAt(i);
 				}
 			}
 
 			//Check if our db has a user and if not add him
-			if (!userDB.ContainsKey(user))
+			if (!m_UserDB.ContainsKey(user))
 			{
-				userDB.Add(user, DateTime.MinValue);
+				m_UserDB.Add(user, DateTime.MinValue);
 			}
 
 
 			//check user cooldown
-			if (userDB[user] + TimeSpan.FromSeconds(delay) < DateTime.Now || IgnoreCooldowns)
+			if (m_UserDB[user] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now || IgnoreCooldowns)
 			{
 				//iterate between all files in a sound list
-				for (int i = 0; i < soundlist.Count; i++)
+				for (int i = 0; i < SoundList.Count; i++)
 				{
 					//if sound is found
-					if (soundlist[i].GetCommand() == cmd)
+					if (SoundList[i].GetCommand() == cmd)
 					{
 						//Check right requirements
-						if (userLevel >= soundlist[i].GetRequirement() && soundlist[i].GetRequirement() != TwitchRightsEnum.Disabled)
+						if (userLevel >= SoundList[i].GetRequirement() && SoundList[i].GetRequirement() != TwitchRightsEnum.Disabled)
 						{
-							string filename = soundlist[i].GetFile(rng);
-							for (int j = 0; j < SoundPlayererStack.Count; j++)
+							string filename = SoundList[i].GetFile(m_RNG);
+							for (int j = 0; j < m_SoundPlayerStack.Count; j++)
 							{
 								//Just so we don't play the same sounds at the same time
-								if (filename == SoundPlayererStack[j].fullFileName)
+								if (filename == m_SoundPlayerStack[j].fullFileName)
 									return false;
 							}
 							//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
-							var player = new NSoundPlayer(programSettings.OutputDevice, soundlist[i].GetFile(rng), programSettings.Volume);
+							var player = new NSoundPlayer(m_ProgramSettings.OutputDevice, SoundList[i].GetFile(m_RNG), m_ProgramSettings.Volume);
 							var lenght = player.GetTimeLenght();
-							SoundPlayererStack.Add(player);
-							userDB[user] = DateTime.Now + lenght;
+							m_SoundPlayerStack.Add(player);
+							m_UserDB[user] = DateTime.Now + lenght;
 
 							return true;
 						}
@@ -202,37 +111,21 @@ namespace BasicTwitchSoundPlayer
 					}
 				}
 			}
-			Debug.WriteLine("User " + user + " has to wait " + (DateTime.Now - (userDB[user] + TimeSpan.FromSeconds(delay))).TotalSeconds + " seconds.");
+			Debug.WriteLine("User " + user + " has to wait " + (DateTime.Now - (m_UserDB[user] + TimeSpan.FromSeconds(m_Delay))).TotalSeconds + " seconds.");
 			return false;
 		}
 
 		internal void Close()
 		{
-			for (int i = 0; i < SoundPlayererStack.Count; i++)
+			for (int i = 0; i < m_SoundPlayerStack.Count; i++)
 			{
-				SoundPlayererStack[i].Dispose();
-			}
-		}
-
-		internal void Marge(List<SoundEntry> importedEntries)
-		{
-			foreach (var entry in importedEntries)
-			{
-				if (soundlist.Any(x => x.GetCommand() == entry.GetCommand()))
-				{
-					soundlist.First(x => x.GetCommand() == entry.GetCommand()).AddFiles(entry.GetAllFiles());
-				}
-				else
-				{
-					soundlist.Add(entry);
-				}
-				SoundStorageXML.SaveSoundBase(SoundBaseFile, soundlist);
+				m_SoundPlayerStack[i].Dispose();
 			}
 		}
 
 		internal void Save()
 		{
-			SoundStorageXML.SaveSoundBase(SoundBaseFile, soundlist);
+			SoundStorageXML.SaveSoundBase(m_SoundBaseFile, SoundList);
 		}
 	}
 

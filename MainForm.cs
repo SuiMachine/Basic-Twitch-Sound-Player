@@ -85,20 +85,18 @@ namespace BasicTwitchSoundPlayer
 					case LineType.Generic:
 						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
-
 					case LineType.IrcCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorIrcCommand;
 						break;
-
 					case LineType.ModCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorModeration;
 						break;
-
-
 					case LineType.SoundCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorSoundPlayback;
 						break;
-
+					case LineType.WebSocket:
+						RB_Preview.SelectionColor = settings.Colors.LineColorWebSocket;
+						break;
 					default:
 						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
@@ -112,14 +110,11 @@ namespace BasicTwitchSoundPlayer
 			this.AddPreviewText(text, type);
 		}
 
-		private void MoveSlider(int value)
+		public void SetVolume(int value)
 		{
-			// InvokeRequired required compares the thread ID of the
-			// calling thread to the thread ID of the creating thread.
-			// If these threads are different, it returns true.
 			if (this.trackBar_Volume.InvokeRequired)
 			{
-				SetVolumeSlider d = new SetVolumeSlider(MoveSlider);
+				SetVolumeSlider d = new SetVolumeSlider(SetVolume);
 				this.Invoke(d, new object[] { value });
 			}
 			else
@@ -129,11 +124,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public void ThreadSafeMoveSlider(int value)
-		{
-			this.MoveSlider(value);
-		}
-
+		public int GetVolume() => trackBar_Volume.Value;
 
 		private void PerformShutdownTasks()
 		{
@@ -358,11 +349,11 @@ namespace BasicTwitchSoundPlayer
 
 		private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
+			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.SoundList, PrefixCharacter);
 			DialogResult res = scf.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				soundDb.soundlist = scf.Sounds;
+				soundDb.SoundList = scf.Sounds;
 				soundDb.Save();
 			}
 		}

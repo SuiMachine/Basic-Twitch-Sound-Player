@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="IRC\IRCBot.cs" />
     <Compile Include="IRC\IrcClient.cs" />
+    <Compile Include="Mathf.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsForms\ColorSettingsForm.cs">
