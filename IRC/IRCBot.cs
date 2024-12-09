@@ -72,13 +72,6 @@ namespace BasicTwitchSoundPlayer.IRC
 			System.Threading.Thread.Sleep(200);
 		}
 
-		internal void TestStack()
-		{
-			SndDB.PlaySoundIfExists("1", "cheeki_breeki", TwitchRightsEnum.Admin);
-			Thread.Sleep(50);
-			SndDB.PlaySoundIfExists("2", "whawhawhaa", TwitchRightsEnum.Admin);
-		}
-
 		private void InitBot(string channel)
 		{
 			irc.meebyIrc.OnError += MeebyIrc_OnError;

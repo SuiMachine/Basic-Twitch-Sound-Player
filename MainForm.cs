@@ -45,7 +45,7 @@ namespace BasicTwitchSoundPlayer
 			int valrr = Convert.ToInt32(100 * settings.Volume);
 			trackBar_Volume.Value = valrr;
 			L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
-			soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), settings);
+			soundDb = new SoundBase();
 
 			if (settings.Autostart)
 			{
@@ -358,7 +358,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		private void voiceModSettings_Click(object sender, EventArgs e)
+		private void VoiceModSettings_Click(object sender, EventArgs e)
 		{
 			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();
 			var result = form.ShowDialog();

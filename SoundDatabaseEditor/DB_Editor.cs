@@ -11,10 +11,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 	public partial class DB_Editor : Form
     {
         public const string NodeNameEntry = "Entry";
-        public const string NodeNameFiles = "Files";
-        public const string NodeNameRequirements = "Requirement";
-        public const string NodeDescription = "Description";
-        public const string NodeNameDateAdded = "DateAdded";
+		public const string NodeDescription = "Description";
+		public const string NodeNameFiles = "Files";
 
         public List<SoundEntry> Sounds;
         char PrefixCharacter;
@@ -151,23 +149,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         }
         #endregion
 
-        private string GetHTMLColor(TwitchRightsEnum twitchRightsEnum)
-        {
-            switch(twitchRightsEnum)
-            {
-                case TwitchRightsEnum.Admin:
-                    return "#FF0000";
-                case TwitchRightsEnum.Mod:
-                    return "#00FF00";
-                case TwitchRightsEnum.TrustedSub:
-                    return "#F0F0FF";
-                case TwitchRightsEnum.Public:
-                    return "#FFFF90";
-                default:
-                    return "#0000FF";
-            }
-        }
-
         private void B_Sort_Click(object sender, EventArgs e)
         {
             sndTreeView.Sort();
@@ -197,17 +178,15 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
             if (node.Name == DB_Editor.NodeNameEntry)
             {
                 string Command = node.Text;
-                TwitchRightsEnum Right = node.Nodes[DB_Editor.NodeNameRequirements].Text.ToTwitchRights();
                 string[] Files = new string[node.Nodes[DB_Editor.NodeNameFiles].Nodes.Count];
                 string Description = node.Nodes[DB_Editor.NodeDescription].Text;
-                DateTime DateAdded = node.Nodes[DB_Editor.NodeNameDateAdded].Text.ToDateTimeSafe();
 
                 for (int i = 0; i < Files.Length; i++)
                 {
                     Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
                 }
 
-                return new SoundEntry(Command, Right, Files, Description, DateAdded);
+                return new SoundEntry(Command, Description, Files);
             }
             else
                 return new SoundEntry();
@@ -217,52 +196,39 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         {
             if (snd.GetIsProperEntry())
             {
-                var newNode = new TreeNode(snd.GetCommand())
+                var newNode = new TreeNode(snd.GetRewardName())
                 {
                     Name = DB_Editor.NodeNameEntry,
                     ImageIndex = 0
                 };
 
-                var FilesNode = newNode.Nodes.Add(DB_Editor.NodeNameFiles);
-                FilesNode.ImageIndex = 1;
-                FilesNode.SelectedImageIndex = 1;
-                FilesNode.StateImageIndex = 1;
+				var Description = newNode.Nodes.Add(DB_Editor.NodeDescription);
+				Description.ImageIndex = 1;
+				Description.SelectedImageIndex = 1;
+                Description.StateImageIndex = 1;
+				Description.Name = DB_Editor.NodeDescription;
+				Description.Text = snd.GetDescription();
+
+				var FilesNode = newNode.Nodes.Add(DB_Editor.NodeNameFiles);
+                FilesNode.ImageIndex = 2;
+                FilesNode.SelectedImageIndex = 2;
+                FilesNode.StateImageIndex = 2;
                 FilesNode.Name = DB_Editor.NodeNameFiles;
                 foreach (var file in snd.GetAllFiles())
                 {
                     if(file.RemoveWhitespaces() != String.Empty)
                     {
                         var fNode = FilesNode.Nodes.Add(file);
-                        fNode.ImageIndex = 1;
-                        fNode.SelectedImageIndex = 1;
-                        fNode.StateImageIndex = 1;
+                        fNode.ImageIndex = 2;
+                        fNode.SelectedImageIndex = 2;
+                        fNode.StateImageIndex = 2;
                     }
                 }
 
-                var Requirement = newNode.Nodes.Add(DB_Editor.NodeNameRequirements);
-                Requirement.ImageIndex = 2;
-                Requirement.SelectedImageIndex = 2;
-                Requirement.StateImageIndex = 2;
-                Requirement.Name = DB_Editor.NodeNameRequirements;
-                Requirement.Text = snd.GetRequirement().ToString();
-
-                var Description = newNode.Nodes.Add(DB_Editor.NodeDescription);
-                Description.ImageIndex = 3;
-                Description.SelectedImageIndex = 3;
-                Description.StateImageIndex = 3;
-                Description.Name = DB_Editor.NodeDescription;
-                Description.Text = snd.GetDescription();
-
-                var DateTimeTreeNode = newNode.Nodes.Add(DB_Editor.NodeNameDateAdded);
-                DateTimeTreeNode.ImageIndex = 4;
-                DateTimeTreeNode.SelectedImageIndex = 4;
-                DateTimeTreeNode.StateImageIndex = 4;
-                DateTimeTreeNode.Name = DB_Editor.NodeNameDateAdded;
-                DateTimeTreeNode.Text = snd.GetDateAdded().ToString();
                 return newNode;
             }
             else
-                throw new Exception(snd.GetCommand() + " is an incorrect entry!");
+                throw new Exception(snd.GetRewardName() + " is an incorrect entry!");
         }
     }
     #endregion

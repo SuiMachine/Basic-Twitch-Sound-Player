@@ -53,11 +53,9 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 			{
 				if (entry.GetIsProperEntry())
 				{
-					var ChildNode = ROOTNODE.Sui_GetNode(doc, entry.GetCommand());
+					var ChildNode = ROOTNODE.Sui_GetNode(doc, entry.GetRewardName());
 					ChildNode.Sui_SetAttributeValue(doc, varSounds, string.Join(";", entry.GetAllFiles()));
-					ChildNode.Sui_SetAttributeValue(doc, varRequirement, entry.GetRequirement().ToString());
 					ChildNode.Sui_SetAttributeValue(doc, varDescription, entry.GetDescription());
-					ChildNode.Sui_SetAttributeValue(doc, varDateAdded, entry.GetDateAdded().ToString());
 				}
 			}
 
@@ -81,7 +79,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 				TwitchRightsEnum tmpRequirement = node.Sui_GetAttributeValue(xmlDoc, varRequirement, TwitchRightsEnum.Disabled.ToString()).ToTwitchRights();
 				string tmpDescription = node.Sui_GetAttributeValue(xmlDoc, varDescription, "");
 				DateTime dateAdded = node.Sui_GetAttributeValue(xmlDoc, varDateAdded, DateTime.UtcNow.ToString()).ToDateTimeSafe();
-				return new SoundEntry(tmpCommand, tmpRequirement, tmpSounds, tmpDescription, dateAdded);
+				return new SoundEntry(tmpCommand, tmpDescription, tmpSounds);
 			}
 			catch
 			{

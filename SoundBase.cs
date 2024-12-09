@@ -14,23 +14,20 @@ namespace BasicTwitchSoundPlayer
 		private readonly Random m_RNG;
 		public List<SoundEntry> SoundList;
 		private List<NSoundPlayer> m_SoundPlayerStack;
-		private PrivateSettings m_ProgramSettings;
 		private Dictionary<string, DateTime> m_UserDB;
 		private int m_Delay;
 		private readonly string m_SoundBaseFile;
 
 
 		#region ConstructorRelated
-		public SoundBase(string importPath, PrivateSettings programSettings)
+		public SoundBase()
 		{
-			this.m_ProgramSettings = programSettings;
 			m_UserDB = new Dictionary<string, DateTime>();
 			m_SoundPlayerStack = new List<NSoundPlayer>();
 			m_RNG = new Random();
-			this.m_Delay = programSettings.Delay;
-			this.m_SoundBaseFile = importPath;
-
-			SoundList = SoundStorageXML.LoadSoundBase(importPath);
+			this.m_Delay = PrivateSettings.GetInstance().Delay;
+			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Sounds.xml");
+			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
 		}
 		#endregion
 
@@ -87,27 +84,24 @@ namespace BasicTwitchSoundPlayer
 				for (int i = 0; i < SoundList.Count; i++)
 				{
 					//if sound is found
-					if (SoundList[i].GetCommand() == cmd)
+					if (SoundList[i].GetRewardName() == cmd)
 					{
-						//Check right requirements
-						if (userLevel >= SoundList[i].GetRequirement() && SoundList[i].GetRequirement() != TwitchRightsEnum.Disabled)
+						string filename = SoundList[i].GetFile(m_RNG);
+						for (int j = 0; j < m_SoundPlayerStack.Count; j++)
 						{
-							string filename = SoundList[i].GetFile(m_RNG);
-							for (int j = 0; j < m_SoundPlayerStack.Count; j++)
-							{
-								//Just so we don't play the same sounds at the same time
-								if (filename == m_SoundPlayerStack[j].fullFileName)
-									return false;
-							}
-							//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
-							var player = new NSoundPlayer(m_ProgramSettings.OutputDevice, SoundList[i].GetFile(m_RNG), m_ProgramSettings.Volume);
-							var lenght = player.GetTimeLenght();
-							m_SoundPlayerStack.Add(player);
-							m_UserDB[user] = DateTime.Now + lenght;
-
-							return true;
+							//Just so we don't play the same sounds at the same time
+							if (filename == m_SoundPlayerStack[j].fullFileName)
+								return false;
 						}
-						return false;
+						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
+
+						PrivateSettings programSettings = PrivateSettings.GetInstance();
+						NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, SoundList[i].GetFile(m_RNG), programSettings.Volume);
+						TimeSpan length = player.GetTimeLenght();
+						m_SoundPlayerStack.Add(player);
+						m_UserDB[user] = DateTime.Now + length;
+
+						return true;
 					}
 				}
 			}

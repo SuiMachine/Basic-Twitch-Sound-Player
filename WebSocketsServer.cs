@@ -22,18 +22,22 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public class SetRewardsStatus : WebSocketBehavior
+		public class SetPauseRedeems : WebSocketBehavior
 		{
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				if (e.Data.ToLower() == "enabled")
+				if (e.Data.ToLower() == "true")
 				{
-					Debug.WriteLine("Setting redeems to false");
+					VoiceModHandling.GetInstance().SetPauseRedeems(true);
+					MainForm.Instance.ThreadSafeAddPreviewText("Paused redeems", LineType.WebSocket);
 				}
-				else if (e.Data.ToLower() == "disabled")
+				else if (e.Data.ToLower() == "false")
 				{
-					Debug.WriteLine("Setting redeems to true");
+					VoiceModHandling.GetInstance().SetPauseRedeems(false);
+					MainForm.Instance.ThreadSafeAddPreviewText("Unpaused redeems", LineType.WebSocket);
 				}
+				else
+					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
 			}
 		}
 
@@ -61,7 +65,7 @@ namespace BasicTwitchSoundPlayer
 					m_server = new WebSocketServer(PrivateSettings.GetInstance().WebSocketsServerPort);
 					m_server.AddWebSocketService<AdjustVolume>("/AdjustVolume");
 					m_server.AddWebSocketService<SetVolume>("/SetVolume");
-					m_server.AddWebSocketService<SetRewardsStatus>("/SetRewards");
+					m_server.AddWebSocketService<SetPauseRedeems>("/SetPauseRedeems");
 					m_server.Start();
 					MainForm.Instance.ThreadSafeAddPreviewText($"WebSocket started - listening on {m_server.Address}:{m_server.Port}", LineType.WebSocket);
 
