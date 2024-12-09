@@ -3,39 +3,24 @@ using System.Linq;
 
 namespace BasicTwitchSoundPlayer.Structs
 {
+	//This struct is butt ugly and I hate I wrote something like this many years ago... and manually serialized and deserialized
 	public struct SoundEntry
 	{
-		string Command { get; set; }
-		string[] File { get; set; }
-		TwitchRightsEnum Requirement { get; set; }
+		string RewardName { get; set; }
 		string Description { get; set; }
-		DateTime DateAdded { get; set; }
+		string[] File { get; set; }
 
-
-		public SoundEntry(string Command, TwitchRightsEnum Requirement, string File, DateTime DateAdded)
+		public SoundEntry(string Command, string Description, string[] Files)
 		{
-			//This is actually not used, but I wrote it, so whatever
-			this.Command = Command;
-			this.Requirement = Requirement;
-			this.File = new string[1] { File };
-			Description = "";
-			this.DateAdded = DateAdded;
-		}
-
-		public SoundEntry(string Command, TwitchRightsEnum Requirement, string[] Files, string Description, DateTime DateAdded)
-		{
-			this.Command = Command;
-			this.Requirement = Requirement;
+			this.RewardName = Command;
+			this.Description = Description;
 			this.File = Files;
 			this.Description = Description;
-			this.DateAdded = DateAdded;
 		}
 
-		public string GetCommand() { return Command; }
-		public TwitchRightsEnum GetRequirement() { return Requirement; }
+		public string GetRewardName() { return RewardName; }
 		public string[] GetAllFiles() { return File; }
 		public string GetDescription() { return Description; }
-		public DateTime GetDateAdded() { return DateAdded; }
 
 		public string GetFile(Random rng)
 		{
@@ -63,6 +48,6 @@ namespace BasicTwitchSoundPlayer.Structs
 			}
 		}
 
-		public bool GetIsProperEntry() { return (Command != null && Command != "") && (File != null && File.Length > 0); }
+		public bool GetIsProperEntry() { return (RewardName != null && RewardName != "") && (File != null && File.Length > 0); }
 	}
 }

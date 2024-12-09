@@ -27,8 +27,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			InitializeComponent();
 			AddComboboxDataSources();
 			this.Text = "Entry editing";
-			this.TB_Command.Text = Entry.GetCommand();
-			this.CBox_RequiredRight.SelectedIndex = (int)Entry.GetRequirement();
+			this.TB_Command.Text = Entry.GetRewardName();
 			foreach (var sound in Entry.GetAllFiles())
 			{
 				ListB_Files.Items.Add(sound);
@@ -48,7 +47,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				files[i] = listFile[i].ToString();
 			}
 
-			this.ReturnSound = new SoundEntry(TB_Command.Text, (TwitchRightsEnum)CBox_RequiredRight.SelectedIndex, files, RB_Description.Text, DateTime.UtcNow);
+			this.ReturnSound = new SoundEntry(TB_Command.Text, RB_Description.Text, files);
 
 			this.Close();
 		}

@@ -47,8 +47,8 @@
 			this.B_ImportFavourites = new System.Windows.Forms.Button();
 			this.B_Add = new System.Windows.Forms.Button();
 			this.B_Images = new System.Windows.Forms.Button();
-			this.VoicesDataGrid = new System.Windows.Forms.DataGridView();
 			this.ProgressBar_Update = new System.Windows.Forms.ProgressBar();
+			this.VoicesDataGrid = new System.Windows.Forms.DataGridView();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -285,6 +285,14 @@
 			this.B_Images.UseVisualStyleBackColor = true;
 			this.B_Images.Click += new System.EventHandler(this.B_Images_ClickAsync);
 			// 
+			// ProgressBar_Update
+			// 
+			this.ProgressBar_Update.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.ProgressBar_Update.Location = new System.Drawing.Point(391, 3);
+			this.ProgressBar_Update.Name = "ProgressBar_Update";
+			this.ProgressBar_Update.Size = new System.Drawing.Size(301, 24);
+			this.ProgressBar_Update.TabIndex = 8;
+			// 
 			// VoicesDataGrid
 			// 
 			this.VoicesDataGrid.AllowUserToAddRows = false;
@@ -294,14 +302,6 @@
 			this.VoicesDataGrid.Name = "VoicesDataGrid";
 			this.VoicesDataGrid.Size = new System.Drawing.Size(776, 357);
 			this.VoicesDataGrid.TabIndex = 5;
-			// 
-			// ProgressBar_Update
-			// 
-			this.ProgressBar_Update.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.ProgressBar_Update.Location = new System.Drawing.Point(391, 3);
-			this.ProgressBar_Update.Name = "ProgressBar_Update";
-			this.ProgressBar_Update.Size = new System.Drawing.Size(301, 24);
-			this.ProgressBar_Update.TabIndex = 8;
 			// 
 			// VoiceModIntegrationForm
 			// 

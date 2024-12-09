@@ -17,14 +17,6 @@ namespace BasicTwitchSoundPlayer.Structs
 		Admin,
 	}
 
-	public enum SoundRedemptionLogic
-	{
-		[Description("Legacy (command and user cooldowns)")]
-		Legacy,
-		[Description("Twitch channel points")]
-		ChannelPoints
-	}
-
 	public enum MessageType
 	{
 		Normal,

@@ -169,7 +169,7 @@
 			this.voiceModSettings.Name = "voiceModSettings";
 			this.voiceModSettings.Size = new System.Drawing.Size(180, 22);
 			this.voiceModSettings.Text = "VoiceMod";
-			this.voiceModSettings.Click += new System.EventHandler(this.voiceModSettings_Click);
+			this.voiceModSettings.Click += new System.EventHandler(this.VoiceModSettings_Click);
 			// 
 			// tableLayoutPanel1
 			// 

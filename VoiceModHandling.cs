@@ -57,6 +57,8 @@ namespace BasicTwitchSoundPlayer
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
 		private bool Playing = false;
+		private bool RedeemsPaused = false;
+
 		private TwitchPubSub TwitchPubSubClient { get; set; }
 		private (string request, string voiceID) awaitingBitmap;
 
@@ -78,6 +80,8 @@ namespace BasicTwitchSoundPlayer
 			Disposed = false;
 			ConnectToVoiceMod();
 		}
+
+		public void SetPauseRedeems(bool value) => RedeemsPaused = value;
 
 		public void ConnectToVoiceMod()
 		{
@@ -496,7 +500,7 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (e.RewardRedeemed.Redemption.Status == "UNFULFILLED")
 				{
-					if (Playing)
+					if (Playing || RedeemsPaused)
 					{
 						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
 						{

@@ -12,7 +12,9 @@ namespace BasicTwitchSoundPlayer
 		Generic,
 		IrcCommand,
 		ModCommand,
-		SoundCommand
+		SoundCommand,
+		VoiceMod,
+		WebSocket
 	}
 
 	public partial class MainForm : Form
@@ -20,12 +22,13 @@ namespace BasicTwitchSoundPlayer
 		public static MainForm Instance { get; private set; }
 
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
-		public delegate void SetVolumeSlider(int valuee);       //used to safely change the slider position
+		public delegate void SetVolumeSlider(int value);       //used to safely change the slider position
 
 		public IRC.IRCBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundBase soundDb;
+		WebSocketsListener webSockets;
 
 		public MainForm()
 		{
@@ -36,17 +39,21 @@ namespace BasicTwitchSoundPlayer
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			var settings = PrivateSettings.GetInstance();
+			webSockets = new WebSocketsListener();
 			UpdateColors();
 			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
 			int valrr = Convert.ToInt32(100 * settings.Volume);
 			trackBar_Volume.Value = valrr;
 			L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
-			soundDb = new SoundBase(Path.Combine("SoundDBs", "sounds.xml"), settings);
+			soundDb = new SoundBase();
 
 			if (settings.Autostart)
 			{
 				StartBot();
 			}
+
+			if (settings.RunWebSocketsServer)
+				webSockets.Start();
 		}
 
 		private void StartBot()
@@ -78,20 +85,18 @@ namespace BasicTwitchSoundPlayer
 					case LineType.Generic:
 						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
-
 					case LineType.IrcCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorIrcCommand;
 						break;
-
 					case LineType.ModCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorModeration;
 						break;
-
-
 					case LineType.SoundCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorSoundPlayback;
 						break;
-
+					case LineType.WebSocket:
+						RB_Preview.SelectionColor = settings.Colors.LineColorWebSocket;
+						break;
 					default:
 						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
@@ -105,14 +110,11 @@ namespace BasicTwitchSoundPlayer
 			this.AddPreviewText(text, type);
 		}
 
-		private void MoveSlider(int value)
+		public void SetVolume(int value)
 		{
-			// InvokeRequired required compares the thread ID of the
-			// calling thread to the thread ID of the creating thread.
-			// If these threads are different, it returns true.
 			if (this.trackBar_Volume.InvokeRequired)
 			{
-				SetVolumeSlider d = new SetVolumeSlider(MoveSlider);
+				SetVolumeSlider d = new SetVolumeSlider(SetVolume);
 				this.Invoke(d, new object[] { value });
 			}
 			else
@@ -122,11 +124,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public void ThreadSafeMoveSlider(int value)
-		{
-			this.MoveSlider(value);
-		}
-
+		public int GetVolume() => trackBar_Volume.Value;
 
 		private void PerformShutdownTasks()
 		{
@@ -134,8 +132,9 @@ namespace BasicTwitchSoundPlayer
 				TwitchBot.StopBot();
 			trayIcon.Visible = false;
 			var settings = PrivateSettings.GetInstance();
-
 			settings.SaveSettings();
+			this.webSockets.Stop();
+
 			System.Environment.Exit(0);
 		}
 		#endregion
@@ -213,6 +212,8 @@ namespace BasicTwitchSoundPlayer
 				settings.TwitchPassword = form.Password;
 				settings.TwitchChannelToJoin = form.ChannelToJoin;
 				settings.Debug_mode = form.DebugMode;
+				settings.WebSocketsServerPort = form.WebsocketPort;
+				settings.RunWebSocketsServer = form.RunWebsocket;
 				settings.SaveSettings();
 				ReloadBot();
 			}
@@ -220,10 +221,13 @@ namespace BasicTwitchSoundPlayer
 
 		private void ReloadBot()
 		{
+			webSockets.Stop();
+			if (PrivateSettings.GetInstance().RunWebSocketsServer)
+				webSockets.Start();
+
 			if (TwitchBot != null && TwitchBot.BotRunning)
 				StopBot();
 
-			//TODO: Add update to SoundBase for VoiceSynthesizer
 			StartBot();
 		}
 
@@ -272,6 +276,7 @@ namespace BasicTwitchSoundPlayer
 		private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.StopBot();
+			this.webSockets.Stop();
 			this.Close();
 		}
 		#endregion
@@ -344,16 +349,16 @@ namespace BasicTwitchSoundPlayer
 
 		private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.soundlist, PrefixCharacter);
+			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.SoundList, PrefixCharacter);
 			DialogResult res = scf.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				soundDb.soundlist = scf.Sounds;
+				soundDb.SoundList = scf.Sounds;
 				soundDb.Save();
 			}
 		}
 
-		private void voiceModSettings_Click(object sender, EventArgs e)
+		private void VoiceModSettings_Click(object sender, EventArgs e)
 		{
 			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();
 			var result = form.ShowDialog();

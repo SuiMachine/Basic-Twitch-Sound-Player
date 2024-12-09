@@ -12,7 +12,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 {
 	public partial class SoundPlaybackSettingsDialog : Form
 	{
-		public Structs.SoundRedemptionLogic SoundLogic { get; set; }
 		public string SoundRewardID { get; set; }
 		public Guid SelectedDevice { get; set; }
 
@@ -21,16 +20,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			var settings = PrivateSettings.GetInstance();
 
 			this.SoundRewardID = settings.SoundRewardID;
-			this.SoundLogic = settings.SoundRedemptionLogic;
 			this.SelectedDevice = settings.OutputDevice;
 
 			InitializeComponent();
 
 			//Initialization stuff and bindings
-			this.AddComboboxDataSources();
 			this.FillInOutputDevices();
 			this.TB_SoundRewardID.DataBindings.Add("Text", this, "SoundRewardID", false, DataSourceUpdateMode.OnPropertyChanged);
-			this.CBox_RedemptionLogic.DataBindings.Add("SelectedValue", this, "SoundLogic", false, DataSourceUpdateMode.OnPropertyChanged);
 		}
 
 		private void FillInOutputDevices()
@@ -52,12 +48,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private void B_OK_Click(object sender, EventArgs e)
 		{
-			if (SoundRewardID == "")
-			{
-				MessageBox.Show("No reward ID was provided, setting the redemption method to Legacy.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				SoundLogic = Structs.SoundRedemptionLogic.Legacy;
-			}
-
 			foreach (var dev in NAudio.Wave.DirectSoundOut.Devices)
 			{
 				if (dev.Description == CB_OutputDevices.SelectedItem.ToString())
@@ -79,10 +69,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private void CBox_RedemptionLogic_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			var enableOrDisable = SoundLogic == Structs.SoundRedemptionLogic.ChannelPoints;
-			TB_SoundRewardID.Enabled = enableOrDisable;
-			B_CreateReward.Enabled = enableOrDisable;
-			B_VerifyReward.Enabled = enableOrDisable;
+			TB_SoundRewardID.Enabled = true;
+			B_CreateReward.Enabled = true;
+			B_VerifyReward.Enabled = true;
 		}
 
 		private async void B_CreateReward_Click(object sender, EventArgs e)

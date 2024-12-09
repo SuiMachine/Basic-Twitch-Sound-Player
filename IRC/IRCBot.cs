@@ -72,13 +72,6 @@ namespace BasicTwitchSoundPlayer.IRC
 			System.Threading.Thread.Sleep(200);
 		}
 
-		internal void TestStack()
-		{
-			SndDB.PlaySoundIfExists("1", "cheeki_breeki", TwitchRightsEnum.Admin);
-			Thread.Sleep(50);
-			SndDB.PlaySoundIfExists("2", "whawhawhaa", TwitchRightsEnum.Admin);
-		}
-
 		private void InitBot(string channel)
 		{
 			irc.meebyIrc.OnError += MeebyIrc_OnError;
@@ -114,24 +107,19 @@ namespace BasicTwitchSoundPlayer.IRC
 					if (e.Data.Tags.ContainsKey("custom-reward-id"))
 					{
 						var settings = PrivateSettings.GetInstance();
-						if (settings.SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
-						{
-							var rewardID = e.Data.Tags["custom-reward-id"];
-							msg.userID = e.Data.Tags["user-id"];
+						var rewardID = e.Data.Tags["custom-reward-id"];
+						msg.userID = e.Data.Tags["user-id"];
 
-							if (rewardID == settings.SoundRewardID)
-							{
-								msg.msgType = MessageType.SoundReward;
-								msg.RewardID = rewardID;
-							}
-							else
-							{
-								msg.msgType = MessageType.Normal;
-								msg.RewardID = "";
-							}
+						if (rewardID == settings.SoundRewardID)
+						{
+							msg.msgType = MessageType.SoundReward;
+							msg.RewardID = rewardID;
 						}
 						else
+						{
 							msg.msgType = MessageType.Normal;
+							msg.RewardID = "";
+						}
 
 					}
 					msg.user = e.Data.Nick;
@@ -213,41 +201,12 @@ namespace BasicTwitchSoundPlayer.IRC
 						//Mod Commands
 						if (formattedMessage.rights >= TwitchRightsEnum.Mod || irc.moderators.Contains(formattedMessage.user))
 						{
-							if (text == "volume" || text.StartsWith("volume "))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.ChangeVolumeIRC(irc, text, parent);
-								return true;
-							}
-
-							if (text == "delay" || text.StartsWith("delay "))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.ChangeDelay(irc, text);
-								return true;
-							}
-
 							if (text == "stopallsounds")
 							{
 								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.Stopallsounds();
+								SndDB.StopAllSounds();
 								return true;
 							}
-
-							if (text.StartsWith("removesound "))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.RemoveSound(irc, text);
-								return true;
-							}
-
-							if (text.StartsWith("suboverride"))
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.ChangeSubOverride(irc, text);
-								return true;
-							}
-
 						}
 
 						return true;
@@ -269,10 +228,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnRegistered(object sender, EventArgs e)
 		{
 			parent.ThreadSafeAddPreviewText("! LOGIN VERIFIED", LineType.IrcCommand);
-			if (PrivateSettings.GetInstance().SoundRedemptionLogic == SoundRedemptionLogic.ChannelPoints)
-			{
-
-			}
 		}
 
 		private void MeebyIrc_OnDisconnected(object sender, EventArgs e)

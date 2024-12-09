@@ -1,20 +1,91 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
 namespace BasicTwitchSoundPlayer
 {
-	public class WebSocketsServer
+	public class WebSocketsListener
 	{
-		private TcpListener m_server;
+		#region End Points logic
+		public class AdjustVolume : WebSocketBehavior
+		{
+			protected override void OnMessage(MessageEventArgs e)
+			{
+				if (int.TryParse(e.Data, out var change))
+				{
+					var val = Mathf.Clamp(MainForm.Instance.GetVolume() + change, 0, 100);
+					MainForm.Instance.SetVolume(val);
+				}
+				else
+					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
+			}
+		}
+
+		public class SetPauseRedeems : WebSocketBehavior
+		{
+			protected override void OnMessage(MessageEventArgs e)
+			{
+				if (e.Data.ToLower() == "true")
+				{
+					VoiceModHandling.GetInstance().SetPauseRedeems(true);
+					MainForm.Instance.ThreadSafeAddPreviewText("Paused redeems", LineType.WebSocket);
+				}
+				else if (e.Data.ToLower() == "false")
+				{
+					VoiceModHandling.GetInstance().SetPauseRedeems(false);
+					MainForm.Instance.ThreadSafeAddPreviewText("Unpaused redeems", LineType.WebSocket);
+				}
+				else
+					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
+			}
+		}
+
+		public class SetVolume : WebSocketBehavior
+		{
+			protected override void OnMessage(MessageEventArgs e)
+			{
+				if (int.TryParse(e.Data, out var change))
+					MainForm.Instance.SetVolume(change);
+				else
+					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
+			}
+		}
+		#endregion
+
+		private WebSocketServer m_server;
 
 		public void Start()
 		{
-			m_server = new TcpListener(IPAddress.Parse("127.0.0.1"), PrivateSettings.GetInstance().WebSocketsServer);
+			if (m_server == null)
+			{
+				try
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText("Starting web server", LineType.WebSocket);
+					m_server = new WebSocketServer(PrivateSettings.GetInstance().WebSocketsServerPort);
+					m_server.AddWebSocketService<AdjustVolume>("/AdjustVolume");
+					m_server.AddWebSocketService<SetVolume>("/SetVolume");
+					m_server.AddWebSocketService<SetPauseRedeems>("/SetPauseRedeems");
+					m_server.Start();
+					MainForm.Instance.ThreadSafeAddPreviewText($"WebSocket started - listening on {m_server.Address}:{m_server.Port}", LineType.WebSocket);
+
+				}
+				catch (Exception e)
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText($"Failed to open WebSocket server - {e.Message}", LineType.WebSocket);
+					return;
+				}
+			}
+		}
+
+		public void Stop()
+		{
+			if (m_server != null)
+			{
+				m_server.Stop(CloseStatusCode.Normal, "Intentional shutdown");
+				System.Threading.Thread.Sleep(200);
+				m_server = null;
+			}
 		}
 	}
 }

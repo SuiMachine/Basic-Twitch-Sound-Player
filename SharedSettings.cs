@@ -43,6 +43,8 @@ namespace BasicTwitchSoundPlayer
 		public ColorWrapper LineColorModeration { get; set; }
 		[XmlElement]
 		public ColorWrapper LineColorSoundPlayback { get; set; }
+		[XmlElement]
+		public ColorWrapper LineColorWebSocket { get; set; }
 
 		public ColorStruct()
 		{
@@ -61,13 +63,14 @@ namespace BasicTwitchSoundPlayer
 			LineColorIrcCommand = Color.DarkGreen;
 			LineColorModeration = Color.DarkBlue;
 			LineColorSoundPlayback = Color.DarkOrange;
+			LineColorWebSocket = Color.DarkMagenta;
 		}
 	}
 
 	[Serializable]
 	public class PrivateSettings
 	{
-		public const string CONFIGFILE = "Config.xml";
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Config.xml");
 		private static PrivateSettings m_Instance;
 		public static PrivateSettings GetInstance()
 		{
@@ -92,9 +95,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public Guid OutputDevice { get; set; }
 		[XmlElement]
-		public bool AllowUsersToUseSubSounds { get; set; }
-
-		[XmlElement]
 		public string TwitchServer { get; set; }
 		[XmlElement]
 		public string TwitchUsername { get; set; }
@@ -103,11 +103,9 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string TwitchChannelToJoin { get; set; }
 		[XmlElement]
-		public string VoiceSynthesizer { get; set; }
+		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
-		public SoundRedemptionLogic SoundRedemptionLogic { get; set; }
-		[XmlElement]
-		public int WebSocketsServer { get; set; }
+		public int WebSocketsServerPort { get; set; }
 		[XmlElement]
 		public string SoundRewardID { get; set; }
 		#endregion
@@ -117,7 +115,6 @@ namespace BasicTwitchSoundPlayer
 			//NOTE: Make sure everything is initialized first!
 			Debug_mode = false;
 			Autostart = false;
-			AllowUsersToUseSubSounds = false;
 			Volume = 0.5f;
 			Delay = 15;
 			this.Colors = new ColorStruct();
@@ -126,20 +123,20 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			VoiceSynthesizer = "";
-			SoundRedemptionLogic = SoundRedemptionLogic.ChannelPoints;
 			SoundRewardID = "";
-			WebSocketsServer = 8005;
+			RunWebSocketsServer = false;
+			WebSocketsServerPort = 8005;
 		}
 
 		#region Load/Save
 		private static PrivateSettings LoadSettings()
 		{
-			if (File.Exists(CONFIGFILE))
+			var path = GetConfigPath();
+			if (File.Exists(path))
 			{
 				PrivateSettings obj;
 				XmlSerializer serializer = new XmlSerializer(typeof(PrivateSettings));
-				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
+				FileStream fs = new FileStream(path, FileMode.Open);
 				obj = (PrivateSettings)serializer.Deserialize(fs);
 				fs.Close();
 				return obj;
@@ -150,8 +147,11 @@ namespace BasicTwitchSoundPlayer
 
 		public void SaveSettings()
 		{
+			var path = GetConfigPath();
+			Directory.CreateDirectory(Directory.GetParent(path).FullName);
+
 			XmlSerializer serializer = new XmlSerializer(typeof(PrivateSettings));
-			StreamWriter fw = new StreamWriter(CONFIGFILE);
+			StreamWriter fw = new StreamWriter(path);
 			serializer.Serialize(fw, this);
 			fw.Close();
 		}
