@@ -1,90 +1,38 @@
-﻿using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.Structs;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using System.Xml;
+using System.Xml.Serialization;
 
 namespace BasicTwitchSoundPlayer.SoundStorage
 {
 	class SoundStorageXML
 	{
 		private static readonly string varSounds = "Sounds";
-		private static readonly string varRequirement = "Requirement";
 		private static readonly string varDescription = "SoundDescription";
-		private static readonly string varDateAdded = "DateAdded";
 
-
-		public static List<Structs.SoundEntry> LoadSoundBase(string XmlPath)
+		public static List<SoundEntry> LoadSoundBase(string XmlPath)
 		{
-			XmlDocument doc = new XmlDocument();
-			XmlNode ROOTNODE = null;
-			List<SoundEntry> entries = new List<SoundEntry>();
-
+			List<SoundEntry> entries;
 			if (!File.Exists(XmlPath))
 			{
-				ROOTNODE = doc.Sui_GetNode("Entries");
+				entries = new List<SoundEntry>();
 				SaveSoundBase(XmlPath, entries);
 			}
 			else
 			{
-				doc.Load(XmlPath);
-				foreach (XmlNode sound in doc["Entries"])
-				{
-					var newSoundEntry = doc.GetQuickSoundEntry(sound);
-					if (newSoundEntry.GetIsProperEntry())
-						entries.Add(newSoundEntry);
-				}
+				XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<SoundEntry>));
+				FileStream fs = new FileStream(XmlPath, FileMode.Open);
+				entries = (List<SoundEntry>)xmlSerializer.Deserialize(fs);
+				fs.Dispose();
 			}
 			return entries;
 		}
 
-		public static void SaveSoundBase(string XmlPath, List<Structs.SoundEntry> entries)
+		public static void SaveSoundBase(string XmlPath, List<SoundEntry> entries)
 		{
-			XmlDocument doc = new XmlDocument();
-			XmlNode ROOTNODE = doc.Sui_GetNode("Entries");
-
-			var parentDir = Directory.GetParent(XmlPath);
-			if (!parentDir.Exists)
-				parentDir.Create();
-
-			foreach (var entry in entries)
-			{
-				if (entry.GetIsProperEntry())
-				{
-					var ChildNode = ROOTNODE.Sui_GetNode(doc, entry.GetRewardName());
-					ChildNode.Sui_SetAttributeValue(doc, varSounds, string.Join(";", entry.GetAllFiles()));
-					ChildNode.Sui_SetAttributeValue(doc, varDescription, entry.GetDescription());
-				}
-			}
-
-			doc.Save(XmlPath);
-		}
-	}
-
-	static class SoundEntriesExtansions
-	{
-		private static readonly string varSounds = "Sounds";
-		private static readonly string varRequirement = "Requirement";
-		private static readonly string varDescription = "SoundDescription";
-		private static readonly string varDateAdded = "DateAdded";
-
-		public static SoundEntry GetQuickSoundEntry(this XmlDocument xmlDoc, XmlNode node)
-		{
-			try
-			{
-				string tmpCommand = node.Name;
-				string[] tmpSounds = node.Sui_GetAttributeValue(xmlDoc, varSounds, "").Split(';');
-				TwitchRightsEnum tmpRequirement = node.Sui_GetAttributeValue(xmlDoc, varRequirement, TwitchRightsEnum.Disabled.ToString()).ToTwitchRights();
-				string tmpDescription = node.Sui_GetAttributeValue(xmlDoc, varDescription, "");
-				DateTime dateAdded = node.Sui_GetAttributeValue(xmlDoc, varDateAdded, DateTime.UtcNow.ToString()).ToDateTimeSafe();
-				return new SoundEntry(tmpCommand, tmpDescription, tmpSounds);
-			}
-			catch
-			{
-				return new SoundEntry();
-			}
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<SoundEntry>));
+			FileStream fs = new FileStream(XmlPath, FileMode.OpenOrCreate);
+			xmlSerializer.Serialize(fs, entries);
+			fs.Dispose();
 		}
 	}
 }

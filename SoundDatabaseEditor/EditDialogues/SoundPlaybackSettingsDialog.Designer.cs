@@ -37,11 +37,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.B_OK = new System.Windows.Forms.Button();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.B_VerifyReward = new System.Windows.Forms.Button();
-			this.B_CreateReward = new System.Windows.Forms.Button();
 			this.CB_OutputDevices = new System.Windows.Forms.ComboBox();
-			this.TB_SoundRewardID = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel5.SuspendLayout();
@@ -60,7 +56,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 106);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 77);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel5
@@ -71,7 +67,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.tableLayoutPanel5.Controls.Add(this.B_OK, 0, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Right;
-			this.tableLayoutPanel5.Location = new System.Drawing.Point(287, 73);
+			this.tableLayoutPanel5.Location = new System.Drawing.Point(287, 44);
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -102,37 +98,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.B_VerifyReward);
-			this.panel1.Controls.Add(this.B_CreateReward);
 			this.panel1.Controls.Add(this.CB_OutputDevices);
-			this.panel1.Controls.Add(this.TB_SoundRewardID);
-			this.panel1.Controls.Add(this.label2);
 			this.panel1.Controls.Add(this.label1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(478, 64);
+			this.panel1.Size = new System.Drawing.Size(478, 35);
 			this.panel1.TabIndex = 2;
-			// 
-			// B_VerifyReward
-			// 
-			this.B_VerifyReward.Location = new System.Drawing.Point(381, 32);
-			this.B_VerifyReward.Name = "B_VerifyReward";
-			this.B_VerifyReward.Size = new System.Drawing.Size(85, 23);
-			this.B_VerifyReward.TabIndex = 1;
-			this.B_VerifyReward.Text = "Verify reward";
-			this.B_VerifyReward.UseVisualStyleBackColor = true;
-			this.B_VerifyReward.Click += new System.EventHandler(this.B_VerifyReward_Click);
-			// 
-			// B_CreateReward
-			// 
-			this.B_CreateReward.Location = new System.Drawing.Point(290, 32);
-			this.B_CreateReward.Name = "B_CreateReward";
-			this.B_CreateReward.Size = new System.Drawing.Size(85, 23);
-			this.B_CreateReward.TabIndex = 0;
-			this.B_CreateReward.Text = "Create reward";
-			this.B_CreateReward.UseVisualStyleBackColor = true;
-			this.B_CreateReward.Click += new System.EventHandler(this.B_CreateReward_Click);
 			// 
 			// CB_OutputDevices
 			// 
@@ -141,22 +113,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.CB_OutputDevices.Name = "CB_OutputDevices";
 			this.CB_OutputDevices.Size = new System.Drawing.Size(380, 21);
 			this.CB_OutputDevices.TabIndex = 4;
-			// 
-			// TB_SoundRewardID
-			// 
-			this.TB_SoundRewardID.Location = new System.Drawing.Point(104, 34);
-			this.TB_SoundRewardID.Name = "TB_SoundRewardID";
-			this.TB_SoundRewardID.Size = new System.Drawing.Size(180, 20);
-			this.TB_SoundRewardID.TabIndex = 1;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(3, 37);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(95, 13);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "Sound Reward ID:";
 			// 
 			// label1
 			// 
@@ -171,7 +127,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(484, 106);
+			this.ClientSize = new System.Drawing.Size(484, 77);
 			this.ControlBox = false;
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -194,11 +150,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
         private System.Windows.Forms.Button B_OK;
         private System.Windows.Forms.Button B_Cancel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox TB_SoundRewardID;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ComboBox CB_OutputDevices;
-		private System.Windows.Forms.Button B_CreateReward;
-		private System.Windows.Forms.Button B_VerifyReward;
 	}
 }

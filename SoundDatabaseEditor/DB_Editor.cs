@@ -1,5 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.Structs;
+using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +13,10 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         public const string NodeNameEntry = "Entry";
 		public const string NodeDescription = "Description";
 		public const string NodeNameFiles = "Files";
+		public const string NodeNameVolume = "Volume";
 
-        public List<SoundEntry> Sounds;
+
+		public List<SoundEntry> Sounds;
         char PrefixCharacter;
 
         public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter)
@@ -88,7 +90,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
         private List<SoundEntry> TreeNodesToSoundsEntryList(TreeView tree)
         {
-            this.Sounds = new List<SoundEntry>();  //Cause I can't be bothered to test whatever it's a hidden pointer and propages everywhere or not
+            this.Sounds = new List<SoundEntry>();
             for(int i=0; i<sndTreeView.Nodes.Count; i++)
             {
                 var newSnd = sndTreeView.Nodes[i].ToSoundEntry();
@@ -162,7 +164,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 if(result == DialogResult.OK)
                 {
                     var setings = PrivateSettings.GetInstance();
-					setings.SoundRewardID = spsDialog.SoundRewardID;
 					setings.OutputDevice = spsDialog.SelectedDevice;
 					setings.SaveSettings();
                 }
@@ -186,7 +187,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                     Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
                 }
 
-                return new SoundEntry(Command, Description, Files);
+                return new SoundEntry(Command, Description, "", Files, 1f);
             }
             else
                 return new SoundEntry();
@@ -196,7 +197,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
         {
             if (snd.GetIsProperEntry())
             {
-                var newNode = new TreeNode(snd.GetRewardName())
+                var newNode = new TreeNode(snd.RewardName)
                 {
                     Name = DB_Editor.NodeNameEntry,
                     ImageIndex = 0
@@ -207,14 +208,22 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 				Description.SelectedImageIndex = 1;
                 Description.StateImageIndex = 1;
 				Description.Name = DB_Editor.NodeDescription;
-				Description.Text = snd.GetDescription();
+				Description.Text = snd.Description;
 
 				var FilesNode = newNode.Nodes.Add(DB_Editor.NodeNameFiles);
                 FilesNode.ImageIndex = 2;
                 FilesNode.SelectedImageIndex = 2;
                 FilesNode.StateImageIndex = 2;
                 FilesNode.Name = DB_Editor.NodeNameFiles;
-                foreach (var file in snd.GetAllFiles())
+
+				var VolumeNome = newNode.Nodes.Add(DB_Editor.NodeNameVolume);
+				VolumeNome.ImageIndex = 3;
+				VolumeNome.SelectedImageIndex = 3;
+				VolumeNome.StateImageIndex = 3;
+				VolumeNome.Name = DB_Editor.NodeNameVolume;
+                VolumeNome.Text = snd.Volume.ToString("0%");
+
+				foreach (var file in snd.Files)
                 {
                     if(file.RemoveWhitespaces() != String.Empty)
                     {
@@ -228,7 +237,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
                 return newNode;
             }
             else
-                throw new Exception(snd.GetRewardName() + " is an incorrect entry!");
+                throw new Exception(snd.RewardName + " is an incorrect entry!");
         }
     }
     #endregion

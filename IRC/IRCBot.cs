@@ -22,7 +22,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			var privateSettings = PrivateSettings.GetInstance();
 
-			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin, privateSettings.SoundRewardID);
+			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin);
 			channelToJoin = privateSettings.TwitchChannelToJoin;
 			parent = MainForm.Instance;
 			this.PrefixChar = PrefixChar;
@@ -107,20 +107,11 @@ namespace BasicTwitchSoundPlayer.IRC
 					if (e.Data.Tags.ContainsKey("custom-reward-id"))
 					{
 						var settings = PrivateSettings.GetInstance();
-						var rewardID = e.Data.Tags["custom-reward-id"];
+						//var rewardID = e.Data.Tags["custom-reward-id"];
 						msg.userID = e.Data.Tags["user-id"];
 
-						if (rewardID == settings.SoundRewardID)
-						{
-							msg.msgType = MessageType.SoundReward;
-							msg.RewardID = rewardID;
-						}
-						else
-						{
-							msg.msgType = MessageType.Normal;
-							msg.RewardID = "";
-						}
-
+						msg.msgType = MessageType.Normal;
+						msg.RewardID = "";
 					}
 					msg.user = e.Data.Nick;
 					msg.message = e.Data.Message;

@@ -1,12 +1,7 @@
-﻿using BasicTwitchSoundPlayer.Structs;
+﻿using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.SoundStorage;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
@@ -18,21 +13,21 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 		public AddEditNewEntryDialog()
 		{
 			InitializeComponent();
-			AddComboboxDataSources();
 			this.Text = "Add new entry";
 		}
 
 		public AddEditNewEntryDialog(SoundEntry Entry)
 		{
 			InitializeComponent();
-			AddComboboxDataSources();
 			this.Text = "Entry editing";
-			this.TB_Command.Text = Entry.GetRewardName();
-			foreach (var sound in Entry.GetAllFiles())
+			this.TB_RewardName.Text = Entry.RewardName;
+			foreach (var sound in Entry.Files)
 			{
 				ListB_Files.Items.Add(sound);
 			}
-			this.RB_Description.Text = Entry.GetDescription();
+			this.RB_Description.Text = Entry.Description;
+			this.TB_RewardID.Text = Entry.RewardID;
+			this.Num_Volume.Value = (int)Math.Round(Entry.Volume * 100);
 			Verify();
 		}
 
@@ -47,8 +42,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				files[i] = listFile[i].ToString();
 			}
 
-			this.ReturnSound = new SoundEntry(TB_Command.Text, RB_Description.Text, files);
-
+			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, (float)Num_Volume.Value / 100f);
 			this.Close();
 		}
 
@@ -98,7 +92,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private void Verify()
 		{
-			if (TB_Command.Text == String.Empty)
+			if (TB_RewardName.Text == String.Empty)
 			{
 				B_OK.Enabled = false;
 				return;
@@ -148,6 +142,14 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 		private void RB_Description_TextChanged(object sender, EventArgs e)
 		{
 			Verify();
+		}
+
+		private void B_CreateReward_Click(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(TB_RewardID.Text))
+			{
+
+			}
 		}
 	}
 }

@@ -351,7 +351,7 @@ namespace BasicTwitchSoundPlayer
 			destImage.Dispose();
 		}
 
-		public bool SetVoice(string voice, float lenght)
+		public bool SetVoice(string voice, float length)
 		{
 			if (Disposed)
 				return false;
@@ -415,7 +415,7 @@ namespace BasicTwitchSoundPlayer
 					timer.Dispose();
 				}
 
-				timer = new System.Timers.Timer(lenght * 1000);
+				timer = new System.Timers.Timer(length * 1000);
 				timer.Start();
 				Playing = true;
 

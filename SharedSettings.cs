@@ -106,8 +106,6 @@ namespace BasicTwitchSoundPlayer
 		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
 		public int WebSocketsServerPort { get; set; }
-		[XmlElement]
-		public string SoundRewardID { get; set; }
 		#endregion
 
 		public PrivateSettings()
@@ -123,7 +121,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			SoundRewardID = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;
 		}

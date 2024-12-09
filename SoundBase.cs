@@ -84,7 +84,7 @@ namespace BasicTwitchSoundPlayer
 				for (int i = 0; i < SoundList.Count; i++)
 				{
 					//if sound is found
-					if (SoundList[i].GetRewardName() == cmd)
+					if (SoundList[i].RewardName == cmd)
 					{
 						string filename = SoundList[i].GetFile(m_RNG);
 						for (int j = 0; j < m_SoundPlayerStack.Count; j++)
@@ -117,7 +117,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		internal void Save()
+		public void Save()
 		{
 			SoundStorageXML.SaveSoundBase(m_SoundBaseFile, SoundList);
 		}
