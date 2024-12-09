@@ -144,10 +144,14 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			Verify();
 		}
 
-		private void B_CreateReward_Click(object sender, EventArgs e)
+		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(TB_RewardID.Text))
 			{
+				var settings = PrivateSettings.GetInstance();
+				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
+				await apiConnection.GetBroadcasterIDAsync();
+
 
 			}
 		}
