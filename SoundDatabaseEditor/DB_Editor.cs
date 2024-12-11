@@ -189,7 +189,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 					Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
 				}
 
-				return new SoundEntry(Command, Description, "", Files, 1f, 500);
+				return new SoundEntry(Command, Description, "", Files, 1f, 500, 1);
 			}
 			else
 				return new SoundEntry();

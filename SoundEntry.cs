@@ -20,6 +20,8 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 		public float Volume;
 		[XmlAttribute]
 		public int AmountOfPoints;
+		[XmlAttribute]
+		public int Cooldown;
 
 		public SoundEntry()
 		{
@@ -29,9 +31,10 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 			RewardID = "";
 			Volume = 1f;
 			AmountOfPoints = 500;
+			Cooldown = 0;
 		}
 
-		public SoundEntry(string Command, string Description, string RewardID, string[] Files, float Volume, int AmountOfPoints)
+		public SoundEntry(string Command, string Description, string RewardID, string[] Files, float Volume, int AmountOfPoints, int Cooldown)
 		{
 			this.RewardName = Command;
 			this.Description = Description;
@@ -41,6 +44,9 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 			this.Volume = Volume;
 			this.AmountOfPoints = AmountOfPoints;
 
+			if (Cooldown < 0)
+				Cooldown = 0;
+			this.Cooldown = Cooldown;
 		}
 
 		public string GetFile(Random rng)

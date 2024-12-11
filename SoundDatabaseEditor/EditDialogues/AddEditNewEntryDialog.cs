@@ -42,7 +42,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				files[i] = listFile[i].ToString();
 			}
 
-			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, (float)Num_Volume.Value / 100f, (int)Num_Points.Value);
+			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, (float)Num_Volume.Value / 100f, (int)Num_Points.Value, (int)Num_Cooldown.Value);
 			this.Close();
 		}
 
@@ -151,8 +151,16 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				var settings = PrivateSettings.GetInstance();
 				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
 				await apiConnection.GetBroadcasterIDAsync();
+				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+					return;
 
+				await apiConnection.GetRewardsList();
 
+				var reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
+				if (reward != null)
+				{
+					this.TB_RewardID.Text = reward.id;
+				}
 			}
 		}
 	}

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BasicTwitchSoundPlayer.SoundStorage;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -296,48 +298,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		public async Task<ChannelReward> CreateRewardAsync(RewardType rewardType)
-		{
-			{
-				int endTimer = 5;
-				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
-				{
-					await Task.Delay(1000);
-					endTimer--;
-				}
-			}
-
-			if ((BroadcasterID == null || BroadcasterID == ""))
-				return null;
-
-			if (rewardType == RewardType.Sound)
-			{
-				var content = new Dictionary<string, string>()
-				{
-					{"title", "Play a sound"},
-					{"cost", "230" },
-					{"is_enabled", "true" },
-					{"prompt", "Plays a sound from available list. Make sure, you meet chat role requirements before using the command." },
-					{"is_user_input_required", "true" },
-					{"should_redemptions_skip_request_queue", "false" }
-				};
-
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
-				if (response != "")
-				{
-					JObject jReader = JObject.Parse(response);
-					var dataNode = jReader["data"].First;
-					if (dataNode["id"] != null)
-					{
-						var newReward = dataNode.ToObject<ChannelReward>();
-						return newReward;
-					}
-				}
-			}
-			return null;
-		}
-
-		public async Task<ChannelReward> CreateOrUpdateRewardVoiceModAsync(VoiceModConfig.VoiceModReward reward)
+		public async Task<ChannelReward> CreateOrUpdateReward(VoiceModConfig.VoiceModReward reward)
 		{
 			if (CachedRewards == null)
 				return null;
@@ -427,6 +388,121 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 			return null;
 		}
+
+		internal async Task<ChannelReward> CreateOrUpdateReward(SoundEntry soundEntry)
+		{
+
+			if (CachedRewards == null)
+				return null;
+
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return null;
+
+			ChannelReward currentReward = CachedRewards.Find(x => x.id == soundEntry.RewardID); ;
+
+			if (currentReward != null)
+			{
+				var newReward = new ChannelReward()
+				{
+					title = soundEntry.RewardName,
+					prompt = soundEntry.Description,
+					id = soundEntry.RewardID,
+					is_enabled = true,
+					is_paused = false,
+					cost = soundEntry.AmountOfPoints,
+					is_user_input_required = false,
+					should_redemptions_skip_request_queue = false,
+
+					global_cooldown_setting = new ChannelReward.Glocal_Cooldown_Setting()
+					{
+						is_enabled = true,
+						global_cooldown_seconds = soundEntry.Cooldown * 60,
+					}
+				};
+
+				if (ChannelReward.Differs(currentReward, newReward))
+				{
+					var json = JsonConvert.SerializeObject(newReward);
+
+					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					if (response != "")
+					{
+						JObject jReader = JObject.Parse(response);
+						var dataNode = jReader["data"].First;
+						if (dataNode["id"] != null)
+						{
+							newReward = dataNode.ToObject<ChannelReward>();
+							return newReward;
+						}
+					}
+					return newReward;
+				}
+				return newReward;
+			}
+			else
+			{
+				string jObject;
+				if (soundEntry.Cooldown > 0)
+				{
+					jObject = new JObject()
+					{
+						["title"] = soundEntry.RewardName,
+						["cost"] = soundEntry.AmountOfPoints,
+						["is_enabled"] = true.ToString().ToLower(),
+						["prompt"] = soundEntry.Description,
+						["is_user_input_required"] = "false",
+						["should_redemptions_skip_request_queue"] = "false",
+						["global_cooldown_setting"] = new JObject()
+						{
+							["is_global_cooldown_enabled"] = "true",
+							["global_cooldown_seconds"] = soundEntry.Cooldown * 60
+						}
+					}.ToString();
+				}
+				else
+				{
+					jObject = new JObject()
+					{
+						["title"] = soundEntry.RewardName,
+						["cost"] = soundEntry.AmountOfPoints,
+						["is_enabled"] = true.ToString().ToLower(),
+						["prompt"] = soundEntry.Description,
+						["is_user_input_required"] = "false",
+						["should_redemptions_skip_request_queue"] = "false",
+						["global_cooldown_setting"] = new JObject()
+						{
+							["is_global_cooldown_enabled"] = "false",
+							["global_cooldown_seconds"] = "0"
+						}
+					}.ToString();
+				}
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
+			return null;
+		}
+
+
+
 
 		private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false, bool returnErrorCode = false)
 		{

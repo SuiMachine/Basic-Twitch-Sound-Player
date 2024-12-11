@@ -334,7 +334,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			{
 				if (apiConnection.CachedRewards == null)
 					_ = await apiConnection.GetRewardsList();
-				var resultReward = await apiConnection.CreateOrUpdateRewardVoiceModAsync(voice);
+				var resultReward = await apiConnection.CreateOrUpdateReward(voice);
 				if (resultReward != null)
 				{
 					voice.RewardID = resultReward.id;
