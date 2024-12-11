@@ -175,7 +175,7 @@
 			// 
 			this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
 			this.tableLayoutPanel5.ColumnCount = 1;
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 168F));
 			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
@@ -189,7 +189,7 @@
 			// B_SoundPlayBackSettings
 			// 
 			this.B_SoundPlayBackSettings.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(7, 4);
+			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(8, 4);
 			this.B_SoundPlayBackSettings.Name = "B_SoundPlayBackSettings";
 			this.B_SoundPlayBackSettings.Size = new System.Drawing.Size(154, 23);
 			this.B_SoundPlayBackSettings.TabIndex = 6;

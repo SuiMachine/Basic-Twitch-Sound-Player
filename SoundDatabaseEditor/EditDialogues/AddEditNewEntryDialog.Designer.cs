@@ -36,6 +36,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.label3 = new System.Windows.Forms.Label();
+			this.TB_RewardID = new System.Windows.Forms.TextBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.Num_Volume = new System.Windows.Forms.NumericUpDown();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.TB_RewardName = new System.Windows.Forms.TextBox();
@@ -52,53 +55,54 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.contextMenu_File = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TB_RewardID = new System.Windows.Forms.TextBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.Num_Volume = new System.Windows.Forms.NumericUpDown();
+			this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+			this.label6 = new System.Windows.Forms.Label();
+			this.Num_Points = new System.Windows.Forms.NumericUpDown();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_Volume)).BeginInit();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel5.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.contextMenu_File.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.Num_Volume)).BeginInit();
+			this.tableLayoutPanel7.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_Points)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 4);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 0, 4);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 0, 5);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel6, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel7, 0, 3);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 5;
+			this.tableLayoutPanel1.RowCount = 6;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(459, 384);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel4
 			// 
 			this.tableLayoutPanel4.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-			this.tableLayoutPanel4.ColumnCount = 4;
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+			this.tableLayoutPanel4.ColumnCount = 2;
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 74F));
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Controls.Add(this.label3, 2, 0);
-			this.tableLayoutPanel4.Controls.Add(this.TB_RewardID, 3, 0);
-			this.tableLayoutPanel4.Controls.Add(this.label5, 0, 0);
-			this.tableLayoutPanel4.Controls.Add(this.Num_Volume, 1, 0);
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.Controls.Add(this.label3, 0, 0);
+			this.tableLayoutPanel4.Controls.Add(this.TB_RewardID, 1, 0);
 			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 315);
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -112,11 +116,43 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			// 
 			this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(122, 7);
+			this.label3.Location = new System.Drawing.Point(4, 7);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(61, 13);
 			this.label3.TabIndex = 0;
 			this.label3.Text = "Reward ID:";
+			// 
+			// TB_RewardID
+			// 
+			this.TB_RewardID.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TB_RewardID.Enabled = false;
+			this.TB_RewardID.Location = new System.Drawing.Point(79, 4);
+			this.TB_RewardID.Name = "TB_RewardID";
+			this.TB_RewardID.Size = new System.Drawing.Size(370, 20);
+			this.TB_RewardID.TabIndex = 1;
+			// 
+			// label5
+			// 
+			this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(3, 6);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(45, 13);
+			this.label5.TabIndex = 2;
+			this.label5.Text = "Volume:";
+			// 
+			// Num_Volume
+			// 
+			this.Num_Volume.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Num_Volume.Location = new System.Drawing.Point(56, 3);
+			this.Num_Volume.Name = "Num_Volume";
+			this.Num_Volume.Size = new System.Drawing.Size(139, 20);
+			this.Num_Volume.TabIndex = 3;
+			this.Num_Volume.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
 			// 
 			// tableLayoutPanel2
 			// 
@@ -254,7 +290,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.tableLayoutPanel3.RowCount = 2;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(453, 185);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(453, 153);
 			this.tableLayoutPanel3.TabIndex = 1;
 			// 
 			// label2
@@ -276,7 +312,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.ListB_Files.Location = new System.Drawing.Point(4, 25);
 			this.ListB_Files.Name = "ListB_Files";
 			this.ListB_Files.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.ListB_Files.Size = new System.Drawing.Size(445, 156);
+			this.ListB_Files.Size = new System.Drawing.Size(445, 124);
 			this.ListB_Files.TabIndex = 1;
 			this.ListB_Files.DragDrop += new System.Windows.Forms.DragEventHandler(this.ListB_Files_DragDrop);
 			this.ListB_Files.DragEnter += new System.Windows.Forms.DragEventHandler(this.ListB_Files_DragEnter);
@@ -303,33 +339,54 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.removeFileToolStripMenuItem.Text = "Remove file(s)";
 			this.removeFileToolStripMenuItem.Click += new System.EventHandler(this.RemoveFileToolStripMenuItem_Click);
 			// 
-			// TB_RewardID
+			// tableLayoutPanel7
 			// 
-			this.TB_RewardID.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TB_RewardID.Enabled = false;
-			this.TB_RewardID.Location = new System.Drawing.Point(197, 4);
-			this.TB_RewardID.Name = "TB_RewardID";
-			this.TB_RewardID.Size = new System.Drawing.Size(252, 20);
-			this.TB_RewardID.TabIndex = 1;
+			this.tableLayoutPanel7.ColumnCount = 4;
+			this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 53F));
+			this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
+			this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel7.Controls.Add(this.Num_Points, 3, 0);
+			this.tableLayoutPanel7.Controls.Add(this.label6, 2, 0);
+			this.tableLayoutPanel7.Controls.Add(this.label5, 0, 0);
+			this.tableLayoutPanel7.Controls.Add(this.Num_Volume, 1, 0);
+			this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 283);
+			this.tableLayoutPanel7.Name = "tableLayoutPanel7";
+			this.tableLayoutPanel7.RowCount = 1;
+			this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel7.Size = new System.Drawing.Size(453, 26);
+			this.tableLayoutPanel7.TabIndex = 6;
 			// 
-			// label5
+			// label6
 			// 
-			this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(4, 7);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(45, 13);
-			this.label5.TabIndex = 2;
-			this.label5.Text = "Volume:";
+			this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(201, 6);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(103, 13);
+			this.label6.TabIndex = 4;
+			this.label6.Text = "Channel points cost:";
 			// 
-			// Num_Volume
+			// Num_Points
 			// 
-			this.Num_Volume.Location = new System.Drawing.Point(65, 4);
-			this.Num_Volume.Name = "Num_Volume";
-			this.Num_Volume.Size = new System.Drawing.Size(50, 20);
-			this.Num_Volume.TabIndex = 3;
-			this.Num_Volume.Value = new decimal(new int[] {
-            100,
+			this.Num_Points.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Num_Points.Location = new System.Drawing.Point(310, 3);
+			this.Num_Points.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.Num_Points.Minimum = new decimal(new int[] {
+            80,
+            0,
+            0,
+            0});
+			this.Num_Points.Name = "Num_Points";
+			this.Num_Points.Size = new System.Drawing.Size(140, 20);
+			this.Num_Points.TabIndex = 5;
+			this.Num_Points.Value = new decimal(new int[] {
+            500,
             0,
             0,
             0});
@@ -347,6 +404,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_Volume)).EndInit();
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
 			this.tableLayoutPanel5.ResumeLayout(false);
@@ -355,7 +413,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel3.PerformLayout();
 			this.contextMenu_File.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.Num_Volume)).EndInit();
+			this.tableLayoutPanel7.ResumeLayout(false);
+			this.tableLayoutPanel7.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_Points)).EndInit();
 			this.ResumeLayout(false);
 
         }
@@ -384,5 +444,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 		private System.Windows.Forms.TextBox TB_RewardID;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.NumericUpDown Num_Volume;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+		private System.Windows.Forms.NumericUpDown Num_Points;
+		private System.Windows.Forms.Label label6;
 	}
 }

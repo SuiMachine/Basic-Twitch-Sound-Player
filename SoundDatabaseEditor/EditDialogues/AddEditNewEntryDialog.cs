@@ -42,7 +42,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				files[i] = listFile[i].ToString();
 			}
 
-			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, (float)Num_Volume.Value / 100f);
+			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, (float)Num_Volume.Value / 100f, (int)Num_Points.Value);
 			this.Close();
 		}
 
