@@ -9,10 +9,11 @@ using System.Linq;
 
 namespace BasicTwitchSoundPlayer
 {
-	public class SoundBase
+	public class SoundDB
 	{
 		private readonly Random m_RNG;
 		public List<SoundEntry> SoundList;
+		public Dictionary<string, SoundEntry> RewardsToSound = new Dictionary<string, SoundEntry>();
 		private List<NSoundPlayer> m_SoundPlayerStack;
 		private Dictionary<string, DateTime> m_UserDB;
 		private int m_Delay;
@@ -20,7 +21,7 @@ namespace BasicTwitchSoundPlayer
 
 
 		#region ConstructorRelated
-		public SoundBase()
+		public SoundDB()
 		{
 			m_UserDB = new Dictionary<string, DateTime>();
 			m_SoundPlayerStack = new List<NSoundPlayer>();
@@ -28,6 +29,25 @@ namespace BasicTwitchSoundPlayer
 			this.m_Delay = PrivateSettings.GetInstance().Delay;
 			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
+			RebuildDictionary();
+		}
+
+		public void RebuildDictionary()
+		{
+			RewardsToSound.Clear();
+			foreach (var entry in SoundList)
+			{
+				if (string.IsNullOrEmpty(entry.RewardID))
+					continue;
+
+				if (RewardsToSound.ContainsKey(entry.RewardID))
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText($"Sound entry {entry.RewardName} already present in dictionary!", LineType.SoundCommand);
+					continue;
+				}
+
+				RewardsToSound.Add(entry.RewardID, entry);
+			}
 		}
 		#endregion
 

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BasicTwitchSoundPlayer.IRC;
+using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -27,7 +27,8 @@ namespace BasicTwitchSoundPlayer
 		public IRC.IRCBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
-		SoundBase soundDb;
+		SoundDB soundDb;
+		public static TwitchSocket TwitchSocket { get; private set; }
 		WebSocketsListener webSockets;
 
 		public MainForm()
@@ -40,12 +41,13 @@ namespace BasicTwitchSoundPlayer
 		{
 			var settings = PrivateSettings.GetInstance();
 			webSockets = new WebSocketsListener();
+			TwitchSocket = new TwitchSocket();
 			UpdateColors();
 			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
 			int valrr = Convert.ToInt32(100 * settings.Volume);
 			trackBar_Volume.Value = valrr;
 			L_Volume.Text = trackBar_Volume.Value.ToString() + "%";
-			soundDb = new SoundBase();
+			soundDb = new SoundDB();
 
 			if (settings.Autostart)
 			{
@@ -61,6 +63,7 @@ namespace BasicTwitchSoundPlayer
 			TwitchBot = new IRC.IRCBot(soundDb, PrefixCharacter);
 			TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
 			TwitchBotThread.Start();
+			TwitchSocket.OnChannelPointsRedeem += OnRedeemUpdatedReceived;
 		}
 
 		#region ThreadSafeFunctions
@@ -136,6 +139,13 @@ namespace BasicTwitchSoundPlayer
 			this.webSockets.Stop();
 
 			System.Environment.Exit(0);
+		}
+
+		private void OnRedeemUpdatedReceived(string rewardId, string redeemID, KrakenConnections.RedemptionStates status)
+		{
+#if DEBUG
+			Debug.WriteLine($"Received reward status {rewardId}, redeeem ID {redeemID} - {status}");
+#endif
 		}
 		#endregion
 
@@ -246,6 +256,9 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			TwitchBotThread = null;
+
+			if (TwitchSocket != null)
+				TwitchSocket.OnChannelPointsRedeem -= OnRedeemUpdatedReceived;
 		}
 
 		private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -354,6 +367,7 @@ namespace BasicTwitchSoundPlayer
 			if (res == DialogResult.OK)
 			{
 				soundDb.SoundList = scf.Sounds;
+				soundDb.RebuildDictionary();
 				soundDb.Save();
 			}
 		}

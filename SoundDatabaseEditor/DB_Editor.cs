@@ -16,8 +16,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 		public const string NodeNameVolume = "Volume";
 		public const string NodeNamePoints = "Points cost";
 
-
-
 		public List<SoundEntry> Sounds;
 		char PrefixCharacter;
 

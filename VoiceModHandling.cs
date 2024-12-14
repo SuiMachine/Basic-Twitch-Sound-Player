@@ -48,10 +48,7 @@ namespace BasicTwitchSoundPlayer
 		public bool Disposed { get; private set; }
 		public bool SocketConnected { get; private set; }
 
-		private IRCBot iRCBot;
-		private MainForm parent;
-
-		private WebSocket client;
+		private WebSocket VoiceModSocket;
 		string currentVoice = "";
 		bool currentStatus = false;
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
@@ -59,7 +56,6 @@ namespace BasicTwitchSoundPlayer
 		private bool Playing = false;
 		private bool RedeemsPaused = false;
 
-		private TwitchPubSub TwitchPubSubClient { get; set; }
 		private (string request, string voiceID) awaitingBitmap;
 
 		public bool ConnectedToVoiceMod { get; private set; }
@@ -75,8 +71,6 @@ namespace BasicTwitchSoundPlayer
 
 		private VoiceModHandling()
 		{
-			this.parent = MainForm.Instance;
-
 			Disposed = false;
 			ConnectToVoiceMod();
 		}
@@ -90,29 +84,31 @@ namespace BasicTwitchSoundPlayer
 
 			try
 			{
-				var voiceModConf = VoiceModConfig.GetInstance();
+				var voiceModConfig = VoiceModConfig.GetInstance();
 
-				client = new WebSocket(voiceModConf.AdressPort);
-				client.OnMessage += Client_OnMessage;
-				client.OnOpen += Client_OnOpen;
-				client.OnClose += Client_OnClose;
+				VoiceModSocket = new WebSocket(voiceModConfig.AdressPort);
+				VoiceModSocket.OnMessage += VoiceModSocket_OnMessage;
+				VoiceModSocket.OnOpen += VoiceModSocket_OnOpen;
+				VoiceModSocket.OnClose += VoiceModSocket_OnClose;
 				if (IsConfigured())
 				{
-					parent.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.IrcCommand);
-					client.ConnectAsync();
+					MainForm.Instance.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.VoiceMod);
+					VoiceModSocket.ConnectAsync();
+					if (MainForm.TwitchSocket != null)
+						MainForm.TwitchSocket.OnChannelPointsRedeem += OnChannelPointsRedeem;
 				}
 				else
-					parent.ThreadSafeAddPreviewText("VoiceMod is not configured - this is OK, unless you want to use it", LineType.IrcCommand);
+					MainForm.Instance.ThreadSafeAddPreviewText("VoiceMod is not configured - this is OK, unless you want to use it", LineType.VoiceMod);
 			}
 			catch (Exception ex)
 			{
-				parent.ThreadSafeAddPreviewText($"Failed to connect to voicemod: {ex}", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Failed to connect to VoiceMod: {ex}", LineType.VoiceMod);
 				ConnectedToVoiceMod = false;
 				Dispose();
 			}
 		}
 
-		private void Client_OnMessage(object sender, MessageEventArgs e)
+		private void VoiceModSocket_OnMessage(object sender, MessageEventArgs e)
 		{
 			//Should have probably used enums......................
 			//Oh well.
@@ -122,7 +118,7 @@ namespace BasicTwitchSoundPlayer
 			if (msg != null)
 			{
 				var value = msg.Value<string>();
-				parent.ThreadSafeAddPreviewText($"VoiceMod response: {value}", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText($"VoiceMod response: {value}", LineType.VoiceMod);
 			}
 			else
 			{
@@ -140,7 +136,7 @@ namespace BasicTwitchSoundPlayer
 							if (code == 200)
 							{
 								ConnectedToVoiceMod = true;
-								parent.ThreadSafeAddPreviewText($"Client registered in VoiceMod", LineType.IrcCommand);
+								MainForm.Instance.ThreadSafeAddPreviewText($"Client registered in VoiceMod", LineType.VoiceMod);
 
 								var voicedRequest = new JObject()
 								{
@@ -149,7 +145,7 @@ namespace BasicTwitchSoundPlayer
 									{ "payload", new JObject() }
 								};
 
-								client.Send(voicedRequest.ToString());
+								VoiceModSocket.Send(voicedRequest.ToString());
 
 								var message = new JObject()
 								{
@@ -162,27 +158,27 @@ namespace BasicTwitchSoundPlayer
 									}
 								};
 
-								client.Send(message.ToString());
+								VoiceModSocket.Send(message.ToString());
 							}
 							else
 							{
-								parent.ThreadSafeAddPreviewText($"Failed to register VoiceMod client - response code was {code}", LineType.IrcCommand);
+								MainForm.Instance.ThreadSafeAddPreviewText($"Failed to register VoiceMod client - response code was {code}", LineType.VoiceMod);
 							}
 						}
 						else
 						{
-							parent.ThreadSafeAddPreviewText($"Failed to register VoiceMod client - there was no status code?", LineType.IrcCommand);
+							MainForm.Instance.ThreadSafeAddPreviewText($"Failed to register VoiceMod client - there was no status code?", LineType.VoiceMod);
 						}
 					}
 					else if (value == "voiceChangerDisabledEvent")
 					{
 						currentStatus = false;
 						if (PrivateSettings.GetInstance().Debug_mode)
-							parent.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.IrcCommand);
+							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.VoiceMod);
 						Debug.WriteLine($"Set current status to {currentStatus}");
 
 						Playing = false;
-						if(timer != null && timer.Enabled)
+						if (timer != null && timer.Enabled)
 						{
 							timer.Dispose();
 							timer = null;
@@ -192,7 +188,7 @@ namespace BasicTwitchSoundPlayer
 					{
 						currentStatus = true;
 						if (PrivateSettings.GetInstance().Debug_mode)
-							parent.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.IrcCommand);
+							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.VoiceMod);
 						Debug.WriteLine($"Set current status to {currentStatus}");
 					}
 					else if (value == "voiceLoadedEvent")
@@ -212,21 +208,21 @@ namespace BasicTwitchSoundPlayer
 										{ "id", Guid.NewGuid().ToString() },
 										{ "payload", new JObject() }
 									};
-									client.Send(statusRequest.ToString());
+									VoiceModSocket.Send(statusRequest.ToString());
 								}
 								else
 								{
-									parent.ThreadSafeAddPreviewText($"Set VoiceMod to \"{voiceId.Value<string>()}\"", LineType.IrcCommand);
+									MainForm.Instance.ThreadSafeAddPreviewText($"Set VoiceMod to \"{voiceId.Value<string>()}\"", LineType.VoiceMod);
 								}
 							}
 							else
 							{
-								parent.ThreadSafeAddPreviewText($"Set VoiceMod to unknown voice?", LineType.IrcCommand);
+								MainForm.Instance.ThreadSafeAddPreviewText($"Set VoiceMod to unknown voice?", LineType.VoiceMod);
 							}
 						}
 						else
 						{
-							parent.ThreadSafeAddPreviewText($"Empty payload?", LineType.IrcCommand);
+							MainForm.Instance.ThreadSafeAddPreviewText($"Empty payload?", LineType.VoiceMod);
 						}
 
 					}
@@ -248,23 +244,23 @@ namespace BasicTwitchSoundPlayer
 								var enabled = voice["isEnabled"].Value<bool>();
 
 								var parameters = voice["parameters"];
-								
+
 								var information = new VoiceInformation(id, friendlyName, favourite, enabled, parameters);
 								if (!VoicesAvailable.TryGetValue(friendlyName, out VoiceInformation voiceInformation))
 									VoicesAvailable.Add(friendlyName, information);
 								else
 								{
-									if(voiceInformation.Parameters == null || voiceInformation.Parameters.Count() == 0)
+									if (voiceInformation.Parameters == null || voiceInformation.Parameters.Count() == 0)
 									{
 										voiceInformation.Parameters = parameters;
 									}
 								}
 							}
-							parent.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.IrcCommand);
+							MainForm.Instance.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.VoiceMod);
 							OnListOfVoicesReceived?.Invoke();
 						}
 						else
-							parent.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.IrcCommand);
+							MainForm.Instance.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.VoiceMod);
 					}
 				}
 				else if (json["actionType"] != null)
@@ -281,7 +277,7 @@ namespace BasicTwitchSoundPlayer
 								{ "id", Guid.NewGuid().ToString() },
 								{ "payload", new JObject() }
 							};
-							client.Send(disableRequest.ToString());
+							VoiceModSocket.Send(disableRequest.ToString());
 						}
 					}
 					else if (value == "getBitmap")
@@ -365,7 +361,7 @@ namespace BasicTwitchSoundPlayer
 							{ "id", Guid.NewGuid().ToString() },
 							{ "payload", new JObject() }
 					};
-					client.Send(enableRequest.ToString());
+					VoiceModSocket.Send(enableRequest.ToString());
 				}
 				var message = new JObject()
 				{
@@ -377,7 +373,7 @@ namespace BasicTwitchSoundPlayer
 						}
 					}
 				};
-				client.Send(message.ToString());
+				VoiceModSocket.Send(message.ToString());
 
 				currentVoice = "nofx";
 				if (timer != null)
@@ -393,7 +389,7 @@ namespace BasicTwitchSoundPlayer
 							{ "id", Guid.NewGuid().ToString() },
 							{ "payload", new JObject() }
 					};
-					client.Send(enableRequest.ToString());
+					VoiceModSocket.Send(enableRequest.ToString());
 				}
 
 				var message = new JObject()
@@ -408,7 +404,7 @@ namespace BasicTwitchSoundPlayer
 				};
 
 				currentVoice = voice;
-				client.Send(message.ToString());
+				VoiceModSocket.Send(message.ToString());
 				if (timer != null)
 				{
 					timer.Stop();
@@ -431,9 +427,9 @@ namespace BasicTwitchSoundPlayer
 			SetVoice(null, 0);
 		}
 
-		private void Client_OnOpen(object sender, EventArgs e)
+		private void VoiceModSocket_OnOpen(object sender, EventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
+			MainForm.Instance.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
 			ConnectedToVoiceMod = true;
 			OnConnectionStateChanged?.Invoke(true);
 
@@ -448,12 +444,12 @@ namespace BasicTwitchSoundPlayer
 				}
 			};
 
-			client.Send(message.ToString());
+			VoiceModSocket.Send(message.ToString());
 		}
 
-		private void Client_OnClose(object sender, CloseEventArgs e)
+		private void VoiceModSocket_OnClose(object sender, CloseEventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.IrcCommand);
+			MainForm.Instance.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.IrcCommand);
 			ConnectedToVoiceMod = false;
 		}
 
@@ -461,61 +457,12 @@ namespace BasicTwitchSoundPlayer
 		{
 			if (!this.Disposed)
 			{
-				client.Close();
-				client.OnMessage -= Client_OnMessage;
-				client.OnOpen -= Client_OnOpen;
-				client.OnClose -= Client_OnClose;
+				VoiceModSocket.Close();
+				VoiceModSocket.OnMessage -= VoiceModSocket_OnMessage;
+				VoiceModSocket.OnOpen -= VoiceModSocket_OnOpen;
+				VoiceModSocket.OnClose -= VoiceModSocket_OnClose;
 
 				this.Disposed = true;
-			}
-		}
-
-		public void SetIrcReference(IRCBot iRCBot)
-		{
-			this.iRCBot = iRCBot;
-
-			SubscribingTask = Task.Run(CreateSessionAndSocket);
-		}
-
-		public async Task CreateSessionAndSocket()
-		{
-			while (!iRCBot.BotRunning || iRCBot.irc == null || !iRCBot.irc.ConnectedStatus)
-				await Task.Delay(2500);
-
-			var rewards = await iRCBot.irc.krakenConnection.GetRewardsList();
-
-			TwitchPubSubClient = new TwitchPubSub();
-			TwitchPubSubClient.OnPubSubServiceConnected += TwitchPubSubClient_OnPubSubServiceConnected;
-			TwitchPubSubClient.OnListenResponse += TwitchPubSubClient_OnListenResponse;
-			TwitchPubSubClient.OnChannelPointsRewardRedeemed += TwitchPubSubClient_OnChannelPointsRewardRedeemed;
-
-			TwitchPubSubClient.ListenToChannelPoints(iRCBot.irc.krakenConnection.BroadcasterID);
-			TwitchPubSubClient.Connect();
-		}
-
-		private void TwitchPubSubClient_OnChannelPointsRewardRedeemed(object sender, TwitchLib.PubSub.Events.OnChannelPointsRewardRedeemedArgs e)
-		{
-			var reward = VoiceModHandling.GetInstance().CheckIDs(e.RewardRedeemed.Redemption.Reward.Id);
-			if (reward != null)
-			{
-				if (e.RewardRedeemed.Redemption.Status == "UNFULFILLED")
-				{
-					if (Playing || RedeemsPaused)
-					{
-						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
-						{
-							e.RewardRedeemed.Redemption.Id,
-						}, KrakenConnections.RedemptionStates.CANCELED);
-					}
-					else
-					{
-						SetVoice(reward.VoiceModFriendlyName, reward.RewardDuration);
-						iRCBot.irc.krakenConnection.UpdateRedemptionStatus(e.RewardRedeemed.Redemption.Reward.Id, new string[]
-						{
-							e.RewardRedeemed.Redemption.Id,
-						}, KrakenConnections.RedemptionStates.FULFILLED);
-					}
-				}
 			}
 		}
 
@@ -525,37 +472,38 @@ namespace BasicTwitchSoundPlayer
 				throw new Exception($"Failed to listen! Response: {e.Response}");
 		}
 
-		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)
-		{
-			var auth = "oauth:" + PrivateSettings.GetInstance().TwitchPassword;
-			TwitchPubSubClient.SendTopics(oauth: auth);
-		}
-
-		public VoiceModConfig.VoiceModReward CheckIDs(string rewardID)
-		{
-			var config = VoiceModConfig.GetInstance();
-			foreach (var reward in config.Rewards)
-			{
-				if (reward.RewardID == rewardID)
-					return reward;
-			}
-
-			return null;
-		}
-
 		public void Disconnect()
 		{
 			if (SubscribingTask != null)
 				SubscribingTask.Dispose();
 
-			if (client != null)
+			if (VoiceModSocket != null)
 			{
-				client.Close();
+				VoiceModSocket.Close();
 			}
 
-			TwitchPubSubClient.OnPubSubServiceConnected -= TwitchPubSubClient_OnPubSubServiceConnected;
-			TwitchPubSubClient.OnListenResponse -= TwitchPubSubClient_OnListenResponse;
-			TwitchPubSubClient.OnChannelPointsRewardRedeemed -= TwitchPubSubClient_OnChannelPointsRewardRedeemed;
+			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;
+		}
+
+		private void OnChannelPointsRedeem(string rewardID, string redemptionId, KrakenConnections.RedemptionStates state)
+		{
+			var reward = VoiceModConfig.GetInstance().GetReward(rewardID);
+			if (reward != null)
+			{
+				if (state == KrakenConnections.RedemptionStates.UNFULFILLED)
+				{
+					if (Playing || RedeemsPaused)
+					{
+						MainForm.TwitchSocket?.UpdateRedemptionStatus(rewardID, redemptionId, KrakenConnections.RedemptionStates.CANCELED);
+					}
+					else
+					{
+						SetVoice(reward.VoiceModFriendlyName, reward.RewardDuration);
+						MainForm.TwitchSocket?.UpdateRedemptionStatus(rewardID, redemptionId, KrakenConnections.RedemptionStates.FULFILLED);
+					}
+				}
+			}
 		}
 
 		internal async Task DownloadImages()
@@ -578,7 +526,7 @@ namespace BasicTwitchSoundPlayer
 					};
 					awaitingBitmap = (guid, voiceInfo.FriendlyName);
 
-					client.Send(message.ToString());
+					VoiceModSocket.Send(message.ToString());
 					while (awaitingBitmap != default)
 						await Task.Delay(100);
 				}

@@ -216,6 +216,7 @@
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="SoundEntry.cs" />
+    <Compile Include="TwitchSocket.cs" />
     <Compile Include="VoiceModHandling.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\TwitchRightsEnum.cs" />

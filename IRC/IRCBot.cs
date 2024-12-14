@@ -16,9 +16,9 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string channelToJoin;
 		private char PrefixChar;
 
-		private SoundBase SndDB { get; set; }
+		private SoundDB SndDB { get; set; }
 
-		public IRCBot(SoundBase soundDb, char PrefixChar)
+		public IRCBot(SoundDB soundDb, char PrefixChar)
 		{
 			var privateSettings = PrivateSettings.GetInstance();
 
@@ -94,7 +94,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 			irc.meebyIrc.RfcJoin("#" + channel);
 
-			VoiceModHandling.GetInstance().SetIrcReference(this);
+			MainForm.TwitchSocket.SetIrcReference(this);
 		}
 
 		private void MeebyIrc_OnRawMessage(object sender, IrcEventArgs e)
