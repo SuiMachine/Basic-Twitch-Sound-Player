@@ -27,6 +27,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			}
 			this.RB_Description.Text = Entry.Description;
 			this.TB_RewardID.Text = Entry.RewardID;
+			this.Num_Points.Value = Entry.AmountOfPoints;
+			this.Num_Cooldown.Value = Entry.Cooldown;
 			this.Num_Volume.Value = (int)Math.Round(Entry.Volume * 100);
 			Verify();
 		}

@@ -16,19 +16,24 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 		public const string NodeNameVolume = "Volume";
 		public const string NodeNamePoints = "Points cost";
 
-		public List<SoundEntry> Sounds;
+		public List<SoundEntry> SoundsCopy;
 		char PrefixCharacter;
 
 		public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter)
 		{
 			this.PrefixCharacter = PrefixCharacter;
-			this.Sounds = Sounds;
+
+			this.SoundsCopy = new List<SoundEntry>(Sounds.Count);
+			foreach (SoundEntry SoundEntry in Sounds)
+				this.SoundsCopy.Add(SoundEntry.CreateCopy());
+
+			this.SoundsCopy = Sounds;
 			InitializeComponent();
 		}
 
 		private void DB_Editor_Load(object sender, EventArgs e)
 		{
-			foreach (var Sound in Sounds)
+			foreach (var Sound in SoundsCopy)
 			{
 				sndTreeView.Nodes.Add(Sound.ToTreeNode());
 			}
@@ -47,14 +52,15 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 		{
 			if (sndTreeView.SelectedNode != null)
 			{
-				var SndNode = GetRootSoundNode(sndTreeView.SelectedNode);
+				TreeNode SndNode = GetRootSoundNode(sndTreeView.SelectedNode);
 				int index = sndTreeView.SelectedNode.Index;
-				var dialForm = new EditDialogues.AddEditNewEntryDialog(SndNode.ToSoundEntry());
+				EditDialogues.AddEditNewEntryDialog dialForm = new EditDialogues.AddEditNewEntryDialog(SoundsCopy[index]);
 				DialogResult res = dialForm.ShowDialog();
 
 				if (res == DialogResult.OK)
 				{
 					sndTreeView.Nodes[index].Remove();
+					SoundsCopy[index] = dialForm.ReturnSound;
 					sndTreeView.Nodes.Insert(index, dialForm.ReturnSound.ToTreeNode());
 				}
 			}
@@ -83,22 +89,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
 		private void B_Save_Click(object sender, EventArgs e)
 		{
-			this.Sounds = TreeNodesToSoundsEntryList(sndTreeView);
 			this.DialogResult = DialogResult.OK;
 			this.Close();
-		}
-
-		private List<SoundEntry> TreeNodesToSoundsEntryList(TreeView tree)
-		{
-			this.Sounds = new List<SoundEntry>();
-			for (int i = 0; i < sndTreeView.Nodes.Count; i++)
-			{
-				var newSnd = sndTreeView.Nodes[i].ToSoundEntry();
-				if (newSnd.GetIsProperEntry())
-					Sounds.Add(newSnd);
-			}
-			return Sounds;
-
 		}
 
 		private void B_Cancel_Click(object sender, EventArgs e)
@@ -113,6 +105,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			DialogResult res = newEntryDialog.ShowDialog();
 			if (res == DialogResult.OK)
 			{
+				SoundsCopy.Add(newEntryDialog.ReturnSound);
 				sndTreeView.Nodes.Add(newEntryDialog.ReturnSound.ToTreeNode());
 			}
 		}
@@ -174,25 +167,6 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 	#region Extensions
 	static class EditorExtensions
 	{
-		public static SoundEntry ToSoundEntry(this TreeNode node)
-		{
-			if (node.Name == DB_Editor.NodeNameEntry)
-			{
-				string Command = node.Text;
-				string[] Files = new string[node.Nodes[DB_Editor.NodeNameFiles].Nodes.Count];
-				string Description = node.Nodes[DB_Editor.NodeDescription].Text;
-
-				for (int i = 0; i < Files.Length; i++)
-				{
-					Files[i] = node.Nodes[DB_Editor.NodeNameFiles].Nodes[i].Text;
-				}
-
-				return new SoundEntry(Command, Description, "", Files, 1f, 500, 1);
-			}
-			else
-				return new SoundEntry();
-		}
-
 		public static TreeNode ToTreeNode(this SoundEntry snd)
 		{
 			if (snd.GetIsProperEntry())

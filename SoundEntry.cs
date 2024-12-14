@@ -76,5 +76,16 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 		}
 
 		public bool GetIsProperEntry() { return (RewardName != null && RewardName != "") && (Files != null && Files.Length > 0); }
+
+		public SoundEntry CreateCopy() => new SoundEntry()
+		{
+			RewardID = RewardID,
+			RewardName = RewardName,
+			AmountOfPoints = AmountOfPoints,
+			Cooldown = Cooldown,
+			Description = Description,
+			Files = Files,
+			Volume = Volume,
+		};
 	}
 }

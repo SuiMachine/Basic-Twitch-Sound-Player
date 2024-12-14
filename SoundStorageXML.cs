@@ -6,9 +6,6 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 {
 	class SoundStorageXML
 	{
-		private static readonly string varSounds = "Sounds";
-		private static readonly string varDescription = "SoundDescription";
-
 		public static List<SoundEntry> LoadSoundBase(string XmlPath)
 		{
 			List<SoundEntry> entries;

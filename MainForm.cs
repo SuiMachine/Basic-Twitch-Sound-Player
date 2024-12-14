@@ -366,7 +366,7 @@ namespace BasicTwitchSoundPlayer
 			DialogResult res = scf.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				soundDb.SoundList = scf.Sounds;
+				soundDb.SoundList = scf.SoundsCopy;
 				soundDb.Save();
 			}
 		}
