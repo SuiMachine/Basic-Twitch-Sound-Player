@@ -53,8 +53,9 @@ namespace BasicTwitchSoundPlayer
 		bool currentStatus = false;
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
-		private bool Playing = false;
-		private bool RedeemsPaused = false;
+		private bool m_IsConnecting = false;
+		private bool m_Playing = false;
+		private bool m_RedeemsPaused = false;
 
 		private (string request, string voiceID) awaitingBitmap;
 
@@ -75,11 +76,11 @@ namespace BasicTwitchSoundPlayer
 			ConnectToVoiceMod();
 		}
 
-		public void SetPauseRedeems(bool value) => RedeemsPaused = value;
+		public void SetPauseRedeems(bool value) => m_RedeemsPaused = value;
 
 		public void ConnectToVoiceMod()
 		{
-			if (ConnectedToVoiceMod)
+			if (ConnectedToVoiceMod || m_IsConnecting)
 				return;
 
 			try
@@ -92,6 +93,7 @@ namespace BasicTwitchSoundPlayer
 				VoiceModSocket.OnClose += VoiceModSocket_OnClose;
 				if (IsConfigured())
 				{
+					m_IsConnecting = true;
 					MainForm.Instance.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.VoiceMod);
 					VoiceModSocket.ConnectAsync();
 					if (MainForm.TwitchSocket != null)
@@ -102,6 +104,7 @@ namespace BasicTwitchSoundPlayer
 			}
 			catch (Exception ex)
 			{
+				m_IsConnecting = false;
 				MainForm.Instance.ThreadSafeAddPreviewText($"Failed to connect to VoiceMod: {ex}", LineType.VoiceMod);
 				ConnectedToVoiceMod = false;
 				Dispose();
@@ -177,7 +180,7 @@ namespace BasicTwitchSoundPlayer
 							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.VoiceMod);
 						Debug.WriteLine($"Set current status to {currentStatus}");
 
-						Playing = false;
+						m_Playing = false;
 						if (timer != null && timer.Enabled)
 						{
 							timer.Dispose();
@@ -413,7 +416,7 @@ namespace BasicTwitchSoundPlayer
 
 				timer = new System.Timers.Timer(length * 1000);
 				timer.Start();
-				Playing = true;
+				m_Playing = true;
 
 				timer.Elapsed += ReturnToDefault;
 				return true;
@@ -423,7 +426,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void ReturnToDefault(object sender, System.Timers.ElapsedEventArgs e)
 		{
-			Playing = false;
+			m_Playing = false;
 			SetVoice(null, 0);
 		}
 
@@ -431,6 +434,7 @@ namespace BasicTwitchSoundPlayer
 		{
 			MainForm.Instance.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
 			ConnectedToVoiceMod = true;
+			m_IsConnecting = false;
 			OnConnectionStateChanged?.Invoke(true);
 
 			var message = new JObject()
@@ -486,14 +490,14 @@ namespace BasicTwitchSoundPlayer
 				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;
 		}
 
-		private void OnChannelPointsRedeem(string rewardID, string redemptionId, KrakenConnections.RedemptionStates state)
+		private void OnChannelPointsRedeem(string userId, string rewardID, string redemptionId, KrakenConnections.RedemptionStates state)
 		{
 			var reward = VoiceModConfig.GetInstance().GetReward(rewardID);
 			if (reward != null)
 			{
 				if (state == KrakenConnections.RedemptionStates.UNFULFILLED)
 				{
-					if (Playing || RedeemsPaused)
+					if (m_Playing || m_RedeemsPaused)
 					{
 						MainForm.TwitchSocket?.UpdateRedemptionStatus(rewardID, redemptionId, KrakenConnections.RedemptionStates.CANCELED);
 					}

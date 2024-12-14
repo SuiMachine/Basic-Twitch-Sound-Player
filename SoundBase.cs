@@ -1,4 +1,5 @@
-﻿using BasicTwitchSoundPlayer.SoundStorage;
+﻿using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs;
 using NAudio.Wave;
 using System;
@@ -30,6 +31,8 @@ namespace BasicTwitchSoundPlayer
 			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
 			RebuildDictionary();
+			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;
 		}
 
 		public void RebuildDictionary()
@@ -74,10 +77,10 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
-		public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel, bool IgnoreCooldowns = false)
+		public void PlaySoundIfExists(string userId, string rewardId, string redeemId, KrakenConnections.RedemptionStates state)
 		{
-			if (user == null)
-				return false;
+			if (userId == null)
+				return;
 
 			//Iterate through existing sound players
 			for (int i = m_SoundPlayerStack.Count - 1; i >= 0; i--)
@@ -91,55 +94,52 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			//Check if our db has a user and if not add him
-			if (!m_UserDB.ContainsKey(user))
+			if (!m_UserDB.ContainsKey(userId))
 			{
-				m_UserDB.Add(user, DateTime.MinValue);
+				m_UserDB.Add(userId, DateTime.MinValue);
 			}
 
 
 			//check user cooldown
-			if (m_UserDB[user] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now || IgnoreCooldowns)
+			if (m_UserDB[userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 			{
-				//iterate between all files in a sound list
-				for (int i = 0; i < SoundList.Count; i++)
+				if (RewardsToSound.TryGetValue(rewardId, out SoundEntry sound))
 				{
 					//if sound is found
-					if (SoundList[i].RewardName == cmd)
-					{
-						string filename = SoundList[i].GetFile(m_RNG);
-						for (int j = 0; j < m_SoundPlayerStack.Count; j++)
-						{
-							//Just so we don't play the same sounds at the same time
-							if (filename == m_SoundPlayerStack[j].fullFileName)
-								return false;
-						}
-						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
+					string filename = sound.GetFile(m_RNG);
 
-						PrivateSettings programSettings = PrivateSettings.GetInstance();
-						NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, SoundList[i].GetFile(m_RNG), programSettings.Volume);
-						TimeSpan length = player.GetTimeLenght();
-						m_SoundPlayerStack.Add(player);
-						m_UserDB[user] = DateTime.Now + length;
+					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
+					PrivateSettings programSettings = PrivateSettings.GetInstance();
+					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
+					TimeSpan length = player.GetTimeLenght() + TimeSpan.FromSeconds(1);
+					m_SoundPlayerStack.Add(player);
+					m_UserDB[userId] = DateTime.Now + length;
 
-						return true;
-					}
+					MainForm.TwitchSocket.UpdateRedemptionStatus(rewardId, redeemId, KrakenConnections.RedemptionStates.FULFILLED);
+				}
+				else
+				{
+					MainForm.TwitchSocket.UpdateRedemptionStatus(rewardId, redeemId, KrakenConnections.RedemptionStates.UNFULFILLED);
 				}
 			}
-			Debug.WriteLine("User " + user + " has to wait " + (DateTime.Now - (m_UserDB[user] + TimeSpan.FromSeconds(m_Delay))).TotalSeconds + " seconds.");
-			return false;
+			else
+				Debug.WriteLine("User " + userId + " has to wait " + (DateTime.Now - (m_UserDB[userId] + TimeSpan.FromSeconds(m_Delay))).TotalSeconds + " seconds.");
 		}
 
-		internal void Close()
+		public void Close()
 		{
 			for (int i = 0; i < m_SoundPlayerStack.Count; i++)
 			{
 				m_SoundPlayerStack[i].Dispose();
 			}
+			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem -= PlaySoundIfExists;
 		}
 
 		public void Save()
 		{
 			SoundStorageXML.SaveSoundBase(m_SoundBaseFile, SoundList);
+			RebuildDictionary();
 		}
 	}
 

@@ -11,7 +11,7 @@ namespace BasicTwitchSoundPlayer
 		private Task SubscribingTask;
 		private TwitchPubSub TwitchPubSubClient;
 
-		public Action<string, string, KrakenConnections.RedemptionStates> OnChannelPointsRedeem;
+		public Action<string, string, string, KrakenConnections.RedemptionStates> OnChannelPointsRedeem;
 
 		public async Task CreateSessionAndSocket()
 		{
@@ -33,7 +33,7 @@ namespace BasicTwitchSoundPlayer
 			if (!Enum.TryParse(e.RewardRedeemed.Redemption.Status, true, out KrakenConnections.RedemptionStates state))
 				return;
 
-			OnChannelPointsRedeem?.Invoke(e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state);
+			OnChannelPointsRedeem?.Invoke(e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state);
 		}
 
 		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)

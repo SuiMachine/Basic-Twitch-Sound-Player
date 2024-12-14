@@ -141,10 +141,10 @@ namespace BasicTwitchSoundPlayer
 			System.Environment.Exit(0);
 		}
 
-		private void OnRedeemUpdatedReceived(string rewardId, string redeemID, KrakenConnections.RedemptionStates status)
+		private void OnRedeemUpdatedReceived(string userId, string rewardId, string redeemID, KrakenConnections.RedemptionStates status)
 		{
 #if DEBUG
-			Debug.WriteLine($"Received reward status {rewardId}, redeeem ID {redeemID} - {status}");
+			//Debug.WriteLine($"Received reward status {rewardId}, redeeem ID {redeemID} - {status}");
 #endif
 		}
 		#endregion
@@ -367,7 +367,6 @@ namespace BasicTwitchSoundPlayer
 			if (res == DialogResult.OK)
 			{
 				soundDb.SoundList = scf.Sounds;
-				soundDb.RebuildDictionary();
 				soundDb.Save();
 			}
 		}

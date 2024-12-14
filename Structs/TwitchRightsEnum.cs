@@ -17,12 +17,6 @@ namespace BasicTwitchSoundPlayer.Structs
 		Admin,
 	}
 
-	public enum MessageType
-	{
-		Normal,
-		SoundReward
-	}
-
 	static class TwitchRightsExtensions
 	{
 		public static TwitchRightsEnum ToTwitchRights(this int Number)

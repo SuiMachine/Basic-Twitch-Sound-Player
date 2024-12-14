@@ -15,7 +15,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		public string userID;
 		public string message;
 		public Structs.TwitchRightsEnum rights;
-		public Structs.MessageType msgType;
 		public string RewardID;
 	}
 
