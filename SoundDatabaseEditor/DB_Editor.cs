@@ -70,8 +70,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 		{
 			if (sndTreeView.SelectedNode != null)
 			{
-				var SndNode = GetRootSoundNode(sndTreeView.SelectedNode);
-				sndTreeView.Nodes.Remove(SndNode);
+				var id = sndTreeView.SelectedNode.Index;
+				SoundsCopy.RemoveAt(id);
+				sndTreeView.Nodes.RemoveAt(id);
 			}
 		}
 
