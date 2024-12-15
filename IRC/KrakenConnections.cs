@@ -654,9 +654,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 			}
 
-
-
-
 			if (BroadcasterID == null || BroadcasterID == "")
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify VoiceMod Rewards!", LineType.IrcCommand);

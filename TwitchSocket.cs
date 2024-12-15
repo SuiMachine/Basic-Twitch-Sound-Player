@@ -1,6 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using TwitchLib.PubSub;
 using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
@@ -57,15 +56,15 @@ namespace BasicTwitchSoundPlayer
 			SubscribingTask = Task.Run(CreateSessionAndSocket);
 		}
 
-		internal void UpdateRedemptionStatus(ChannelPointRedeemRequest redeem, KrakenConnections.RedemptionStates status)
+		public void UpdateRedemptionStatus(ChannelPointRedeemRequest redeem, KrakenConnections.RedemptionStates status)
 		{
-			if(redeem.state != RedemptionStates.UNFULFILLED)
+			if (redeem.state != RedemptionStates.UNFULFILLED)
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText("Can't change the state of already accepted/rejected redeem - this needs to be fixed!", LineType.IrcCommand);
 				return;
 			}
 
-			if(status == RedemptionStates.UNFULFILLED)
+			if (status == RedemptionStates.UNFULFILLED)
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText("Can't set state to UNFULFILLED - this needs to be fixed!", LineType.IrcCommand);
 				return;
