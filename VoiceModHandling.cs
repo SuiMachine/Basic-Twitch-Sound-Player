@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TwitchLib.PubSub;
 using WebSocketSharp;
+using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -490,21 +491,24 @@ namespace BasicTwitchSoundPlayer
 				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;
 		}
 
-		private void OnChannelPointsRedeem(string userId, string rewardID, string redemptionId, KrakenConnections.RedemptionStates state)
+		private void OnChannelPointsRedeem(ChannelPointRedeemRequest redeem)
 		{
-			var reward = VoiceModConfig.GetInstance().GetReward(rewardID);
+			if (redeem.state != RedemptionStates.UNFULFILLED)
+				return;
+
+			var reward = VoiceModConfig.GetInstance().GetReward(redeem.rewardId);
 			if (reward != null)
 			{
-				if (state == KrakenConnections.RedemptionStates.UNFULFILLED)
+				if (redeem.state == KrakenConnections.RedemptionStates.UNFULFILLED)
 				{
 					if (m_Playing || m_RedeemsPaused)
 					{
-						MainForm.TwitchSocket?.UpdateRedemptionStatus(rewardID, redemptionId, KrakenConnections.RedemptionStates.CANCELED);
+						MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 					}
 					else
 					{
 						SetVoice(reward.VoiceModFriendlyName, reward.RewardDuration);
-						MainForm.TwitchSocket?.UpdateRedemptionStatus(rewardID, redemptionId, KrakenConnections.RedemptionStates.FULFILLED);
+						MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 				}
 			}

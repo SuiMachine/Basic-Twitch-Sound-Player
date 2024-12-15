@@ -15,8 +15,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms.EditForm
 		public int Duration { get; set; } = 30;
 		public int Cooldown { get; set; } = 1;
 
-
-
 		public VoiceModAddForm()
 		{
 			InitializeComponent();

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -24,7 +25,7 @@ namespace BasicTwitchSoundPlayer
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
 		public delegate void SetVolumeSlider(int value);       //used to safely change the slider position
 
-		public IRC.IRCBot TwitchBot { get; private set; }
+		public IRCBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundDB soundDb;
@@ -141,7 +142,7 @@ namespace BasicTwitchSoundPlayer
 			System.Environment.Exit(0);
 		}
 
-		private void OnRedeemUpdatedReceived(string userId, string rewardId, string redeemID, KrakenConnections.RedemptionStates status)
+		private void OnRedeemUpdatedReceived(ChannelPointRedeemRequest redeem)
 		{
 #if DEBUG
 			//Debug.WriteLine($"Received reward status {rewardId}, redeeem ID {redeemID} - {status}");

@@ -1,7 +1,9 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using TwitchLib.PubSub;
+using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -11,7 +13,7 @@ namespace BasicTwitchSoundPlayer
 		private Task SubscribingTask;
 		private TwitchPubSub TwitchPubSubClient;
 
-		public Action<string, string, string, KrakenConnections.RedemptionStates> OnChannelPointsRedeem;
+		public Action<ChannelPointRedeemRequest> OnChannelPointsRedeem;
 
 		public async Task CreateSessionAndSocket()
 		{
@@ -33,7 +35,7 @@ namespace BasicTwitchSoundPlayer
 			if (!Enum.TryParse(e.RewardRedeemed.Redemption.Status, true, out KrakenConnections.RedemptionStates state))
 				return;
 
-			OnChannelPointsRedeem?.Invoke(e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state);
+			OnChannelPointsRedeem?.Invoke(new ChannelPointRedeemRequest(e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state));
 		}
 
 		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)
@@ -48,7 +50,6 @@ namespace BasicTwitchSoundPlayer
 				throw new Exception($"Failed to listen! Response: {e.Response}");
 		}
 
-
 		public void SetIrcReference(IRCBot iRCBot)
 		{
 			this.iRCBot = iRCBot;
@@ -56,11 +57,24 @@ namespace BasicTwitchSoundPlayer
 			SubscribingTask = Task.Run(CreateSessionAndSocket);
 		}
 
-		internal void UpdateRedemptionStatus(string rewardId, string redemptionId, KrakenConnections.RedemptionStates status)
+		internal void UpdateRedemptionStatus(ChannelPointRedeemRequest redeem, KrakenConnections.RedemptionStates status)
 		{
-			iRCBot.irc.krakenConnection.UpdateRedemptionStatus(rewardId, new string[]
+			if(redeem.state != RedemptionStates.UNFULFILLED)
 			{
-				redemptionId,
+				MainForm.Instance.ThreadSafeAddPreviewText("Can't change the state of already accepted/rejected redeem - this needs to be fixed!", LineType.IrcCommand);
+				return;
+			}
+
+			if(status == RedemptionStates.UNFULFILLED)
+			{
+				MainForm.Instance.ThreadSafeAddPreviewText("Can't set state to UNFULFILLED - this needs to be fixed!", LineType.IrcCommand);
+				return;
+			}
+
+			redeem.state = status;
+			iRCBot.irc.krakenConnection.UpdateRedemptionStatus(redeem.rewardId, new string[]
+			{
+				redeem.redemptionId,
 			}, status);
 		}
 	}

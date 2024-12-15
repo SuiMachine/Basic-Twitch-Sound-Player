@@ -175,7 +175,7 @@
 			// 
 			this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
 			this.tableLayoutPanel5.ColumnCount = 1;
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 168F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 169F));
 			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
@@ -244,6 +244,7 @@
 			this.MinimumSize = new System.Drawing.Size(726, 564);
 			this.Name = "DB_Editor";
 			this.Text = "Sound Database Editor";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DB_Editor_FormClosed);
 			this.Load += new System.EventHandler(this.DB_Editor_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);

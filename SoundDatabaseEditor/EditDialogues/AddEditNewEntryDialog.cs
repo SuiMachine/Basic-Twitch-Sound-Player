@@ -9,6 +9,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 	public partial class AddEditNewEntryDialog : Form
 	{
 		public SoundEntry ReturnSound { get; set; }
+		public static AddEditNewEntryDialog Instance { get; private set; }
 
 		public AddEditNewEntryDialog()
 		{
@@ -31,6 +32,12 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.Num_Cooldown.Value = Entry.Cooldown;
 			this.Num_Volume.Value = (int)Math.Round(Entry.Volume * 100);
 			Verify();
+			Instance = this;
+		}
+
+		private void AddEditNewEntryDialog_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Instance = null;
 		}
 
 		private void B_OK_Click(object sender, EventArgs e)
@@ -148,21 +155,18 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
-			if (string.IsNullOrEmpty(TB_RewardID.Text))
+			var settings = PrivateSettings.GetInstance();
+			KrakenConnections apiConnection = new KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
+			await apiConnection.GetBroadcasterIDAsync();
+			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+				return;
+
+			await apiConnection.GetRewardsList();
+
+			KrakenConnections.ChannelReward reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
+			if (reward != null)
 			{
-				var settings = PrivateSettings.GetInstance();
-				IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
-				await apiConnection.GetBroadcasterIDAsync();
-				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
-					return;
-
-				await apiConnection.GetRewardsList();
-
-				var reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
-				if (reward != null)
-				{
-					this.TB_RewardID.Text = reward.id;
-				}
+				this.TB_RewardID.Text = reward.id;
 			}
 		}
 	}

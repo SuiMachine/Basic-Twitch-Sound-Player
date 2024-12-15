@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -77,9 +78,12 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
-		public void PlaySoundIfExists(string userId, string rewardId, string redeemId, KrakenConnections.RedemptionStates state)
+		public void PlaySoundIfExists(ChannelPointRedeemRequest redeem)
 		{
-			if (userId == null)
+			if (redeem.state != RedemptionStates.UNFULFILLED)
+				return;
+
+			if (redeem.userId == null)
 				return;
 
 			//Iterate through existing sound players
@@ -94,36 +98,30 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			//Check if our db has a user and if not add him
-			if (!m_UserDB.ContainsKey(userId))
+			if (!m_UserDB.ContainsKey(redeem.userId))
 			{
-				m_UserDB.Add(userId, DateTime.MinValue);
+				m_UserDB.Add(redeem.userId, DateTime.MinValue);
 			}
 
-
-			//check user cooldown
-			if (m_UserDB[userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
+			if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
 			{
-				if (RewardsToSound.TryGetValue(rewardId, out SoundEntry sound))
+				//check user cooldown
+				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
-					//if sound is found
-					string filename = sound.GetFile(m_RNG);
-
 					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 					PrivateSettings programSettings = PrivateSettings.GetInstance();
 					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
 					TimeSpan length = player.GetTimeLenght() + TimeSpan.FromSeconds(1);
 					m_SoundPlayerStack.Add(player);
-					m_UserDB[userId] = DateTime.Now + length;
+					m_UserDB[redeem.userId] = DateTime.Now + length;
 
-					MainForm.TwitchSocket.UpdateRedemptionStatus(rewardId, redeemId, KrakenConnections.RedemptionStates.FULFILLED);
+					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
 				}
 				else
 				{
-					MainForm.TwitchSocket.UpdateRedemptionStatus(rewardId, redeemId, KrakenConnections.RedemptionStates.UNFULFILLED);
+					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
 				}
 			}
-			else
-				Debug.WriteLine("User " + userId + " has to wait " + (DateTime.Now - (m_UserDB[userId] + TimeSpan.FromSeconds(m_Delay))).TotalSeconds + " seconds.");
 		}
 
 		public void Close()

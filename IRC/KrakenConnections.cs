@@ -1,4 +1,5 @@
-﻿using BasicTwitchSoundPlayer.SoundStorage;
+﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
+using BasicTwitchSoundPlayer.SoundStorage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -25,6 +26,22 @@ namespace BasicTwitchSoundPlayer.IRC
 			UNFULFILLED,
 			FULFILLED,
 			CANCELED
+		}
+
+		public class ChannelPointRedeemRequest
+		{
+			public string userId;
+			public string rewardId;
+			public string redemptionId;
+			public RedemptionStates state;
+
+			public ChannelPointRedeemRequest(string userId, string rewardId, string redemptionId, RedemptionStates state)
+			{
+				this.userId = userId;
+				this.rewardId = rewardId;
+				this.redemptionId = redemptionId;
+				this.state = state;
+			}
 		}
 
 		[Serializable]
@@ -637,11 +654,8 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 			}
 
-			var rewards = VoiceModConfig.GetInstance().Rewards;
-			foreach (var reward in rewards)
-			{
-				reward.IsSetup = false;
-			}
+
+
 
 			if (BroadcasterID == null || BroadcasterID == "")
 			{
@@ -664,12 +678,35 @@ namespace BasicTwitchSoundPlayer.IRC
 				foreach (var customReward in dataNode)
 				{
 					ChannelReward parseNode = customReward.ToObject<ChannelReward>();
+					list.Add(parseNode);
+				}
+			}
 
-					VoiceModConfig.VoiceModReward find = rewards.Find(x => x.RewardID == parseNode.id);
-					if (find != null)
+			foreach (VoiceModConfig.VoiceModReward voiceModReward in VoiceModConfig.GetInstance().Rewards)
+			{
+				if (!list.Any(x => x.id == voiceModReward.RewardID))
+				{
+					voiceModReward.RewardID = "";
+					voiceModReward.IsSetup = false;
+				}
+			}
+
+			if (DB_Editor.Instance != null)
+			{
+				foreach (SoundEntry soundReward in DB_Editor.Instance.SoundsCopy)
+				{
+					if (!list.Any(x => x.id == soundReward.RewardID))
 					{
-						list.Add(parseNode);
+						soundReward.RewardID = "";
 					}
+				}
+			}
+
+			if (SoundDatabaseEditor.EditDialogues.AddEditNewEntryDialog.Instance != null)
+			{
+				if (!list.Any(x => x.id == SoundDatabaseEditor.EditDialogues.AddEditNewEntryDialog.Instance.TB_RewardID.Text))
+				{
+					SoundDatabaseEditor.EditDialogues.AddEditNewEntryDialog.Instance.TB_RewardID.Text = "";
 				}
 			}
 

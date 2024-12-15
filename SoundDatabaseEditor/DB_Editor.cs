@@ -2,8 +2,6 @@
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
@@ -16,6 +14,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 		public const string NodeNameVolume = "Volume";
 		public const string NodeNamePoints = "Points cost";
 
+		public static DB_Editor Instance { get; private set; }
 		public List<SoundEntry> SoundsCopy;
 		char PrefixCharacter;
 
@@ -29,6 +28,12 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
 			this.SoundsCopy = Sounds;
 			InitializeComponent();
+			Instance = this;
+		}
+
+		private void DB_Editor_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Instance = null;
 		}
 
 		private void DB_Editor_Load(object sender, EventArgs e)
