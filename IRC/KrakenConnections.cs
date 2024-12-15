@@ -621,7 +621,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			catch (Exception e)
 			{
 				Debug.WriteLine(e);
-				MessageBox.Show(e.Message);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Error with patch request: {e.Message}", LineType.IrcCommand);
 				return "";
 			}
 		}
