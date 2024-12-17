@@ -106,8 +106,6 @@ namespace BasicTwitchSoundPlayer
 		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
 		public int WebSocketsServerPort { get; set; }
-		[XmlElement]
-		public string SoundRewardID { get; set; }
 		#endregion
 
 		public PrivateSettings()
@@ -123,7 +121,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchUsername = "";
 			TwitchPassword = "";
 			TwitchChannelToJoin = "";
-			SoundRewardID = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;
 		}
@@ -198,6 +195,29 @@ namespace BasicTwitchSoundPlayer
 		public string AdressPort { get; set; }
 
 		public List<VoiceModReward> Rewards { get; set; } = new List<VoiceModReward>();
+		private Dictionary<string, VoiceModReward> IDToReward;
+
+		public VoiceModReward GetReward(string rewardID)
+		{
+			if (IDToReward == null)
+			{
+				IDToReward = new Dictionary<string, VoiceModReward>();
+				foreach (var reward in Rewards)
+				{
+					if (string.IsNullOrEmpty(reward.RewardID))
+						continue;
+					if (IDToReward.ContainsKey(reward.RewardID))
+						continue;
+
+					IDToReward.Add(reward.RewardID, reward);
+				}
+			}
+
+			if (IDToReward.TryGetValue(rewardID, out var foundReward))
+				return foundReward;
+			else
+				return null;
+		}
 
 		public VoiceModConfig()
 		{

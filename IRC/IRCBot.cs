@@ -16,13 +16,13 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string channelToJoin;
 		private char PrefixChar;
 
-		private SoundBase SndDB { get; set; }
+		private SoundDB SndDB { get; set; }
 
-		public IRCBot(SoundBase soundDb, char PrefixChar)
+		public IRCBot(SoundDB soundDb, char PrefixChar)
 		{
 			var privateSettings = PrivateSettings.GetInstance();
 
-			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin, privateSettings.SoundRewardID);
+			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin);
 			channelToJoin = privateSettings.TwitchChannelToJoin;
 			parent = MainForm.Instance;
 			this.PrefixChar = PrefixChar;
@@ -94,7 +94,8 @@ namespace BasicTwitchSoundPlayer.IRC
 			irc.meebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 			irc.meebyIrc.RfcJoin("#" + channel);
 
-			VoiceModHandling.GetInstance().SetIrcReference(this);
+			MainForm.TwitchSocket.SetIrcReference(this);
+			VoiceModHandling.GetInstance().ConnectToVoiceMod();
 		}
 
 		private void MeebyIrc_OnRawMessage(object sender, IrcEventArgs e)
@@ -107,20 +108,9 @@ namespace BasicTwitchSoundPlayer.IRC
 					if (e.Data.Tags.ContainsKey("custom-reward-id"))
 					{
 						var settings = PrivateSettings.GetInstance();
-						var rewardID = e.Data.Tags["custom-reward-id"];
+						//var rewardID = e.Data.Tags["custom-reward-id"];
 						msg.userID = e.Data.Tags["user-id"];
-
-						if (rewardID == settings.SoundRewardID)
-						{
-							msg.msgType = MessageType.SoundReward;
-							msg.RewardID = rewardID;
-						}
-						else
-						{
-							msg.msgType = MessageType.Normal;
-							msg.RewardID = "";
-						}
-
+						msg.RewardID = "";
 					}
 					msg.user = e.Data.Nick;
 					msg.message = e.Data.Message;
@@ -165,59 +155,47 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			FormattedMessage = formattedMessage;
 
-			var settings = PrivateSettings.GetInstance();
-
-			switch (FormattedMessage.msgType)
+			if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
 			{
-				case MessageType.SoundReward:
+				parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.Generic);
+				//literally nothing else happens in your code if this is false
+				return true;
+			}
+			else
+			{
+				string text = formattedMessage.message.Remove(0, 1).ToLower();
+
+				//Mod Commands
+				if (formattedMessage.rights >= TwitchRightsEnum.Mod || irc.moderators.Contains(formattedMessage.user))
+				{
+					if (text == "stopallsounds")
 					{
-						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.SoundCommand);
-						string text = formattedMessage.message.ToLower();
-						if (text.StartsWith(PrefixChar.ToString()))
-							text = text.Remove(0, 1);
-
-						TwitchRightsEnum privilage = formattedMessage.rights;
-
-
-						if (SndDB.PlaySoundIfExists(formattedMessage.user, text, privilage, true))
-							irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.FULFILLED);
-						else
-							irc.UpdateRedemptionStatus(formattedMessage, KrakenConnections.RedemptionStates.CANCELED);
-
+						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+						SndDB.StopAllSounds();
 						return true;
 					}
-				default:
-					if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
-					{
-						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.Generic);
-						//literally nothing else happens in your code if this is false
-						return true;
-					}
-					else
-					{
-						TwitchRightsEnum privilage = formattedMessage.rights;
-						string text = formattedMessage.message.Remove(0, 1).ToLower();
 
-						//Mod Commands
-						if (formattedMessage.rights >= TwitchRightsEnum.Mod || irc.moderators.Contains(formattedMessage.user))
+					if (text.ToLower().StartsWith("delay "))
+					{
+						var split = text.Split(' ');
+						text = split[split.Length - 1];
+						if (int.TryParse(text, out int delayValue))
 						{
-							if (text == "stopallsounds")
-							{
-								parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
-								SndDB.StopAllSounds();
-								return true;
-							}
+							if (delayValue < 0)
+								delayValue = 0;
+							this.SndDB.SetDelay(delayValue);
 						}
 
+						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
 						return true;
 					}
+				}
+
+				return true;
 			}
 		}
 
-		internal void UpdateVolume()
-		{
-			SndDB.ChangeVolume(PrivateSettings.GetInstance().Volume);
-		}
+		internal void UpdateVolume() => SndDB.ChangeVolume(PrivateSettings.GetInstance().Volume);
 
 		#region EventHandlers
 		private void MeebyIrc_OnJoin(object sender, Meebey.SmartIrc4net.JoinEventArgs e)
@@ -273,8 +251,8 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private void MeebyIrc_OnReadLine(object sender, Meebey.SmartIrc4net.ReadLineEventArgs e)
 		{
-/*			if (PrivateSettings.GetInstance().Debug_mode)
-				parent.ThreadSafeAddPreviewText($"Raw message: {e.Line}", LineType.IrcCommand);*/
+			/*			if (PrivateSettings.GetInstance().Debug_mode)
+							parent.ThreadSafeAddPreviewText($"Raw message: {e.Line}", LineType.IrcCommand);*/
 		}
 
 		private void MeebyIrc_OnPart(object sender, PartEventArgs e)

@@ -1,4 +1,5 @@
-﻿using BasicTwitchSoundPlayer.SoundStorage;
+﻿using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs;
 using NAudio.Wave;
 using System;
@@ -6,13 +7,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
 
 namespace BasicTwitchSoundPlayer
 {
-	public class SoundBase
+	public class SoundDB
 	{
 		private readonly Random m_RNG;
 		public List<SoundEntry> SoundList;
+		public Dictionary<string, SoundEntry> RewardsToSound = new Dictionary<string, SoundEntry>();
 		private List<NSoundPlayer> m_SoundPlayerStack;
 		private Dictionary<string, DateTime> m_UserDB;
 		private int m_Delay;
@@ -20,7 +23,7 @@ namespace BasicTwitchSoundPlayer
 
 
 		#region ConstructorRelated
-		public SoundBase()
+		public SoundDB()
 		{
 			m_UserDB = new Dictionary<string, DateTime>();
 			m_SoundPlayerStack = new List<NSoundPlayer>();
@@ -28,6 +31,27 @@ namespace BasicTwitchSoundPlayer
 			this.m_Delay = PrivateSettings.GetInstance().Delay;
 			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
+			RebuildDictionary();
+			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;
+		}
+
+		public void RebuildDictionary()
+		{
+			RewardsToSound.Clear();
+			foreach (var entry in SoundList)
+			{
+				if (string.IsNullOrEmpty(entry.RewardID))
+					continue;
+
+				if (RewardsToSound.ContainsKey(entry.RewardID))
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText($"Sound entry {entry.RewardName} already present in dictionary!", LineType.SoundCommand);
+					continue;
+				}
+
+				RewardsToSound.Add(entry.RewardID, entry);
+			}
 		}
 		#endregion
 
@@ -54,10 +78,19 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
-		public bool PlaySoundIfExists(string user, string cmd, TwitchRightsEnum userLevel, bool IgnoreCooldowns = false)
+		public void SetDelay(int delay)
 		{
-			if (user == null)
-				return false;
+			this.m_Delay = delay;
+			PrivateSettings.GetInstance().Delay = delay;
+		}
+
+		public void PlaySoundIfExists(ChannelPointRedeemRequest redeem)
+		{
+			if (redeem.state != RedemptionStates.UNFULFILLED)
+				return;
+
+			if (redeem.userId == null)
+				return;
 
 			//Iterate through existing sound players
 			for (int i = m_SoundPlayerStack.Count - 1; i >= 0; i--)
@@ -71,55 +104,46 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			//Check if our db has a user and if not add him
-			if (!m_UserDB.ContainsKey(user))
+			if (!m_UserDB.ContainsKey(redeem.userId))
 			{
-				m_UserDB.Add(user, DateTime.MinValue);
+				m_UserDB.Add(redeem.userId, DateTime.MinValue);
 			}
 
-
-			//check user cooldown
-			if (m_UserDB[user] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now || IgnoreCooldowns)
+			if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
 			{
-				//iterate between all files in a sound list
-				for (int i = 0; i < SoundList.Count; i++)
+				//check user cooldown
+				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
-					//if sound is found
-					if (SoundList[i].GetRewardName() == cmd)
-					{
-						string filename = SoundList[i].GetFile(m_RNG);
-						for (int j = 0; j < m_SoundPlayerStack.Count; j++)
-						{
-							//Just so we don't play the same sounds at the same time
-							if (filename == m_SoundPlayerStack[j].fullFileName)
-								return false;
-						}
-						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
+					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
+					PrivateSettings programSettings = PrivateSettings.GetInstance();
+					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
+					TimeSpan length = player.GetTimeLenght() + TimeSpan.FromSeconds(1);
+					m_SoundPlayerStack.Add(player);
+					m_UserDB[redeem.userId] = DateTime.Now + length;
 
-						PrivateSettings programSettings = PrivateSettings.GetInstance();
-						NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, SoundList[i].GetFile(m_RNG), programSettings.Volume);
-						TimeSpan length = player.GetTimeLenght();
-						m_SoundPlayerStack.Add(player);
-						m_UserDB[user] = DateTime.Now + length;
-
-						return true;
-					}
+					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
+				}
+				else
+				{
+					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
 				}
 			}
-			Debug.WriteLine("User " + user + " has to wait " + (DateTime.Now - (m_UserDB[user] + TimeSpan.FromSeconds(m_Delay))).TotalSeconds + " seconds.");
-			return false;
 		}
 
-		internal void Close()
+		public void Close()
 		{
 			for (int i = 0; i < m_SoundPlayerStack.Count; i++)
 			{
 				m_SoundPlayerStack[i].Dispose();
 			}
+			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem -= PlaySoundIfExists;
 		}
 
-		internal void Save()
+		public void Save()
 		{
 			SoundStorageXML.SaveSoundBase(m_SoundBaseFile, SoundList);
+			RebuildDictionary();
 		}
 	}
 

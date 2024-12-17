@@ -85,10 +85,9 @@
 			this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
 			this.iconList.TransparentColor = System.Drawing.Color.Transparent;
 			this.iconList.Images.SetKeyName(0, "sound_player_icon_bundled.ico");
-			this.iconList.Images.SetKeyName(1, "audio-volume-high-4.ico");
-			this.iconList.Images.SetKeyName(2, "star.ico");
-			this.iconList.Images.SetKeyName(3, "note.ico");
-			this.iconList.Images.SetKeyName(4, "accessories-date.ico");
+			this.iconList.Images.SetKeyName(1, "star.ico");
+			this.iconList.Images.SetKeyName(2, "note.ico");
+			this.iconList.Images.SetKeyName(3, "audio-volume-high-4.ico");
 			// 
 			// tableLayoutPanel2
 			// 
@@ -176,7 +175,7 @@
 			// 
 			this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
 			this.tableLayoutPanel5.ColumnCount = 1;
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 166F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 169F));
 			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
@@ -190,7 +189,7 @@
 			// B_SoundPlayBackSettings
 			// 
 			this.B_SoundPlayBackSettings.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(7, 4);
+			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(8, 4);
 			this.B_SoundPlayBackSettings.Name = "B_SoundPlayBackSettings";
 			this.B_SoundPlayBackSettings.Size = new System.Drawing.Size(154, 23);
 			this.B_SoundPlayBackSettings.TabIndex = 6;
@@ -245,6 +244,7 @@
 			this.MinimumSize = new System.Drawing.Size(726, 564);
 			this.Name = "DB_Editor";
 			this.Text = "Sound Database Editor";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DB_Editor_FormClosed);
 			this.Load += new System.EventHandler(this.DB_Editor_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);

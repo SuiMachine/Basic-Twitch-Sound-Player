@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
+using BasicTwitchSoundPlayer.SoundStorage;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -25,11 +28,27 @@ namespace BasicTwitchSoundPlayer.IRC
 			CANCELED
 		}
 
+		public class ChannelPointRedeemRequest
+		{
+			public string userId;
+			public string rewardId;
+			public string redemptionId;
+			public RedemptionStates state;
+
+			public ChannelPointRedeemRequest(string userId, string rewardId, string redemptionId, RedemptionStates state)
+			{
+				this.userId = userId;
+				this.rewardId = rewardId;
+				this.redemptionId = redemptionId;
+				this.state = state;
+			}
+		}
+
 		[Serializable]
 		public class ChannelReward
 		{
 			[Serializable]
-			public class Glocal_Cooldown_Setting
+			public class Global_Cooldown_Setting
 			{
 				public bool is_enabled;
 				public int global_cooldown_seconds;
@@ -43,7 +62,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			public bool is_user_input_required = false;
 			public bool is_paused = false;
 			public bool should_redemptions_skip_request_queue = false;
-			public Glocal_Cooldown_Setting global_cooldown_setting;
+			public Global_Cooldown_Setting global_cooldown_setting;
 
 			public static bool Differs(ChannelReward l, ChannelReward r)
 			{
@@ -59,6 +78,37 @@ namespace BasicTwitchSoundPlayer.IRC
 					|| l.global_cooldown_setting.global_cooldown_seconds != r.global_cooldown_setting.global_cooldown_seconds;
 			}
 		}
+
+		//Because Twitch API is a bit of a mess
+		[Serializable]
+		public class ChannelRewardRequest
+		{
+			public string id = "";
+			public bool is_enabled = false;
+			public int cost = 0;
+			public string title = "";
+			public string prompt = "";
+			public bool is_user_input_required = false;
+			public bool is_paused = false;
+			public bool should_redemptions_skip_request_queue = false;
+			public bool is_global_cooldown_enabled = false;
+			public int global_cooldown_seconds = 0;
+
+			public static bool Differs(ChannelRewardRequest l, ChannelReward r)
+			{
+				return l.id != r.id
+					|| l.is_enabled != r.is_enabled
+					|| l.cost != r.cost
+					|| l.title != r.title
+					|| l.prompt != r.prompt
+					|| l.is_user_input_required != r.is_user_input_required
+					|| l.is_paused != r.is_paused
+					|| l.should_redemptions_skip_request_queue != r.should_redemptions_skip_request_queue
+					|| l.is_global_cooldown_enabled != r.global_cooldown_setting.is_enabled
+					|| l.global_cooldown_seconds != r.global_cooldown_setting.global_cooldown_seconds;
+			}
+		}
+
 
 		private string HELIXURI { get; set; }
 		private string TwitchAuthy { get; set; }
@@ -296,48 +346,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		public async Task<ChannelReward> CreateRewardAsync(RewardType rewardType)
-		{
-			{
-				int endTimer = 5;
-				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
-				{
-					await Task.Delay(1000);
-					endTimer--;
-				}
-			}
-
-			if ((BroadcasterID == null || BroadcasterID == ""))
-				return null;
-
-			if (rewardType == RewardType.Sound)
-			{
-				var content = new Dictionary<string, string>()
-				{
-					{"title", "Play a sound"},
-					{"cost", "230" },
-					{"is_enabled", "true" },
-					{"prompt", "Plays a sound from available list. Make sure, you meet chat role requirements before using the command." },
-					{"is_user_input_required", "true" },
-					{"should_redemptions_skip_request_queue", "false" }
-				};
-
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, ConvertDictionaryToJsonString(content), true);
-				if (response != "")
-				{
-					JObject jReader = JObject.Parse(response);
-					var dataNode = jReader["data"].First;
-					if (dataNode["id"] != null)
-					{
-						var newReward = dataNode.ToObject<ChannelReward>();
-						return newReward;
-					}
-				}
-			}
-			return null;
-		}
-
-		public async Task<ChannelReward> CreateOrUpdateRewardVoiceModAsync(VoiceModConfig.VoiceModReward reward)
+		public async Task<ChannelReward> CreateOrUpdateReward(VoiceModConfig.VoiceModReward reward)
 		{
 			if (CachedRewards == null)
 				return null;
@@ -369,7 +378,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					is_user_input_required = false,
 					should_redemptions_skip_request_queue = false,
 
-					global_cooldown_setting = new ChannelReward.Glocal_Cooldown_Setting()
+					global_cooldown_setting = new ChannelReward.Global_Cooldown_Setting()
 					{
 						is_enabled = true,
 						global_cooldown_seconds = reward.RewardCooldown * 60,
@@ -427,6 +436,127 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 			return null;
 		}
+
+		internal async Task<ChannelReward> CreateOrUpdateReward(SoundEntry soundEntry)
+		{
+
+			if (CachedRewards == null)
+				return null;
+
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return null;
+
+			ChannelReward currentReward = CachedRewards.Find(x => x.id == soundEntry.RewardID); ;
+
+			if (currentReward != null)
+			{
+				ChannelRewardRequest newReward;
+				if (soundEntry.Cooldown > 0)
+				{
+					newReward = new ChannelRewardRequest()
+					{
+						title = soundEntry.RewardName,
+						prompt = soundEntry.Description,
+						id = soundEntry.RewardID,
+						is_enabled = true,
+						is_paused = false,
+						cost = soundEntry.AmountOfPoints,
+						is_user_input_required = false,
+						should_redemptions_skip_request_queue = false,
+						is_global_cooldown_enabled = true,
+						global_cooldown_seconds = soundEntry.Cooldown
+					};
+				}
+				else
+				{
+					newReward = new ChannelRewardRequest()
+					{
+						title = soundEntry.RewardName,
+						prompt = soundEntry.Description,
+						id = soundEntry.RewardID,
+						is_enabled = true,
+						is_paused = false,
+						cost = soundEntry.AmountOfPoints,
+						is_user_input_required = false,
+						should_redemptions_skip_request_queue = false,
+						is_global_cooldown_enabled = false
+					};
+				}
+
+				ChannelReward result = null;
+				if (ChannelRewardRequest.Differs(newReward, currentReward))
+				{
+					var json = JsonConvert.SerializeObject(newReward);
+
+					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					if (response != "")
+					{
+						JObject jReader = JObject.Parse(response);
+						var dataNode = jReader["data"].First;
+						if (dataNode["id"] != null)
+							result = dataNode.ToObject<ChannelReward>();
+					}
+					return result;
+				}
+				return result;
+			}
+			else
+			{
+				string jObject;
+				if (soundEntry.Cooldown > 0)
+				{
+					jObject = new JObject()
+					{
+						["title"] = soundEntry.RewardName,
+						["cost"] = soundEntry.AmountOfPoints,
+						["is_enabled"] = true.ToString().ToLower(),
+						["prompt"] = soundEntry.Description,
+						["is_user_input_required"] = "false",
+						["should_redemptions_skip_request_queue"] = "false",
+						["is_global_cooldown_enabled"] = "true",
+						["global_cooldown_seconds"] = soundEntry.Cooldown.ToString(),
+					}.ToString();
+				}
+				else
+				{
+					jObject = new JObject()
+					{
+						["title"] = soundEntry.RewardName,
+						["cost"] = soundEntry.AmountOfPoints,
+						["is_enabled"] = true.ToString().ToLower(),
+						["prompt"] = soundEntry.Description,
+						["is_user_input_required"] = "false",
+						["should_redemptions_skip_request_queue"] = "false",
+						["is_global_cooldown_enabled"] = "false"
+					}.ToString();
+				}
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
+			return null;
+		}
+
+
+
 
 		private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false, bool returnErrorCode = false)
 		{
@@ -528,7 +658,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			catch (Exception e)
 			{
 				Debug.WriteLine(e);
-				MessageBox.Show(e.Message);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Error with patch request: {e.Message}", LineType.IrcCommand);
 				return "";
 			}
 		}
@@ -561,12 +691,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 			}
 
-			var rewards = VoiceModConfig.GetInstance().Rewards;
-			foreach (var reward in rewards)
-			{
-				reward.IsSetup = false;
-			}
-
 			if (BroadcasterID == null || BroadcasterID == "")
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] No broadcaster ID to verify VoiceMod Rewards!", LineType.IrcCommand);
@@ -588,12 +712,35 @@ namespace BasicTwitchSoundPlayer.IRC
 				foreach (var customReward in dataNode)
 				{
 					ChannelReward parseNode = customReward.ToObject<ChannelReward>();
+					list.Add(parseNode);
+				}
+			}
 
-					VoiceModConfig.VoiceModReward find = rewards.Find(x => x.RewardID == parseNode.id);
-					if (find != null)
+			foreach (VoiceModConfig.VoiceModReward voiceModReward in VoiceModConfig.GetInstance().Rewards)
+			{
+				if (!list.Any(x => x.id == voiceModReward.RewardID))
+				{
+					voiceModReward.RewardID = "";
+					voiceModReward.IsSetup = false;
+				}
+			}
+
+			if (DB_Editor.Instance != null)
+			{
+				foreach (SoundEntry soundReward in DB_Editor.Instance.SoundsCopy)
+				{
+					if (!list.Any(x => x.id == soundReward.RewardID))
 					{
-						list.Add(parseNode);
+						soundReward.RewardID = "";
 					}
+				}
+			}
+
+			if (SoundDatabaseEditor.EditDialogues.AddEditNewEntryDialog.Instance != null)
+			{
+				if (!list.Any(x => x.id == SoundDatabaseEditor.EditDialogues.AddEditNewEntryDialog.Instance.TB_RewardID.Text))
+				{
+					SoundDatabaseEditor.EditDialogues.AddEditNewEntryDialog.Instance.TB_RewardID.Text = "";
 				}
 			}
 
