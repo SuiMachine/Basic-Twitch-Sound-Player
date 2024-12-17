@@ -78,6 +78,12 @@ namespace BasicTwitchSoundPlayer
 		}
 		#endregion
 
+		public void SetDelay(int delay)
+		{
+			this.m_Delay = delay;
+			PrivateSettings.GetInstance().Delay = delay;
+		}
+
 		public void PlaySoundIfExists(ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)

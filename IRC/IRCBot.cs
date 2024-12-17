@@ -174,6 +174,21 @@ namespace BasicTwitchSoundPlayer.IRC
 						SndDB.StopAllSounds();
 						return true;
 					}
+
+					if (text.ToLower().StartsWith("delay "))
+					{
+						var split = text.Split(' ');
+						text = split[split.Length - 1];
+						if (int.TryParse(text, out int delayValue))
+						{
+							if (delayValue < 0)
+								delayValue = 0;
+							this.SndDB.SetDelay(delayValue);
+						}
+
+						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+						return true;
+					}
 				}
 
 				return true;
@@ -236,8 +251,8 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private void MeebyIrc_OnReadLine(object sender, Meebey.SmartIrc4net.ReadLineEventArgs e)
 		{
-/*			if (PrivateSettings.GetInstance().Debug_mode)
-				parent.ThreadSafeAddPreviewText($"Raw message: {e.Line}", LineType.IrcCommand);*/
+			/*			if (PrivateSettings.GetInstance().Debug_mode)
+							parent.ThreadSafeAddPreviewText($"Raw message: {e.Line}", LineType.IrcCommand);*/
 		}
 
 		private void MeebyIrc_OnPart(object sender, PartEventArgs e)

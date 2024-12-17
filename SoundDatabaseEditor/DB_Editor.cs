@@ -2,6 +2,7 @@
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
@@ -152,7 +153,12 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
 		private void B_Sort_Click(object sender, EventArgs e)
 		{
-			sndTreeView.Sort();
+			SoundsCopy = SoundsCopy.OrderBy(x => x.RewardName).ToList();
+			sndTreeView.Nodes.Clear();
+			foreach (var Sound in SoundsCopy)
+			{
+				sndTreeView.Nodes.Add(Sound.ToTreeNode());
+			}
 		}
 
 		private void B_SoundPlayBackSettings_Click(object sender, EventArgs e)

@@ -283,13 +283,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			File.WriteAllLines(@ignoredfile, ignorelist);
 		}
-
-		internal async void UpdateRedemptionStatus(ReadMessage formattedMessage, KrakenConnections.RedemptionStates redemptionStateToSet)
-		{
-			var rewards = await krakenConnection.GetUnredeemedRewardsForUser(parent, formattedMessage.RewardID, formattedMessage.userID);
-			parent.ThreadSafeAddPreviewText($"{(redemptionStateToSet == KrakenConnections.RedemptionStates.FULFILLED ? "Accepting" : "Denying")} requests for {formattedMessage.user}", LineType.IrcCommand);
-			krakenConnection.UpdateRedemptionStatus(formattedMessage.RewardID, rewards.Select(x => x.id).ToArray(), redemptionStateToSet);
-		}
 		#endregion
 	}
 }
