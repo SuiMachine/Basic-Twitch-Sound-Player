@@ -164,9 +164,23 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			await apiConnection.GetRewardsList();
 
 			KrakenConnections.ChannelReward reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
+
 			if (reward != null)
 			{
-				this.TB_RewardID.Text = reward.id;
+				if (string.IsNullOrEmpty(TB_RewardID.Text))
+				{
+					this.TB_RewardID.Text = reward.id;
+					MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				else if(TB_RewardID.Text != reward.id)
+				{
+					this.TB_RewardID.Text = reward.id;
+					MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+				else
+				{
+					MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
 			}
 		}
 	}

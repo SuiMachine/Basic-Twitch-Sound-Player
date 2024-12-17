@@ -191,9 +191,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.B_CreateReward.Dock = System.Windows.Forms.DockStyle.Left;
 			this.B_CreateReward.Location = new System.Drawing.Point(3, 3);
 			this.B_CreateReward.Name = "B_CreateReward";
-			this.B_CreateReward.Size = new System.Drawing.Size(86, 24);
+			this.B_CreateReward.Size = new System.Drawing.Size(125, 24);
 			this.B_CreateReward.TabIndex = 2;
-			this.B_CreateReward.Text = "Create reward";
+			this.B_CreateReward.Text = "Create / update reward";
 			this.B_CreateReward.UseVisualStyleBackColor = true;
 			this.B_CreateReward.Click += new System.EventHandler(this.B_CreateReward_Click);
 			// 
@@ -347,18 +347,13 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.Num_Cooldown.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.Num_Cooldown.Location = new System.Drawing.Point(402, 3);
 			this.Num_Cooldown.Maximum = new decimal(new int[] {
-            120,
+            604800,
             0,
             0,
             0});
 			this.Num_Cooldown.Name = "Num_Cooldown";
 			this.Num_Cooldown.Size = new System.Drawing.Size(73, 20);
 			this.Num_Cooldown.TabIndex = 7;
-			this.Num_Cooldown.Value = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
 			// 
 			// Num_Points
 			// 
