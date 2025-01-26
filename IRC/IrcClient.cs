@@ -62,8 +62,8 @@ namespace BasicTwitchSoundPlayer.IRC
 				meebyIrc.Connect(Config_Server, 6667);
 				while (!meebyIrc.IsConnected)
 					System.Threading.Thread.Sleep(50);
+				krakenConnection = new KrakenConnections(Channel);
 				meebyIrc.Login(Config_Username, Config_Username, 4, Config_Username, "oauth:" + Config_Password);
-				krakenConnection = new KrakenConnections(Channel, Password);
 				krakenUpdateTimer = new Timer();
 				krakenUpdateTimer.Start();
 				krakenUpdateTimer.Elapsed += KrakenUpdateTimer_Elapsed;

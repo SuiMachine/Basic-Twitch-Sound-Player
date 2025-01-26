@@ -111,7 +111,6 @@ namespace BasicTwitchSoundPlayer.IRC
 
 
 		private string HELIXURI { get; set; }
-		private string TwitchAuthy { get; set; }
 		private string Channel { get; set; }
 		public string BroadcasterID { get; set; }
 		public Task SubscribingToEvents { get; internal set; }
@@ -119,9 +118,8 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
-		public KrakenConnections(string Channel, string TwitchAuthy)
+		public KrakenConnections(string Channel)
 		{
-			this.TwitchAuthy = TwitchAuthy;
 			this.Channel = Channel;
 			HELIXURI = "https://api.twitch.tv/helix/";
 		}
@@ -566,9 +564,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
 				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
 				else
-					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
 				request.Timeout = 5000;
 				request.Method = "GET";
@@ -604,9 +602,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
 				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
 				else
-					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
 
 
@@ -639,9 +637,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
 				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
 				else
-					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
 				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
 				{

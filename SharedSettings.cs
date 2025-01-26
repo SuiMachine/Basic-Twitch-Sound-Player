@@ -97,11 +97,13 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string TwitchServer { get; set; }
 		[XmlElement]
-		public string TwitchUsername { get; set; }
+		public string UserName { get; set; }
 		[XmlElement]
-		public string TwitchPassword { get; set; }
+		public string UserAuth { get; set; }
 		[XmlElement]
-		public string TwitchChannelToJoin { get; set; }
+		public string BotUsername { get; set; }
+		[XmlElement]
+		public string BotAuth { get; set; }
 		[XmlElement]
 		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
@@ -118,9 +120,10 @@ namespace BasicTwitchSoundPlayer
 			this.Colors = new ColorStruct();
 
 			TwitchServer = "irc.twitch.tv";
-			TwitchUsername = "";
-			TwitchPassword = "";
-			TwitchChannelToJoin = "";
+			UserName = "";
+			UserAuth = "";
+			BotUsername = "";
+			BotAuth = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;
 		}

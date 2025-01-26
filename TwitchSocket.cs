@@ -39,7 +39,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)
 		{
-			var auth = "oauth:" + PrivateSettings.GetInstance().TwitchPassword;
+			var auth = "oauth:" + PrivateSettings.GetInstance().UserAuth;
 			TwitchPubSubClient.SendTopics(oauth: auth);
 		}
 

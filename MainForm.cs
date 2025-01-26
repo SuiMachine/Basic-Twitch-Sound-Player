@@ -219,9 +219,10 @@ namespace BasicTwitchSoundPlayer
 			if (res == DialogResult.OK)
 			{
 				settings.TwitchServer = form.Server;
-				settings.TwitchUsername = form.Username;
-				settings.TwitchPassword = form.Password;
-				settings.TwitchChannelToJoin = form.ChannelToJoin;
+				settings.UserName = form.Username;
+				settings.UserAuth = form.UserAuth;
+				settings.BotUsername = form.BotName;
+				settings.BotAuth = form.BotAuth;
 				settings.Debug_mode = form.DebugMode;
 				settings.WebSocketsServerPort = form.WebsocketPort;
 				settings.RunWebSocketsServer = form.RunWebsocket;

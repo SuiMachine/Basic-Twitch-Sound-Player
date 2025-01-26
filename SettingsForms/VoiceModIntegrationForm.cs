@@ -321,7 +321,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
+			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.UserName);
 			await apiConnection.GetBroadcasterIDAsync();
 
 			var voices = VoiceModConfig.GetInstance();

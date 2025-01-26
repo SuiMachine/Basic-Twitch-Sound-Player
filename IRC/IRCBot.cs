@@ -12,8 +12,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public bool BotRunning;
 		public OldIRCClient irc;
 		private MainForm parent;
-		private static ReadMessage FormattedMessage;
-		private string channelToJoin;
+		private string m_ChannelToJoin;
 		private char PrefixChar;
 
 		private SoundDB SndDB { get; set; }
@@ -22,8 +21,8 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			var privateSettings = PrivateSettings.GetInstance();
 
-			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.TwitchUsername, privateSettings.TwitchPassword, privateSettings.TwitchChannelToJoin);
-			channelToJoin = privateSettings.TwitchChannelToJoin;
+			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.BotUsername, privateSettings.BotAuth, privateSettings.UserName);
+			m_ChannelToJoin = privateSettings.UserName;
 			parent = MainForm.Instance;
 			this.PrefixChar = PrefixChar;
 			SndDB = soundDb;
@@ -31,7 +30,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void Run()
 		{
-			InitBot(channelToJoin);
+			InitBot(m_ChannelToJoin);
 			this.BotRunning = true;
 			try
 			{
@@ -153,8 +152,6 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private bool RunBot(ReadMessage formattedMessage)
 		{
-			FormattedMessage = formattedMessage;
-
 			if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.ignorelist.Contains(formattedMessage.user))
 			{
 				parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.Generic);
