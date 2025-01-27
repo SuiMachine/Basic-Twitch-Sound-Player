@@ -34,7 +34,7 @@ namespace BasicTwitchSoundPlayer
 			if (!Enum.TryParse(e.RewardRedeemed.Redemption.Status, true, out KrakenConnections.RedemptionStates state))
 				return;
 
-			OnChannelPointsRedeem?.Invoke(new ChannelPointRedeemRequest(e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state));
+			OnChannelPointsRedeem?.Invoke(new ChannelPointRedeemRequest(e.RewardRedeemed.Redemption.User.DisplayName, e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state, e.RewardRedeemed.Redemption.UserInput));
 		}
 
 		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)

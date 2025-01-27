@@ -1,5 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
 using BasicTwitchSoundPlayer.SoundStorage;
+using BasicTwitchSoundPlayer.Structs.Gemini;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -30,17 +31,21 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public class ChannelPointRedeemRequest
 		{
+			public string userName;
 			public string userId;
 			public string rewardId;
 			public string redemptionId;
 			public RedemptionStates state;
+			public string userInput;
 
-			public ChannelPointRedeemRequest(string userId, string rewardId, string redemptionId, RedemptionStates state)
+			public ChannelPointRedeemRequest(string userName, string userId, string rewardId, string redemptionId, RedemptionStates state, string userInput)
 			{
+				this.userName = userName;
 				this.userId = userId;
 				this.rewardId = rewardId;
 				this.redemptionId = redemptionId;
 				this.state = state;
+				this.userInput = userInput;
 			}
 		}
 
@@ -553,8 +558,57 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
+		internal async Task<ChannelReward> CreateOrUpdateReward(string rewardID = "")
+		{
+			if (CachedRewards == null)
+				return null;
 
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
 
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return null;
+
+			ChannelReward currentReward = CachedRewards.Find(x => x.id == rewardID); ;
+
+			if (currentReward != null)
+			{
+				return currentReward;
+			}
+			else
+			{
+				string jObject = new JObject()
+				{
+					["title"] = "Ask AI",
+					["cost"] = 10_000,
+					["is_enabled"] = true.ToString().ToLower(),
+					["prompt"] = "Ask or write message to AI",
+					["is_user_input_required"] = "true",
+					["should_redemptions_skip_request_queue"] = "false",
+					["is_global_cooldown_enabled"] = "true",
+					["global_cooldown_seconds"] = "600",
+				}.ToString();
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
+			return null;
+		}
 
 		private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false, bool returnErrorCode = false)
 		{

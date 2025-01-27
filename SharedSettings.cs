@@ -1,5 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.Interfaces;
 using BasicTwitchSoundPlayer.Structs;
+using BasicTwitchSoundPlayer.Structs.Gemini;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -145,16 +146,7 @@ namespace BasicTwitchSoundPlayer
 				return new PrivateSettings();
 		}
 
-		public void SaveSettings()
-		{
-			var path = GetConfigPath();
-			Directory.CreateDirectory(Directory.GetParent(path).FullName);
-
-			XmlSerializer serializer = new XmlSerializer(typeof(PrivateSettings));
-			StreamWriter fw = new StreamWriter(path);
-			serializer.Serialize(fw, this);
-			fw.Close();
-		}
+		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
 		#endregion
 	}
 
@@ -277,5 +269,60 @@ namespace BasicTwitchSoundPlayer
 				};
 			}
 		}
+	}
+
+	[Serializable]
+	public class AIConfig
+	{
+		[Serializable]
+		public class FilterSet
+		{
+			public AISafetySettingsValues Harassment { get; set; } = AISafetySettingsValues.BlockFew;
+			public AISafetySettingsValues Hate { get; set; } = AISafetySettingsValues.BlockFew;
+			public AISafetySettingsValues Sexually_Explicit { get; set; } = AISafetySettingsValues.BlockFew;
+			public AISafetySettingsValues Dangerous_Content { get; set; } = AISafetySettingsValues.BlockFew;
+			public AISafetySettingsValues Civic_Integrity { get; set; } = AISafetySettingsValues.BlockMost;
+		}
+
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "AI_Config.xml");
+		public static string GetAIHistory(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "AI_History", username + ".xml" );
+
+		private static AIConfig m_Instance;
+		public static AIConfig GetInstance()
+		{
+			if (m_Instance == null)
+				m_Instance = LoadSettings();
+
+			return m_Instance;
+		}
+
+		public string ApiKey { get; set; } = "";
+		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
+		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
+		public FilterSet FilterSet_Streamer = new FilterSet()
+		{
+			Harassment = AISafetySettingsValues.BlockNone,
+			Hate = AISafetySettingsValues.BlockNone,
+			Sexually_Explicit = AISafetySettingsValues.BlockNone,
+			Dangerous_Content = AISafetySettingsValues.BlockNone,
+			Civic_Integrity = AISafetySettingsValues.BlockMost,
+		};
+		public string Instruction_User { get; set; } = "The user is {0}\nThe responses are always 200-450 characters long.";
+		public int TokenLimit_User { get; set; } = 8096;
+		public FilterSet FilterSet_User = new FilterSet()
+		{
+			Harassment = AISafetySettingsValues.BlockSome,
+			Hate = AISafetySettingsValues.BlockSome,
+			Sexually_Explicit = AISafetySettingsValues.BlockSome,
+			Dangerous_Content = AISafetySettingsValues.BlockSome,
+			Civic_Integrity = AISafetySettingsValues.BlockMost,
+		};
+
+		public string Model { get; set; } = "models/gemini-2.0-flash-exp";
+		public string TwitchAwardID { get; set; } = "";
+
+		private static AIConfig LoadSettings() => XML_Utils.Load(GetConfigPath(), new AIConfig());
+
+		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
 	}
 }
