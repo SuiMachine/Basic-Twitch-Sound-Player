@@ -21,6 +21,9 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 			public string responseMimeType = "text/plain";
 		}
 
+		[JsonIgnore]
+		[NonSerialized]
+		public string StoragePath;
 		public List<GeminiMessage> contents;
 		[XmlIgnore] public SafetySettingsCategory[] safetySettings;
 		[XmlIgnore] public GeminiMessage systemInstruction;

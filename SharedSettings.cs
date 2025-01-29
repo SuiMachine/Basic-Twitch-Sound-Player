@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -153,7 +154,7 @@ namespace BasicTwitchSoundPlayer
 	[Serializable]
 	public class VoiceModConfig
 	{
-		private const string CONFIGFILE = "VoiceModConfig.xml";
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "VoiceModConfig.xml");
 		private static VoiceModConfig m_Instance;
 		public static VoiceModConfig GetInstance()
 		{
@@ -165,11 +166,11 @@ namespace BasicTwitchSoundPlayer
 
 		private static VoiceModConfig LoadSettings()
 		{
-			if (File.Exists(CONFIGFILE))
+			if (File.Exists(GetConfigPath()))
 			{
 				VoiceModConfig obj;
 				XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
-				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
+				FileStream fs = new FileStream(GetConfigPath(), FileMode.Open);
 				obj = (VoiceModConfig)serializer.Deserialize(fs);
 				fs.Close();
 				return obj;
@@ -181,7 +182,7 @@ namespace BasicTwitchSoundPlayer
 		public void Save()
 		{
 			XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
-			StreamWriter fw = new StreamWriter(CONFIGFILE);
+			StreamWriter fw = new StreamWriter(GetConfigPath());
 			serializer.Serialize(fw, this);
 			fw.Close();
 		}
@@ -285,7 +286,7 @@ namespace BasicTwitchSoundPlayer
 		}
 
 		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Config.xml");
-		public static string GetAIHistory(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_History", username + ".xml" );
+		public static string GetAIHistoryPath(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_History", username + ".xml");
 
 		private static AIConfig m_Instance;
 		public static AIConfig GetInstance()
@@ -324,5 +325,63 @@ namespace BasicTwitchSoundPlayer
 		private static AIConfig LoadSettings() => XML_Utils.Load(GetConfigPath(), new AIConfig());
 
 		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
+
+		public SafetySettingsCategory[] GetSafetySettingsStreamer()
+		{
+			return new SafetySettingsCategory[]
+			{
+				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_Streamer.Harassment),
+				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_Streamer.Hate),
+				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_Streamer.Sexually_Explicit),
+				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_Streamer.Dangerous_Content),
+				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_Streamer.Civic_Integrity),
+			};
+		}
+
+		public SafetySettingsCategory[] GetSafetySettingsGeneral()
+		{
+			return new SafetySettingsCategory[]
+			{
+				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_User.Harassment),
+				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_User.Hate),
+				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_User.Sexually_Explicit),
+				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_User.Dangerous_Content),
+				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_User.Civic_Integrity),
+			};
+		}
+
+		public GeminiMessage GetInstruction(string username, bool isStreamer, bool isLive, string category)
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
+			if(!isStreamer)
+				sb.AppendLine("The user is " + username);
+
+			sb.AppendLine("");
+			sb.AppendLine($"The current date is {DateTime.Now.ToShortDateString()}");
+			sb.AppendLine($"The current local time is {DateTime.Now.ToShortTimeString()}");
+			sb.AppendLine($"The current UTC time {DateTime.UtcNow.ToShortTimeString()}");
+
+			if (isLive)
+			{
+				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}");
+			}
+			else
+			{
+				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is currently not streaming any game.");
+			}
+
+			return new GeminiMessage()
+			{
+				role = Role.user,
+				parts = new GeminiMessagePart[]
+				{
+					new GeminiMessagePart()
+					{
+						text = sb.ToString()
+					}
+				}
+			};
+		}
 	}
 }

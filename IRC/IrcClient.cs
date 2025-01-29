@@ -33,7 +33,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public List<string> Moderators = new List<string>();
 		public List<string> IgnoreList = new List<string>();
 		public string[] subscribers = new string[0];
-		public KrakenConnections krakenConnection { get; private set; }
+		public KrakenConnections KrakenConnection { get; private set; }
 		private Timer krakenUpdateTimer;
 
 		//Because I really don't want to rewrite half of this
@@ -58,7 +58,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				MeebyIrc.Connect(Config_Server, 6667);
 				while (!MeebyIrc.IsConnected)
 					System.Threading.Thread.Sleep(50);
-				krakenConnection = new KrakenConnections(Channel);
+				KrakenConnection = new KrakenConnections(Channel);
 				MeebyIrc.Login(Config_Username, Config_Username, 4, Config_Username, "oauth:" + Config_Password);
 				krakenUpdateTimer = new Timer();
 				krakenUpdateTimer.Start();
@@ -67,7 +67,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 				if (SoundRewardID != null)
 				{
-					Task run = krakenConnection.VerifyChannelRewardsAsync(parentReference, SoundRewardID);
+					Task run = KrakenConnection.VerifyChannelRewardsAsync(parentReference, SoundRewardID);
 					Debug.WriteLine("Verifying reward IDs.");
 				}
 			}
@@ -83,19 +83,22 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			krakenUpdateTimer.Interval = 2 * 60 * 1000;
 
-			Task<string[]> updateTask = krakenConnection.GetSubscribersAsync();
-			Debug.WriteLine("Updating subscribers");
-			updateTask.Wait();
-			var result = updateTask.Result;
-			if (result != null)
+			Task.Run(async () =>
 			{
-				int PreviousSubscribers = subscribers.Length;
-				if (PreviousSubscribers != result.Length)
+				await KrakenConnection.GetStreamerStatus();
+
+				var newSubscribers = await KrakenConnection.GetSubscribersAsync();
+				Debug.WriteLine("Updating subscribers");
+				if (newSubscribers != null)
 				{
-					parent.ThreadSafeAddPreviewText("Subscriber amount changed to " + result.Length, LineType.IrcCommand);
+					int PreviousSubscribers = newSubscribers.Length;
+					if (PreviousSubscribers != newSubscribers.Length)
+					{
+						parent.ThreadSafeAddPreviewText("Subscriber amount changed to " + newSubscribers.Length, LineType.IrcCommand);
+					}
+					subscribers = newSubscribers;
 				}
-				subscribers = result;
-			}
+			});
 		}
 		#endregion
 

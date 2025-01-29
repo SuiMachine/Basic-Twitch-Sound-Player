@@ -118,6 +118,9 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string HELIXURI { get; set; }
 		private string Channel { get; set; }
 		public string BroadcasterID { get; set; }
+		public bool IsLive { get; private set; } = false;
+		public string GameID { get; private set; } = "";
+		public string GameTitle { get; private set; } = "";
 		public Task SubscribingToEvents { get; internal set; }
 		public List<ChannelReward> CachedRewards { get; internal set; }
 
@@ -799,6 +802,90 @@ namespace BasicTwitchSoundPlayer.IRC
 			CachedRewards = list;
 			return list;
 
+		}
+
+		public async Task GetStreamerStatus()
+		{
+			string res = await GetNewUpdateAsync("streams", "?user_login=" + Channel, true);
+			if(!string.IsNullOrEmpty(res))
+			{
+				try
+				{
+					var response = JObject.Parse(res);
+					if (response["data"] != null && response["data"].Children().Count() > 0)
+					{
+						var dataNode = response["data"].First;
+						if (dataNode["title"] != null)
+						{
+							this.IsLive = true;
+
+							if (dataNode["type"] != null)
+							{
+								var streamType = dataNode["type"].ToString();
+								if (streamType == "live")
+								{
+									this.IsLive = true;
+								}
+								else
+								{
+									this.IsLive = false;
+									this.GameID = "";
+									this.GameTitle = "";
+									MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
+								}
+							}
+
+							if (dataNode["game_id"] != null)
+							{
+								string newGameId = dataNode["game_id"].ToString();
+								if(newGameId != GameID)
+								{
+									GameTitle = await GetGameTitleFromID(newGameId);
+									if(GameTitle == "ul")
+									{
+										GameTitle = "";
+									}
+									GameID = newGameId;
+								}
+
+								MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is online, streaming {GameTitle}.", LineType.IrcCommand);
+								return;
+							}
+							else
+							{
+								MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
+							}
+						}
+					}
+
+					this.IsLive = false;
+					this.GameID = "";
+					this.GameTitle = "";
+					MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
+				}
+				catch (Exception e)
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText("Error trying to parse Json when doing stream update request: " + e.Message, LineType.IrcCommand);
+					this.IsLive = false;
+					this.GameID = "";
+					this.GameTitle = "";
+				}
+			}
+		}
+
+		private async Task<string> GetGameTitleFromID(string newGameId)
+		{
+			string res = await GetNewUpdateAsync("games", "?id=" + newGameId, true);
+			if (string.IsNullOrEmpty(res))
+				return "";
+
+			JObject jObjectNode = JObject.Parse(res);
+			JToken dataNode = jObjectNode["data"].First;
+			if (dataNode["name"] != null)
+			{
+				return dataNode["name"].ToString();
+			}
+			return "";
 		}
 	}
 }

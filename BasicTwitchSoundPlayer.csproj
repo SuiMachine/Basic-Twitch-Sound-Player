@@ -159,6 +159,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
     <Compile Include="GeminiAI.cs" />
+    <Compile Include="HttpWebRequestHandlers.cs" />
     <Compile Include="Interfaces\IVoiceModeRewardBindingInterface.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="Logger.cs" />

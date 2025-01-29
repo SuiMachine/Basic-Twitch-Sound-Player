@@ -116,5 +116,7 @@ namespace BasicTwitchSoundPlayer
 				}
 			}
 		}
+
+		public override string ToString() => DecodedString;
 	}
 }
