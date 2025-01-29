@@ -89,7 +89,7 @@ namespace BasicTwitchSoundPlayer
 			}
 			else
 			{
-				MainForm.Instance.TwitchBot.irc.SendChatMessage($"{request.userName} - sorry, this feature is currently not available to users!");
+				MainForm.Instance.TwitchBot.Irc.SendChatMessage($"{request.userName} - sorry, this feature is currently not available to users!");
 
 			}
 		}

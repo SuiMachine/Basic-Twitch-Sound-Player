@@ -16,16 +16,16 @@ namespace BasicTwitchSoundPlayer
 
 		public async Task CreateSessionAndSocket()
 		{
-			while (!iRCBot.BotRunning || iRCBot.irc == null || !iRCBot.irc.ConnectedStatus)
+			while (!iRCBot.BotRunning || iRCBot.Irc == null || !iRCBot.Irc.ConnectedStatus)
 				await Task.Delay(2500);
-			var rewards = await iRCBot.irc.krakenConnection.GetRewardsList();
+			var rewards = await iRCBot.Irc.krakenConnection.GetRewardsList();
 
 			TwitchPubSubClient = new TwitchPubSub();
 			TwitchPubSubClient.OnPubSubServiceConnected += TwitchPubSubClient_OnPubSubServiceConnected;
 			TwitchPubSubClient.OnListenResponse += TwitchPubSubClient_OnListenResponse;
 			TwitchPubSubClient.OnChannelPointsRewardRedeemed += TwitchPubSubClient_OnChannelPointsRewardRedeemed;
 
-			TwitchPubSubClient.ListenToChannelPoints(iRCBot.irc.krakenConnection.BroadcasterID);
+			TwitchPubSubClient.ListenToChannelPoints(iRCBot.Irc.krakenConnection.BroadcasterID);
 			TwitchPubSubClient.Connect();
 		}
 
@@ -71,7 +71,7 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			redeem.state = status;
-			iRCBot.irc.krakenConnection.UpdateRedemptionStatus(redeem.rewardId, new string[]
+			iRCBot.Irc.krakenConnection.UpdateRedemptionStatus(redeem.rewardId, new string[]
 			{
 				redeem.redemptionId,
 			}, status);

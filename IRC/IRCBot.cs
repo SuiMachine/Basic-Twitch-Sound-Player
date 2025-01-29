@@ -10,10 +10,10 @@ namespace BasicTwitchSoundPlayer.IRC
 	public class IRCBot
 	{
 		public bool BotRunning;
-		public OldIRCClient irc;
-		private MainForm parent;
+		public OldIRCClient Irc;
+		private MainForm m_Parent;
 		private string m_ChannelToJoin;
-		private char PrefixChar;
+		private char m_PrefixChar;
 
 		private SoundDB SndDB { get; set; }
 
@@ -21,10 +21,10 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			var privateSettings = PrivateSettings.GetInstance();
 
-			irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.BotUsername, privateSettings.BotAuth, privateSettings.UserName);
+			Irc = new OldIRCClient(MainForm.Instance, privateSettings.TwitchServer, privateSettings.BotUsername, privateSettings.BotAuth, privateSettings.UserName);
 			m_ChannelToJoin = privateSettings.UserName;
-			parent = MainForm.Instance;
-			this.PrefixChar = PrefixChar;
+			m_Parent = MainForm.Instance;
+			this.m_PrefixChar = PrefixChar;
 			SndDB = soundDb;
 		}
 
@@ -34,7 +34,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			this.BotRunning = true;
 			try
 			{
-				irc.MeebyIrc.Listen();
+				Irc.MeebyIrc.Listen();
 			}
 			catch (ThreadInterruptedException e)
 			{
@@ -46,24 +46,24 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			SndDB.Close();
 			PrivateSettings.GetInstance().SaveSettings();
-			irc.SaveIgnoredList();
+			Irc.SaveIgnoredList();
 
-			irc.MeebyIrc.OnError -= MeebyIrc_OnError;
-			irc.MeebyIrc.OnErrorMessage -= MeebyIrc_OnErrorMessage;
-			irc.MeebyIrc.OnConnecting -= MeebyIrc_OnConnecting;
-			irc.MeebyIrc.OnConnected -= MeebyIrc_OnConnected;
-			irc.MeebyIrc.OnAutoConnectError -= MeebyIrc_OnAutoConnectError;
-			irc.MeebyIrc.OnDisconnecting -= MeebyIrc_OnDisconnecting;
-			irc.MeebyIrc.OnDisconnected -= MeebyIrc_OnDisconnected;
-			irc.MeebyIrc.OnRegistered -= MeebyIrc_OnRegistered;
-			irc.MeebyIrc.OnPart -= MeebyIrc_OnPart;
-			irc.MeebyIrc.OnJoin -= MeebyIrc_OnJoin;
-			irc.MeebyIrc.OnChannelAction -= MeebyIrc_OnChannelAction;
-			irc.MeebyIrc.OnReadLine -= MeebyIrc_OnReadLine;
-			irc.MeebyIrc.OnRawMessage -= MeebyIrc_OnRawMessage;
+			Irc.MeebyIrc.OnError -= MeebyIrc_OnError;
+			Irc.MeebyIrc.OnErrorMessage -= MeebyIrc_OnErrorMessage;
+			Irc.MeebyIrc.OnConnecting -= MeebyIrc_OnConnecting;
+			Irc.MeebyIrc.OnConnected -= MeebyIrc_OnConnected;
+			Irc.MeebyIrc.OnAutoConnectError -= MeebyIrc_OnAutoConnectError;
+			Irc.MeebyIrc.OnDisconnecting -= MeebyIrc_OnDisconnecting;
+			Irc.MeebyIrc.OnDisconnected -= MeebyIrc_OnDisconnected;
+			Irc.MeebyIrc.OnRegistered -= MeebyIrc_OnRegistered;
+			Irc.MeebyIrc.OnPart -= MeebyIrc_OnPart;
+			Irc.MeebyIrc.OnJoin -= MeebyIrc_OnJoin;
+			Irc.MeebyIrc.OnChannelAction -= MeebyIrc_OnChannelAction;
+			Irc.MeebyIrc.OnReadLine -= MeebyIrc_OnReadLine;
+			Irc.MeebyIrc.OnRawMessage -= MeebyIrc_OnRawMessage;
 
 			Task.Factory.StartNew(() =>
-				irc.MeebyIrc.Disconnect()
+				Irc.MeebyIrc.Disconnect()
 			);
 
 			System.Threading.Thread.Sleep(200);
@@ -71,25 +71,25 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private void InitBot(string channel)
 		{
-			irc.MeebyIrc.OnError += MeebyIrc_OnError;
-			irc.MeebyIrc.OnErrorMessage += MeebyIrc_OnErrorMessage;
-			irc.MeebyIrc.OnConnecting += MeebyIrc_OnConnecting;
-			irc.MeebyIrc.OnConnected += MeebyIrc_OnConnected;
-			irc.MeebyIrc.OnAutoConnectError += MeebyIrc_OnAutoConnectError;
-			irc.MeebyIrc.OnDisconnecting += MeebyIrc_OnDisconnecting;
-			irc.MeebyIrc.OnDisconnected += MeebyIrc_OnDisconnected;
-			irc.MeebyIrc.OnRegistered += MeebyIrc_OnRegistered;
-			irc.MeebyIrc.OnPart += MeebyIrc_OnPart;
-			irc.MeebyIrc.OnJoin += MeebyIrc_OnJoin;
-			irc.MeebyIrc.OnChannelAction += MeebyIrc_OnChannelAction;
-			irc.MeebyIrc.OnReadLine += MeebyIrc_OnReadLine;
-			irc.MeebyIrc.OnOp += MeebyIrc_OnOp;
-			irc.MeebyIrc.OnDeop += MeebyIrc_OnDeop;
-			irc.MeebyIrc.OnRawMessage += MeebyIrc_OnRawMessage;
+			Irc.MeebyIrc.OnError += MeebyIrc_OnError;
+			Irc.MeebyIrc.OnErrorMessage += MeebyIrc_OnErrorMessage;
+			Irc.MeebyIrc.OnConnecting += MeebyIrc_OnConnecting;
+			Irc.MeebyIrc.OnConnected += MeebyIrc_OnConnected;
+			Irc.MeebyIrc.OnAutoConnectError += MeebyIrc_OnAutoConnectError;
+			Irc.MeebyIrc.OnDisconnecting += MeebyIrc_OnDisconnecting;
+			Irc.MeebyIrc.OnDisconnected += MeebyIrc_OnDisconnected;
+			Irc.MeebyIrc.OnRegistered += MeebyIrc_OnRegistered;
+			Irc.MeebyIrc.OnPart += MeebyIrc_OnPart;
+			Irc.MeebyIrc.OnJoin += MeebyIrc_OnJoin;
+			Irc.MeebyIrc.OnChannelAction += MeebyIrc_OnChannelAction;
+			Irc.MeebyIrc.OnReadLine += MeebyIrc_OnReadLine;
+			Irc.MeebyIrc.OnOp += MeebyIrc_OnOp;
+			Irc.MeebyIrc.OnDeop += MeebyIrc_OnDeop;
+			Irc.MeebyIrc.OnRawMessage += MeebyIrc_OnRawMessage;
 
 			//Request capabilities - https://dev.twitch.tv/docs/irc/guide/#twitch-irc-capabilities
-			irc.MeebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
-			irc.MeebyIrc.RfcJoin("#" + channel);
+			Irc.MeebyIrc.WriteLine("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
+			Irc.MeebyIrc.RfcJoin("#" + channel);
 
 			MainForm.TwitchSocket.SetIrcReference(this);
 			VoiceModHandling.GetInstance().ConnectToVoiceMod();
@@ -150,9 +150,9 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private bool RunBot(ReadMessage formattedMessage)
 		{
-			if (!formattedMessage.message.StartsWith(PrefixChar.ToString()) || irc.IgnoreList.Contains(formattedMessage.user))
+			if (!formattedMessage.message.StartsWith(m_PrefixChar.ToString()) || Irc.IgnoreList.Contains(formattedMessage.user))
 			{
-				parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.Generic);
+				m_Parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.Generic);
 				//literally nothing else happens in your code if this is false
 				return true;
 			}
@@ -161,11 +161,11 @@ namespace BasicTwitchSoundPlayer.IRC
 				string text = formattedMessage.message.Remove(0, 1).ToLower();
 
 				//Mod Commands
-				if (formattedMessage.rights >= TwitchRightsEnum.Mod || irc.Moderators.Contains(formattedMessage.user))
+				if (formattedMessage.rights >= TwitchRightsEnum.Mod || Irc.Moderators.Contains(formattedMessage.user))
 				{
 					if (text == "stopallsounds")
 					{
-						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+						m_Parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
 						SndDB.StopAllSounds();
 						return true;
 					}
@@ -181,7 +181,7 @@ namespace BasicTwitchSoundPlayer.IRC
 							this.SndDB.SetDelay(delayValue);
 						}
 
-						parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
+						m_Parent.ThreadSafeAddPreviewText(formattedMessage.user + ": " + formattedMessage.message, LineType.ModCommand);
 						return true;
 					}
 				}
@@ -196,53 +196,53 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnJoin(object sender, Meebey.SmartIrc4net.JoinEventArgs e)
 		{
 			if (PrivateSettings.GetInstance().Debug_mode)
-				parent.ThreadSafeAddPreviewText("! JOINED: " + e.Data.Nick, LineType.IrcCommand);
+				m_Parent.ThreadSafeAddPreviewText("! JOINED: " + e.Data.Nick, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnRegistered(object sender, EventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("! LOGIN VERIFIED", LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("! LOGIN VERIFIED", LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnDisconnected(object sender, EventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("Disconnected.", LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("Disconnected.", LineType.IrcCommand);
 			BotRunning = false;
 		}
 
 		private void MeebyIrc_OnDisconnecting(object sender, EventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("Disconnecting...", LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("Disconnecting...", LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnAutoConnectError(object sender, Meebey.SmartIrc4net.AutoConnectErrorEventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("OnAutoConnectError Event: " + e.Exception, LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("OnAutoConnectError Event: " + e.Exception, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnConnecting(object sender, EventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("Connecting: " + e, LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("Connecting: " + e, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnConnected(object sender, EventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("Connected: " + e, LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("Connected: " + e, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnChannelAction(object sender, Meebey.SmartIrc4net.ActionEventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("OnChannelAction Event: " + e.Data, LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("OnChannelAction Event: " + e.Data, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnErrorMessage(object sender, Meebey.SmartIrc4net.IrcEventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("! " + e.Data.Message + " !", LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("! " + e.Data.Message + " !", LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnError(object sender, Meebey.SmartIrc4net.ErrorEventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("OnError Event: " + e.Data.Message, LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("OnError Event: " + e.Data.Message, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnReadLine(object sender, Meebey.SmartIrc4net.ReadLineEventArgs e)
@@ -254,19 +254,19 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnPart(object sender, PartEventArgs e)
 		{
 			if (PrivateSettings.GetInstance().Debug_mode)
-				parent.ThreadSafeAddPreviewText("! PART: " + e.Data.Nick, LineType.IrcCommand);
+				m_Parent.ThreadSafeAddPreviewText("! PART: " + e.Data.Nick, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnOp(object sender, OpEventArgs e)
 		{
-			if (!irc.Moderators.Contains(e.Whom))
-				irc.Moderators.Add(e.Whom);
-			parent.ThreadSafeAddPreviewText("! +OP: " + e.Whom, LineType.IrcCommand);
+			if (!Irc.Moderators.Contains(e.Whom))
+				Irc.Moderators.Add(e.Whom);
+			m_Parent.ThreadSafeAddPreviewText("! +OP: " + e.Whom, LineType.IrcCommand);
 		}
 
 		private void MeebyIrc_OnDeop(object sender, DeopEventArgs e)
 		{
-			parent.ThreadSafeAddPreviewText("! -OP: " + e.Whom, LineType.IrcCommand);
+			m_Parent.ThreadSafeAddPreviewText("! -OP: " + e.Whom, LineType.IrcCommand);
 		}
 		#endregion
 	}
