@@ -196,7 +196,7 @@ namespace BasicTwitchSoundPlayer
 					else
 					{
 						irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
-						MainForm.Instance.TwitchBot.Irc.SendChatMessage($"@{request.userName}: Failed to get a response. Please debug me, Sui :(");
+						irc.SendChatMessage($"@{request.userName}: Failed to get a response. Please debug me, Sui :(");
 					}
 				}
 			}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -104,7 +105,45 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void SendChatMessage(string message)
 		{
-			MeebyIrc.SendMessage(SendType.Message, "#" + Config_Channel, message);
+			if (message.Length <= 500)
+			{
+				MeebyIrc.SendMessage(SendType.Message, "#" + Config_Channel, message);
+			}
+			else
+			{
+				var messages = SplitMessage(message, 500);
+				foreach (var subMessage in messages)
+				{
+					MeebyIrc.SendMessage(SendType.Message, "#" + Config_Channel, subMessage);
+				}
+			}
+		}
+
+		public static List<string> SplitMessage(string v, int length)
+		{
+			if (v.Length <= length)
+				return new List<string>() { v };
+
+			var result = new List<string>();
+			var split = v.Split(' ');
+
+			var stringBuilder = new StringBuilder(500);
+			for (int i = 0; i < split.Length; i++)
+			{
+				if (stringBuilder.Length + 1 + split[i].Length > 500)
+				{
+					result.Add(stringBuilder.ToString());
+					stringBuilder.Clear();
+				}
+
+				if (stringBuilder.Length > 0)
+					stringBuilder.Append(' ');
+
+				stringBuilder.Append(split[i]);
+			}
+
+			result.Add(stringBuilder.ToString());
+			return result;
 		}
 
 		public void SendChatMessage_NoDelays(string message)

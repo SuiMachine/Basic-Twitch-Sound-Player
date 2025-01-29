@@ -355,16 +355,16 @@ namespace BasicTwitchSoundPlayer
 			var sb = new StringBuilder();
 			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
 			if(!isStreamer)
-				sb.AppendLine("The user is " + username);
+				sb.AppendLine("The user is " + username + ".");
 
 			sb.AppendLine("");
-			sb.AppendLine($"The current date is {DateTime.Now.ToShortDateString()}");
-			sb.AppendLine($"The current local time is {DateTime.Now.ToShortTimeString()}");
-			sb.AppendLine($"The current UTC time {DateTime.UtcNow.ToShortTimeString()}");
+			sb.AppendLine($"The current date is {DateTime.Now.ToShortDateString()}.");
+			sb.AppendLine($"The current local time is {DateTime.Now.ToShortTimeString()}.");
+			sb.AppendLine($"The current UTC time {DateTime.UtcNow.ToShortTimeString()}.");
 
 			if (isLive)
 			{
-				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}");
+				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}.");
 			}
 			else
 			{
