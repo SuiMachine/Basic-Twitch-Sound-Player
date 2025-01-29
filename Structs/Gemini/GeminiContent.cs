@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
@@ -21,16 +22,36 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 		}
 
 		public List<GeminiMessage> contents;
+		[XmlIgnore] public SafetySettingsCategory[] safetySettings;
 		[XmlIgnore] public GeminiMessage systemInstruction;
 		public GenerationConfig generationConfig;
 	}
 
+	public class SafetySettingsCategory
+	{
+		public string category;
+		[JsonConverter(typeof(StringEnumConverter))]
+		public AISafetySettingsValues threshold;
+
+		public SafetySettingsCategory()
+		{
+			category = "";
+			threshold = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+		}
+
+		public SafetySettingsCategory(string category, AISafetySettingsValues threshold)
+		{
+			this.category = category;
+			this.threshold = threshold;
+		}
+	}
+
 	public enum AISafetySettingsValues
 	{
-		BlockNone,
-		BlockFew,
-		BlockSome,
-		BlockMost
+		BLOCK_NONE,
+		BLOCK_ONLY_HIGH, //Block few
+		BLOCK_MEDIUM_AND_ABOVE, //Block some
+		BLOCK_LOW_AND_ABOVE //Block Most
 	}
 
 	[Serializable]

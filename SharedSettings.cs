@@ -71,7 +71,7 @@ namespace BasicTwitchSoundPlayer
 	[Serializable]
 	public class PrivateSettings
 	{
-		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Config.xml");
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Config.xml");
 		private static PrivateSettings m_Instance;
 		public static PrivateSettings GetInstance()
 		{
@@ -277,15 +277,15 @@ namespace BasicTwitchSoundPlayer
 		[Serializable]
 		public class FilterSet
 		{
-			public AISafetySettingsValues Harassment { get; set; } = AISafetySettingsValues.BlockFew;
-			public AISafetySettingsValues Hate { get; set; } = AISafetySettingsValues.BlockFew;
-			public AISafetySettingsValues Sexually_Explicit { get; set; } = AISafetySettingsValues.BlockFew;
-			public AISafetySettingsValues Dangerous_Content { get; set; } = AISafetySettingsValues.BlockFew;
-			public AISafetySettingsValues Civic_Integrity { get; set; } = AISafetySettingsValues.BlockMost;
+			public AISafetySettingsValues Harassment { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Hate { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Sexually_Explicit { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Dangerous_Content { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Civic_Integrity { get; set; } = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE;
 		}
 
-		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "AI_Config.xml");
-		public static string GetAIHistory(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "AI_History", username + ".xml" );
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Config.xml");
+		public static string GetAIHistory(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_History", username + ".xml" );
 
 		private static AIConfig m_Instance;
 		public static AIConfig GetInstance()
@@ -301,21 +301,21 @@ namespace BasicTwitchSoundPlayer
 		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
 		public FilterSet FilterSet_Streamer = new FilterSet()
 		{
-			Harassment = AISafetySettingsValues.BlockNone,
-			Hate = AISafetySettingsValues.BlockNone,
-			Sexually_Explicit = AISafetySettingsValues.BlockNone,
-			Dangerous_Content = AISafetySettingsValues.BlockNone,
-			Civic_Integrity = AISafetySettingsValues.BlockMost,
+			Harassment = AISafetySettingsValues.BLOCK_NONE,
+			Hate = AISafetySettingsValues.BLOCK_NONE,
+			Sexually_Explicit = AISafetySettingsValues.BLOCK_NONE,
+			Dangerous_Content = AISafetySettingsValues.BLOCK_NONE,
+			Civic_Integrity = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE,
 		};
 		public string Instruction_User { get; set; } = "The user is {0}\nThe responses are always 200-450 characters long.";
 		public int TokenLimit_User { get; set; } = 8096;
 		public FilterSet FilterSet_User = new FilterSet()
 		{
-			Harassment = AISafetySettingsValues.BlockSome,
-			Hate = AISafetySettingsValues.BlockSome,
-			Sexually_Explicit = AISafetySettingsValues.BlockSome,
-			Dangerous_Content = AISafetySettingsValues.BlockSome,
-			Civic_Integrity = AISafetySettingsValues.BlockMost,
+			Harassment = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Hate = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Sexually_Explicit = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Dangerous_Content = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Civic_Integrity = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE,
 		};
 
 		public string Model { get; set; } = "models/gemini-2.0-flash-exp";

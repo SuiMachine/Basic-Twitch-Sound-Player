@@ -49,6 +49,14 @@ namespace BasicTwitchSoundPlayer
 							text = ""
 						}
 					}
+				},
+				safetySettings = new SafetySettingsCategory[]
+				{
+					new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", aiConfig.FilterSet_Streamer.Harassment),
+					new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", aiConfig.FilterSet_Streamer.Hate),
+					new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", aiConfig.FilterSet_User.Sexually_Explicit),
+					new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", aiConfig.FilterSet_User.Dangerous_Content),
+					new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", aiConfig.FilterSet_User.Civic_Integrity),
 				}
 			});
 
@@ -69,7 +77,21 @@ namespace BasicTwitchSoundPlayer
 
 		public void PointsRedeem(ChannelPointRedeemRequest request)
 		{
-			var f = request.userId;
+			var rewardID = AIConfig.GetInstance().TwitchAwardID;
+			if (string.IsNullOrEmpty(rewardID))
+				return;
+			if (request.rewardId != rewardID)
+				return;
+
+			if (request.userName.ToLower() == PrivateSettings.GetInstance().UserName.ToLower())
+			{
+
+			}
+			else
+			{
+				MainForm.Instance.TwitchBot.irc.SendChatMessage($"{request.userName} - sorry, this feature is currently not available to users!");
+
+			}
 		}
 
 		/*public override bool DoWork(ChatMessage lastMessage)
