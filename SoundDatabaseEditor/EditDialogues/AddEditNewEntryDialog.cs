@@ -156,7 +156,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
 			var settings = PrivateSettings.GetInstance();
-			KrakenConnections apiConnection = new KrakenConnections(settings.TwitchUsername, settings.TwitchPassword);
+			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
 			await apiConnection.GetBroadcasterIDAsync();
 			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
 				return;

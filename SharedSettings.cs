@@ -1,9 +1,11 @@
 ﻿using BasicTwitchSoundPlayer.Interfaces;
 using BasicTwitchSoundPlayer.Structs;
+using BasicTwitchSoundPlayer.Structs.Gemini;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -70,7 +72,7 @@ namespace BasicTwitchSoundPlayer
 	[Serializable]
 	public class PrivateSettings
 	{
-		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Config.xml");
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Config.xml");
 		private static PrivateSettings m_Instance;
 		public static PrivateSettings GetInstance()
 		{
@@ -97,11 +99,13 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string TwitchServer { get; set; }
 		[XmlElement]
-		public string TwitchUsername { get; set; }
+		public string UserName { get; set; }
 		[XmlElement]
-		public string TwitchPassword { get; set; }
+		public EncryptedString UserAuth { get; set; }
 		[XmlElement]
-		public string TwitchChannelToJoin { get; set; }
+		public string BotUsername { get; set; }
+		[XmlElement]
+		public EncryptedString BotAuth { get; set; }
 		[XmlElement]
 		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
@@ -118,9 +122,10 @@ namespace BasicTwitchSoundPlayer
 			this.Colors = new ColorStruct();
 
 			TwitchServer = "irc.twitch.tv";
-			TwitchUsername = "";
-			TwitchPassword = "";
-			TwitchChannelToJoin = "";
+			UserName = "";
+			UserAuth = "";
+			BotUsername = "";
+			BotAuth = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;
 		}
@@ -142,23 +147,14 @@ namespace BasicTwitchSoundPlayer
 				return new PrivateSettings();
 		}
 
-		public void SaveSettings()
-		{
-			var path = GetConfigPath();
-			Directory.CreateDirectory(Directory.GetParent(path).FullName);
-
-			XmlSerializer serializer = new XmlSerializer(typeof(PrivateSettings));
-			StreamWriter fw = new StreamWriter(path);
-			serializer.Serialize(fw, this);
-			fw.Close();
-		}
+		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
 		#endregion
 	}
 
 	[Serializable]
 	public class VoiceModConfig
 	{
-		private const string CONFIGFILE = "VoiceModConfig.xml";
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "VoiceModConfig.xml");
 		private static VoiceModConfig m_Instance;
 		public static VoiceModConfig GetInstance()
 		{
@@ -170,11 +166,11 @@ namespace BasicTwitchSoundPlayer
 
 		private static VoiceModConfig LoadSettings()
 		{
-			if (File.Exists(CONFIGFILE))
+			if (File.Exists(GetConfigPath()))
 			{
 				VoiceModConfig obj;
 				XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
-				FileStream fs = new FileStream(CONFIGFILE, FileMode.Open);
+				FileStream fs = new FileStream(GetConfigPath(), FileMode.Open);
 				obj = (VoiceModConfig)serializer.Deserialize(fs);
 				fs.Close();
 				return obj;
@@ -186,7 +182,7 @@ namespace BasicTwitchSoundPlayer
 		public void Save()
 		{
 			XmlSerializer serializer = new XmlSerializer(typeof(VoiceModConfig));
-			StreamWriter fw = new StreamWriter(CONFIGFILE);
+			StreamWriter fw = new StreamWriter(GetConfigPath());
 			serializer.Serialize(fw, this);
 			fw.Close();
 		}
@@ -273,6 +269,119 @@ namespace BasicTwitchSoundPlayer
 					RewardDescription = this.RewardDescription
 				};
 			}
+		}
+	}
+
+	[Serializable]
+	public class AIConfig
+	{
+		[Serializable]
+		public class FilterSet
+		{
+			public AISafetySettingsValues Harassment { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Hate { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Sexually_Explicit { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Dangerous_Content { get; set; } = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			public AISafetySettingsValues Civic_Integrity { get; set; } = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE;
+		}
+
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Config.xml");
+		public static string GetAIHistoryPath(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_History", username + ".xml");
+
+		private static AIConfig m_Instance;
+		public static AIConfig GetInstance()
+		{
+			if (m_Instance == null)
+				m_Instance = LoadSettings();
+
+			return m_Instance;
+		}
+
+		public EncryptedString ApiKey { get; set; } = "";
+		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
+		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
+		public FilterSet FilterSet_Streamer = new FilterSet()
+		{
+			Harassment = AISafetySettingsValues.BLOCK_NONE,
+			Hate = AISafetySettingsValues.BLOCK_NONE,
+			Sexually_Explicit = AISafetySettingsValues.BLOCK_NONE,
+			Dangerous_Content = AISafetySettingsValues.BLOCK_NONE,
+			Civic_Integrity = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE,
+		};
+		public string Instruction_User { get; set; } = "The user is {0}\nThe responses are always 200-450 characters long.";
+		public int TokenLimit_User { get; set; } = 8096;
+		public FilterSet FilterSet_User = new FilterSet()
+		{
+			Harassment = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Hate = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Sexually_Explicit = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Dangerous_Content = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
+			Civic_Integrity = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE,
+		};
+
+		public string Model { get; set; } = "models/gemini-2.0-flash-exp";
+		public string TwitchAwardID { get; set; } = "";
+
+		private static AIConfig LoadSettings() => XML_Utils.Load(GetConfigPath(), new AIConfig());
+
+		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
+
+		public SafetySettingsCategory[] GetSafetySettingsStreamer()
+		{
+			return new SafetySettingsCategory[]
+			{
+				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_Streamer.Harassment),
+				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_Streamer.Hate),
+				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_Streamer.Sexually_Explicit),
+				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_Streamer.Dangerous_Content),
+				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_Streamer.Civic_Integrity),
+			};
+		}
+
+		public SafetySettingsCategory[] GetSafetySettingsGeneral()
+		{
+			return new SafetySettingsCategory[]
+			{
+				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_User.Harassment),
+				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_User.Hate),
+				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_User.Sexually_Explicit),
+				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_User.Dangerous_Content),
+				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_User.Civic_Integrity),
+			};
+		}
+
+		public GeminiMessage GetInstruction(string username, bool isStreamer, bool isLive, string category)
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
+			if(!isStreamer)
+				sb.AppendLine("The user is " + username);
+
+			sb.AppendLine("");
+			sb.AppendLine($"The current date is {DateTime.Now.ToShortDateString()}");
+			sb.AppendLine($"The current local time is {DateTime.Now.ToShortTimeString()}");
+			sb.AppendLine($"The current UTC time {DateTime.UtcNow.ToShortTimeString()}");
+
+			if (isLive)
+			{
+				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}");
+			}
+			else
+			{
+				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is currently not streaming any game.");
+			}
+
+			return new GeminiMessage()
+			{
+				role = Role.user,
+				parts = new GeminiMessagePart[]
+				{
+					new GeminiMessagePart()
+					{
+						text = sb.ToString()
+					}
+				}
+			};
 		}
 	}
 }

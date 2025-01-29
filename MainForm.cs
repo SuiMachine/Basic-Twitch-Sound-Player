@@ -15,7 +15,8 @@ namespace BasicTwitchSoundPlayer
 		ModCommand,
 		SoundCommand,
 		VoiceMod,
-		WebSocket
+		WebSocket,
+		GeminiAI
 	}
 
 	public partial class MainForm : Form
@@ -29,6 +30,7 @@ namespace BasicTwitchSoundPlayer
 		private char PrefixCharacter = '-';
 		Thread TwitchBotThread;
 		SoundDB soundDb;
+		GeminiAI AI;
 		public static TwitchSocket TwitchSocket { get; private set; }
 		WebSocketsListener webSockets;
 
@@ -43,6 +45,7 @@ namespace BasicTwitchSoundPlayer
 			var settings = PrivateSettings.GetInstance();
 			webSockets = new WebSocketsListener();
 			TwitchSocket = new TwitchSocket();
+			AI = new GeminiAI();
 			UpdateColors();
 			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
 			int valrr = Convert.ToInt32(100 * settings.Volume);
@@ -65,6 +68,10 @@ namespace BasicTwitchSoundPlayer
 			TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
 			TwitchBotThread.Start();
 			TwitchSocket.OnChannelPointsRedeem += OnRedeemUpdatedReceived;
+			if (AI.IsConfigured())
+			{
+				AI.Register();
+			}
 		}
 
 		#region ThreadSafeFunctions
@@ -219,9 +226,10 @@ namespace BasicTwitchSoundPlayer
 			if (res == DialogResult.OK)
 			{
 				settings.TwitchServer = form.Server;
-				settings.TwitchUsername = form.Username;
-				settings.TwitchPassword = form.Password;
-				settings.TwitchChannelToJoin = form.ChannelToJoin;
+				settings.UserName = form.Username;
+				settings.UserAuth = form.UserAuth;
+				settings.BotUsername = form.BotName;
+				settings.BotAuth = form.BotAuth;
 				settings.Debug_mode = form.DebugMode;
 				settings.WebSocketsServerPort = form.WebsocketPort;
 				settings.RunWebSocketsServer = form.RunWebsocket;
@@ -376,6 +384,16 @@ namespace BasicTwitchSoundPlayer
 		{
 			SettingsForms.VoiceModIntegrationForm form = new SettingsForms.VoiceModIntegrationForm();
 			var result = form.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+
+			}
+		}
+
+		private void GeminiAIToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SettingsForms.AI_Integration_Form ai_form = new SettingsForms.AI_Integration_Form();
+			var result = ai_form.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 

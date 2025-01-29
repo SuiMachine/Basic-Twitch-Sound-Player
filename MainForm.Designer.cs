@@ -49,6 +49,7 @@
 			this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.geminiAIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -151,6 +152,7 @@
 			// soundsToolStripMenuItem
 			// 
 			this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.geminiAIToolStripMenuItem,
             this.soundSettings,
             this.voiceModSettings});
 			this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
@@ -226,6 +228,13 @@
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
 			// 
+			// geminiAIToolStripMenuItem
+			// 
+			this.geminiAIToolStripMenuItem.Name = "geminiAIToolStripMenuItem";
+			this.geminiAIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.geminiAIToolStripMenuItem.Text = "GeminiAI";
+			this.geminiAIToolStripMenuItem.Click += new System.EventHandler(this.GeminiAIToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,6 +282,7 @@
         private System.Windows.Forms.ToolStripMenuItem showProgramToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem voiceModSettings;
+		private System.Windows.Forms.ToolStripMenuItem geminiAIToolStripMenuItem;
 	}
 }
 

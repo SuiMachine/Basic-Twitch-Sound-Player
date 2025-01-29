@@ -1,5 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
 using BasicTwitchSoundPlayer.SoundStorage;
+using BasicTwitchSoundPlayer.Structs.Gemini;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -30,17 +31,21 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public class ChannelPointRedeemRequest
 		{
+			public string userName;
 			public string userId;
 			public string rewardId;
 			public string redemptionId;
 			public RedemptionStates state;
+			public string userInput;
 
-			public ChannelPointRedeemRequest(string userId, string rewardId, string redemptionId, RedemptionStates state)
+			public ChannelPointRedeemRequest(string userName, string userId, string rewardId, string redemptionId, RedemptionStates state, string userInput)
 			{
+				this.userName = userName;
 				this.userId = userId;
 				this.rewardId = rewardId;
 				this.redemptionId = redemptionId;
 				this.state = state;
+				this.userInput = userInput;
 			}
 		}
 
@@ -111,17 +116,18 @@ namespace BasicTwitchSoundPlayer.IRC
 
 
 		private string HELIXURI { get; set; }
-		private string TwitchAuthy { get; set; }
 		private string Channel { get; set; }
 		public string BroadcasterID { get; set; }
+		public bool IsLive { get; private set; } = false;
+		public string GameID { get; private set; } = "";
+		public string GameTitle { get; private set; } = "";
 		public Task SubscribingToEvents { get; internal set; }
 		public List<ChannelReward> CachedRewards { get; internal set; }
 
 		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
-		public KrakenConnections(string Channel, string TwitchAuthy)
+		public KrakenConnections(string Channel)
 		{
-			this.TwitchAuthy = TwitchAuthy;
 			this.Channel = Channel;
 			HELIXURI = "https://api.twitch.tv/helix/";
 		}
@@ -555,8 +561,57 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
+		internal async Task<ChannelReward> CreateOrUpdateReward(string rewardID = "")
+		{
+			if (CachedRewards == null)
+				return null;
 
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
 
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return null;
+
+			ChannelReward currentReward = CachedRewards.Find(x => x.id == rewardID); ;
+
+			if (currentReward != null)
+			{
+				return currentReward;
+			}
+			else
+			{
+				string jObject = new JObject()
+				{
+					["title"] = "Ask AI",
+					["cost"] = 10_000,
+					["is_enabled"] = true.ToString().ToLower(),
+					["prompt"] = "Ask or write message to AI",
+					["is_user_input_required"] = "true",
+					["should_redemptions_skip_request_queue"] = "false",
+					["is_global_cooldown_enabled"] = "true",
+					["global_cooldown_seconds"] = "600",
+				}.ToString();
+
+				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				if (response != "")
+				{
+					JObject jReader = JObject.Parse(response);
+					var dataNode = jReader["data"].First;
+					if (dataNode["id"] != null)
+					{
+						var newReward = dataNode.ToObject<ChannelReward>();
+						return newReward;
+					}
+				}
+			}
+			return null;
+		}
 
 		private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false, bool returnErrorCode = false)
 		{
@@ -566,9 +621,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
 				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
 				else
-					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
 				request.Timeout = 5000;
 				request.Method = "GET";
@@ -604,9 +659,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
 				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
 				else
-					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
 
 
@@ -639,9 +694,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
 				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + TwitchAuthy;
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
 				else
-					request.Headers["Authorization"] = "Bearer " + TwitchAuthy;
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
 				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
 				{
@@ -747,6 +802,90 @@ namespace BasicTwitchSoundPlayer.IRC
 			CachedRewards = list;
 			return list;
 
+		}
+
+		public async Task GetStreamerStatus()
+		{
+			string res = await GetNewUpdateAsync("streams", "?user_login=" + Channel, true);
+			if(!string.IsNullOrEmpty(res))
+			{
+				try
+				{
+					var response = JObject.Parse(res);
+					if (response["data"] != null && response["data"].Children().Count() > 0)
+					{
+						var dataNode = response["data"].First;
+						if (dataNode["title"] != null)
+						{
+							this.IsLive = true;
+
+							if (dataNode["type"] != null)
+							{
+								var streamType = dataNode["type"].ToString();
+								if (streamType == "live")
+								{
+									this.IsLive = true;
+								}
+								else
+								{
+									this.IsLive = false;
+									this.GameID = "";
+									this.GameTitle = "";
+									MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
+								}
+							}
+
+							if (dataNode["game_id"] != null)
+							{
+								string newGameId = dataNode["game_id"].ToString();
+								if(newGameId != GameID)
+								{
+									GameTitle = await GetGameTitleFromID(newGameId);
+									if(GameTitle == "ul")
+									{
+										GameTitle = "";
+									}
+									GameID = newGameId;
+								}
+
+								MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is online, streaming {GameTitle}.", LineType.IrcCommand);
+								return;
+							}
+							else
+							{
+								MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
+							}
+						}
+					}
+
+					this.IsLive = false;
+					this.GameID = "";
+					this.GameTitle = "";
+					MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
+				}
+				catch (Exception e)
+				{
+					MainForm.Instance.ThreadSafeAddPreviewText("Error trying to parse Json when doing stream update request: " + e.Message, LineType.IrcCommand);
+					this.IsLive = false;
+					this.GameID = "";
+					this.GameTitle = "";
+				}
+			}
+		}
+
+		private async Task<string> GetGameTitleFromID(string newGameId)
+		{
+			string res = await GetNewUpdateAsync("games", "?id=" + newGameId, true);
+			if (string.IsNullOrEmpty(res))
+				return "";
+
+			JObject jObjectNode = JObject.Parse(res);
+			JToken dataNode = jObjectNode["data"].First;
+			if (dataNode["name"] != null)
+			{
+				return dataNode["name"].ToString();
+			}
+			return "";
 		}
 	}
 }

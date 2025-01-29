@@ -276,13 +276,13 @@
 			// databaseEditorToolStripMenuItem
 			// 
 			this.databaseEditorToolStripMenuItem.Name = "databaseEditorToolStripMenuItem";
-			this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.databaseEditorToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
 			this.databaseEditorToolStripMenuItem.Text = "Sounds";
 			// 
 			// voiceModSettings
 			// 
 			this.voiceModSettings.Name = "voiceModSettings";
-			this.voiceModSettings.Size = new System.Drawing.Size(180, 22);
+			this.voiceModSettings.Size = new System.Drawing.Size(127, 22);
 			this.voiceModSettings.Text = "VoiceMod";
 			// 
 			// tableLayoutPanel7

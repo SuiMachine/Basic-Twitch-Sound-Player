@@ -16,16 +16,16 @@ namespace BasicTwitchSoundPlayer
 
 		public async Task CreateSessionAndSocket()
 		{
-			while (!iRCBot.BotRunning || iRCBot.irc == null || !iRCBot.irc.ConnectedStatus)
+			while (!iRCBot.BotRunning || iRCBot.Irc == null || !iRCBot.Irc.ConnectedStatus)
 				await Task.Delay(2500);
-			var rewards = await iRCBot.irc.krakenConnection.GetRewardsList();
+			var rewards = await iRCBot.Irc.KrakenConnection.GetRewardsList();
 
 			TwitchPubSubClient = new TwitchPubSub();
 			TwitchPubSubClient.OnPubSubServiceConnected += TwitchPubSubClient_OnPubSubServiceConnected;
 			TwitchPubSubClient.OnListenResponse += TwitchPubSubClient_OnListenResponse;
 			TwitchPubSubClient.OnChannelPointsRewardRedeemed += TwitchPubSubClient_OnChannelPointsRewardRedeemed;
 
-			TwitchPubSubClient.ListenToChannelPoints(iRCBot.irc.krakenConnection.BroadcasterID);
+			TwitchPubSubClient.ListenToChannelPoints(iRCBot.Irc.KrakenConnection.BroadcasterID);
 			TwitchPubSubClient.Connect();
 		}
 
@@ -34,12 +34,12 @@ namespace BasicTwitchSoundPlayer
 			if (!Enum.TryParse(e.RewardRedeemed.Redemption.Status, true, out KrakenConnections.RedemptionStates state))
 				return;
 
-			OnChannelPointsRedeem?.Invoke(new ChannelPointRedeemRequest(e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state));
+			OnChannelPointsRedeem?.Invoke(new ChannelPointRedeemRequest(e.RewardRedeemed.Redemption.User.DisplayName, e.RewardRedeemed.Redemption.User.Id, e.RewardRedeemed.Redemption.Reward.Id, e.RewardRedeemed.Redemption.Id, state, e.RewardRedeemed.Redemption.UserInput));
 		}
 
 		private void TwitchPubSubClient_OnPubSubServiceConnected(object sender, EventArgs e)
 		{
-			var auth = "oauth:" + PrivateSettings.GetInstance().TwitchPassword;
+			var auth = "oauth:" + PrivateSettings.GetInstance().UserAuth;
 			TwitchPubSubClient.SendTopics(oauth: auth);
 		}
 
@@ -71,7 +71,7 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			redeem.state = status;
-			iRCBot.irc.krakenConnection.UpdateRedemptionStatus(redeem.rewardId, new string[]
+			iRCBot.Irc.KrakenConnection.UpdateRedemptionStatus(redeem.rewardId, new string[]
 			{
 				redeem.redemptionId,
 			}, status);

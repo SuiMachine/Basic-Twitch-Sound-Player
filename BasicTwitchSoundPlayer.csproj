@@ -151,12 +151,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EncryptedString.cs" />
     <Compile Include="Extensions\ColorWrapper.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\Numbers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
+    <Compile Include="GeminiAI.cs" />
+    <Compile Include="HttpWebRequestHandlers.cs" />
     <Compile Include="Interfaces\IVoiceModeRewardBindingInterface.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="Logger.cs" />
@@ -171,6 +174,12 @@
     <Compile Include="Mathf.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsForms\AI_Integration_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\AI_Integration_Form.Designer.cs">
+      <DependentUpon>AI_Integration_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForms\ColorSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,11 +232,14 @@
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="SoundEntry.cs" />
+    <Compile Include="Structs\Gemini\GeminiContent.cs" />
+    <Compile Include="Structs\Gemini\GeminiMessage.cs" />
     <Compile Include="TwitchSocket.cs" />
     <Compile Include="VoiceModHandling.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\TwitchRightsEnum.cs" />
     <Compile Include="WebSocketsServer.cs" />
+    <Compile Include="XML_Utils.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -241,6 +253,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SettingsForms\AI_Integration_Form.resx">
+      <DependentUpon>AI_Integration_Form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\ColorSettingsForm.resx">
       <DependentUpon>ColorSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
