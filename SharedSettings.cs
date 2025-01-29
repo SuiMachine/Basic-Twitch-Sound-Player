@@ -100,11 +100,11 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement]
 		public string UserName { get; set; }
 		[XmlElement]
-		public string UserAuth { get; set; }
+		public EncryptedString UserAuth { get; set; }
 		[XmlElement]
 		public string BotUsername { get; set; }
 		[XmlElement]
-		public string BotAuth { get; set; }
+		public EncryptedString BotAuth { get; set; }
 		[XmlElement]
 		public bool RunWebSocketsServer { get; set; }
 		[XmlElement]
@@ -296,7 +296,7 @@ namespace BasicTwitchSoundPlayer
 			return m_Instance;
 		}
 
-		public string ApiKey { get; set; } = "";
+		public EncryptedString ApiKey { get; set; } = "";
 		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
 		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
 		public FilterSet FilterSet_Streamer = new FilterSet()
