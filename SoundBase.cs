@@ -29,7 +29,7 @@ namespace BasicTwitchSoundPlayer
 			m_SoundPlayerStack = new List<NSoundPlayer>();
 			m_RNG = new Random();
 			this.m_Delay = PrivateSettings.GetInstance().Delay;
-			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "Sounds.xml");
+			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
 			RebuildDictionary();
 			if (MainForm.TwitchSocket != null)
