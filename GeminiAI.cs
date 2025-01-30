@@ -58,6 +58,13 @@ namespace BasicTwitchSoundPlayer
 			//TODO: There is some bug with registering it, probably order of execution :-/
 			IsRegistered = true;
 			MainForm.TwitchSocket.OnChannelPointsRedeem += PointsRedeem;
+
+			//Safety tripping test
+/*			Task.Run(async () =>
+			{
+				var newr = new ChannelPointRedeemRequest("userName", "69", "69", "69", RedemptionStates.FULFILLED, "What is 69? Make it as lewd as possible.");
+				await GetResponse(newr);
+			});*/
 		}
 
 		public void Unregister()
@@ -96,7 +103,7 @@ namespace BasicTwitchSoundPlayer
 
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle);	
+					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle);
 				}
 				else
 				{
@@ -110,7 +117,7 @@ namespace BasicTwitchSoundPlayer
 						UserContents.Add(request.userId, content);
 					}
 
-					if(content.StoragePath == null)
+					if (content.StoragePath == null)
 						content.StoragePath = AIConfig.GetAIHistoryPath(request.userId);
 					tokenLimit = aiConfig.TokenLimit_User;
 					content.safetySettings = aiConfig.GetSafetySettingsGeneral();
@@ -144,54 +151,70 @@ namespace BasicTwitchSoundPlayer
 					GeminiResponse response = JsonConvert.DeserializeObject<GeminiResponse>(result);
 					content.generationConfig.TokenCount = response.usageMetadata.totalTokenCount;
 
-					if (response.candidates.Length > 0 && response.candidates.Last().content.parts.Length > 0)
+					if (response.candidates.Length > 0)
 					{
-						var lastResponse = response.candidates.Last().content;
-						content.contents.Add(lastResponse);
-						var text = lastResponse.parts.Last().text;
-						List<string> splitText = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-						for (int i = splitText.Count - 1; i >= 0; i--)
+						var lastFullResponse = response.candidates.Last();
+						string finishReason = lastFullResponse.finishReason;
+						if (finishReason == "STOP")
 						{
-							var line = splitText[i].Trim();
-							if (line.StartsWith("*") && line.StartsWith("*"))
+							var lastResponse = lastFullResponse.content;
+							content.contents.Add(lastResponse);
+							var text = lastResponse.parts.Last().text;
+							List<string> splitText = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+							for (int i = splitText.Count - 1; i >= 0; i--)
 							{
-								var count = line.Count(x => x == '*');
-								if (count == 2)
+								var line = splitText[i].Trim();
+								if (line.StartsWith("*") && line.StartsWith("*"))
 								{
-									splitText.RemoveAt(i);
-									continue;
+									var count = line.Count(x => x == '*');
+									if (count == 2)
+									{
+										splitText.RemoveAt(i);
+										continue;
+									}
+								}
+
+								if (line.Contains("*"))
+								{
+									line = CleanDescriptors(line);
+									splitText[i] = line;
 								}
 							}
 
-							if (line.Contains("*"))
+							text = string.Join(" ", splitText);
+							irc.SendChatMessage($"@{request.userName}: {text}");
+
+							while (content.generationConfig.TokenCount > tokenLimit)
 							{
-								line = CleanDescriptors(line);
-								splitText[i] = line;
+								if (content.contents.Count > 2)
+								{
+									//This isn't weird - we want to make sure we start from user message
+									if (content.contents[0].role == Role.user)
+									{
+										content.contents.RemoveAt(0);
+									}
+
+									if (content.contents[0].role == Role.model)
+									{
+										content.contents.RemoveAt(0);
+									}
+								}
 							}
+
+							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
+							XML_Utils.Save(content.StoragePath, content);
 						}
-
-						text = string.Join(" ", splitText);
-						irc.SendChatMessage($"@{request.userName}: {text}");
-
-						while (content.generationConfig.TokenCount > tokenLimit)
+						else
 						{
-							if (content.contents.Count > 2)
-							{
-								//This isn't weird - we want to make sure we start from user message
-								if (content.contents[0].role == Role.user)
-								{
-									content.contents.RemoveAt(0);
-								}
+							content.contents.RemoveAt(content.contents.Count - 1);
+							if (finishReason == "SAFETY")
+								irc.SendChatMessage($"@{request.userName}: AI tripped a safety setting.");
+							else
+								irc.SendChatMessage($"@{request.userName}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
 
-								if (content.contents[0].role == Role.model)
-								{
-									content.contents.RemoveAt(0);
-								}
-							}
+							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
+							XML_Utils.Save(content.StoragePath, content);
 						}
-
-						irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
-						XML_Utils.Save(content.StoragePath, content);
 					}
 					else
 					{
