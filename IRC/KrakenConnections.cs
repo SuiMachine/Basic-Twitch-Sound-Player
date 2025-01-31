@@ -121,6 +121,8 @@ namespace BasicTwitchSoundPlayer.IRC
 		public bool IsLive { get; private set; } = false;
 		public string GameID { get; private set; } = "";
 		public string GameTitle { get; private set; } = "";
+		public string StreamTitle { get; private set; } = "";
+
 		public Task SubscribingToEvents { get; internal set; }
 		public List<ChannelReward> CachedRewards { get; internal set; }
 
@@ -825,10 +827,12 @@ namespace BasicTwitchSoundPlayer.IRC
 								if (streamType == "live")
 								{
 									this.IsLive = true;
+									this.StreamTitle = dataNode["title"].ToString();
 								}
 								else
 								{
 									this.IsLive = false;
+									this.StreamTitle = "";
 									this.GameID = "";
 									this.GameTitle = "";
 									MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);

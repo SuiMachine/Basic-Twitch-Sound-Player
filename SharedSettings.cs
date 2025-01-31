@@ -350,7 +350,7 @@ namespace BasicTwitchSoundPlayer
 			};
 		}
 
-		public GeminiMessage GetInstruction(string username, bool isStreamer, bool isLive, string category)
+		public GeminiMessage GetInstruction(string username, bool isStreamer, bool isLive, string category, string stream_title)
 		{
 			var sb = new StringBuilder();
 			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
@@ -364,7 +364,7 @@ namespace BasicTwitchSoundPlayer
 
 			if (isLive)
 			{
-				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}.");
+				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}.\nThe stream title is {stream_title}.");
 			}
 			else
 			{

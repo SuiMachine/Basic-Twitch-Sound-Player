@@ -103,7 +103,7 @@ namespace BasicTwitchSoundPlayer
 
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle);
+					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle, irc.KrakenConnection.StreamTitle);
 				}
 				else
 				{
@@ -121,7 +121,7 @@ namespace BasicTwitchSoundPlayer
 						content.StoragePath = AIConfig.GetAIHistoryPath(request.userId);
 					tokenLimit = aiConfig.TokenLimit_User;
 					content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle);
+					content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle, irc.KrakenConnection.StreamTitle);
 				}
 
 				if (content == null)
