@@ -212,7 +212,7 @@ namespace BasicTwitchSoundPlayer
 							else
 								irc.SendChatMessage($"@{request.userName}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
 
-							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
+							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 							XML_Utils.Save(content.StoragePath, content);
 						}
 					}
