@@ -23,7 +23,7 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 
 		[JsonIgnore]
 		[NonSerialized]
-		public string StoragePath;
+		[XmlIgnore] public string StoragePath;
 		public List<GeminiMessage> contents;
 		[XmlIgnore] public SafetySettingsCategory[] safetySettings;
 		[XmlIgnore] public GeminiMessage systemInstruction;

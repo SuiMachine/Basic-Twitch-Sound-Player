@@ -60,11 +60,11 @@ namespace BasicTwitchSoundPlayer
 			MainForm.TwitchSocket.OnChannelPointsRedeem += PointsRedeem;
 
 			//Safety tripping test
-/*			Task.Run(async () =>
-			{
-				var newr = new ChannelPointRedeemRequest("userName", "69", "69", "69", RedemptionStates.FULFILLED, "What is 69? Make it as lewd as possible.");
-				await GetResponse(newr);
-			});*/
+			/*			Task.Run(async () =>
+						{
+							var newr = new ChannelPointRedeemRequest("userName", "69", "69", "69", RedemptionStates.FULFILLED, "What is 69? Make it as lewd as possible.");
+							await GetResponse(newr);
+						});*/
 		}
 
 		public void Unregister()
@@ -97,7 +97,9 @@ namespace BasicTwitchSoundPlayer
 				OldIRCClient irc = MainForm.Instance.TwitchBot.Irc;
 
 				int tokenLimit = 1000;
-				if (request.userName.ToLower() == PrivateSettings.GetInstance().UserName.ToLower())
+				var lowerCaseUserName = request.userName.ToLower();
+
+				if (lowerCaseUserName == PrivateSettings.GetInstance().UserName.ToLower() && false)
 				{
 					content = StreamerContent;
 
@@ -109,17 +111,47 @@ namespace BasicTwitchSoundPlayer
 				{
 					if (!UserContents.TryGetValue(request.userId, out content))
 					{
-						content = new GeminiContent()
+						var path = AIConfig.GetAIHistoryPath(request.userId);
+						if (File.Exists(path))
 						{
-							contents = new List<GeminiMessage>(),
-							generationConfig = new GeminiContent.GenerationConfig(),
-						};
+							content = XML_Utils.Load(path, new GeminiContent()
+							{
+								contents = new List<GeminiMessage>(),
+								generationConfig = new GeminiContent.GenerationConfig(),
+							});
+							content.StoragePath = path;
+						}
+						else
+						{
+							content = new GeminiContent()
+							{
+								contents = new List<GeminiMessage>(),
+								generationConfig = new GeminiContent.GenerationConfig(),
+							};
+						}
+
 						UserContents.Add(request.userId, content);
 					}
 
 					if (content.StoragePath == null)
 						content.StoragePath = AIConfig.GetAIHistoryPath(request.userId);
+
 					tokenLimit = aiConfig.TokenLimit_User;
+					GeminiCharacterOverride overrides = AIConfig.GetGeminiOverride(request.userName);
+					if(overrides != null)
+					{
+						content.systemInstruction = new GeminiMessage()
+						{
+							parts = new GeminiMessagePart[]
+							{
+								new GeminiMessagePart()
+								{
+									text = overrides.SystemInstruction
+								}
+							},
+							role = Role.user
+						};
+					}
 					content.safetySettings = aiConfig.GetSafetySettingsGeneral();
 					content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle, irc.KrakenConnection.StreamTitle);
 				}

@@ -180,6 +180,18 @@
     <Compile Include="SettingsForms\AI_Integration_Form.Designer.cs">
       <DependentUpon>AI_Integration_Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideAddForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideAddForm.Designer.cs">
+      <DependentUpon>UserOverrideAddForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideSelectionForm.Designer.cs">
+      <DependentUpon>UserOverrideSelectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForms\ColorSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,6 +244,7 @@
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="SoundEntry.cs" />
+    <Compile Include="Structs\Gemini\GeminiCharacterOverride.cs" />
     <Compile Include="Structs\Gemini\GeminiContent.cs" />
     <Compile Include="Structs\Gemini\GeminiMessage.cs" />
     <Compile Include="TwitchSocket.cs" />
@@ -255,6 +268,12 @@
     </Compile>
     <EmbeddedResource Include="SettingsForms\AI_Integration_Form.resx">
       <DependentUpon>AI_Integration_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForms\AI_Overrides_Forms\UserOverrideAddForm.resx">
+      <DependentUpon>UserOverrideAddForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForms\AI_Overrides_Forms\UserOverrideSelectionForm.resx">
+      <DependentUpon>UserOverrideSelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\ColorSettingsForm.resx">
       <DependentUpon>ColorSettingsForm.cs</DependentUpon>

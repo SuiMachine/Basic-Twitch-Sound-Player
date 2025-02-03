@@ -1,4 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms;
 using System;
 using System.Windows.Forms;
 
@@ -55,7 +56,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private void B_Show_UserOverrides_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Not implemented yet", "Error", MessageBoxButtons.OK);
+			var f = new UserOverrideSelectionForm();
+			f.ShowDialog();
 		}
 
 		private void B_Save_Click(object sender, EventArgs e)

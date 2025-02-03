@@ -350,9 +350,10 @@ namespace BasicTwitchSoundPlayer
 			};
 		}
 
-		public GeminiMessage GetInstruction(string username, bool isStreamer, bool isLive, string category, string stream_title)
+		public GeminiMessage GetInstruction(string username, bool isStreamer, bool? isLive, string category, string stream_title)
 		{
 			var sb = new StringBuilder();
+
 			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
 			if(!isStreamer)
 				sb.AppendLine("The user is " + username + ".");
@@ -362,13 +363,17 @@ namespace BasicTwitchSoundPlayer
 			sb.AppendLine($"The current local time is {DateTime.Now.ToShortTimeString()}.");
 			sb.AppendLine($"The current UTC time {DateTime.UtcNow.ToShortTimeString()}.");
 
-			if (isLive)
+			if(isLive.HasValue)
 			{
-				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}.\nThe stream title is {stream_title}.");
-			}
-			else
-			{
-				sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is currently not streaming any game.");
+				if (isLive.Value)
+				{
+					sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {category}.");
+					sb.AppendLine($"The stream title is {stream_title}.");
+				}
+				else
+				{
+					sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is currently not streaming any game.");
+				}
 			}
 
 			return new GeminiMessage()
@@ -382,6 +387,18 @@ namespace BasicTwitchSoundPlayer
 					}
 				}
 			};
+		}
+
+		public static GeminiCharacterOverride GetGeminiOverride(string username)
+		{
+			username = username.ToLower();
+			var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Overrides", username);
+
+			if (File.Exists(path))
+			{
+				return XML_Utils.Load<GeminiCharacterOverride>(path, null);
+			}
+			return null;
 		}
 	}
 }
