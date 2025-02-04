@@ -155,6 +155,7 @@
     <Compile Include="Extensions\ColorWrapper.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\GeminiExtensions.cs" />
     <Compile Include="Extensions\Numbers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
@@ -185,6 +186,12 @@
     </Compile>
     <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideAddForm.Designer.cs">
       <DependentUpon>UserOverrideAddForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideEdit.Designer.cs">
+      <DependentUpon>UserOverrideEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="SettingsForms\AI_Overrides_Forms\UserOverrideSelectionForm.cs">
       <SubType>Form</SubType>
@@ -271,6 +278,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\AI_Overrides_Forms\UserOverrideAddForm.resx">
       <DependentUpon>UserOverrideAddForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForms\AI_Overrides_Forms\UserOverrideEdit.resx">
+      <DependentUpon>UserOverrideEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForms\AI_Overrides_Forms\UserOverrideSelectionForm.resx">
       <DependentUpon>UserOverrideSelectionForm.cs</DependentUpon>

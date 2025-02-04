@@ -31,8 +31,8 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.List_Nicknames = new System.Windows.Forms.ListBox();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.B_Add = new System.Windows.Forms.Button();
 			this.B_Close = new System.Windows.Forms.Button();
+			this.B_Add = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.SuspendLayout();
@@ -61,6 +61,7 @@
 			this.List_Nicknames.Name = "List_Nicknames";
 			this.List_Nicknames.Size = new System.Drawing.Size(632, 409);
 			this.List_Nicknames.TabIndex = 0;
+			this.List_Nicknames.DoubleClick += new System.EventHandler(this.List_Nicknames_DoubleClick);
 			// 
 			// tableLayoutPanel2
 			// 
@@ -77,17 +78,6 @@
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(191, 29);
 			this.tableLayoutPanel2.TabIndex = 1;
 			// 
-			// B_Add
-			// 
-			this.B_Add.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.B_Add.Location = new System.Drawing.Point(29, 3);
-			this.B_Add.Name = "B_Add";
-			this.B_Add.Size = new System.Drawing.Size(75, 23);
-			this.B_Add.TabIndex = 0;
-			this.B_Add.Text = "Add";
-			this.B_Add.UseVisualStyleBackColor = true;
-			this.B_Add.Click += new System.EventHandler(this.B_Add_Click);
-			// 
 			// B_Close
 			// 
 			this.B_Close.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -98,6 +88,17 @@
 			this.B_Close.Text = "Close";
 			this.B_Close.UseVisualStyleBackColor = true;
 			this.B_Close.Click += new System.EventHandler(this.B_Close_Click);
+			// 
+			// B_Add
+			// 
+			this.B_Add.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.B_Add.Location = new System.Drawing.Point(29, 3);
+			this.B_Add.Name = "B_Add";
+			this.B_Add.Size = new System.Drawing.Size(75, 23);
+			this.B_Add.TabIndex = 0;
+			this.B_Add.Text = "Add";
+			this.B_Add.UseVisualStyleBackColor = true;
+			this.B_Add.Click += new System.EventHandler(this.B_Add_Click);
 			// 
 			// UserOverrideSelectionForm
 			// 

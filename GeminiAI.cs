@@ -99,13 +99,13 @@ namespace BasicTwitchSoundPlayer
 				int tokenLimit = 1000;
 				var lowerCaseUserName = request.userName.ToLower();
 
-				if (lowerCaseUserName == PrivateSettings.GetInstance().UserName.ToLower() && false)
+				if (lowerCaseUserName == PrivateSettings.GetInstance().UserName.ToLower())
 				{
 					content = StreamerContent;
 
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle, irc.KrakenConnection.StreamTitle);
+					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, true);
 				}
 				else
 				{
@@ -137,23 +137,19 @@ namespace BasicTwitchSoundPlayer
 						content.StoragePath = AIConfig.GetAIHistoryPath(request.userId);
 
 					tokenLimit = aiConfig.TokenLimit_User;
-					GeminiCharacterOverride overrides = AIConfig.GetGeminiOverride(request.userName);
+					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.userName));
 					if(overrides != null)
 					{
-						content.systemInstruction = new GeminiMessage()
-						{
-							parts = new GeminiMessagePart[]
-							{
-								new GeminiMessagePart()
-								{
-									text = overrides.SystemInstruction
-								}
-							},
-							role = Role.user
-						};
+						//content.systemInstruction = 
+						content.safetySettings = overrides.GetSafetyOverrides();
+						content.systemInstruction = overrides.GetFullInstruction();
 					}
-					content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive, irc.KrakenConnection.GameTitle, irc.KrakenConnection.StreamTitle);
+					else
+					{
+						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
+						content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive);
+					}
+
 				}
 
 				if (content == null)

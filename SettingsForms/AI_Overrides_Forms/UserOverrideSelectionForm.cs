@@ -25,16 +25,17 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 			var xmlFiles = Directory.GetFiles(path, "*.xml", SearchOption.TopDirectoryOnly);
 			foreach (var xmlFile in xmlFiles)
 			{
-				var fileName = Path.GetFileName(xmlFile);
+				var userName = Path.GetFileNameWithoutExtension(xmlFile);
 
-				var read = XML_Utils.Load<GeminiCharacterOverride>(xmlFile, null);
+				var read = GeminiCharacterOverride.GetOverride(xmlFile);
 				if (read == null)
 				{
 					File.Delete(xmlFile);
 					continue;
 				}
 
-				Overrides.Add(fileName, read);
+				Overrides.Add(userName, read);
+				this.List_Nicknames.Items.Add(read.Username);
 			}
 		}
 
@@ -44,18 +45,24 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 			var result = l.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
-				if (string.IsNullOrEmpty(l.Nickname))
+				var strippedNickname = l.Nickname.Trim().Trim('@');
+
+				if (string.IsNullOrEmpty(strippedNickname))
 					return;
 
-				if(Overrides.ContainsKey(l.Nickname))
+				if (Overrides.ContainsKey(strippedNickname))
 				{
 					MessageBox.Show("Nickname like this already exists in overrides!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 
-				var text = AIConfig.GetInstance().GetInstruction(l.Nickname, false, null, null, null);
-				var overrideContent = new GeminiCharacterOverride();
-				overrideContent.SystemInstruction = text.parts.FirstOrDefault().text;
+				var text = AIConfig.GetInstance().GetInstruction(strippedNickname, false, false, false);
+				var overrideContent = new GeminiCharacterOverride
+				{
+					SystemInstruction = text.parts.FirstOrDefault().text,
+					Path = GeminiCharacterOverride.GetOverridePath(strippedNickname)
+				};
+				overrideContent.Save();
 
 				Overrides.Add(l.Nickname, overrideContent);
 				this.List_Nicknames.Items.Add(l.Nickname);
@@ -65,6 +72,26 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 		private void B_Close_Click(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+
+		private void List_Nicknames_DoubleClick(object sender, EventArgs e)
+		{
+			if (this.List_Nicknames.SelectedItem == null)
+				return;
+
+			string selectedItem = (string)this.List_Nicknames.SelectedItem;
+			if (string.IsNullOrEmpty(selectedItem))
+				return;
+
+			if (!Overrides.TryGetValue(selectedItem, out GeminiCharacterOverride val))
+				return;
+
+			UserOverrideEdit f = new UserOverrideEdit(val);
+			var result = f.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				f.UserData.Save();
+			}
 		}
 	}
 }
