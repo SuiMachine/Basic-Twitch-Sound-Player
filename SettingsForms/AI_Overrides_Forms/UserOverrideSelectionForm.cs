@@ -39,7 +39,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 			}
 		}
 
-		private void B_Add_Click(object sender, EventArgs e)
+		private void List_Nicknames_Add_Click(object sender, EventArgs e)
 		{
 			var l = new UserOverrideAddForm();
 			var result = l.ShowDialog(this);
@@ -74,7 +74,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 			this.Close();
 		}
 
-		private void List_Nicknames_DoubleClick(object sender, EventArgs e)
+		private void List_Nicknames_EditElement(object sender, EventArgs e)
 		{
 			if (this.List_Nicknames.SelectedItem == null)
 				return;
@@ -91,6 +91,30 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 			if (result == DialogResult.OK)
 			{
 				f.UserData.Save();
+			}
+		}
+
+		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (this.List_Nicknames.SelectedItem == null)
+				return;
+
+			string selectedItem = (string)this.List_Nicknames.SelectedItem;
+			if (string.IsNullOrEmpty(selectedItem))
+				return;
+
+			if (Overrides.TryGetValue(selectedItem, out GeminiCharacterOverride val))
+			{
+				if (val.Path != null)
+				{
+					if (MessageBox.Show($"Are you sure you want to delete entry for: {val.Username}?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+					{
+						File.Delete(val.Path);
+						Overrides.Remove(selectedItem);
+
+						this.List_Nicknames.Items.Remove(selectedItem);
+					}
+				}
 			}
 		}
 	}

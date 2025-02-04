@@ -28,13 +28,19 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.List_Nicknames = new System.Windows.Forms.ListBox();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Close = new System.Windows.Forms.Button();
 			this.B_Add = new System.Windows.Forms.Button();
+			this.contextMenuStuff = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
+			this.contextMenuStuff.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -55,13 +61,14 @@
 			// 
 			// List_Nicknames
 			// 
+			this.List_Nicknames.ContextMenuStrip = this.contextMenuStuff;
 			this.List_Nicknames.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.List_Nicknames.FormattingEnabled = true;
 			this.List_Nicknames.Location = new System.Drawing.Point(3, 3);
 			this.List_Nicknames.Name = "List_Nicknames";
 			this.List_Nicknames.Size = new System.Drawing.Size(632, 409);
 			this.List_Nicknames.TabIndex = 0;
-			this.List_Nicknames.DoubleClick += new System.EventHandler(this.List_Nicknames_DoubleClick);
+			this.List_Nicknames.DoubleClick += new System.EventHandler(this.List_Nicknames_EditElement);
 			// 
 			// tableLayoutPanel2
 			// 
@@ -98,7 +105,36 @@
 			this.B_Add.TabIndex = 0;
 			this.B_Add.Text = "Add";
 			this.B_Add.UseVisualStyleBackColor = true;
-			this.B_Add.Click += new System.EventHandler(this.B_Add_Click);
+			this.B_Add.Click += new System.EventHandler(this.List_Nicknames_Add_Click);
+			// 
+			// contextMenuStuff
+			// 
+			this.contextMenuStuff.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.addToolStripMenuItem,
+			this.deleteToolStripMenuItem,
+			this.cancelToolStripMenuItem});
+			this.contextMenuStuff.Name = "contextMenuStuff";
+			this.contextMenuStuff.Size = new System.Drawing.Size(181, 92);
+			// 
+			// addToolStripMenuItem
+			// 
+			this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+			this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.addToolStripMenuItem.Text = "Add";
+			this.addToolStripMenuItem.Click += new System.EventHandler(this.List_Nicknames_Add_Click);
+			// 
+			// deleteToolStripMenuItem
+			// 
+			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.deleteToolStripMenuItem.Text = "Delete";
+			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+			// 
+			// cancelToolStripMenuItem
+			// 
+			this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
+			this.cancelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.cancelToolStripMenuItem.Text = "Cancel";
 			// 
 			// UserOverrideSelectionForm
 			// 
@@ -111,6 +147,7 @@
 			this.Load += new System.EventHandler(this.UserOverrideSelectionForm_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);
+			this.contextMenuStuff.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -122,5 +159,9 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
 		private System.Windows.Forms.Button B_Close;
 		private System.Windows.Forms.Button B_Add;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStuff;
+		private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cancelToolStripMenuItem;
 	}
 }
