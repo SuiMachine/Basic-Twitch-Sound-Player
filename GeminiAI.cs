@@ -49,6 +49,7 @@ namespace BasicTwitchSoundPlayer
 				systemInstruction = null,
 				safetySettings = null,
 			});
+			StreamerContent.StoragePath = path;
 
 			return true;
 		}
@@ -138,7 +139,7 @@ namespace BasicTwitchSoundPlayer
 
 					tokenLimit = aiConfig.TokenLimit_User;
 					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.userName));
-					if(overrides != null)
+					if (overrides != null)
 					{
 						//content.systemInstruction = 
 						content.safetySettings = overrides.GetSafetyOverrides();
@@ -186,6 +187,12 @@ namespace BasicTwitchSoundPlayer
 						if (finishReason == "STOP")
 						{
 							var lastResponse = lastFullResponse.content;
+							foreach (var part in lastFullResponse.content.parts)
+							{
+								part.text = part.text.Trim('\n', '\r', ' ');
+								part.text = ClearUpBackwardSlashCharacters(part.text);
+							}
+
 							content.contents.Add(lastResponse);
 							var text = lastResponse.parts.Last().text;
 							List<string> splitText = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -256,6 +263,13 @@ namespace BasicTwitchSoundPlayer
 				MainForm.Instance.TwitchBot.Irc.SendChatMessage($"Failed to get a response. Something was written in log. Sui help! :(");
 				MainForm.Instance.ThreadSafeAddPreviewText($"There was an error trying to do AI: {ex}", LineType.GeminiAI);
 			}
+		}
+
+		private string ClearUpBackwardSlashCharacters(string text)
+		{
+			text = text.Replace("\\*", "*");
+			text = text.Replace("\\_", "_");
+			return text;
 		}
 
 		private string CleanDescriptors(string text)
