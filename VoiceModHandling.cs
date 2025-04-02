@@ -7,9 +7,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using TwitchLib.PubSub;
 using WebSocketSharp;
 using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
 
@@ -17,21 +15,18 @@ namespace BasicTwitchSoundPlayer
 {
 	public class VoiceModHandling : IDisposable
 	{
+		[DebuggerDisplay(nameof(VoiceInformation) + " - {FriendlyName}")]
 		public class VoiceInformation
 		{
 			public string ID { get; private set; } = "";
 			public string FriendlyName { get; private set; } = "";
 			public bool IsFavourite { get; private set; } = false;
-			public bool IsEnabled { get; private set; } = false;
-			public JToken Parameters { get; set; } = null;
 
-			public VoiceInformation(string ID, string FriendlyName, bool IsFavourite, bool IsEnabled, JToken Parameters)
+			public VoiceInformation(string ID, string FriendlyName, bool IsFavourite)
 			{
 				this.ID = ID;
 				this.FriendlyName = FriendlyName;
 				this.IsFavourite = IsFavourite;
-				this.IsEnabled = IsEnabled;
-				this.Parameters = Parameters;
 			}
 		}
 
@@ -234,38 +229,6 @@ namespace BasicTwitchSoundPlayer
 					{
 						//Just don't do anything... unless....
 					}
-					else if (value == "getVoices")
-					{
-						var voices = json["payload"]?["voices"];
-						if (voices != null)
-						{
-							VoicesAvailable.Clear();
-							foreach (var voice in voices)
-							{
-								var id = voice["id"].Value<string>();
-								var friendlyName = voice["friendlyName"].Value<string>();
-								var favourite = voice["favorited"].Value<bool>();
-								var enabled = voice["isEnabled"].Value<bool>();
-
-								var parameters = voice["parameters"];
-
-								var information = new VoiceInformation(id, friendlyName, favourite, enabled, parameters);
-								if (!VoicesAvailable.TryGetValue(friendlyName, out VoiceInformation voiceInformation))
-									VoicesAvailable.Add(friendlyName, information);
-								else
-								{
-									if (voiceInformation.Parameters == null || voiceInformation.Parameters.Count() == 0)
-									{
-										voiceInformation.Parameters = parameters;
-									}
-								}
-							}
-							MainForm.Instance.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.VoiceMod);
-							OnListOfVoicesReceived?.Invoke();
-						}
-						else
-							MainForm.Instance.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.VoiceMod);
-					}
 				}
 				else if (json["actionType"] != null)
 				{
@@ -273,15 +236,13 @@ namespace BasicTwitchSoundPlayer
 					if (value == "toggleVoiceChanger")
 					{
 						var newValue = json["actionObject"]?["value"];
-						if (newValue != null && newValue.Value<bool>() == true && currentVoice == "nofx")
+						if (newValue != null && newValue.Value<bool>() == true)
 						{
-							var disableRequest = new JObject()
-							{
-								{ "action", "toggleVoiceChanger" },
-								{ "id", Guid.NewGuid().ToString() },
-								{ "payload", new JObject() }
-							};
-							VoiceModSocket.Send(disableRequest.ToString());
+							currentStatus = true;
+						}
+						else
+						{
+							currentStatus = false;
 						}
 					}
 					else if (value == "getBitmap")
@@ -297,6 +258,32 @@ namespace BasicTwitchSoundPlayer
 							}
 						}
 						awaitingBitmap = default;
+					}
+					else if (value == "getVoices")
+					{
+						var voices = json["payload"]?["voices"];
+						if (voices != null)
+						{
+							VoicesAvailable.Clear();
+							foreach (var voice in voices)
+							{
+								var id = voice["id"].Value<string>();
+								var friendlyName = voice["friendlyName"].Value<string>();
+								var favourite = voice["favorited"].Value<bool>();
+
+								var information = new VoiceInformation(id, friendlyName, favourite);
+								if (!VoicesAvailable.TryGetValue(friendlyName, out VoiceInformation voiceInformation))
+									VoicesAvailable.Add(friendlyName, information);
+								else
+								{
+									Debug.WriteLine("Duplicate entry - skipping!");
+								}
+							}
+							MainForm.Instance.ThreadSafeAddPreviewText($"Received voices from VoiceMod - a total of {VoicesAvailable.Count}!", LineType.VoiceMod);
+							OnListOfVoicesReceived?.Invoke();
+						}
+						else
+							MainForm.Instance.ThreadSafeAddPreviewText($"Received response to get voices, but it was empty!", LineType.VoiceMod);
 					}
 				}
 			}
@@ -367,17 +354,6 @@ namespace BasicTwitchSoundPlayer
 					};
 					VoiceModSocket.Send(enableRequest.ToString());
 				}
-				var message = new JObject()
-				{
-					{ "action", "loadVoice" },
-					{ "id", Guid.NewGuid().ToString() },
-					{ "payload", new JObject()
-						{
-							{ "voiceID", "nofx" }
-						}
-					}
-				};
-				VoiceModSocket.Send(message.ToString());
 
 				currentVoice = "nofx";
 				if (timer != null)
