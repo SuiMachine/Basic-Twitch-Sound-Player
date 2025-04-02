@@ -289,7 +289,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				if (voice.ID == "nofx")
 					continue;
 
-				if (voice.IsEnabled && voice.IsFavourite)
+				if (voice.IsFavourite)
 				{
 					var find = config.Rewards.Find(x => x.VoiceModFriendlyName == voice.FriendlyName);
 					if (find == null)
@@ -299,7 +299,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 						{
 							RewardTitle = $"Set voice to \"{voice.FriendlyName}\"",
 							VoiceModFriendlyName = voice.FriendlyName,
-							Enabled = voice.IsEnabled,
+							Enabled = true,
 							RewardID = "",
 							RewardCooldown = 1,
 							RewardDuration = duration,
