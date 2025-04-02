@@ -1,6 +1,6 @@
 ﻿Basic Twitch Sound Player
 =====================
-Basic Sound player for Twitch written in C# is a lightweight sound player which also allows for setting up channel rewards for VoiceMod (since its native Twitch plugin normally only supports for rewards via Bits)
+Basic Sound player for Twitch written in C# is a lightweight sound player which also allows for setting up channel rewards for VoiceMod V3 (since its native Twitch plugin normally only supports for rewards via Bits)
 
 Credits
 -------
