@@ -50,6 +50,7 @@ namespace BasicTwitchSoundPlayer
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
 		private bool m_IsConnecting = false;
+		private bool m_DisableVoiceModOnConnection = false;
 		private bool m_Playing = false;
 		private bool m_RedeemsPaused = false;
 
@@ -146,18 +147,15 @@ namespace BasicTwitchSoundPlayer
 
 								VoiceModSocket.Send(voicedRequest.ToString());
 
-								var message = new JObject()
+								//Enforce so we get status
+								m_DisableVoiceModOnConnection = true;
+								var voiceStatusRequest = new JObject()
 								{
-									{ "action", "loadVoice" },
+									{ "action", "getVoiceChangerStatus" },
 									{ "id", Guid.NewGuid().ToString() },
-									{ "payload", new JObject()
-										{
-											{ "voiceID", "nofx" }
-										}
-									}
+									{ "payload", new JObject() }
 								};
-
-								VoiceModSocket.Send(message.ToString());
+								VoiceModSocket.Send(voiceStatusRequest.ToString());
 							}
 							else
 							{
@@ -239,11 +237,16 @@ namespace BasicTwitchSoundPlayer
 						if (newValue != null && newValue.Value<bool>() == true)
 						{
 							currentStatus = true;
+							if (m_DisableVoiceModOnConnection)
+							{
+								ToggleVoiceMod();
+							}
 						}
 						else
 						{
 							currentStatus = false;
 						}
+						m_DisableVoiceModOnConnection = false;
 					}
 					else if (value == "getBitmap")
 					{
@@ -338,6 +341,17 @@ namespace BasicTwitchSoundPlayer
 			destImage.Dispose();
 		}
 
+		private void ToggleVoiceMod()
+		{
+			var enableRequest = new JObject()
+			{
+				{ "action", "toggleVoiceChanger" },
+				{ "id", Guid.NewGuid().ToString() },
+				{ "payload", new JObject() }
+			};
+			VoiceModSocket.Send(enableRequest.ToString());
+		}
+
 		public bool SetVoice(string voice, float length)
 		{
 			if (Disposed)
@@ -346,13 +360,7 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (currentStatus)
 				{
-					var enableRequest = new JObject()
-					{
-							{ "action", "toggleVoiceChanger" },
-							{ "id", Guid.NewGuid().ToString() },
-							{ "payload", new JObject() }
-					};
-					VoiceModSocket.Send(enableRequest.ToString());
+					ToggleVoiceMod();
 				}
 
 				currentVoice = "nofx";
@@ -361,17 +369,6 @@ namespace BasicTwitchSoundPlayer
 			}
 			else if (currentVoice != voice && VoicesAvailable.TryGetValue(voice, out var voiceID))
 			{
-				if (!currentStatus)
-				{
-					var enableRequest = new JObject()
-					{
-							{ "action", "toggleVoiceChanger" },
-							{ "id", Guid.NewGuid().ToString() },
-							{ "payload", new JObject() }
-					};
-					VoiceModSocket.Send(enableRequest.ToString());
-				}
-
 				var message = new JObject()
 				{
 					{ "action", "loadVoice" },
