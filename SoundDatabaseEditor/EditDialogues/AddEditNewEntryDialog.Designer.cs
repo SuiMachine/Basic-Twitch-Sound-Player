@@ -433,6 +433,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.ShowIcon = false;
 			this.Text = "Add new entry";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddEditNewEntryDialog_FormClosed);
+			this.Load += new System.EventHandler(this.AddEditNewEntryDialog_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();

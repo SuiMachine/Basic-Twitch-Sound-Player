@@ -35,6 +35,11 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			Instance = this;
 		}
 
+		private void AddEditNewEntryDialog_Load(object sender, EventArgs e)
+		{
+			Verify();
+		}
+
 		private void AddEditNewEntryDialog_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Instance = null;
