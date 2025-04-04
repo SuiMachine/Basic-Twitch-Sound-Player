@@ -199,7 +199,7 @@ namespace BasicTwitchSoundPlayer
 							for (int i = splitText.Count - 1; i >= 0; i--)
 							{
 								var line = splitText[i].Trim();
-								if (line.StartsWith("*") && line.StartsWith("*"))
+								if (line.StartsWith("*") && line.EndsWith("*"))
 								{
 									var count = line.Count(x => x == '*');
 									if (count == 2)

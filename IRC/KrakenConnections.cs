@@ -665,8 +665,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				else
 					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
 
-
-
 				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
 				{
 					streamWriter.Write(jsonContent);
