@@ -57,3 +57,4 @@ packages
 #Some of release directory
 Release/7za.exe
 Release/Release_dir/*
+*.7z
