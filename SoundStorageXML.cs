@@ -27,6 +27,10 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 		public static void SaveSoundBase(string XmlPath, List<SoundEntry> entries)
 		{
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<SoundEntry>));
+			var folder = Directory.GetParent(XmlPath).FullName;
+			if (!Directory.Exists(folder))
+				Directory.CreateDirectory(folder);
+
 			FileStream fs = new FileStream(XmlPath, FileMode.OpenOrCreate);
 			xmlSerializer.Serialize(fs, entries);
 			fs.Dispose();
