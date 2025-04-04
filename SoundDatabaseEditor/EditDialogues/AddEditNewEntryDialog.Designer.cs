@@ -365,7 +365,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
             0,
             0});
 			this.Num_Points.Minimum = new decimal(new int[] {
-            80,
+            1,
             0,
             0,
             0});
