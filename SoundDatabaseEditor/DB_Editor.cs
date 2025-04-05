@@ -1,8 +1,11 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.Properties;
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
@@ -171,6 +174,36 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 					var setings = PrivateSettings.GetInstance();
 					setings.OutputDevice = spsDialog.SelectedDevice;
 					setings.SaveSettings();
+				}
+			}
+		}
+
+		private async void B_VerifyUniversalReward_Click(object sender, EventArgs e)
+		{
+			var settings = PrivateSettings.GetInstance();
+			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
+			await apiConnection.GetBroadcasterIDAsync();
+			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+				return;
+
+			await apiConnection.GetRewardsList();
+
+			var reward = await apiConnection.CreateOrUpdateReward("Universal sound reward", "Redeem a sound using tag / phrase", 160, true, 0, settings.UniversalRewardID);
+			if (reward != null)
+			{
+				if (string.IsNullOrEmpty(settings.UniversalRewardID))
+				{
+					settings.UniversalRewardID = reward.id;
+					MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				else if (settings.UniversalRewardID != reward.id)
+				{
+					settings.UniversalRewardID = reward.id;
+					MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+				else
+				{
+					MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 			}
 		}

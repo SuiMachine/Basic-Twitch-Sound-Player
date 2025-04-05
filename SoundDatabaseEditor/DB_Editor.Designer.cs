@@ -44,6 +44,7 @@
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
+			this.B_VerifyUniversalReward = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -174,24 +175,25 @@
 			// tableLayoutPanel5
 			// 
 			this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-			this.tableLayoutPanel5.ColumnCount = 1;
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 169F));
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel5.ColumnCount = 2;
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+			this.tableLayoutPanel5.Controls.Add(this.B_VerifyUniversalReward, 1, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
 			this.tableLayoutPanel5.Location = new System.Drawing.Point(218, 3);
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(168, 32);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(338, 32);
 			this.tableLayoutPanel5.TabIndex = 3;
 			// 
 			// B_SoundPlayBackSettings
 			// 
 			this.B_SoundPlayBackSettings.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(8, 4);
+			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(4, 4);
 			this.B_SoundPlayBackSettings.Name = "B_SoundPlayBackSettings";
-			this.B_SoundPlayBackSettings.Size = new System.Drawing.Size(154, 23);
+			this.B_SoundPlayBackSettings.Size = new System.Drawing.Size(151, 23);
 			this.B_SoundPlayBackSettings.TabIndex = 6;
 			this.B_SoundPlayBackSettings.Text = "Sound Playback Settings";
 			this.B_SoundPlayBackSettings.UseVisualStyleBackColor = true;
@@ -235,6 +237,17 @@
 			this.B_Save.UseVisualStyleBackColor = true;
 			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
 			// 
+			// B_VerifyUniversalReward
+			// 
+			this.B_VerifyUniversalReward.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.B_VerifyUniversalReward.Location = new System.Drawing.Point(166, 4);
+			this.B_VerifyUniversalReward.Name = "B_VerifyUniversalReward";
+			this.B_VerifyUniversalReward.Size = new System.Drawing.Size(163, 23);
+			this.B_VerifyUniversalReward.TabIndex = 7;
+			this.B_VerifyUniversalReward.Text = "Create / Verify universal reward";
+			this.B_VerifyUniversalReward.UseVisualStyleBackColor = true;
+			this.B_VerifyUniversalReward.Click += new System.EventHandler(this.B_VerifyUniversalReward_Click);
+			// 
 			// DB_Editor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -272,5 +285,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.Button B_SoundPlayBackSettings;
-    }
+		private System.Windows.Forms.Button B_VerifyUniversalReward;
+	}
 }

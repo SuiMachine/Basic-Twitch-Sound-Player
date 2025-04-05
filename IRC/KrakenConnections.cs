@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 
 namespace BasicTwitchSoundPlayer.IRC
@@ -343,7 +344,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			if (PrivateSettings.GetInstance().Debug_mode)
 				MainForm.Instance.ThreadSafeAddPreviewText($"Updating reward {string.Join(", ", RewardRequestIDs)} with status {redemptionState}", LineType.IrcCommand);
-			var result = await PatchNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }), true);
+			var result = await HTTPS_PatchAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }), true);
 
 			if (result != "")
 			{
@@ -354,7 +355,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		public async Task<ChannelReward> CreateOrUpdateReward(VoiceModConfig.VoiceModReward reward)
+		internal async Task<ChannelReward> CreateOrUpdateReward(VoiceModConfig.VoiceModReward reward)
 		{
 			if (CachedRewards == null)
 				return null;
@@ -397,7 +398,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				{
 					var json = JsonConvert.SerializeObject(newReward);
 
-					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					var response = await HTTPS_PatchAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
 					if (response != "")
 					{
 						JObject jReader = JObject.Parse(response);
@@ -430,7 +431,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				}.ToString();
 
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				var response = await HTTPS_PostAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);
@@ -505,7 +506,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				{
 					var json = JsonConvert.SerializeObject(newReward);
 
-					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					var response = await HTTPS_PatchAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
 					if (response != "")
 					{
 						JObject jReader = JObject.Parse(response);
@@ -548,7 +549,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					}.ToString();
 				}
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				var response = await HTTPS_PostAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);
@@ -563,7 +564,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
-		internal async Task<ChannelReward> CreateOrUpdateReward(string rewardID = "")
+		internal async Task<ChannelReward> CreateOrUpdateReward(string name, string prompt, int cost, bool isUserInputRequired, int globalCooldown, string rewardID = "")
 		{
 			if (CachedRewards == null)
 				return null;
@@ -590,17 +591,17 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				string jObject = new JObject()
 				{
-					["title"] = "Ask AI",
-					["cost"] = 10_000,
+					["title"] = name,
+					["cost"] = cost,
 					["is_enabled"] = true.ToString().ToLower(),
-					["prompt"] = "Ask or write message to AI",
-					["is_user_input_required"] = "true",
+					["prompt"] = prompt,
+					["is_user_input_required"] = isUserInputRequired.ToString().ToLower(),
 					["should_redemptions_skip_request_queue"] = "false",
-					["is_global_cooldown_enabled"] = "true",
-					["global_cooldown_seconds"] = "600",
+					["is_global_cooldown_enabled"] = globalCooldown > 0 ? "true" : "false",
+					["global_cooldown_seconds"] = globalCooldown,
 				}.ToString();
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				var response = await HTTPS_PostAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);
@@ -651,7 +652,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		}
 
-		private async Task<string> PostNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
+		private async Task<string> HTTPS_PostAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
 		{
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
 			request.ContentType = "application/json";
@@ -684,7 +685,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				return "";
 			}
 		}
-		private async Task<string> PatchNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
+		private async Task<string> HTTPS_PatchAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
 		{
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
 			request.ContentType = "application/json";
@@ -717,6 +718,33 @@ namespace BasicTwitchSoundPlayer.IRC
 				return "";
 			}
 		}
+
+		private async Task<HttpStatusCode> HTTPS_DeleteAsync(string scope, string parameters, bool RequireBearerToken = false)
+		{
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
+			request.ContentType = "application/json";
+			request.Method = "DELETE";
+
+			try
+			{
+				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
+				if (!RequireBearerToken)
+					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
+				else
+					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
+
+				var httpResponse = (HttpWebResponse)await request.GetResponseAsync();
+				return httpResponse.StatusCode;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				MessageBox.Show(e.Message);
+				return HttpStatusCode.BadRequest;
+			}
+		}
+
+
 
 		private string ConvertDictionaryToJsonString(Dictionary<string, string> bodyContent)
 		{
@@ -807,7 +835,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public async Task GetStreamerStatus()
 		{
 			string res = await GetNewUpdateAsync("streams", "?user_login=" + Channel, true);
-			if(!string.IsNullOrEmpty(res))
+			if (!string.IsNullOrEmpty(res))
 			{
 				try
 				{
@@ -840,10 +868,10 @@ namespace BasicTwitchSoundPlayer.IRC
 							if (dataNode["game_id"] != null)
 							{
 								string newGameId = dataNode["game_id"].ToString();
-								if(newGameId != GameID)
+								if (newGameId != GameID)
 								{
 									GameTitle = await GetGameTitleFromID(newGameId);
-									if(GameTitle == "ul")
+									if (GameTitle == "ul")
 									{
 										GameTitle = "";
 									}
@@ -888,6 +916,31 @@ namespace BasicTwitchSoundPlayer.IRC
 				return dataNode["name"].ToString();
 			}
 			return "";
+		}
+
+		public async Task<bool> DeleteCustomReward(ChannelReward reward)
+		{
+			if (CachedRewards == null)
+				return false;
+
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return false;
+
+			HttpStatusCode response = await HTTPS_DeleteAsync("channel_points/custom_rewards", $"?broadcaster_id={BroadcasterID}&id={reward.id}", true);
+			if (response == HttpStatusCode.OK || response == HttpStatusCode.NoContent)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

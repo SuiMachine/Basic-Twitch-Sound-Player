@@ -46,7 +46,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			if (apiConnection.CachedRewards == null)
 				_ = await apiConnection.GetRewardsList();
 
-			var result = await apiConnection.CreateOrUpdateReward(config.TwitchAwardID);
+			var result = await apiConnection.CreateOrUpdateReward("Ask AI", "Ask AI a question", 1_000, true, 5*60, config.TwitchAwardID);
 			if (result != null)
 			{
 				config.TwitchAwardID = result.id;
