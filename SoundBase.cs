@@ -1,4 +1,5 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs;
 using NAudio.Wave;
@@ -127,19 +128,18 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
-					if (UniversalRewards.TryGetValue(redeem.userInput.Trim().ToLower(), out SoundEntry universal_sound))
+					if (UniversalRewards.TryGetValue(redeem.userInput.SanitizeTags().ToLower(), out SoundEntry universal_sound))
 					{
 						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 						PrivateSettings programSettings = PrivateSettings.GetInstance();
 						NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, universal_sound.GetFile(m_RNG), programSettings.Volume * universal_sound.Volume);
-						TimeSpan length = player.GetTimeLenght() + TimeSpan.FromSeconds(1);
+						TimeSpan length = player.GetTimeLength() + TimeSpan.FromSeconds(1);
 						m_SoundPlayerStack.Add(player);
 						var additionalDelay = universal_sound.Cooldown - m_Delay;
 						if (additionalDelay < 0)
 							additionalDelay = 0;
 
 						m_UserDB[redeem.userId] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
-
 						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
 					}
 					else
@@ -156,7 +156,7 @@ namespace BasicTwitchSoundPlayer
 					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 					PrivateSettings programSettings = PrivateSettings.GetInstance();
 					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
-					TimeSpan length = player.GetTimeLenght() + TimeSpan.FromSeconds(1);
+					TimeSpan length = player.GetTimeLength() + TimeSpan.FromSeconds(1);
 					m_SoundPlayerStack.Add(player);
 					m_UserDB[redeem.userId] = DateTime.Now + length;
 
@@ -234,7 +234,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public TimeSpan GetTimeLenght()
+		public TimeSpan GetTimeLength()
 		{
 			if (format == PlayerFormat.Generic)
 			{

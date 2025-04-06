@@ -33,7 +33,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public List<string> Moderators = new List<string>();
 		public List<string> IgnoreList = new List<string>();
-		public string[] subscribers = new string[0];
+		public string[] Subscribers = new string[0];
 		public KrakenConnections KrakenConnection { get; private set; }
 		private Timer krakenUpdateTimer;
 
@@ -97,7 +97,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					{
 						parent.ThreadSafeAddPreviewText("Subscriber amount changed to " + newSubscribers.Length, LineType.IrcCommand);
 					}
-					subscribers = newSubscribers;
+					Subscribers = newSubscribers;
 				}
 			});
 		}

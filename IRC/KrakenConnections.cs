@@ -138,6 +138,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		#region Async
 		public async Task GetBroadcasterIDAsync()
 		{
+			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Obtaining user ID");
 			string responseID = await GetNewUpdateAsync("users", "?login=" + Channel, true);
 			if (responseID == null || responseID == "")
 				return;
@@ -167,7 +168,10 @@ namespace BasicTwitchSoundPlayer.IRC
 				await GetBroadcasterIDAsync();
 			}
 			if (BroadcasterID == null || BroadcasterID == "")
+			{
+				DialogBoxes.ProgressDisplay.Instance?.Close();
 				throw new Exception("Didn't obtain broadcaster ID. Can't proceed!");
+			}
 
 			string response = await GetNewUpdateAsync("subscriptions", "?broadcaster_id=" + BroadcasterID, true);
 			if (response == null || response == "")
@@ -199,7 +203,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			return new string[0];
 		}
 
-		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid)
+		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundRedeemId)
 		{
 			{
 				int endTimer = 5;
@@ -216,6 +220,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				return;
 			}
 
+			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Getting custom rewards list");
 			string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
 			if (response == null || response == "")
 			{
@@ -227,42 +232,42 @@ namespace BasicTwitchSoundPlayer.IRC
 				JObject jReader = JObject.Parse(response);
 				if (jReader["data"] != null)
 				{
-					ChannelReward soundredemptionReward = null;
+					ChannelReward soundRedeemReward = null;
 
 					var dataNode = jReader["data"];
 					foreach (var customReward in dataNode)
 					{
 						var parseNode = customReward.ToObject<ChannelReward>();
-						if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
-							soundredemptionReward = parseNode;
+						if (soundRedeemId != null && parseNode.id.Equals(soundRedeemId, StringComparison.InvariantCultureIgnoreCase))
+							soundRedeemReward = parseNode;
 					}
 
-					if (soundredemptionid != null && soundredemptionid != "")
+					if (soundRedeemId != null && soundRedeemId != "")
 					{
-						if (soundredemptionReward == null)
+						if (soundRedeemReward == null)
 						{
 							mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with Sound Reward ID!", LineType.IrcCommand);
 						}
 						else
 						{
-							if (!soundredemptionReward.is_enabled)
+							if (!soundRedeemReward.is_enabled)
 								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward is not enabled!", LineType.IrcCommand);
-							else if (soundredemptionReward.is_paused)
+							else if (soundRedeemReward.is_paused)
 								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward redemption is paused!", LineType.IrcCommand);
-							else if (!soundredemptionReward.is_user_input_required)
+							else if (!soundRedeemReward.is_user_input_required)
 								mainForm.ThreadSafeAddPreviewText("[ERROR] Sound reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
-							else if (soundredemptionReward.should_redemptions_skip_request_queue)
+							else if (soundRedeemReward.should_redemptions_skip_request_queue)
 								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
 						}
 					}
 
 					//Clear up redemption queue
-					if (soundredemptionReward != null)
+					if (soundRedeemReward != null)
 					{
-						if (soundredemptionReward != null)
+						if (soundRedeemReward != null)
 						{
-							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + soundredemptionReward.id + "&status=UNFULFILLED", true, true);
-
+							DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Clearing up redeem queue");
+							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + soundRedeemReward.id + "&status=UNFULFILLED", true, true);
 
 							//Should have thought this through...
 							if (pointsRewardResponse.StartsWith("Error: "))
@@ -282,7 +287,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								{
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
 
-									UpdateRedemptionStatus(soundredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
+									UpdateRedemptionStatus(soundRedeemReward.id, idsToCancel, RedemptionStates.CANCELED);
 								}
 							}
 						}
@@ -299,6 +304,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				return null;
 			}
 
+			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Getting unredeemed rewards");
 			var response = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + rewardID + "&status=UNFULFILLED&sort=NEWEST", true, true);
 
 			if (response != null && response != "")
@@ -396,6 +402,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 				if (ChannelReward.Differs(currentReward, newReward))
 				{
+					DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Updating reward");
 					var json = JsonConvert.SerializeObject(newReward);
 
 					var response = await HTTPS_PatchAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
@@ -431,6 +438,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				}.ToString();
 
 
+				DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Creating reward");
 				var response = await HTTPS_PostAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
 				if (response != "")
 				{
@@ -504,8 +512,9 @@ namespace BasicTwitchSoundPlayer.IRC
 				ChannelReward result = null;
 				if (ChannelRewardRequest.Differs(newReward, currentReward))
 				{
-					var json = JsonConvert.SerializeObject(newReward);
+					DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Updating reward");
 
+					var json = JsonConvert.SerializeObject(newReward);
 					var response = await HTTPS_PatchAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
 					if (response != "")
 					{
@@ -549,6 +558,7 @@ namespace BasicTwitchSoundPlayer.IRC
 					}.ToString();
 				}
 
+				DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Creating reward");
 				var response = await HTTPS_PostAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
 				if (response != "")
 				{

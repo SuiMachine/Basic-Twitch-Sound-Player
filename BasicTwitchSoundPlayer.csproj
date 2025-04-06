@@ -151,6 +151,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogBoxes\ProgressDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogBoxes\ProgressDisplay.Designer.cs">
+      <DependentUpon>ProgressDisplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="EncryptedString.cs" />
     <Compile Include="Extensions\ColorWrapper.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
@@ -260,6 +266,9 @@
     <Compile Include="Structs\TwitchRightsEnum.cs" />
     <Compile Include="WebSocketsServer.cs" />
     <Compile Include="XML_Utils.cs" />
+    <EmbeddedResource Include="DialogBoxes\ProgressDisplay.resx">
+      <DependentUpon>ProgressDisplay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

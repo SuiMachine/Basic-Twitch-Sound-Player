@@ -1,11 +1,9 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
 using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.Properties;
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
@@ -178,74 +176,98 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			}
 		}
 
-		private async void B_VerifyUniversalReward_Click(object sender, EventArgs e)
+		private void B_VerifyUniversalReward_Click(object sender, EventArgs e)
 		{
-			var settings = PrivateSettings.GetInstance();
-			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
-			await apiConnection.GetBroadcasterIDAsync();
-			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
-				return;
-
-			await apiConnection.GetRewardsList();
-
-			var reward = await apiConnection.CreateOrUpdateReward("Universal sound reward", "Redeem a sound using tag / phrase", 160, true, 0, settings.UniversalRewardID);
-			if (reward != null)
+			Action content = new Action(async () =>
 			{
-				if (string.IsNullOrEmpty(settings.UniversalRewardID))
+				var settings = PrivateSettings.GetInstance();
+				KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
+				await apiConnection.GetBroadcasterIDAsync();
+				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
 				{
-					settings.UniversalRewardID = reward.id;
-					MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					DialogBoxes.ProgressDisplay.Instance?.Close();
+					return;
 				}
-				else if (settings.UniversalRewardID != reward.id)
+
+				await apiConnection.GetRewardsList();
+
+				var reward = await apiConnection.CreateOrUpdateReward("Universal sound reward", "Redeem a sound using tag / phrase", 160, true, 0, settings.UniversalRewardID);
+				if (reward != null)
 				{
-					settings.UniversalRewardID = reward.id;
-					MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					if (string.IsNullOrEmpty(settings.UniversalRewardID))
+					{
+						settings.UniversalRewardID = reward.id;
+						MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					}
+					else if (settings.UniversalRewardID != reward.id)
+					{
+						settings.UniversalRewardID = reward.id;
+						MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					}
+					else
+					{
+						MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					}
 				}
-				else
-				{
-					MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
-			}
+				DialogBoxes.ProgressDisplay.Instance?.InvokeClose();
+			});
+
+			DialogBoxes.ProgressDisplay progressForm = DialogBoxes.ProgressDisplay.CreateIfNeeded().SetupForm(this, "Creating/Verifying universal reward", content);
 		}
 	}
 
 	#region Extensions
 	static class EditorExtensions
 	{
+		enum TreeIcons
+		{
+			None = 0,
+			RewardSound = 0,
+			TagSound = 1,
+			Files = 0,
+			Points = 2,
+			Description = 3,
+			Volume = 4,
+		}
+
 		public static TreeNode ToTreeNode(this SoundEntry snd)
 		{
 			if (snd.GetIsProperEntry())
 			{
+				var mainIcon = !string.IsNullOrEmpty(snd.RewardID) ? (int)TreeIcons.RewardSound : (int)TreeIcons.TagSound; 
+
 				var newNode = new TreeNode(snd.RewardName)
 				{
 					Name = DB_Editor.NodeNameEntry,
-					ImageIndex = 0
+					ImageIndex = mainIcon,
+					SelectedImageIndex = mainIcon,
+					StateImageIndex = mainIcon,
 				};
 
 				var Description = newNode.Nodes.Add(DB_Editor.NodeDescription);
-				Description.ImageIndex = 2;
-				Description.SelectedImageIndex = 2;
-				Description.StateImageIndex = 2;
+				Description.ImageIndex = (int)TreeIcons.Description;
+				Description.SelectedImageIndex = (int)TreeIcons.Description;
+				Description.StateImageIndex = (int)TreeIcons.Description;
 				Description.Name = DB_Editor.NodeDescription;
 				Description.Text = snd.Description;
 
 				var FilesNode = newNode.Nodes.Add(DB_Editor.NodeNameFiles);
-				FilesNode.ImageIndex = 1;
-				FilesNode.SelectedImageIndex = 1;
-				FilesNode.StateImageIndex = 1;
+				FilesNode.ImageIndex = (int)TreeIcons.Files;
+				FilesNode.SelectedImageIndex = (int)TreeIcons.Files;
+				FilesNode.StateImageIndex = (int)TreeIcons.Files;
 				FilesNode.Name = DB_Editor.NodeNameFiles;
 
 				var VolumeNode = newNode.Nodes.Add(DB_Editor.NodeNameVolume);
-				VolumeNode.ImageIndex = 3;
-				VolumeNode.SelectedImageIndex = 3;
-				VolumeNode.StateImageIndex = 3;
+				VolumeNode.ImageIndex = (int)TreeIcons.Volume;
+				VolumeNode.SelectedImageIndex = (int)TreeIcons.Volume;
+				VolumeNode.StateImageIndex = (int)TreeIcons.Volume;
 				VolumeNode.Name = DB_Editor.NodeNameVolume;
 				VolumeNode.Text = snd.Volume.ToString("0%");
 
 				var PointsNode = newNode.Nodes.Add(DB_Editor.NodeNamePoints);
-				PointsNode.ImageIndex = 3;
-				PointsNode.SelectedImageIndex = 3;
-				PointsNode.StateImageIndex = 3;
+				PointsNode.ImageIndex = (int)TreeIcons.Points;
+				PointsNode.SelectedImageIndex = (int)TreeIcons.Points;
+				PointsNode.StateImageIndex = (int)TreeIcons.Points;
 				PointsNode.Name = DB_Editor.NodeNamePoints;
 				PointsNode.Text = snd.AmountOfPoints.ToString();
 
@@ -254,9 +276,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 					if (file.RemoveWhitespaces() != String.Empty)
 					{
 						var fNode = FilesNode.Nodes.Add(file);
-						fNode.ImageIndex = 1;
-						fNode.SelectedImageIndex = 1;
-						fNode.StateImageIndex = 1;
+						fNode.ImageIndex = mainIcon;
+						fNode.SelectedImageIndex = mainIcon;
+						fNode.StateImageIndex = mainIcon;
 					}
 				}
 

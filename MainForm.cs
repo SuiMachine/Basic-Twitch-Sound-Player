@@ -152,7 +152,7 @@ namespace BasicTwitchSoundPlayer
 		private void OnRedeemUpdatedReceived(ChannelPointRedeemRequest redeem)
 		{
 #if DEBUG
-			//Debug.WriteLine($"Received reward status {rewardId}, redeeem ID {redeemID} - {status}");
+			Debug.WriteLine($"Received reward status {redeem.userName}, redeeem ID {redeem.rewardId} - {redeem.state}");
 #endif
 		}
 		#endregion

@@ -1,4 +1,5 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Linq;
@@ -58,17 +59,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				files[i] = listFile[i].ToString();
 			}
 
-			string[] listTags = RB_Tags.Lines.Select(x => SanitizeTag(x)).Where(x => x != "").ToArray();
+			string[] listTags = RB_Tags.Lines.Select(x => x.SanitizeTags()).Where(x => x != "").ToArray();
 			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, listTags, (float)Num_Volume.Value / 100f, (int)Num_Points.Value, (int)Num_Cooldown.Value);
 			this.Close();
-		}
-
-		private string SanitizeTag(string tag)
-		{
-			tag = Regex.Replace(tag, "[^a-zA-Z0-9|\\s]", "");
-			while(tag.Contains("  "))
-				tag = tag.Replace("  ", " ");
-			return tag.Trim();
 		}
 
 		private void B_Cancel_Click(object sender, EventArgs e)
