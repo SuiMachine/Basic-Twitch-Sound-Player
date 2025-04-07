@@ -26,8 +26,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		public int WebsocketPort { get; set; }
 
 		public bool RunWebsocket { get; set; }
-
-
+		public string PasteBinAPIKey { get; set; }
 
 		public ConnectionSettingsForm(MainForm _parent)
 		{
@@ -41,18 +40,19 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 			this.TB_Username.DataBindings.Add("Text", this, nameof(Username), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_UserAuth.DataBindings.Add("Text", this, nameof(UserAuth), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_BotName.DataBindings.Add("Text", this, nameof(BotName), false,  DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_BotName.DataBindings.Add("Text", this, nameof(BotName), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_BotAuth.DataBindings.Add("Text", this, nameof(BotAuth), false, DataSourceUpdateMode.OnPropertyChanged);
-
 			this.CB_DebugMode.DataBindings.Add("Checked", this, nameof(DebugMode), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.Num_PortUsed.DataBindings.Add("Value", this, nameof(WebsocketPort), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.CB_Websocket.DataBindings.Add("Checked", this, nameof(RunWebsocket), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_PastebinAPIKey.DataBindings.Add("Text", this, nameof(PasteBinAPIKey), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			this.Server = settings.TwitchServer;
 			this.Username = settings.UserName;
 			this.UserAuth = settings.UserAuth;
 			this.BotName = settings.BotUsername;
 			this.BotAuth = settings.BotAuth;
+			this.PasteBinAPIKey = settings.PastebinApiKey;
 
 			this.DebugMode = settings.Debug_mode;
 			this.WebsocketPort = settings.WebSocketsServerPort;

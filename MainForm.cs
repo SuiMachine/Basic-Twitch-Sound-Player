@@ -219,7 +219,6 @@ namespace BasicTwitchSoundPlayer
 		private void ConnectionSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SettingsForms.ConnectionSettingsForm form = new SettingsForms.ConnectionSettingsForm(this);
-
 			var settings = PrivateSettings.GetInstance();
 
 			DialogResult res = form.ShowDialog();
@@ -233,6 +232,7 @@ namespace BasicTwitchSoundPlayer
 				settings.Debug_mode = form.DebugMode;
 				settings.WebSocketsServerPort = form.WebsocketPort;
 				settings.RunWebSocketsServer = form.RunWebsocket;
+				settings.PastebinApiKey = form.PasteBinAPIKey;
 				settings.SaveSettings();
 				ReloadBot();
 			}

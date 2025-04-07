@@ -61,6 +61,9 @@
 			this.TB_Username = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.TB_BotName = new System.Windows.Forms.TextBox();
+			this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
+			this.label9 = new System.Windows.Forms.Label();
+			this.TB_PastebinAPIKey = new System.Windows.Forms.TextBox();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -72,21 +75,23 @@
 			this.tableLayoutPanel4.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
 			this.tableLayoutPanel7.SuspendLayout();
+			this.tableLayoutPanel10.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 2);
 			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel10, 0, 1);
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 228F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 253F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(572, 272);
+			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 227F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 232F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(572, 314);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -96,12 +101,12 @@
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 231);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 272);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(566, 35);
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(566, 37);
 			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// B_Save
@@ -109,7 +114,7 @@
 			this.B_Save.Dock = System.Windows.Forms.DockStyle.Right;
 			this.B_Save.Location = new System.Drawing.Point(205, 3);
 			this.B_Save.Name = "B_Save";
-			this.B_Save.Size = new System.Drawing.Size(75, 29);
+			this.B_Save.Size = new System.Drawing.Size(75, 31);
 			this.B_Save.TabIndex = 0;
 			this.B_Save.Text = "Save";
 			this.B_Save.UseVisualStyleBackColor = true;
@@ -120,7 +125,7 @@
 			this.B_Cancel.Dock = System.Windows.Forms.DockStyle.Left;
 			this.B_Cancel.Location = new System.Drawing.Point(286, 3);
 			this.B_Cancel.Name = "B_Cancel";
-			this.B_Cancel.Size = new System.Drawing.Size(75, 29);
+			this.B_Cancel.Size = new System.Drawing.Size(75, 31);
 			this.B_Cancel.TabIndex = 1;
 			this.B_Cancel.Text = "Cancel";
 			this.B_Cancel.UseVisualStyleBackColor = true;
@@ -132,7 +137,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(566, 222);
+			this.panel1.Size = new System.Drawing.Size(566, 221);
 			this.panel1.TabIndex = 1;
 			// 
 			// tableLayoutPanel3
@@ -157,7 +162,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(566, 222);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(566, 221);
 			this.tableLayoutPanel3.TabIndex = 25;
 			// 
 			// tableLayoutPanel9
@@ -172,11 +177,11 @@
 			this.tableLayoutPanel9.Controls.Add(this.CB_ShowBotAuth, 3, 0);
 			this.tableLayoutPanel9.Controls.Add(this.B_GetLoginData, 0, 0);
 			this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel9.Location = new System.Drawing.Point(3, 188);
+			this.tableLayoutPanel9.Location = new System.Drawing.Point(3, 183);
 			this.tableLayoutPanel9.Name = "tableLayoutPanel9";
 			this.tableLayoutPanel9.RowCount = 1;
 			this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel9.Size = new System.Drawing.Size(560, 31);
+			this.tableLayoutPanel9.Size = new System.Drawing.Size(560, 35);
 			this.tableLayoutPanel9.TabIndex = 5;
 			// 
 			// CB_ShowPasswordUser
@@ -185,7 +190,7 @@
 			this.CB_ShowPasswordUser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CB_ShowPasswordUser.Location = new System.Drawing.Point(143, 3);
 			this.CB_ShowPasswordUser.Name = "CB_ShowPasswordUser";
-			this.CB_ShowPasswordUser.Size = new System.Drawing.Size(134, 25);
+			this.CB_ShowPasswordUser.Size = new System.Drawing.Size(134, 29);
 			this.CB_ShowPasswordUser.TabIndex = 10;
 			this.CB_ShowPasswordUser.Text = "Show user auth";
 			this.CB_ShowPasswordUser.UseVisualStyleBackColor = true;
@@ -196,7 +201,7 @@
 			this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.button1.Location = new System.Drawing.Point(283, 3);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(134, 25);
+			this.button1.Size = new System.Drawing.Size(134, 29);
 			this.button1.TabIndex = 24;
 			this.button1.Text = "Obtain auth (manual)";
 			this.button1.UseVisualStyleBackColor = true;
@@ -208,7 +213,7 @@
 			this.CB_ShowBotAuth.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CB_ShowBotAuth.Location = new System.Drawing.Point(423, 3);
 			this.CB_ShowBotAuth.Name = "CB_ShowBotAuth";
-			this.CB_ShowBotAuth.Size = new System.Drawing.Size(134, 25);
+			this.CB_ShowBotAuth.Size = new System.Drawing.Size(134, 29);
 			this.CB_ShowBotAuth.TabIndex = 22;
 			this.CB_ShowBotAuth.Text = "Show bot auth";
 			this.CB_ShowBotAuth.UseVisualStyleBackColor = true;
@@ -219,7 +224,7 @@
 			this.B_GetLoginData.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.B_GetLoginData.Location = new System.Drawing.Point(3, 3);
 			this.B_GetLoginData.Name = "B_GetLoginData";
-			this.B_GetLoginData.Size = new System.Drawing.Size(134, 25);
+			this.B_GetLoginData.Size = new System.Drawing.Size(134, 29);
 			this.B_GetLoginData.TabIndex = 11;
 			this.B_GetLoginData.Text = "Obtain auth (webserver)";
 			this.B_GetLoginData.UseVisualStyleBackColor = true;
@@ -237,11 +242,11 @@
 			this.tableLayoutPanel8.Controls.Add(this.label8, 2, 0);
 			this.tableLayoutPanel8.Controls.Add(this.TB_BotAuth, 3, 0);
 			this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 151);
+			this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 147);
 			this.tableLayoutPanel8.Name = "tableLayoutPanel8";
 			this.tableLayoutPanel8.RowCount = 1;
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.Size = new System.Drawing.Size(560, 31);
+			this.tableLayoutPanel8.Size = new System.Drawing.Size(560, 30);
 			this.tableLayoutPanel8.TabIndex = 4;
 			// 
 			// label3
@@ -250,7 +255,7 @@
 			this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label3.Location = new System.Drawing.Point(3, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(90, 31);
+			this.label3.Size = new System.Drawing.Size(90, 30);
 			this.label3.TabIndex = 3;
 			this.label3.Text = "Owner auth:";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -272,7 +277,7 @@
 			this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label8.Location = new System.Drawing.Point(314, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(78, 31);
+			this.label8.Size = new System.Drawing.Size(78, 30);
 			this.label8.TabIndex = 20;
 			this.label8.Text = "Bot auth:";
 			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -300,11 +305,11 @@
 			this.tableLayoutPanel5.Controls.Add(this.label6, 2, 0);
 			this.tableLayoutPanel5.Controls.Add(this.Num_PortUsed, 3, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 40);
+			this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 39);
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(560, 31);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(560, 30);
 			this.tableLayoutPanel5.TabIndex = 1;
 			// 
 			// TB_Port
@@ -323,7 +328,7 @@
 			this.label5.Dock = System.Windows.Forms.DockStyle.Left;
 			this.label5.Location = new System.Drawing.Point(3, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(29, 31);
+			this.label5.Size = new System.Drawing.Size(29, 30);
 			this.label5.TabIndex = 9;
 			this.label5.Text = "Port:";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -334,7 +339,7 @@
 			this.label6.Dock = System.Windows.Forms.DockStyle.Left;
 			this.label6.Location = new System.Drawing.Point(112, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(86, 31);
+			this.label6.Size = new System.Drawing.Size(86, 30);
 			this.label6.TabIndex = 15;
 			this.label6.Text = "Websocket port:";
 			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -374,7 +379,7 @@
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(560, 31);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(560, 30);
 			this.tableLayoutPanel4.TabIndex = 0;
 			// 
 			// label1
@@ -383,7 +388,7 @@
 			this.label1.Dock = System.Windows.Forms.DockStyle.Left;
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(41, 31);
+			this.label1.Size = new System.Drawing.Size(41, 30);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Server:";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -407,11 +412,11 @@
 			this.tableLayoutPanel6.Controls.Add(this.CB_Websocket, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.CB_DebugMode, 2, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 77);
+			this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 75);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(560, 31);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(560, 30);
 			this.tableLayoutPanel6.TabIndex = 2;
 			// 
 			// label4
@@ -420,7 +425,7 @@
 			this.label4.Dock = System.Windows.Forms.DockStyle.Left;
 			this.label4.Location = new System.Drawing.Point(3, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(62, 31);
+			this.label4.Size = new System.Drawing.Size(62, 30);
 			this.label4.TabIndex = 23;
 			this.label4.Text = "Websocket";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -431,7 +436,7 @@
 			this.CB_Websocket.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CB_Websocket.Location = new System.Drawing.Point(78, 3);
 			this.CB_Websocket.Name = "CB_Websocket";
-			this.CB_Websocket.Size = new System.Drawing.Size(133, 25);
+			this.CB_Websocket.Size = new System.Drawing.Size(133, 24);
 			this.CB_Websocket.TabIndex = 13;
 			this.CB_Websocket.Text = "Run websocket server";
 			this.CB_Websocket.UseVisualStyleBackColor = true;
@@ -442,7 +447,7 @@
 			this.CB_DebugMode.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CB_DebugMode.Location = new System.Drawing.Point(217, 3);
 			this.CB_DebugMode.Name = "CB_DebugMode";
-			this.CB_DebugMode.Size = new System.Drawing.Size(340, 25);
+			this.CB_DebugMode.Size = new System.Drawing.Size(340, 24);
 			this.CB_DebugMode.TabIndex = 12;
 			this.CB_DebugMode.Text = "Debug mode";
 			this.CB_DebugMode.UseVisualStyleBackColor = true;
@@ -459,11 +464,11 @@
 			this.tableLayoutPanel7.Controls.Add(this.label7, 2, 0);
 			this.tableLayoutPanel7.Controls.Add(this.TB_BotName, 3, 0);
 			this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 114);
+			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 111);
 			this.tableLayoutPanel7.Name = "tableLayoutPanel7";
 			this.tableLayoutPanel7.RowCount = 1;
 			this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel7.Size = new System.Drawing.Size(560, 31);
+			this.tableLayoutPanel7.Size = new System.Drawing.Size(560, 30);
 			this.tableLayoutPanel7.TabIndex = 3;
 			// 
 			// label2
@@ -472,7 +477,7 @@
 			this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label2.Location = new System.Drawing.Point(3, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(91, 31);
+			this.label2.Size = new System.Drawing.Size(91, 30);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Owner username:";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -492,7 +497,7 @@
 			this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label7.Location = new System.Drawing.Point(313, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(80, 31);
+			this.label7.Size = new System.Drawing.Size(80, 30);
 			this.label7.TabIndex = 18;
 			this.label7.Text = "Bot username:";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -506,11 +511,46 @@
 			this.TB_BotName.TabIndex = 19;
 			this.TB_BotName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			// 
+			// tableLayoutPanel10
+			// 
+			this.tableLayoutPanel10.ColumnCount = 2;
+			this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+			this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 416F));
+			this.tableLayoutPanel10.Controls.Add(this.label9, 0, 0);
+			this.tableLayoutPanel10.Controls.Add(this.TB_PastebinAPIKey, 1, 0);
+			this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel10.Location = new System.Drawing.Point(3, 230);
+			this.tableLayoutPanel10.Name = "tableLayoutPanel10";
+			this.tableLayoutPanel10.RowCount = 1;
+			this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel10.Size = new System.Drawing.Size(566, 36);
+			this.tableLayoutPanel10.TabIndex = 2;
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label9.Location = new System.Drawing.Point(3, 0);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(144, 36);
+			this.label9.TabIndex = 0;
+			this.label9.Text = "Pastebin API Key (optional):";
+			this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// TB_PastebinAPIKey
+			// 
+			this.TB_PastebinAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_PastebinAPIKey.Location = new System.Drawing.Point(153, 8);
+			this.TB_PastebinAPIKey.Name = "TB_PastebinAPIKey";
+			this.TB_PastebinAPIKey.PasswordChar = '*';
+			this.TB_PastebinAPIKey.Size = new System.Drawing.Size(410, 20);
+			this.TB_PastebinAPIKey.TabIndex = 1;
+			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(572, 276);
+			this.ClientSize = new System.Drawing.Size(572, 314);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -534,6 +574,8 @@
 			this.tableLayoutPanel6.PerformLayout();
 			this.tableLayoutPanel7.ResumeLayout(false);
 			this.tableLayoutPanel7.PerformLayout();
+			this.tableLayoutPanel10.ResumeLayout(false);
+			this.tableLayoutPanel10.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -573,5 +615,8 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.TextBox TB_PastebinAPIKey;
 	}
 }

@@ -166,6 +166,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SuiXMLExtensions.cs" />
     <Compile Include="GeminiAI.cs" />
+    <Compile Include="HTTPS_Requests.cs" />
     <Compile Include="HttpWebRequestHandlers.cs" />
     <Compile Include="Interfaces\IVoiceModeRewardBindingInterface.cs" />
     <Compile Include="IRC\KrakenConnections.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Structs\Gemini\GeminiCharacterOverride.cs" />
     <Compile Include="Structs\Gemini\GeminiContent.cs" />
     <Compile Include="Structs\Gemini\GeminiMessage.cs" />
+    <Compile Include="Structs\PastebinStructs.cs" />
     <Compile Include="TwitchSocket.cs" />
     <Compile Include="VoiceModHandling.cs" />
     <Compile Include="SoundStorageXML.cs" />

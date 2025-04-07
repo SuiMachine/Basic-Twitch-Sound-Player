@@ -45,6 +45,7 @@
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
+			this.B_UploadToPastebin = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -65,7 +66,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(810, 591);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(839, 591);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// sndTreeView
@@ -76,7 +77,7 @@
 			this.sndTreeView.Location = new System.Drawing.Point(3, 3);
 			this.sndTreeView.Name = "sndTreeView";
 			this.sndTreeView.SelectedImageIndex = 0;
-			this.sndTreeView.Size = new System.Drawing.Size(804, 535);
+			this.sndTreeView.Size = new System.Drawing.Size(833, 535);
 			this.sndTreeView.TabIndex = 1;
 			this.sndTreeView.DoubleClick += new System.EventHandler(this.SndTreeView_DoubleClick);
 			this.sndTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SndTreeView_KeyDown);
@@ -102,7 +103,7 @@
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(804, 44);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(833, 44);
 			this.tableLayoutPanel2.TabIndex = 2;
 			// 
 			// tableLayoutPanel4
@@ -119,7 +120,7 @@
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(798, 38);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(827, 38);
 			this.tableLayoutPanel4.TabIndex = 3;
 			// 
 			// tableLayoutPanel3
@@ -176,9 +177,11 @@
 			// tableLayoutPanel5
 			// 
 			this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-			this.tableLayoutPanel5.ColumnCount = 2;
+			this.tableLayoutPanel5.ColumnCount = 3;
 			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 179F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 171F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+			this.tableLayoutPanel5.Controls.Add(this.B_UploadToPastebin, 2, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_VerifyUniversalReward, 1, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
@@ -186,13 +189,13 @@
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(338, 32);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(448, 32);
 			this.tableLayoutPanel5.TabIndex = 3;
 			// 
 			// B_VerifyUniversalReward
 			// 
 			this.B_VerifyUniversalReward.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_VerifyUniversalReward.Location = new System.Drawing.Point(167, 4);
+			this.B_VerifyUniversalReward.Location = new System.Drawing.Point(163, 4);
 			this.B_VerifyUniversalReward.Name = "B_VerifyUniversalReward";
 			this.B_VerifyUniversalReward.Size = new System.Drawing.Size(163, 23);
 			this.B_VerifyUniversalReward.TabIndex = 7;
@@ -220,7 +223,7 @@
 			this.tableLayoutPanel6.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Right;
-			this.tableLayoutPanel6.Location = new System.Drawing.Point(654, 3);
+			this.tableLayoutPanel6.Location = new System.Drawing.Point(683, 3);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -249,13 +252,24 @@
 			this.B_Save.UseVisualStyleBackColor = true;
 			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
 			// 
+			// B_UploadToPastebin
+			// 
+			this.B_UploadToPastebin.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.B_UploadToPastebin.Location = new System.Drawing.Point(334, 4);
+			this.B_UploadToPastebin.Name = "B_UploadToPastebin";
+			this.B_UploadToPastebin.Size = new System.Drawing.Size(110, 23);
+			this.B_UploadToPastebin.TabIndex = 8;
+			this.B_UploadToPastebin.Text = "Upload to pastebin";
+			this.B_UploadToPastebin.UseVisualStyleBackColor = true;
+			this.B_UploadToPastebin.Click += new System.EventHandler(this.B_UploadToPastebin_Click);
+			// 
 			// DB_Editor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(810, 591);
+			this.ClientSize = new System.Drawing.Size(839, 591);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.MinimumSize = new System.Drawing.Size(726, 564);
+			this.MinimumSize = new System.Drawing.Size(855, 630);
 			this.Name = "DB_Editor";
 			this.Text = "Sound Database Editor";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DB_Editor_FormClosed);
@@ -287,5 +301,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.Button B_SoundPlayBackSettings;
 		private System.Windows.Forms.Button B_VerifyUniversalReward;
+		private System.Windows.Forms.Button B_UploadToPastebin;
 	}
 }
