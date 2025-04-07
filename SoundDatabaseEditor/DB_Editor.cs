@@ -185,7 +185,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 				await apiConnection.GetBroadcasterIDAsync();
 				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
 				{
-					DialogBoxes.ProgressDisplay.Instance?.Close();
+					DialogBoxes.ProgressDisplay.Instance?.InvokeClose();
 					return;
 				}
 

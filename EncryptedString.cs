@@ -117,6 +117,14 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public override string ToString() => DecodedString;
+		public override string ToString()
+		{
+			if (DecodedString == null)
+			{
+				PrepareEncryption();
+				DecodedString = Decrypt(EncryptedStr);
+			}
+			return DecodedString;
+		}
 	}
 }

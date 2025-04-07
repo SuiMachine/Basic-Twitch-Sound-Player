@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -52,11 +51,6 @@ namespace BasicTwitchSoundPlayer
 			{
 				foreach (var header in Headers)
 					request.Headers[header.Key] = header.Value;
-				/*				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
-								if (!RequireBearerToken)
-									request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
-								else
-									request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;*/
 
 				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
 				{
@@ -86,11 +80,6 @@ namespace BasicTwitchSoundPlayer
 			{
 				foreach (var requestHeader in requestHeaders)
 					request.Headers[requestHeader.Key] = requestHeader.Value;
-				/*				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
-								if (!RequireBearerToken)
-									request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
-								else
-									request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;*/
 
 				request.Timeout = 5000;
 				request.Method = "GET";
