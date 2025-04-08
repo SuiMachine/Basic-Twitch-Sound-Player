@@ -1,6 +1,7 @@
 ﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
 using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs.Gemini;
+using BasicTwitchSoundPlayer.TwitchEventSub.KrakenSubscribe;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,12 +13,13 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
+using static System.Net.WebRequestMethods;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
 	public class KrakenConnections
 	{
+		public const string HELIXURI = "https://api.twitch.tv/helix/";
 		public const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
 		public enum RedemptionStates
@@ -112,7 +114,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		public string HELIXURI { get; private set; }
+
 		private string Channel { get; set; }
 		public string BroadcasterID { get; set; }
 		public bool IsLive { get; private set; } = false;
@@ -120,13 +122,11 @@ namespace BasicTwitchSoundPlayer.IRC
 		public string GameTitle { get; private set; } = "";
 		public string StreamTitle { get; private set; } = "";
 
-		public Task SubscribingToEvents { get; internal set; }
 		public List<ChannelReward> CachedRewards { get; internal set; }
 
 		public KrakenConnections(string Channel)
 		{
 			this.Channel = Channel;
-			HELIXURI = "https://api.twitch.tv/helix/";
 		}
 
 		#region Async
@@ -884,6 +884,21 @@ namespace BasicTwitchSoundPlayer.IRC
 				return true;
 			}
 			return false;
+		}
+
+		public async Task EventSub_SubscribeToChannelPoints(string broadcasterID, string sessionID)
+		{
+			var content = new Kraken_EventSub_Subscribe_RedemptionAdd(broadcasterID, sessionID);
+			var serilize = JsonConvert.SerializeObject(content, Formatting.Indented, new JsonSerializerSettings()
+			{
+				NullValueHandling = NullValueHandling.Ignore
+			});
+
+			var result = await HTTPS_Requests.PostAsync(HELIXURI, "eventsub/subscriptions", "", serilize, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
 		}
 	}
 }
