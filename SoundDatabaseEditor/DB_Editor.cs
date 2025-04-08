@@ -4,6 +4,7 @@ using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
@@ -169,9 +170,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 				var result = spsDialog.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					var setings = PrivateSettings.GetInstance();
-					setings.OutputDevice = spsDialog.SelectedDevice;
-					setings.SaveSettings();
+					var settings = PrivateSettings.GetInstance();
+					settings.OutputDevice = spsDialog.SelectedDevice;
+					settings.SaveSettings();
 				}
 			}
 		}
@@ -215,44 +216,27 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			DialogBoxes.ProgressDisplay progressForm = DialogBoxes.ProgressDisplay.CreateIfNeeded().SetupForm(this, "Creating/Verifying universal reward", content);
 		}
 
-		private void B_UploadToPastebin_Click(object sender, EventArgs e)
+		private void B_ExportTags_Click(object sender, EventArgs e)
 		{
-			Action content = new Action(async () =>
+			StringBuilder sb = new StringBuilder();
+			sb.AppendLine("Name | Description | Tags / Phrases (comma separated)");
+			sb.AppendLine("");
+
+			foreach (SoundEntry sound in SoundsCopy)
 			{
+				if (!string.IsNullOrEmpty(sound.RewardID))
+					continue;
 
-				var settings = PrivateSettings.GetInstance();
-				KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
-				await apiConnection.GetBroadcasterIDAsync();
-				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
-				{
-					DialogBoxes.ProgressDisplay.Instance?.Close();
-					return;
-				}
+				if (sound.Tags.Length == 0)
+					continue;
 
-				await apiConnection.GetRewardsList();
+				var joinTags = string.Join(", ", sound.Tags);
 
-				var reward = await apiConnection.CreateOrUpdateReward("Universal sound reward", "Redeem a sound using tag / phrase", 160, true, 0, settings.UniversalRewardID);
-				if (reward != null)
-				{
-					if (string.IsNullOrEmpty(settings.UniversalRewardID))
-					{
-						settings.UniversalRewardID = reward.id;
-						MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					}
-					else if (settings.UniversalRewardID != reward.id)
-					{
-						settings.UniversalRewardID = reward.id;
-						MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-					}
-					else
-					{
-						MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					}
-				}
-				DialogBoxes.ProgressDisplay.Instance?.InvokeClose();
-			});
+				sb.AppendLine($"{sound.RewardName} | {sound.Description} |  {joinTags}");
+			}
 
-			DialogBoxes.ProgressDisplay progressForm = DialogBoxes.ProgressDisplay.CreateIfNeeded().SetupForm(this, "Uploading list to Pastebin", content);
+			System.IO.File.WriteAllText("Tags.txt", sb.ToString());
+			System.Diagnostics.Process.Start("Tags.txt");
 		}
 	}
 

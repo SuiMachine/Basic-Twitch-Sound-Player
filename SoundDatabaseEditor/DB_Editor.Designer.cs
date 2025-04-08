@@ -40,12 +40,12 @@
 			this.B_Sort = new System.Windows.Forms.Button();
 			this.B_RemoveEntry = new System.Windows.Forms.Button();
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_ExportTags = new System.Windows.Forms.Button();
 			this.B_VerifyUniversalReward = new System.Windows.Forms.Button();
 			this.B_SoundPlayBackSettings = new System.Windows.Forms.Button();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
-			this.B_UploadToPastebin = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -180,8 +180,8 @@
 			this.tableLayoutPanel5.ColumnCount = 3;
 			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
 			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 171F));
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-			this.tableLayoutPanel5.Controls.Add(this.B_UploadToPastebin, 2, 0);
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 117F));
+			this.tableLayoutPanel5.Controls.Add(this.B_ExportTags, 2, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_VerifyUniversalReward, 1, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
@@ -191,6 +191,17 @@
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel5.Size = new System.Drawing.Size(448, 32);
 			this.tableLayoutPanel5.TabIndex = 3;
+			// 
+			// B_ExportTags
+			// 
+			this.B_ExportTags.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.B_ExportTags.Location = new System.Drawing.Point(334, 4);
+			this.B_ExportTags.Name = "B_ExportTags";
+			this.B_ExportTags.Size = new System.Drawing.Size(110, 23);
+			this.B_ExportTags.TabIndex = 8;
+			this.B_ExportTags.Text = "Export tags to a file";
+			this.B_ExportTags.UseVisualStyleBackColor = true;
+			this.B_ExportTags.Click += new System.EventHandler(this.B_ExportTags_Click);
 			// 
 			// B_VerifyUniversalReward
 			// 
@@ -252,17 +263,6 @@
 			this.B_Save.UseVisualStyleBackColor = true;
 			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
 			// 
-			// B_UploadToPastebin
-			// 
-			this.B_UploadToPastebin.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_UploadToPastebin.Location = new System.Drawing.Point(334, 4);
-			this.B_UploadToPastebin.Name = "B_UploadToPastebin";
-			this.B_UploadToPastebin.Size = new System.Drawing.Size(110, 23);
-			this.B_UploadToPastebin.TabIndex = 8;
-			this.B_UploadToPastebin.Text = "Upload to pastebin";
-			this.B_UploadToPastebin.UseVisualStyleBackColor = true;
-			this.B_UploadToPastebin.Click += new System.EventHandler(this.B_UploadToPastebin_Click);
-			// 
 			// DB_Editor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -301,6 +301,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.Button B_SoundPlayBackSettings;
 		private System.Windows.Forms.Button B_VerifyUniversalReward;
-		private System.Windows.Forms.Button B_UploadToPastebin;
+		private System.Windows.Forms.Button B_ExportTags;
 	}
 }
