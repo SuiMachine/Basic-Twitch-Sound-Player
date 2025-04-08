@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace BasicTwitchSoundPlayer.TwitchEventSub
 {

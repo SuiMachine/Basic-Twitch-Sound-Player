@@ -1,7 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.TwitchEventSub;
 using BasicTwitchSoundPlayer.TwitchEventSub.ChannelPoint;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
