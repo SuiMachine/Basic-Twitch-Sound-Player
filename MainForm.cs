@@ -264,10 +264,16 @@ namespace BasicTwitchSoundPlayer
 				TwitchBotThread.Abort();
 			}
 
+			if(AI != null)
+				AI.Unregister();
+
 			TwitchBotThread = null;
 
 			if (TwitchSocket != null)
+			{
 				TwitchSocket.OnChannelPointsRedeem -= OnRedeemUpdatedReceived;
+				TwitchSocket.Close();
+			}
 		}
 
 		private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)

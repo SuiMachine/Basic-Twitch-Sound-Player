@@ -1,7 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
 using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
-using BasicTwitchSoundPlayer.Structs;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -34,6 +33,10 @@ namespace BasicTwitchSoundPlayer
 			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
 			RebuildDictionary();
+		}
+
+		public void Register()
+		{
 			if (MainForm.TwitchSocket != null)
 				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;
 		}
@@ -259,18 +262,20 @@ namespace BasicTwitchSoundPlayer
 			switch (format)
 			{
 				case PlayerFormat.Vorbis:
-					if (VorbisFileReader.CurrentTime >= VorbisFileReader.TotalTime)
+					if (VorbisFileReader == null)
+						return true;
+					else if (VorbisFileReader.CurrentTime >= VorbisFileReader.TotalTime)
 						return true;
 					else
 						return false;
 				default:
-					if (GenericFileReader.CurrentTime >= GenericFileReader.TotalTime)
+					if (GenericFileReader == null)
+						return true;
+					else if (GenericFileReader.CurrentTime >= GenericFileReader.TotalTime)
 						return true;
 					else
 						return false;
 			}
-
-
 		}
 
 		protected virtual void Dispose(bool disposing)

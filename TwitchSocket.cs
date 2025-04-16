@@ -69,7 +69,7 @@ namespace BasicTwitchSoundPlayer
 			m_Connected = false;
 			KeepAliveCheck?.Stop();
 
-			if(AutoReconnect)
+			if (AutoReconnect)
 			{
 				//THIS IS NOT SAFE!
 				Task.Factory.StartNew(async () =>
@@ -77,6 +77,8 @@ namespace BasicTwitchSoundPlayer
 					await CreateSessionAndSocket();
 				});
 			}
+			else
+				Socket = null;
 		}
 
 		private void Socket_OnMessage(object sender, MessageEventArgs e)
@@ -124,6 +126,8 @@ namespace BasicTwitchSoundPlayer
 				return;
 			ChannelPointEvent obj = payload["event"].ToObject<ChannelPointEvent>();
 			var passedData = new KrakenConnections.ChannelPointRedeemRequest(obj.user_name, obj.user_id, obj.reward.id, obj.id, obj.status, obj.user_input);
+
+			//Debug.WriteLine($"Received payload with text: {obj.user_input}");
 			OnChannelPointsRedeem?.Invoke(passedData);
 		}
 
@@ -182,6 +186,12 @@ namespace BasicTwitchSoundPlayer
 			{
 				redeem.redemptionId,
 			}, status);
+		}
+
+		internal void Close()
+		{
+			AutoReconnect = false;
+			Socket.Close();
 		}
 	}
 }
