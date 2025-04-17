@@ -1,6 +1,6 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
-using BasicTwitchSoundPlayer.Structs;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,7 @@ namespace BasicTwitchSoundPlayer
 		private readonly Random m_RNG;
 		public List<SoundEntry> SoundList;
 		public Dictionary<string, SoundEntry> RewardsToSound = new Dictionary<string, SoundEntry>();
+		public Dictionary<string, SoundEntry> UniversalRewards = new Dictionary<string, SoundEntry>();
 		private List<NSoundPlayer> m_SoundPlayerStack;
 		private Dictionary<string, DateTime> m_UserDB;
 		private int m_Delay;
@@ -32,6 +33,10 @@ namespace BasicTwitchSoundPlayer
 			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
 			RebuildDictionary();
+		}
+
+		public void Register()
+		{
 			if (MainForm.TwitchSocket != null)
 				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;
 		}
@@ -39,18 +44,31 @@ namespace BasicTwitchSoundPlayer
 		public void RebuildDictionary()
 		{
 			RewardsToSound.Clear();
-			foreach (var entry in SoundList)
+			UniversalRewards.Clear();
+			foreach (SoundEntry entry in SoundList)
 			{
 				if (string.IsNullOrEmpty(entry.RewardID))
-					continue;
-
-				if (RewardsToSound.ContainsKey(entry.RewardID))
+				{
+					if (entry.Tags.Length > 0)
+					{
+						foreach (string tag in entry.Tags)
+						{
+							//Check for collision first
+							var lower_case_tag = tag.ToLower();
+							if (UniversalRewards.TryGetValue(lower_case_tag, out var collidingReward))
+								MainForm.Instance.ThreadSafeAddPreviewText($"Couldn't add universal reward - {entry.RewardName} and {collidingReward.RewardName} are calling with each other due to tag \"{lower_case_tag}\"", LineType.SoundCommand);
+							else
+								UniversalRewards.Add(lower_case_tag, entry);
+						}
+					}
+				}
+				else if (RewardsToSound.ContainsKey(entry.RewardID))
 				{
 					MainForm.Instance.ThreadSafeAddPreviewText($"Sound entry {entry.RewardName} already present in dictionary!", LineType.SoundCommand);
 					continue;
 				}
-
-				RewardsToSound.Add(entry.RewardID, entry);
+				else
+					RewardsToSound.Add(entry.RewardID, entry);
 			}
 		}
 		#endregion
@@ -109,7 +127,31 @@ namespace BasicTwitchSoundPlayer
 				m_UserDB.Add(redeem.userId, DateTime.MinValue);
 			}
 
-			if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
+			if (!string.IsNullOrEmpty(PrivateSettings.GetInstance().UniversalRewardID) && redeem.rewardId == PrivateSettings.GetInstance().UniversalRewardID)
+			{
+				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
+				{
+					if (UniversalRewards.TryGetValue(redeem.userInput.SanitizeTags().ToLower(), out SoundEntry universal_sound))
+					{
+						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
+						PrivateSettings programSettings = PrivateSettings.GetInstance();
+						NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, universal_sound.GetFile(m_RNG), programSettings.Volume * universal_sound.Volume);
+						TimeSpan length = player.GetTimeLength() + TimeSpan.FromSeconds(1);
+						m_SoundPlayerStack.Add(player);
+						var additionalDelay = universal_sound.Cooldown - m_Delay;
+						if (additionalDelay < 0)
+							additionalDelay = 0;
+
+						m_UserDB[redeem.userId] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
+						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
+					}
+					else
+						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+				}
+				else
+					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+			}
+			else if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
 			{
 				//check user cooldown
 				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
@@ -117,7 +159,7 @@ namespace BasicTwitchSoundPlayer
 					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 					PrivateSettings programSettings = PrivateSettings.GetInstance();
 					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
-					TimeSpan length = player.GetTimeLenght() + TimeSpan.FromSeconds(1);
+					TimeSpan length = player.GetTimeLength() + TimeSpan.FromSeconds(1);
 					m_SoundPlayerStack.Add(player);
 					m_UserDB[redeem.userId] = DateTime.Now + length;
 
@@ -195,7 +237,7 @@ namespace BasicTwitchSoundPlayer
 			}
 		}
 
-		public TimeSpan GetTimeLenght()
+		public TimeSpan GetTimeLength()
 		{
 			if (format == PlayerFormat.Generic)
 			{
@@ -220,18 +262,20 @@ namespace BasicTwitchSoundPlayer
 			switch (format)
 			{
 				case PlayerFormat.Vorbis:
-					if (VorbisFileReader.CurrentTime >= VorbisFileReader.TotalTime)
+					if (VorbisFileReader == null)
+						return true;
+					else if (VorbisFileReader.CurrentTime >= VorbisFileReader.TotalTime)
 						return true;
 					else
 						return false;
 				default:
-					if (GenericFileReader.CurrentTime >= GenericFileReader.TotalTime)
+					if (GenericFileReader == null)
+						return true;
+					else if (GenericFileReader.CurrentTime >= GenericFileReader.TotalTime)
 						return true;
 					else
 						return false;
 			}
-
-
 		}
 
 		protected virtual void Dispose(bool disposing)

@@ -27,8 +27,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		public bool RunWebsocket { get; set; }
 
-
-
 		public ConnectionSettingsForm(MainForm _parent)
 		{
 			InitializeComponent();
@@ -41,9 +39,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 			this.TB_Username.DataBindings.Add("Text", this, nameof(Username), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_UserAuth.DataBindings.Add("Text", this, nameof(UserAuth), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_BotName.DataBindings.Add("Text", this, nameof(BotName), false,  DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_BotName.DataBindings.Add("Text", this, nameof(BotName), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_BotAuth.DataBindings.Add("Text", this, nameof(BotAuth), false, DataSourceUpdateMode.OnPropertyChanged);
-
 			this.CB_DebugMode.DataBindings.Add("Checked", this, nameof(DebugMode), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.Num_PortUsed.DataBindings.Add("Value", this, nameof(WebsocketPort), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.CB_Websocket.DataBindings.Add("Checked", this, nameof(RunWebsocket), false, DataSourceUpdateMode.OnPropertyChanged);

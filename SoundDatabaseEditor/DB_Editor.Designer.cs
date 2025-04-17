@@ -40,6 +40,8 @@
 			this.B_Sort = new System.Windows.Forms.Button();
 			this.B_RemoveEntry = new System.Windows.Forms.Button();
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_ExportTags = new System.Windows.Forms.Button();
+			this.B_VerifyUniversalReward = new System.Windows.Forms.Button();
 			this.B_SoundPlayBackSettings = new System.Windows.Forms.Button();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Cancel = new System.Windows.Forms.Button();
@@ -64,7 +66,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(810, 591);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(839, 591);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// sndTreeView
@@ -75,7 +77,7 @@
 			this.sndTreeView.Location = new System.Drawing.Point(3, 3);
 			this.sndTreeView.Name = "sndTreeView";
 			this.sndTreeView.SelectedImageIndex = 0;
-			this.sndTreeView.Size = new System.Drawing.Size(804, 535);
+			this.sndTreeView.Size = new System.Drawing.Size(833, 535);
 			this.sndTreeView.TabIndex = 1;
 			this.sndTreeView.DoubleClick += new System.EventHandler(this.SndTreeView_DoubleClick);
 			this.sndTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SndTreeView_KeyDown);
@@ -85,9 +87,10 @@
 			this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
 			this.iconList.TransparentColor = System.Drawing.Color.Transparent;
 			this.iconList.Images.SetKeyName(0, "sound_player_icon_bundled.ico");
-			this.iconList.Images.SetKeyName(1, "star.ico");
-			this.iconList.Images.SetKeyName(2, "note.ico");
-			this.iconList.Images.SetKeyName(3, "audio-volume-high-4.ico");
+			this.iconList.Images.SetKeyName(1, "tag_sound.png");
+			this.iconList.Images.SetKeyName(2, "star.ico");
+			this.iconList.Images.SetKeyName(3, "note.ico");
+			this.iconList.Images.SetKeyName(4, "audio-volume-high-4.ico");
 			// 
 			// tableLayoutPanel2
 			// 
@@ -100,7 +103,7 @@
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(804, 44);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(833, 44);
 			this.tableLayoutPanel2.TabIndex = 2;
 			// 
 			// tableLayoutPanel4
@@ -117,7 +120,7 @@
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(798, 38);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(827, 38);
 			this.tableLayoutPanel4.TabIndex = 3;
 			// 
 			// tableLayoutPanel3
@@ -174,24 +177,49 @@
 			// tableLayoutPanel5
 			// 
 			this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-			this.tableLayoutPanel5.ColumnCount = 1;
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 169F));
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel5.ColumnCount = 3;
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 171F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 117F));
+			this.tableLayoutPanel5.Controls.Add(this.B_ExportTags, 2, 0);
+			this.tableLayoutPanel5.Controls.Add(this.B_VerifyUniversalReward, 1, 0);
 			this.tableLayoutPanel5.Controls.Add(this.B_SoundPlayBackSettings, 0, 0);
 			this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Left;
 			this.tableLayoutPanel5.Location = new System.Drawing.Point(218, 3);
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(168, 32);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(448, 32);
 			this.tableLayoutPanel5.TabIndex = 3;
+			// 
+			// B_ExportTags
+			// 
+			this.B_ExportTags.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.B_ExportTags.Location = new System.Drawing.Point(334, 4);
+			this.B_ExportTags.Name = "B_ExportTags";
+			this.B_ExportTags.Size = new System.Drawing.Size(110, 23);
+			this.B_ExportTags.TabIndex = 8;
+			this.B_ExportTags.Text = "Export tags to a file";
+			this.B_ExportTags.UseVisualStyleBackColor = true;
+			this.B_ExportTags.Click += new System.EventHandler(this.B_ExportTags_Click);
+			// 
+			// B_VerifyUniversalReward
+			// 
+			this.B_VerifyUniversalReward.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.B_VerifyUniversalReward.Location = new System.Drawing.Point(163, 4);
+			this.B_VerifyUniversalReward.Name = "B_VerifyUniversalReward";
+			this.B_VerifyUniversalReward.Size = new System.Drawing.Size(163, 23);
+			this.B_VerifyUniversalReward.TabIndex = 7;
+			this.B_VerifyUniversalReward.Text = "Create / Verify universal reward";
+			this.B_VerifyUniversalReward.UseVisualStyleBackColor = true;
+			this.B_VerifyUniversalReward.Click += new System.EventHandler(this.B_VerifyUniversalReward_Click);
 			// 
 			// B_SoundPlayBackSettings
 			// 
 			this.B_SoundPlayBackSettings.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(8, 4);
+			this.B_SoundPlayBackSettings.Location = new System.Drawing.Point(4, 4);
 			this.B_SoundPlayBackSettings.Name = "B_SoundPlayBackSettings";
-			this.B_SoundPlayBackSettings.Size = new System.Drawing.Size(154, 23);
+			this.B_SoundPlayBackSettings.Size = new System.Drawing.Size(151, 23);
 			this.B_SoundPlayBackSettings.TabIndex = 6;
 			this.B_SoundPlayBackSettings.Text = "Sound Playback Settings";
 			this.B_SoundPlayBackSettings.UseVisualStyleBackColor = true;
@@ -206,7 +234,7 @@
 			this.tableLayoutPanel6.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Right;
-			this.tableLayoutPanel6.Location = new System.Drawing.Point(654, 3);
+			this.tableLayoutPanel6.Location = new System.Drawing.Point(683, 3);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -239,9 +267,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(810, 591);
+			this.ClientSize = new System.Drawing.Size(839, 591);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.MinimumSize = new System.Drawing.Size(726, 564);
+			this.MinimumSize = new System.Drawing.Size(855, 630);
 			this.Name = "DB_Editor";
 			this.Text = "Sound Database Editor";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DB_Editor_FormClosed);
@@ -272,5 +300,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.Button B_SoundPlayBackSettings;
-    }
+		private System.Windows.Forms.Button B_VerifyUniversalReward;
+		private System.Windows.Forms.Button B_ExportTags;
+	}
 }

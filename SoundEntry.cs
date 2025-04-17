@@ -14,32 +14,36 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 		public string RewardID;
 		[XmlAttribute]
 		public string Description;
-		[XmlArrayItem]
-		public string[] Files;
 		[XmlAttribute]
 		public float Volume;
 		[XmlAttribute]
 		public int AmountOfPoints;
 		[XmlAttribute]
 		public int Cooldown;
+		[XmlArrayItem]
+		public string[] Files;
+		[XmlArrayItem]
+		public string[] Tags;
 
 		public SoundEntry()
 		{
 			RewardName = "";
 			Description = "";
 			Files = new string[0];
+			Tags = new string[0];
 			RewardID = "";
 			Volume = 1f;
 			AmountOfPoints = 500;
 			Cooldown = 0;
 		}
 
-		public SoundEntry(string Command, string Description, string RewardID, string[] Files, float Volume, int AmountOfPoints, int Cooldown)
+		public SoundEntry(string Command, string Description, string RewardID, string[] Files, string[] Tags, float Volume, int AmountOfPoints, int Cooldown)
 		{
 			this.RewardName = Command;
 			this.Description = Description;
 			this.RewardID = RewardID;
 			this.Files = Files;
+			this.Tags = Tags;
 			this.Description = Description;
 			this.Volume = Volume;
 			this.AmountOfPoints = AmountOfPoints;

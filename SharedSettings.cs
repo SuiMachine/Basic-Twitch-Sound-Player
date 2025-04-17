@@ -84,33 +84,21 @@ namespace BasicTwitchSoundPlayer
 		}
 
 		#region Properties
-		[XmlElement]
-		public ColorStruct Colors { get; set; }
+		[XmlElement] public ColorStruct Colors { get; set; }
 
-		[XmlElement]
-		public bool Debug_mode { get; set; }
-		[XmlElement]
-		public bool Autostart { get; set; }
-		[XmlElement]
-		public float Volume { get; set; }
-		[XmlElement]
-		public int Delay { get; set; }
-		[XmlElement]
-		public Guid OutputDevice { get; set; }
-		[XmlElement]
-		public string TwitchServer { get; set; }
-		[XmlElement]
-		public string UserName { get; set; }
-		[XmlElement]
-		public EncryptedString UserAuth { get; set; }
-		[XmlElement]
-		public string BotUsername { get; set; }
-		[XmlElement]
-		public EncryptedString BotAuth { get; set; }
-		[XmlElement]
-		public bool RunWebSocketsServer { get; set; }
-		[XmlElement]
-		public int WebSocketsServerPort { get; set; }
+		[XmlElement] public bool Debug_mode { get; set; }
+		[XmlElement] public bool Autostart { get; set; }
+		[XmlElement] public float Volume { get; set; }
+		[XmlElement] public int Delay { get; set; }
+		[XmlElement] public Guid OutputDevice { get; set; }
+		[XmlElement] public string TwitchServer { get; set; }
+		[XmlElement] public string UserName { get; set; }
+		[XmlElement] public EncryptedString UserAuth { get; set; }
+		[XmlElement] public string BotUsername { get; set; }
+		[XmlElement] public EncryptedString BotAuth { get; set; }
+		[XmlElement] public bool RunWebSocketsServer { get; set; }
+		[XmlElement] public int WebSocketsServerPort { get; set; }
+		[XmlElement] public string UniversalRewardID { get; set; }
 		#endregion
 
 		public PrivateSettings()
@@ -129,6 +117,7 @@ namespace BasicTwitchSoundPlayer
 			BotAuth = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;
+			UniversalRewardID = "";
 		}
 
 		#region Load/Save
@@ -356,7 +345,7 @@ namespace BasicTwitchSoundPlayer
 			var sb = new StringBuilder();
 
 			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
-			if(!isStreamer)
+			if (!isStreamer)
 				sb.AppendLine("The user is " + username + ".");
 
 			sb.AppendStreamInstructionPostfix(attachTimeDate, attachIsLive);

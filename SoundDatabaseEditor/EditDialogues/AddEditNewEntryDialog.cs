@@ -1,7 +1,9 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using BasicTwitchSoundPlayer.Extensions;
+using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
@@ -31,6 +33,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			this.Num_Points.Value = Entry.AmountOfPoints;
 			this.Num_Cooldown.Value = Entry.Cooldown;
 			this.Num_Volume.Value = (int)Math.Round(Entry.Volume * 100);
+			this.RB_Tags.Lines = Entry.Tags;
 			Verify();
 			Instance = this;
 		}
@@ -56,7 +59,8 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				files[i] = listFile[i].ToString();
 			}
 
-			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, (float)Num_Volume.Value / 100f, (int)Num_Points.Value, (int)Num_Cooldown.Value);
+			string[] listTags = RB_Tags.Lines.Select(x => x.SanitizeTags()).Where(x => x != "").ToArray();
+			this.ReturnSound = new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, files, listTags, (float)Num_Volume.Value / 100f, (int)Num_Points.Value, (int)Num_Cooldown.Value);
 			this.Close();
 		}
 
@@ -168,7 +172,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 			await apiConnection.GetRewardsList();
 
-			KrakenConnections.ChannelReward reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
+			KrakenConnections.ChannelReward reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
 
 			if (reward != null)
 			{
@@ -177,7 +181,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 					this.TB_RewardID.Text = reward.id;
 					MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
-				else if(TB_RewardID.Text != reward.id)
+				else if (TB_RewardID.Text != reward.id)
 				{
 					this.TB_RewardID.Text = reward.id;
 					MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -186,6 +190,41 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				{
 					MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
+			}
+		}
+
+		private async void B_RemoveReward_Click(object sender, EventArgs e)
+		{
+			if (TB_RewardID.Text == "")
+				return;
+
+			var mbResult = MessageBox.Show("Are you sure you want to remove the reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (mbResult == DialogResult.No)
+				return;
+
+			var settings = PrivateSettings.GetInstance();
+			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
+			await apiConnection.GetBroadcasterIDAsync();
+			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+				return;
+
+			var rewards = await apiConnection.GetRewardsList();
+
+			KrakenConnections.ChannelReward reward = rewards.FirstOrDefault(x => x.id == TB_RewardID.Text);
+			if (reward != null)
+			{
+				var result = await apiConnection.DeleteCustomReward(reward);
+				if(result)
+				{
+					MessageBox.Show("Reward deleted successfully", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					TB_RewardID.Text = "";
+				}
+			}
+			else
+			{
+				MessageBox.Show("Seems like the reward was already removed on Twitch!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				TB_RewardID.Text = "";
+
 			}
 		}
 	}

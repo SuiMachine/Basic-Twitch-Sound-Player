@@ -152,7 +152,7 @@ namespace BasicTwitchSoundPlayer
 		private void OnRedeemUpdatedReceived(ChannelPointRedeemRequest redeem)
 		{
 #if DEBUG
-			//Debug.WriteLine($"Received reward status {rewardId}, redeeem ID {redeemID} - {status}");
+			Debug.WriteLine($"Received reward status {redeem.userName}, redeeem ID {redeem.rewardId} - {redeem.state}");
 #endif
 		}
 		#endregion
@@ -219,7 +219,6 @@ namespace BasicTwitchSoundPlayer
 		private void ConnectionSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SettingsForms.ConnectionSettingsForm form = new SettingsForms.ConnectionSettingsForm(this);
-
 			var settings = PrivateSettings.GetInstance();
 
 			DialogResult res = form.ShowDialog();
@@ -264,10 +263,16 @@ namespace BasicTwitchSoundPlayer
 				TwitchBotThread.Abort();
 			}
 
+			if(AI != null)
+				AI.Unregister();
+
 			TwitchBotThread = null;
 
 			if (TwitchSocket != null)
+			{
 				TwitchSocket.OnChannelPointsRedeem -= OnRedeemUpdatedReceived;
+				TwitchSocket.Close();
+			}
 		}
 
 		private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)

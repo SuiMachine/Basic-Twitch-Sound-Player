@@ -163,11 +163,7 @@ namespace BasicTwitchSoundPlayer
 				content.contents.Add(GeminiMessage.CreateUserResponse(request.userInput));
 				string json = JsonConvert.SerializeObject(content);
 
-				string result = await HttpWebRequestHandlers.PerformPost(
-					new Uri($"https://generativelanguage.googleapis.com/v1beta/{aiConfig.Model}:generateContent?key={aiConfig.ApiKey}"),
-					new Dictionary<string, string>(),
-					json
-					);
+				string result = await HTTPS_Requests.PostAsync("https://generativelanguage.googleapis.com/v1beta/", $"{aiConfig.Model}:generateContent", $"?key={aiConfig.ApiKey}", json, new Dictionary<string, string>());
 
 				if (string.IsNullOrEmpty(result))
 				{

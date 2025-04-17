@@ -32,6 +32,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			InitBot(m_ChannelToJoin);
 			this.BotRunning = true;
+			SndDB.Register();
 			try
 			{
 				Irc.MeebyIrc.Listen();

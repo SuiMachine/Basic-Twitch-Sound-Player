@@ -57,4 +57,5 @@ packages
 #Some of release directory
 Release/7za.exe
 Release/Release_dir/*
+Release/Tags.txt
 *.7z

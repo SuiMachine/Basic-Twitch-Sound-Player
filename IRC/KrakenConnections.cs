@@ -1,6 +1,7 @@
 ﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
 using BasicTwitchSoundPlayer.SoundStorage;
 using BasicTwitchSoundPlayer.Structs.Gemini;
+using BasicTwitchSoundPlayer.TwitchEventSub.KrakenSubscribe;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,16 +12,15 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
+using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
 	public class KrakenConnections
 	{
-		public enum RewardType
-		{
-			Sound,
-		}
+		public const string HELIXURI = "https://api.twitch.tv/helix/";
+		public const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
 		public enum RedemptionStates
 		{
@@ -115,7 +115,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		}
 
 
-		private string HELIXURI { get; set; }
 		private string Channel { get; set; }
 		public string BroadcasterID { get; set; }
 		public bool IsLive { get; private set; } = false;
@@ -123,21 +122,22 @@ namespace BasicTwitchSoundPlayer.IRC
 		public string GameTitle { get; private set; } = "";
 		public string StreamTitle { get; private set; } = "";
 
-		public Task SubscribingToEvents { get; internal set; }
 		public List<ChannelReward> CachedRewards { get; internal set; }
-
-		private const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
 		public KrakenConnections(string Channel)
 		{
 			this.Channel = Channel;
-			HELIXURI = "https://api.twitch.tv/helix/";
 		}
 
 		#region Async
 		public async Task GetBroadcasterIDAsync()
 		{
-			string responseID = await GetNewUpdateAsync("users", "?login=" + Channel, true);
+			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Obtaining user ID");
+			string responseID = await HTTPS_Requests.GetAsync(HELIXURI, "users", "?login=" + Channel, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }         
+			});
 			if (responseID == null || responseID == "")
 				return;
 			else
@@ -166,9 +166,17 @@ namespace BasicTwitchSoundPlayer.IRC
 				await GetBroadcasterIDAsync();
 			}
 			if (BroadcasterID == null || BroadcasterID == "")
+			{
+				DialogBoxes.ProgressDisplay.Instance?.Close();
 				throw new Exception("Didn't obtain broadcaster ID. Can't proceed!");
+			}
 
-			string response = await GetNewUpdateAsync("subscriptions", "?broadcaster_id=" + BroadcasterID, true);
+			string response = await HTTPS_Requests.GetAsync(HELIXURI, "subscriptions", "?broadcaster_id=" + BroadcasterID, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
+
 			if (response == null || response == "")
 			{
 				return new string[0];
@@ -198,7 +206,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			return new string[0];
 		}
 
-		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundredemptionid)
+		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundRedeemId)
 		{
 			{
 				int endTimer = 5;
@@ -215,7 +223,13 @@ namespace BasicTwitchSoundPlayer.IRC
 				return;
 			}
 
-			string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
+			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Getting custom rewards list");
+			string response = await HTTPS_Requests.GetAsync(HELIXURI, "channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
+
 			if (response == null || response == "")
 			{
 				mainForm.ThreadSafeAddPreviewText("[ERROR] Incorrect response when verifying Channel Rewards!", LineType.IrcCommand);
@@ -226,42 +240,46 @@ namespace BasicTwitchSoundPlayer.IRC
 				JObject jReader = JObject.Parse(response);
 				if (jReader["data"] != null)
 				{
-					ChannelReward soundredemptionReward = null;
+					ChannelReward soundRedeemReward = null;
 
 					var dataNode = jReader["data"];
 					foreach (var customReward in dataNode)
 					{
 						var parseNode = customReward.ToObject<ChannelReward>();
-						if (soundredemptionid != null && parseNode.id.Equals(soundredemptionid, StringComparison.InvariantCultureIgnoreCase))
-							soundredemptionReward = parseNode;
+						if (soundRedeemId != null && parseNode.id.Equals(soundRedeemId, StringComparison.InvariantCultureIgnoreCase))
+							soundRedeemReward = parseNode;
 					}
 
-					if (soundredemptionid != null && soundredemptionid != "")
+					if (soundRedeemId != null && soundRedeemId != "")
 					{
-						if (soundredemptionReward == null)
+						if (soundRedeemReward == null)
 						{
 							mainForm.ThreadSafeAddPreviewText("[ERROR] Haven't found Channel Reward with Sound Reward ID!", LineType.IrcCommand);
 						}
 						else
 						{
-							if (!soundredemptionReward.is_enabled)
+							if (!soundRedeemReward.is_enabled)
 								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward is not enabled!", LineType.IrcCommand);
-							else if (soundredemptionReward.is_paused)
+							else if (soundRedeemReward.is_paused)
 								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound reward redemption is paused!", LineType.IrcCommand);
-							else if (!soundredemptionReward.is_user_input_required)
+							else if (!soundRedeemReward.is_user_input_required)
 								mainForm.ThreadSafeAddPreviewText("[ERROR] Sound reward is incorrectly configured - it needs to require player input!", LineType.IrcCommand);
-							else if (soundredemptionReward.should_redemptions_skip_request_queue)
+							else if (soundRedeemReward.should_redemptions_skip_request_queue)
 								mainForm.ThreadSafeAddPreviewText("[WARNING] Sound redemption via points shouldn't skip request queue to allow for returning points, if request fails!", LineType.IrcCommand);
 						}
 					}
 
 					//Clear up redemption queue
-					if (soundredemptionReward != null)
+					if (soundRedeemReward != null)
 					{
-						if (soundredemptionReward != null)
+						if (soundRedeemReward != null)
 						{
-							string pointsRewardResponse = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + soundredemptionReward.id + "&status=UNFULFILLED", true, true);
-
+							DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Clearing up redeem queue");
+							string pointsRewardResponse = await HTTPS_Requests.GetAsync(HELIXURI, "channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + soundRedeemReward.id + "&status=UNFULFILLED", new Dictionary<string, string>()
+							{
+								{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+								{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+							}, true);
 
 							//Should have thought this through...
 							if (pointsRewardResponse.StartsWith("Error: "))
@@ -281,7 +299,7 @@ namespace BasicTwitchSoundPlayer.IRC
 								{
 									var idsToCancel = dataNode.Take(totalIDsToCancel).Select(x => x["id"].ToString()).ToArray();
 
-									UpdateRedemptionStatus(soundredemptionReward.id, idsToCancel, RedemptionStates.CANCELED);
+									UpdateRedemptionStatus(soundRedeemReward.id, idsToCancel, RedemptionStates.CANCELED);
 								}
 							}
 						}
@@ -298,7 +316,12 @@ namespace BasicTwitchSoundPlayer.IRC
 				return null;
 			}
 
-			var response = await GetNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + rewardID + "&status=UNFULFILLED&sort=NEWEST", true, true);
+			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Getting unredeemed rewards");
+			var response = await HTTPS_Requests.GetAsync(HELIXURI, "channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + rewardID + "&status=UNFULFILLED&sort=NEWEST", new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			}, true);
 
 			if (response != null && response != "")
 			{
@@ -343,7 +366,12 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			if (PrivateSettings.GetInstance().Debug_mode)
 				MainForm.Instance.ThreadSafeAddPreviewText($"Updating reward {string.Join(", ", RewardRequestIDs)} with status {redemptionState}", LineType.IrcCommand);
-			var result = await PatchNewUpdateAsync("channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }), true);
+			var result = await HTTPS_Requests.PatchAsync(HELIXURI, "channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }),
+				new Dictionary<string, string>()
+				{
+					{"Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+					{"Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+				});
 
 			if (result != "")
 			{
@@ -354,7 +382,22 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		public async Task<ChannelReward> CreateOrUpdateReward(VoiceModConfig.VoiceModReward reward)
+		private string ConvertDictionaryToJsonString(Dictionary<string, string> bodyContent)
+		{
+			string jsonContent = "{";
+			for (int i = 0; i < bodyContent.Count; i++)
+			{
+				var keyPair = bodyContent.ElementAt(i);
+				jsonContent += $"\"{keyPair.Key}\":\"{keyPair.Value}\"";
+				if (i + 1 < bodyContent.Count)
+					jsonContent += ",\n";
+
+			}
+			jsonContent += "}";
+			return jsonContent;
+		}
+
+		internal async Task<ChannelReward> CreateOrUpdateReward(VoiceModConfig.VoiceModReward reward)
 		{
 			if (CachedRewards == null)
 				return null;
@@ -395,9 +438,14 @@ namespace BasicTwitchSoundPlayer.IRC
 
 				if (ChannelReward.Differs(currentReward, newReward))
 				{
+					DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Updating reward");
 					var json = JsonConvert.SerializeObject(newReward);
 
-					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					var response = await HTTPS_Requests.PatchAsync(HELIXURI, "channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, new Dictionary<string, string>()
+					{
+						{"Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+						{"Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+					});
 					if (response != "")
 					{
 						JObject jReader = JObject.Parse(response);
@@ -430,7 +478,14 @@ namespace BasicTwitchSoundPlayer.IRC
 				}.ToString();
 
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Creating reward");
+
+				string response = await HTTPS_Requests.PostAsync(HELIXURI, "channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, new Dictionary<string, string>()
+				{
+					{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+					{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+				});
+
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);
@@ -503,9 +558,14 @@ namespace BasicTwitchSoundPlayer.IRC
 				ChannelReward result = null;
 				if (ChannelRewardRequest.Differs(newReward, currentReward))
 				{
-					var json = JsonConvert.SerializeObject(newReward);
+					DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Updating reward");
 
-					var response = await PatchNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, true);
+					var json = JsonConvert.SerializeObject(newReward);
+					var response = await HTTPS_Requests.PatchAsync(HELIXURI, "channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, json, new Dictionary<string, string>()
+					{
+						{"Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+						{"Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}"  }
+					});
 					if (response != "")
 					{
 						JObject jReader = JObject.Parse(response);
@@ -548,7 +608,13 @@ namespace BasicTwitchSoundPlayer.IRC
 					}.ToString();
 				}
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Creating reward");
+
+				string response = await HTTPS_Requests.PostAsync(HELIXURI, "channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, new Dictionary<string, string>()
+				{
+					{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+					{"Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+				});
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);
@@ -563,7 +629,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
-		internal async Task<ChannelReward> CreateOrUpdateReward(string rewardID = "")
+		internal async Task<ChannelReward> CreateOrUpdateReward(string name, string prompt, int cost, bool isUserInputRequired, int globalCooldown, string rewardID = "")
 		{
 			if (CachedRewards == null)
 				return null;
@@ -590,17 +656,21 @@ namespace BasicTwitchSoundPlayer.IRC
 			{
 				string jObject = new JObject()
 				{
-					["title"] = "Ask AI",
-					["cost"] = 10_000,
+					["title"] = name,
+					["cost"] = cost,
 					["is_enabled"] = true.ToString().ToLower(),
-					["prompt"] = "Ask or write message to AI",
-					["is_user_input_required"] = "true",
+					["prompt"] = prompt,
+					["is_user_input_required"] = isUserInputRequired.ToString().ToLower(),
 					["should_redemptions_skip_request_queue"] = "false",
-					["is_global_cooldown_enabled"] = "true",
-					["global_cooldown_seconds"] = "600",
+					["is_global_cooldown_enabled"] = globalCooldown > 0 ? "true" : "false",
+					["global_cooldown_seconds"] = globalCooldown,
 				}.ToString();
 
-				var response = await PostNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, true);
+				string response = await HTTPS_Requests.PostAsync(HELIXURI, "channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, jObject, new Dictionary<string, string>()
+				{
+					{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+					{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+				});
 				if (response != "")
 				{
 					JObject jReader = JObject.Parse(response);
@@ -615,123 +685,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			return null;
 		}
 
-		private async Task<string> GetNewUpdateAsync(string scope, string parameters = "", bool RequireBearerToken = false, bool returnErrorCode = false)
-		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
-
-			try
-			{
-				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
-				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
-				else
-					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
-
-				request.Timeout = 5000;
-				request.Method = "GET";
-
-
-				using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-				using (Stream stream = response.GetResponseStream())
-				using (StreamReader reader = new StreamReader(stream))
-				{
-					return await reader.ReadToEndAsync();
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e);
-				if (returnErrorCode)
-				{
-					return "Error: " + e.Message;
-				}
-				return "";
-			}
-
-
-		}
-
-		private async Task<string> PostNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
-		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
-			request.ContentType = "application/json";
-			request.Method = "POST";
-
-			try
-			{
-				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
-				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
-				else
-					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
-
-				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
-				{
-					streamWriter.Write(jsonContent);
-				}
-
-				var httpResponse = (HttpWebResponse)await request.GetResponseAsync();
-				using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-				{
-					var result = streamReader.ReadToEnd();
-					return result;
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e);
-				MessageBox.Show(e.Message);
-				return "";
-			}
-		}
-		private async Task<string> PatchNewUpdateAsync(string scope, string parameters, string jsonContent, bool RequireBearerToken = false)
-		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HELIXURI + scope + parameters);
-			request.ContentType = "application/json";
-			request.Method = "PATCH";
-
-			try
-			{
-				request.Headers["Client-ID"] = BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID;
-				if (!RequireBearerToken)
-					request.Headers["Authorization"] = "OAuth " + PrivateSettings.GetInstance().UserAuth;
-				else
-					request.Headers["Authorization"] = "Bearer " + PrivateSettings.GetInstance().UserAuth;
-
-				using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
-				{
-					streamWriter.Write(jsonContent);
-				}
-
-				var httpResponse = (HttpWebResponse)await request.GetResponseAsync();
-				using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-				{
-					var result = streamReader.ReadToEnd();
-					return result;
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e);
-				MainForm.Instance.ThreadSafeAddPreviewText($"Error with patch request: {e.Message}", LineType.IrcCommand);
-				return "";
-			}
-		}
-
-		private string ConvertDictionaryToJsonString(Dictionary<string, string> bodyContent)
-		{
-			string jsonContent = "{";
-			for (int i = 0; i < bodyContent.Count; i++)
-			{
-				var keyPair = bodyContent.ElementAt(i);
-				jsonContent += $"\"{keyPair.Key}\":\"{keyPair.Value}\"";
-				if (i + 1 < bodyContent.Count)
-					jsonContent += ",\n";
-
-			}
-			jsonContent += "}";
-			return jsonContent;
-		}
+		
 
 		#endregion
 
@@ -752,7 +706,11 @@ namespace BasicTwitchSoundPlayer.IRC
 				return null;
 			}
 
-			string response = await GetNewUpdateAsync("channel_points/custom_rewards", "?broadcaster_id=" + BroadcasterID, true);
+			string response = await HTTPS_Requests.GetAsync(HELIXURI, "channel_points/custom_rewards", $"?broadcaster_id={BroadcasterID}", new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
 			if (response == null || response == "")
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText("[ERROR] Incorrect response when verifying Channel Rewards!", LineType.IrcCommand);
@@ -806,8 +764,13 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public async Task GetStreamerStatus()
 		{
-			string res = await GetNewUpdateAsync("streams", "?user_login=" + Channel, true);
-			if(!string.IsNullOrEmpty(res))
+			string res = await HTTPS_Requests.GetAsync(HELIXURI, "streams", "?user_login=" + Channel, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
+
+			if (!string.IsNullOrEmpty(res))
 			{
 				try
 				{
@@ -840,10 +803,10 @@ namespace BasicTwitchSoundPlayer.IRC
 							if (dataNode["game_id"] != null)
 							{
 								string newGameId = dataNode["game_id"].ToString();
-								if(newGameId != GameID)
+								if (newGameId != GameID)
 								{
 									GameTitle = await GetGameTitleFromID(newGameId);
-									if(GameTitle == "ul")
+									if (GameTitle == "ul")
 									{
 										GameTitle = "";
 									}
@@ -877,7 +840,11 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private async Task<string> GetGameTitleFromID(string newGameId)
 		{
-			string res = await GetNewUpdateAsync("games", "?id=" + newGameId, true);
+			string res = await HTTPS_Requests.GetAsync(HELIXURI, "games", "?id=" + newGameId, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
 			if (string.IsNullOrEmpty(res))
 				return "";
 
@@ -888,6 +855,50 @@ namespace BasicTwitchSoundPlayer.IRC
 				return dataNode["name"].ToString();
 			}
 			return "";
+		}
+
+		public async Task<bool> DeleteCustomReward(ChannelReward reward)
+		{
+			if (CachedRewards == null)
+				return false;
+
+			{
+				int endTimer = 5;
+				while ((BroadcasterID == null || BroadcasterID == "") && endTimer >= 0)
+				{
+					await Task.Delay(1000);
+					endTimer--;
+				}
+			}
+
+			if ((BroadcasterID == null || BroadcasterID == ""))
+				return false;
+
+			HttpStatusCode response = await HTTPS_Requests.DeleteAsync(HELIXURI, "channel_points/custom_rewards", $"?broadcaster_id={BroadcasterID}&id={reward.id}", new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
+			if (response == HttpStatusCode.OK || response == HttpStatusCode.NoContent)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public async Task EventSub_SubscribeToChannelPoints(string broadcasterID, string sessionID)
+		{
+			var content = new Kraken_EventSub_Subscribe_RedemptionAdd(broadcasterID, sessionID);
+			var serilize = JsonConvert.SerializeObject(content, Formatting.Indented, new JsonSerializerSettings()
+			{
+				NullValueHandling = NullValueHandling.Ignore
+			});
+
+			var result = await HTTPS_Requests.PostAsync(HELIXURI, "eventsub/subscriptions", "", serilize, new Dictionary<string, string>()
+			{
+				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
+				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
+			});
 		}
 	}
 }
