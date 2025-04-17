@@ -232,7 +232,6 @@ namespace BasicTwitchSoundPlayer
 				settings.Debug_mode = form.DebugMode;
 				settings.WebSocketsServerPort = form.WebsocketPort;
 				settings.RunWebSocketsServer = form.RunWebsocket;
-				settings.PastebinApiKey = form.PasteBinAPIKey;
 				settings.SaveSettings();
 				ReloadBot();
 			}

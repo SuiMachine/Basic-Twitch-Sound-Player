@@ -99,8 +99,6 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement] public bool RunWebSocketsServer { get; set; }
 		[XmlElement] public int WebSocketsServerPort { get; set; }
 		[XmlElement] public string UniversalRewardID { get; set; }
-		[XmlElement] public EncryptedString PastebinApiKey { get; set; }
-		[XmlElement] public EncryptedString PastebinUserKey { get; set; }
 		#endregion
 
 		public PrivateSettings()
@@ -115,8 +113,6 @@ namespace BasicTwitchSoundPlayer
 			TwitchServer = "irc.twitch.tv";
 			UserName = "";
 			UserAuth = "";
-			PastebinApiKey = "";
-			PastebinUserKey = "";
 			BotUsername = "";
 			BotAuth = "";
 			RunWebSocketsServer = false;
