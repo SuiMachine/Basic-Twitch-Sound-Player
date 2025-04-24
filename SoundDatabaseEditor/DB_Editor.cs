@@ -138,9 +138,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			{
 				if (sndTreeView.SelectedNode != null)
 				{
-					var parent = GetRootSoundNode(sndTreeView.SelectedNode);
-
-					sndTreeView.Nodes.Remove(parent);
+					RemoveEntry();
 				}
 			}
 			else if (e.KeyCode == Keys.Enter)

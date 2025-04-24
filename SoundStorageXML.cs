@@ -31,7 +31,7 @@ namespace BasicTwitchSoundPlayer.SoundStorage
 			if (!Directory.Exists(folder))
 				Directory.CreateDirectory(folder);
 
-			FileStream fs = new FileStream(XmlPath, FileMode.OpenOrCreate);
+			FileStream fs = new FileStream(XmlPath, FileMode.Create);
 			xmlSerializer.Serialize(fs, entries);
 			fs.Dispose();
 		}

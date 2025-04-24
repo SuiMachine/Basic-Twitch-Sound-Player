@@ -443,12 +443,12 @@ namespace BasicTwitchSoundPlayer
 				this.Disposed = true;
 			}
 		}
-/*
-		private void TwitchPubSubClient_OnListenResponse(object sender, TwitchLib.PubSub.Events.OnListenResponseArgs e)
-		{
-			if (!e.Successful)
-				throw new Exception($"Failed to listen! Response: {e.Response}");
-		}*/
+		/*
+				private void TwitchPubSubClient_OnListenResponse(object sender, TwitchLib.PubSub.Events.OnListenResponseArgs e)
+				{
+					if (!e.Successful)
+						throw new Exception($"Failed to listen! Response: {e.Response}");
+				}*/
 
 		public void Disconnect()
 		{
@@ -480,7 +480,11 @@ namespace BasicTwitchSoundPlayer
 					}
 					else
 					{
-						SetVoice(reward.VoiceModFriendlyName, reward.RewardDuration);
+						if (SetVoice(reward.VoiceModFriendlyName, reward.RewardDuration))
+						{
+							Debug.WriteLine("This is ok");
+						}
+
 						MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 				}

@@ -191,7 +191,8 @@ namespace BasicTwitchSoundPlayer
 		internal void Close()
 		{
 			AutoReconnect = false;
-			Socket.Close();
+			if (Socket != null)
+				Socket.Close();
 		}
 	}
 }

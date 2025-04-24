@@ -366,7 +366,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			if (PrivateSettings.GetInstance().Debug_mode)
 				MainForm.Instance.ThreadSafeAddPreviewText($"Updating reward {string.Join(", ", RewardRequestIDs)} with status {redemptionState}", LineType.IrcCommand);
-			var result = await HTTPS_Requests.PatchAsync(HELIXURI, "channel_points/custom_rewards/redemptions", "?broadcaster_id=" + BroadcasterID + "&reward_id=" + RewardTypeID + "&" + reformatIDs, ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }),
+			var result = await HTTPS_Requests.PatchAsync(HELIXURI, "channel_points/custom_rewards/redemptions", $"?broadcaster_id={BroadcasterID}&reward_id={RewardTypeID}&{reformatIDs}", ConvertDictionaryToJsonString(new Dictionary<string, string>() { { "status", redemptionState.ToString() } }),
 				new Dictionary<string, string>()
 				{
 					{"Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },

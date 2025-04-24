@@ -197,7 +197,9 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnJoin(object sender, Meebey.SmartIrc4net.JoinEventArgs e)
 		{
 			if (PrivateSettings.GetInstance().Debug_mode)
-				m_Parent.ThreadSafeAddPreviewText("! JOINED: " + e.Data.Nick, LineType.IrcCommand);
+			{
+				//m_Parent.ThreadSafeAddPreviewText("! JOINED: " + e.Data.Nick, LineType.IrcCommand);
+			}
 		}
 
 		private void MeebyIrc_OnRegistered(object sender, EventArgs e)
@@ -255,7 +257,9 @@ namespace BasicTwitchSoundPlayer.IRC
 		private void MeebyIrc_OnPart(object sender, PartEventArgs e)
 		{
 			if (PrivateSettings.GetInstance().Debug_mode)
-				m_Parent.ThreadSafeAddPreviewText("! PART: " + e.Data.Nick, LineType.IrcCommand);
+			{
+				//m_Parent.ThreadSafeAddPreviewText("! PART: " + e.Data.Nick, LineType.IrcCommand);
+			}
 		}
 
 		private void MeebyIrc_OnOp(object sender, OpEventArgs e)
