@@ -46,7 +46,7 @@ namespace BasicTwitchSoundPlayer
 
 		private WebSocket VoiceModSocket;
 		string currentVoice = "";
-		bool currentStatus = false;
+		public bool CurrentActiveStatus { get; private set; } = false;
 		public Dictionary<string, VoiceInformation> VoicesAvailable = new Dictionary<string, VoiceInformation>();
 		System.Timers.Timer timer;
 		private bool m_IsConnecting = false;
@@ -169,10 +169,10 @@ namespace BasicTwitchSoundPlayer
 					}
 					else if (value == "voiceChangerDisabledEvent")
 					{
-						currentStatus = false;
+						CurrentActiveStatus = false;
 						if (PrivateSettings.GetInstance().Debug_mode)
-							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.VoiceMod);
-						Debug.WriteLine($"Set current status to {currentStatus}");
+							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {CurrentActiveStatus}", LineType.VoiceMod);
+						Debug.WriteLine($"Set current status to {CurrentActiveStatus}");
 
 						m_Playing = false;
 						if (timer != null && timer.Enabled)
@@ -183,10 +183,10 @@ namespace BasicTwitchSoundPlayer
 					}
 					else if (value == "voiceChangerEnabledEvent")
 					{
-						currentStatus = true;
+						CurrentActiveStatus = true;
 						if (PrivateSettings.GetInstance().Debug_mode)
-							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {currentStatus}", LineType.VoiceMod);
-						Debug.WriteLine($"Set current status to {currentStatus}");
+							MainForm.Instance.ThreadSafeAddPreviewText($"Set current status to {CurrentActiveStatus}", LineType.VoiceMod);
+						Debug.WriteLine($"Set current status to {CurrentActiveStatus}");
 					}
 					else if (value == "voiceLoadedEvent")
 					{
@@ -236,7 +236,7 @@ namespace BasicTwitchSoundPlayer
 						var newValue = json["actionObject"]?["value"];
 						if (newValue != null && newValue.Value<bool>() == true)
 						{
-							currentStatus = true;
+							CurrentActiveStatus = true;
 							if (m_DisableVoiceModOnConnection)
 							{
 								ToggleVoiceMod();
@@ -244,7 +244,7 @@ namespace BasicTwitchSoundPlayer
 						}
 						else
 						{
-							currentStatus = false;
+							CurrentActiveStatus = false;
 						}
 						m_DisableVoiceModOnConnection = false;
 					}
@@ -358,7 +358,7 @@ namespace BasicTwitchSoundPlayer
 				return false;
 			if (voice == null || voice == "nofx")
 			{
-				if (currentStatus)
+				if (CurrentActiveStatus)
 				{
 					ToggleVoiceMod();
 				}
@@ -382,6 +382,7 @@ namespace BasicTwitchSoundPlayer
 
 				currentVoice = voice;
 				VoiceModSocket.Send(message.ToString());
+				Task.Run(() => RunBackupCheck());
 				if (timer != null)
 				{
 					timer.Stop();
@@ -389,6 +390,7 @@ namespace BasicTwitchSoundPlayer
 				}
 
 				timer = new System.Timers.Timer(length * 1000);
+				timer.AutoReset = false;
 				timer.Start();
 				m_Playing = true;
 
@@ -396,6 +398,17 @@ namespace BasicTwitchSoundPlayer
 				return true;
 			}
 			return false;
+		}
+
+		private async Task RunBackupCheck()
+		{
+			//Because VoiceMod V3 seems to occasionally set a voice, but not actually activate it
+			await Task.Delay(500);
+			if (ConnectedToVoiceMod && !CurrentActiveStatus)
+			{
+				MainForm.Instance.ThreadSafeAddPreviewText("Toggled voice using backup ?", LineType.IrcCommand);
+				ToggleVoiceMod();
+			}
 		}
 
 		private void ReturnToDefault(object sender, System.Timers.ElapsedEventArgs e)
@@ -443,12 +456,6 @@ namespace BasicTwitchSoundPlayer
 				this.Disposed = true;
 			}
 		}
-		/*
-				private void TwitchPubSubClient_OnListenResponse(object sender, TwitchLib.PubSub.Events.OnListenResponseArgs e)
-				{
-					if (!e.Successful)
-						throw new Exception($"Failed to listen! Response: {e.Response}");
-				}*/
 
 		public void Disconnect()
 		{

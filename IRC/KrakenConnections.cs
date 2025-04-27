@@ -1,19 +1,13 @@
 ﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
 using BasicTwitchSoundPlayer.SoundStorage;
-using BasicTwitchSoundPlayer.Structs.Gemini;
 using BasicTwitchSoundPlayer.TwitchEventSub.KrakenSubscribe;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
