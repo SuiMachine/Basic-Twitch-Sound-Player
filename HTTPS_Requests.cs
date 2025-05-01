@@ -36,7 +36,7 @@ namespace BasicTwitchSoundPlayer
 			catch (Exception e)
 			{
 				Debug.WriteLine(e);
-				MessageBox.Show(e.Message);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Error obtaining response from Google Gemini: {e}", LineType.GeminiAI);
 				return "";
 			}
 		}

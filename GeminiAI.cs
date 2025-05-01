@@ -107,6 +107,7 @@ namespace BasicTwitchSoundPlayer
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
 					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, true);
+					content.generationConfig.temperature = aiConfig.Temperature_Streamer;
 				}
 				else
 				{
@@ -150,7 +151,7 @@ namespace BasicTwitchSoundPlayer
 						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
 						content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive);
 					}
-
+					content.generationConfig.temperature = aiConfig.Temperature_User;
 				}
 
 				if (content == null)
@@ -161,7 +162,11 @@ namespace BasicTwitchSoundPlayer
 				}
 
 				content.contents.Add(GeminiMessage.CreateUserResponse(request.userInput));
+#if DEBUG
+				string json = JsonConvert.SerializeObject(content, Formatting.Indented);
+#else
 				string json = JsonConvert.SerializeObject(content);
+#endif
 
 				string result = await HTTPS_Requests.PostAsync("https://generativelanguage.googleapis.com/v1beta/", $"{aiConfig.Model}:generateContent", $"?key={aiConfig.ApiKey}", json, new Dictionary<string, string>());
 

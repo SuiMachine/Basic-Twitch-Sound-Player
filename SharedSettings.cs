@@ -290,6 +290,7 @@ namespace BasicTwitchSoundPlayer
 		public EncryptedString ApiKey { get; set; } = "";
 		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
 		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
+		public float Temperature_Streamer { get; set; } = 1f;
 		public FilterSet FilterSet_Streamer = new FilterSet()
 		{
 			Harassment = AISafetySettingsValues.BLOCK_NONE,
@@ -300,6 +301,7 @@ namespace BasicTwitchSoundPlayer
 		};
 		public string Instruction_User { get; set; } = "The user is {0}\nThe responses are always 200-450 characters long.";
 		public int TokenLimit_User { get; set; } = 8096;
+		public float Temperature_User { get; set; } = 0.85f;
 		public FilterSet FilterSet_User = new FilterSet()
 		{
 			Harassment = AISafetySettingsValues.BLOCK_MEDIUM_AND_ABOVE,
@@ -309,7 +311,7 @@ namespace BasicTwitchSoundPlayer
 			Civic_Integrity = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE,
 		};
 
-		public string Model { get; set; } = "models/gemini-2.0-flash-exp";
+		public string Model { get; set; } = "models/gemini-2.5-flash-preview-04-17";
 		public string TwitchAwardID { get; set; } = "";
 
 		private static AIConfig LoadSettings() => XML_Utils.Load(GetConfigPath(), new AIConfig());

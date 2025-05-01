@@ -27,6 +27,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			TBar_StreamerDangerousContent.Value = (int)config.FilterSet_Streamer.Dangerous_Content;
 			TBar_StreamerCivicIntegrity.Value = (int)config.FilterSet_Streamer.Civic_Integrity;
 			Num_StreamerTokenLimit.Value = config.TokenLimit_Streamer;
+			Num_StreamerTemperature.Value = (decimal)config.Temperature_Streamer;
 
 			TBar_UserHarassment.Value = (int)config.FilterSet_User.Harassment;
 			TBar_UserHate.Value = (int)config.FilterSet_User.Hate;
@@ -34,6 +35,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			TBar_UserDangerousContent.Value = (int)config.FilterSet_User.Dangerous_Content;
 			TBar_UserCivicIntegrity.Value = (int)config.FilterSet_User.Civic_Integrity;
 			Num_UserTokenLimit.Value = config.TokenLimit_User;
+			Num_UserResponseTemperature.Value = (decimal)config.Temperature_User;
 		}
 
 		private async void B_CreateReward_Click(object sender, EventArgs e)
@@ -73,12 +75,14 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			config.FilterSet_Streamer.Sexually_Explicit = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerSexuallyExplicit.Value;
 			config.FilterSet_Streamer.Dangerous_Content = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerDangerousContent.Value;
 			config.FilterSet_Streamer.Civic_Integrity = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerCivicIntegrity.Value;
+			config.Temperature_Streamer = (float)Num_StreamerTemperature.Value;
 
 			config.FilterSet_User.Harassment = (Structs.Gemini.AISafetySettingsValues)TBar_UserHarassment.Value;
 			config.FilterSet_User.Hate = (Structs.Gemini.AISafetySettingsValues)TBar_UserHate.Value;
 			config.FilterSet_User.Sexually_Explicit = (Structs.Gemini.AISafetySettingsValues)TBar_UserSexuallyExplicit.Value;
 			config.FilterSet_User.Dangerous_Content = (Structs.Gemini.AISafetySettingsValues)TBar_UserDangerousContent.Value;
 			config.FilterSet_User.Civic_Integrity = (Structs.Gemini.AISafetySettingsValues)TBar_UserCivicIntegrity.Value;
+			config.Temperature_User = (float)Num_UserResponseTemperature.Value;
 
 			config.TokenLimit_Streamer = (int)Num_StreamerTokenLimit.Value;
 			config.TokenLimit_User = (int)Num_UserTokenLimit.Value;

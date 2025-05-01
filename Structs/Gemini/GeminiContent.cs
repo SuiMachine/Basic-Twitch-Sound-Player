@@ -12,13 +12,12 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 		[Serializable]
 		public class GenerationConfig
 		{
-			[JsonIgnore]
-			public int TokenCount = 0;
-			public float temperature = 1f;
-			public float topK = 40;
-			public float topP = 0.95f;
-			public int maxOutputTokens = 8192;
-			public string responseMimeType = "text/plain";
+			[JsonIgnore] public int TokenCount = 0;
+			[XmlIgnore] public float temperature = 1f;
+			[XmlIgnore] public float topK = 20;
+			[XmlIgnore] public float topP = 0.95f;
+			[XmlIgnore] public int maxOutputTokens = 8192;
+			[XmlIgnore] public string responseMimeType = "text/plain";
 		}
 
 		[JsonIgnore]
