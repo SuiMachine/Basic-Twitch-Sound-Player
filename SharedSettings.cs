@@ -91,10 +91,7 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement] public float Volume { get; set; }
 		[XmlElement] public int Delay { get; set; }
 		[XmlElement] public Guid OutputDevice { get; set; }
-		[XmlElement] public string TwitchServer { get; set; }
-		[XmlElement] public string UserName { get; set; }
 		[XmlElement] public EncryptedString UserAuth { get; set; }
-		[XmlElement] public string BotUsername { get; set; }
 		[XmlElement] public EncryptedString BotAuth { get; set; }
 		[XmlElement] public bool RunWebSocketsServer { get; set; }
 		[XmlElement] public int WebSocketsServerPort { get; set; }
@@ -110,10 +107,7 @@ namespace BasicTwitchSoundPlayer
 			Delay = 15;
 			this.Colors = new ColorStruct();
 
-			TwitchServer = "irc.twitch.tv";
-			UserName = "";
 			UserAuth = "";
-			BotUsername = "";
 			BotAuth = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;

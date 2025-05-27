@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
+using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -27,7 +28,7 @@ namespace BasicTwitchSoundPlayer
 				return false;
 			}
 
-			var privateSettings = PrivateSettings.GetInstance();
+/*			var privateSettings = PrivateSettings.GetInstance();
 			if (string.IsNullOrEmpty(privateSettings.UserName))
 			{
 				MainForm.Instance.ThreadSafeAddPreviewText($"Can't setup AI - no streamer {nameof(privateSettings.UserName)} provided.", LineType.GeminiAI);
@@ -49,7 +50,7 @@ namespace BasicTwitchSoundPlayer
 				systemInstruction = null,
 				safetySettings = null,
 			});
-			StreamerContent.StoragePath = path;
+			StreamerContent.StoragePath = path;*/
 
 			return true;
 		}
@@ -58,7 +59,7 @@ namespace BasicTwitchSoundPlayer
 		{
 			//TODO: There is some bug with registering it, probably order of execution :-/
 			IsRegistered = true;
-			MainForm.TwitchSocket.OnChannelPointsRedeem += PointsRedeem;
+			//MainForm.TwitchSocket.OnChannelPointsRedeem += PointsRedeem;
 
 			//Safety tripping test
 			/*			Task.Run(async () =>
@@ -71,7 +72,7 @@ namespace BasicTwitchSoundPlayer
 		public void Unregister()
 		{
 			IsRegistered = false;
-			MainForm.TwitchSocket.OnChannelPointsRedeem -= PointsRedeem;
+			//MainForm.TwitchSocket.OnChannelPointsRedeem -= PointsRedeem;
 		}
 
 		public void PointsRedeem(ChannelPointRedeemRequest request)
@@ -95,12 +96,12 @@ namespace BasicTwitchSoundPlayer
 			{
 				GeminiContent content = null;
 				AIConfig aiConfig = AIConfig.GetInstance();
-				OldIRCClient irc = MainForm.Instance.TwitchBot.Irc;
+				ChannelInstance channelInstance = MainForm.Instance.TwitchBot.ChannelInstance;
 
 				int tokenLimit = 1000;
 				var lowerCaseUserName = request.userName.ToLower();
 
-				if (lowerCaseUserName == PrivateSettings.GetInstance().UserName.ToLower())
+				if (lowerCaseUserName == channelInstance.Channel)
 				{
 					content = StreamerContent;
 
@@ -149,15 +150,15 @@ namespace BasicTwitchSoundPlayer
 					else
 					{
 						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-						content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive);
+						content.systemInstruction = aiConfig.GetInstruction(request.userName, false, channelInstance.StreamStatus.IsOnline);
 					}
 					content.generationConfig.temperature = aiConfig.Temperature_User;
 				}
 
 				if (content == null)
 				{
-					MainForm.Instance.TwitchBot.Irc.SendChatMessage($"{request.userName}: Failed to load user history.");
-					irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.userName}: Failed to load user history.");
+					//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 					return;
 				}
 
@@ -172,8 +173,8 @@ namespace BasicTwitchSoundPlayer
 
 				if (string.IsNullOrEmpty(result))
 				{
-					MainForm.Instance.TwitchBot.Irc.SendChatMessage($"{request.userName} - Failed to get a response. Please debug me, Sui :(");
-					irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.userName} - Failed to get a response. Please debug me, Sui :(");
+					//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 					return;
 				}
 				else
@@ -218,7 +219,7 @@ namespace BasicTwitchSoundPlayer
 							}
 
 							text = string.Join(" ", splitText);
-							irc.SendChatMessage($"@{request.userName}: {text}");
+							channelInstance.SendChatMessage($"@{request.userName}: {text}");
 
 							while (content.generationConfig.TokenCount > tokenLimit)
 							{
@@ -237,31 +238,31 @@ namespace BasicTwitchSoundPlayer
 								}
 							}
 
-							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
+							//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
 							XML_Utils.Save(content.StoragePath, content);
 						}
 						else
 						{
 							content.contents.RemoveAt(content.contents.Count - 1);
 							if (finishReason == "SAFETY")
-								irc.SendChatMessage($"@{request.userName}: AI tripped a safety setting.");
+								channelInstance.SendChatMessage($"@{request.userName}: AI tripped a safety setting.");
 							else
-								irc.SendChatMessage($"@{request.userName}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
+								channelInstance.SendChatMessage($"@{request.userName}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
 
-							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+							//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 							XML_Utils.Save(content.StoragePath, content);
 						}
 					}
 					else
 					{
-						irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
-						irc.SendChatMessage($"@{request.userName}: Failed to get a response. Please debug me, Sui :(");
+						//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+						channelInstance.SendChatMessage($"@{request.userName}: Failed to get a response. Please debug me, Sui :(");
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				MainForm.Instance.TwitchBot.Irc.SendChatMessage($"Failed to get a response. Something was written in log. Sui help! :(");
+				MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"Failed to get a response. Something was written in log. Sui help! :(");
 				MainForm.Instance.ThreadSafeAddPreviewText($"There was an error trying to do AI: {ex}", LineType.GeminiAI);
 			}
 		}

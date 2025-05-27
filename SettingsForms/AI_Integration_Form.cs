@@ -41,7 +41,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
 			var config = AIConfig.GetInstance();
-
+/*
 			var settings = PrivateSettings.GetInstance();
 			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.UserName);
 			await apiConnection.GetBroadcasterIDAsync();
@@ -53,7 +53,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			{
 				config.TwitchAwardID = result.id;
 				config.SaveSettings();
-			}
+			}*/
 		}
 
 		private void B_Show_UserOverrides_Click(object sender, EventArgs e)

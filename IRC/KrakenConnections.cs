@@ -1,6 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.SoundDatabaseEditor;
 using BasicTwitchSoundPlayer.SoundStorage;
-using BasicTwitchSoundPlayer.TwitchEventSub.KrakenSubscribe;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,17 +12,8 @@ namespace BasicTwitchSoundPlayer.IRC
 {
 	public class KrakenConnections
 	{
-		public const string HELIXURI = "https://api.twitch.tv/helix/";
-		public const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
 
-		public enum RedemptionStates
-		{
-			UNFULFILLED,
-			FULFILLED,
-			CANCELED
-		}
-
-		public class ChannelPointRedeemRequest
+/*		public class ChannelPointRedeemRequest
 		{
 			public string userName;
 			public string userId;
@@ -41,166 +31,21 @@ namespace BasicTwitchSoundPlayer.IRC
 				this.state = state;
 				this.userInput = userInput;
 			}
-		}
-
-		[Serializable]
-		public class ChannelReward
-		{
-			[Serializable]
-			public class Global_Cooldown_Setting
-			{
-				public bool is_enabled;
-				public int global_cooldown_seconds;
-			}
-
-			public string id = "";
-			public bool is_enabled = false;
-			public int cost = 0;
-			public string title = "";
-			public string prompt = "";
-			public bool is_user_input_required = false;
-			public bool is_paused = false;
-			public bool should_redemptions_skip_request_queue = false;
-			public Global_Cooldown_Setting global_cooldown_setting;
-
-			public static bool Differs(ChannelReward l, ChannelReward r)
-			{
-				return l.id != r.id
-					|| l.is_enabled != r.is_enabled
-					|| l.cost != r.cost
-					|| l.title != r.title
-					|| l.prompt != r.prompt
-					|| l.is_user_input_required != r.is_user_input_required
-					|| l.is_paused != r.is_paused
-					|| l.should_redemptions_skip_request_queue != r.should_redemptions_skip_request_queue
-					|| l.global_cooldown_setting.is_enabled != r.global_cooldown_setting.is_enabled
-					|| l.global_cooldown_setting.global_cooldown_seconds != r.global_cooldown_setting.global_cooldown_seconds;
-			}
-		}
-
-		//Because Twitch API is a bit of a mess
-		[Serializable]
-		public class ChannelRewardRequest
-		{
-			public string id = "";
-			public bool is_enabled = false;
-			public int cost = 0;
-			public string title = "";
-			public string prompt = "";
-			public bool is_user_input_required = false;
-			public bool is_paused = false;
-			public bool should_redemptions_skip_request_queue = false;
-			public bool is_global_cooldown_enabled = false;
-			public int global_cooldown_seconds = 0;
-
-			public static bool Differs(ChannelRewardRequest l, ChannelReward r)
-			{
-				return l.id != r.id
-					|| l.is_enabled != r.is_enabled
-					|| l.cost != r.cost
-					|| l.title != r.title
-					|| l.prompt != r.prompt
-					|| l.is_user_input_required != r.is_user_input_required
-					|| l.is_paused != r.is_paused
-					|| l.should_redemptions_skip_request_queue != r.should_redemptions_skip_request_queue
-					|| l.is_global_cooldown_enabled != r.global_cooldown_setting.is_enabled
-					|| l.global_cooldown_seconds != r.global_cooldown_setting.global_cooldown_seconds;
-			}
-		}
+		}*/
 
 
-		private string Channel { get; set; }
+
+
 		public string BroadcasterID { get; set; }
 		public bool IsLive { get; private set; } = false;
 		public string GameID { get; private set; } = "";
 		public string GameTitle { get; private set; } = "";
 		public string StreamTitle { get; private set; } = "";
 
-		public List<ChannelReward> CachedRewards { get; internal set; }
+		public List<SuiBot_Core.API.EventSub.ES_ChannelPoints.ChannelReward> CachedRewards { get; internal set; }
 
-		public KrakenConnections(string Channel)
-		{
-			this.Channel = Channel;
-		}
 
-		#region Async
-		public async Task GetBroadcasterIDAsync()
-		{
-			DialogBoxes.ProgressDisplay.Instance?.SetProgressText("Obtaining user ID");
-			string responseID = await HTTPS_Requests.GetAsync(HELIXURI, "users", "?login=" + Channel, new Dictionary<string, string>()
-			{
-				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
-				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }         
-			});
-			if (responseID == null || responseID == "")
-				return;
-			else
-			{
-				JObject jReader = JObject.Parse(responseID);
-				if (jReader["data"] != null)
-				{
-					var dataNode = jReader["data"];
-					var firstDataChild = dataNode.First;
-					if (firstDataChild["id"] != null)
-					{
-						BroadcasterID = firstDataChild["id"].ToString();
-					}
-					else
-						return;
-				}
-				else
-					return;
-			}
-		}
-
-		public async Task<string[]> GetSubscribersAsync()
-		{
-			if (BroadcasterID == null || BroadcasterID == "")
-			{
-				await GetBroadcasterIDAsync();
-			}
-			if (BroadcasterID == null || BroadcasterID == "")
-			{
-				DialogBoxes.ProgressDisplay.Instance?.Close();
-				throw new Exception("Didn't obtain broadcaster ID. Can't proceed!");
-			}
-
-			string response = await HTTPS_Requests.GetAsync(HELIXURI, "subscriptions", "?broadcaster_id=" + BroadcasterID, new Dictionary<string, string>()
-			{
-				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
-				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
-			});
-
-			if (response == null || response == "")
-			{
-				return new string[0];
-			}
-			else
-			{
-				JObject jReader = JObject.Parse(response);
-				if (jReader["data"] != null)
-				{
-					var dataNode = jReader["data"];
-
-					List<string> subscribers = new List<string>();
-
-					foreach (var sub in dataNode)
-					{
-						if (sub["user_name"] != null)
-						{
-							var curSub = sub["user_name"].ToString();
-							if (!subscribers.Contains(curSub))
-								subscribers.Add(curSub);
-						}
-					}
-					return subscribers.ToArray();
-				}
-			}
-
-			return new string[0];
-		}
-
-		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundRedeemId)
+/*		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundRedeemId)
 		{
 			{
 				int endTimer = 5;
@@ -302,7 +147,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		public async Task<ChannelReward[]> GetUnredeemedRewardsForUser(MainForm mainFormReference, string rewardID, string userID)
+		public async Task<SuiBot_Core.API.EventSub.ES_ChannelPoints.ChannelReward[]> GetUnredeemedRewardsForUser(MainForm mainFormReference, string rewardID, string userID)
 		{
 			if (BroadcasterID == null | BroadcasterID == "")
 			{
@@ -756,101 +601,6 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		}
 
-		public async Task GetStreamerStatus()
-		{
-			string res = await HTTPS_Requests.GetAsync(HELIXURI, "streams", "?user_login=" + Channel, new Dictionary<string, string>()
-			{
-				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
-				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
-			});
-
-			if (!string.IsNullOrEmpty(res))
-			{
-				try
-				{
-					var response = JObject.Parse(res);
-					if (response["data"] != null && response["data"].Children().Count() > 0)
-					{
-						var dataNode = response["data"].First;
-						if (dataNode["title"] != null)
-						{
-							this.IsLive = true;
-
-							if (dataNode["type"] != null)
-							{
-								var streamType = dataNode["type"].ToString();
-								if (streamType == "live")
-								{
-									this.IsLive = true;
-									this.StreamTitle = dataNode["title"].ToString();
-								}
-								else
-								{
-									this.IsLive = false;
-									this.StreamTitle = "";
-									this.GameID = "";
-									this.GameTitle = "";
-									MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
-								}
-							}
-
-							if (dataNode["game_id"] != null)
-							{
-								string newGameId = dataNode["game_id"].ToString();
-								if (newGameId != GameID)
-								{
-									GameTitle = await GetGameTitleFromID(newGameId);
-									if (GameTitle == "ul")
-									{
-										GameTitle = "";
-									}
-									GameID = newGameId;
-								}
-
-								MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is online, streaming {GameTitle}.", LineType.IrcCommand);
-								return;
-							}
-							else
-							{
-								MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
-							}
-						}
-					}
-
-					this.IsLive = false;
-					this.GameID = "";
-					this.GameTitle = "";
-					MainForm.Instance.ThreadSafeAddPreviewText($"{Channel} - Checked stream status. Is offline.", LineType.IrcCommand);
-				}
-				catch (Exception e)
-				{
-					MainForm.Instance.ThreadSafeAddPreviewText("Error trying to parse Json when doing stream update request: " + e.Message, LineType.IrcCommand);
-					this.IsLive = false;
-					this.GameID = "";
-					this.GameTitle = "";
-				}
-			}
-		}
-
-		private async Task<string> GetGameTitleFromID(string newGameId)
-		{
-			string res = await HTTPS_Requests.GetAsync(HELIXURI, "games", "?id=" + newGameId, new Dictionary<string, string>()
-			{
-				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
-				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
-			});
-			if (string.IsNullOrEmpty(res))
-				return "";
-
-			JObject jObjectNode = JObject.Parse(res);
-			JToken dataNode = jObjectNode["data"].First;
-			if (dataNode["name"] != null)
-			{
-				return dataNode["name"].ToString();
-			}
-			return "";
-		}
-
 		public async Task<bool> DeleteCustomReward(ChannelReward reward)
 		{
 			if (CachedRewards == null)
@@ -878,21 +628,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				return true;
 			}
 			return false;
-		}
-
-		public async Task EventSub_SubscribeToChannelPoints(string broadcasterID, string sessionID)
-		{
-			var content = new Kraken_EventSub_Subscribe_RedemptionAdd(broadcasterID, sessionID);
-			var serilize = JsonConvert.SerializeObject(content, Formatting.Indented, new JsonSerializerSettings()
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			});
-
-			var result = await HTTPS_Requests.PostAsync(HELIXURI, "eventsub/subscriptions", "", serilize, new Dictionary<string, string>()
-			{
-				{ "Client-ID", BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID },
-				{ "Authorization", $"Bearer {PrivateSettings.GetInstance().UserAuth}" }
-			});
-		}
+		}*/
 	}
 }

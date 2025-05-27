@@ -165,7 +165,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
 			var settings = PrivateSettings.GetInstance();
-			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
+/*			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
 			await apiConnection.GetBroadcasterIDAsync();
 			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
 				return;
@@ -190,7 +190,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				{
 					MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
-			}
+			}*/
 		}
 
 		private async void B_RemoveReward_Click(object sender, EventArgs e)
@@ -203,7 +203,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
+/*			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
 			await apiConnection.GetBroadcasterIDAsync();
 			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
 				return;
@@ -225,7 +225,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				MessageBox.Show("Seems like the reward was already removed on Twitch!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				TB_RewardID.Text = "";
 
-			}
+			}*/
 		}
 	}
 }

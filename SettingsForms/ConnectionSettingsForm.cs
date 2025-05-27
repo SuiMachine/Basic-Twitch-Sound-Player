@@ -16,10 +16,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 		private MainForm _parent;
 		private HttpListener webListener;
 
-		public string Server { get; set; }
-		public string Username { get; set; }
 		public string UserAuth { get; set; }
-		public string BotName { get; set; }
 		public string BotAuth { get; set; }
 
 		public bool DebugMode { get; set; }
@@ -35,20 +32,13 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 			this._parent = _parent;
 
-			this.TB_Server.DataBindings.Add("Text", this, nameof(Server), false, DataSourceUpdateMode.OnPropertyChanged);
-
-			this.TB_Username.DataBindings.Add("Text", this, nameof(Username), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_UserAuth.DataBindings.Add("Text", this, nameof(UserAuth), false, DataSourceUpdateMode.OnPropertyChanged);
-			this.TB_BotName.DataBindings.Add("Text", this, nameof(BotName), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.TB_BotAuth.DataBindings.Add("Text", this, nameof(BotAuth), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.CB_DebugMode.DataBindings.Add("Checked", this, nameof(DebugMode), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.Num_PortUsed.DataBindings.Add("Value", this, nameof(WebsocketPort), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.CB_Websocket.DataBindings.Add("Checked", this, nameof(RunWebsocket), false, DataSourceUpdateMode.OnPropertyChanged);
 
-			this.Server = settings.TwitchServer;
-			this.Username = settings.UserName;
 			this.UserAuth = settings.UserAuth;
-			this.BotName = settings.BotUsername;
 			this.BotAuth = settings.BotAuth;
 
 			this.DebugMode = settings.Debug_mode;

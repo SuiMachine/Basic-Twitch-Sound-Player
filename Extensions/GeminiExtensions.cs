@@ -20,17 +20,17 @@ namespace BasicTwitchSoundPlayer.Extensions
 
 			if (attachIsLive)
 			{
-				OldIRCClient irc = MainForm.Instance.TwitchBot.Irc;
+				ChannelInstance channelInstance = MainForm.Instance.TwitchBot.ChannelInstance;
 
-				if (irc.KrakenConnection.IsLive)
+				if (channelInstance.StreamStatus.IsOnline)
 				{
 
-					sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is now streaming {irc.KrakenConnection.GameTitle}.");
-					sb.AppendLine($"The stream title is {irc.KrakenConnection.StreamTitle}.");
+					sb.AppendLine($"{channelInstance.Channel} is now streaming {channelInstance.StreamStatus.game_name}.");
+					sb.AppendLine($"The stream title is {channelInstance.StreamStatus.title}.");
 				}
 				else
 				{
-					sb.AppendLine($"{PrivateSettings.GetInstance().UserName} is currently not streaming any game.");
+					sb.AppendLine($"{channelInstance.Channel} is currently not streaming any game.");
 				}
 			}
 		}

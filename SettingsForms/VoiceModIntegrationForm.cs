@@ -1,4 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.Interfaces;
+using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SettingsForms.EditForm;
 using System;
 using System.ComponentModel;
@@ -321,8 +322,14 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.UserName);
-			await apiConnection.GetBroadcasterIDAsync();
+			var helix = new SuiBot_Core.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+
+			var validationResult = helix.ValidateToken();
+			if(validationResult != SuiBot_Core.API.HelixAPI.ValidationResult.Successful)
+			{
+				throw new Exception("Failed to verify token");
+			}
+
 
 			var voices = VoiceModConfig.GetInstance();
 			var voicesCountForProgressBar = voices.Rewards.Count;
@@ -330,7 +337,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				voicesCountForProgressBar = 1;
 
 			int counter = 0;
-			foreach (var voice in voices.Rewards)
+/*			foreach (var voice in voices.Rewards)
 			{
 				if (apiConnection.CachedRewards == null)
 					_ = await apiConnection.GetRewardsList();
@@ -343,7 +350,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				counter++;
 				UpdateProgressBar(counter, voicesCountForProgressBar);
 				await Task.Delay(2000);
-			}
+			}*/
 			UpdateProgressBar(0, voicesCountForProgressBar);
 
 			MessageBox.Show("Done!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);

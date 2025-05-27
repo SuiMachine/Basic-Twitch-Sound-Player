@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
+using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -26,12 +27,10 @@ namespace BasicTwitchSoundPlayer
 		public delegate void SetPreviewTextDelegate(string text, LineType type);       //used to safely handle the IRC output from bot class
 		public delegate void SetVolumeSlider(int value);       //used to safely change the slider position
 
-		public IRCBot TwitchBot { get; private set; }
+		public ChatBot TwitchBot { get; private set; }
 		private char PrefixCharacter = '-';
-		Thread TwitchBotThread;
 		SoundDB soundDb;
 		GeminiAI AI;
-		public static TwitchSocket TwitchSocket { get; private set; }
 		WebSocketsListener webSockets;
 
 		public MainForm()
@@ -44,7 +43,6 @@ namespace BasicTwitchSoundPlayer
 		{
 			var settings = PrivateSettings.GetInstance();
 			webSockets = new WebSocketsListener();
-			TwitchSocket = new TwitchSocket();
 			AI = new GeminiAI();
 			UpdateColors();
 			connectOnStartupToolStripMenuItem.Checked = settings.Autostart;
@@ -64,10 +62,8 @@ namespace BasicTwitchSoundPlayer
 
 		private void StartBot()
 		{
-			TwitchBot = new IRC.IRCBot(soundDb, PrefixCharacter);
-			TwitchBotThread = new Thread(new ThreadStart(TwitchBot.Run));
-			TwitchBotThread.Start();
-			TwitchSocket.OnChannelPointsRedeem += OnRedeemUpdatedReceived;
+			TwitchBot = new IRC.ChatBot(soundDb, PrefixCharacter);
+			TwitchBot.Connect();
 			if (AI.IsConfigured())
 			{
 				AI.Register();
@@ -224,10 +220,7 @@ namespace BasicTwitchSoundPlayer
 			DialogResult res = form.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				settings.TwitchServer = form.Server;
-				settings.UserName = form.Username;
 				settings.UserAuth = form.UserAuth;
-				settings.BotUsername = form.BotName;
 				settings.BotAuth = form.BotAuth;
 				settings.Debug_mode = form.DebugMode;
 				settings.WebSocketsServerPort = form.WebsocketPort;
@@ -257,22 +250,9 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			TwitchBot = null;
-			if (TwitchBotThread != null)
-			{
-				TwitchBotThread.Interrupt();
-				TwitchBotThread.Abort();
-			}
 
 			if(AI != null)
 				AI.Unregister();
-
-			TwitchBotThread = null;
-
-			if (TwitchSocket != null)
-			{
-				TwitchSocket.OnChannelPointsRedeem -= OnRedeemUpdatedReceived;
-				TwitchSocket.Close();
-			}
 		}
 
 		private void ColorSettingsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -180,7 +180,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			Action content = new Action(async () =>
 			{
 				var settings = PrivateSettings.GetInstance();
-				KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
+/*				KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
 				await apiConnection.GetBroadcasterIDAsync();
 				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
 				{
@@ -207,7 +207,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 					{
 						MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
-				}
+				}*/
 				DialogBoxes.ProgressDisplay.Instance?.InvokeClose();
 			});
 

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
+using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -37,8 +38,8 @@ namespace BasicTwitchSoundPlayer
 
 		public void Register()
 		{
-			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;
+/*			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;*/
 		}
 
 		public void RebuildDictionary()
@@ -143,13 +144,13 @@ namespace BasicTwitchSoundPlayer
 							additionalDelay = 0;
 
 						m_UserDB[redeem.userId] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
-						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
+						MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 					else
-						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+						MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 				}
 				else
-					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 			}
 			else if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
 			{
@@ -163,11 +164,11 @@ namespace BasicTwitchSoundPlayer
 					m_SoundPlayerStack.Add(player);
 					m_UserDB[redeem.userId] = DateTime.Now + length;
 
-					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
+					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 				}
 				else
 				{
-					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 				}
 			}
 		}
@@ -178,8 +179,9 @@ namespace BasicTwitchSoundPlayer
 			{
 				m_SoundPlayerStack[i].Dispose();
 			}
+/*
 			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem -= PlaySoundIfExists;
+				MainForm.TwitchSocket.OnChannelPointsRedeem -= PlaySoundIfExists;*/
 		}
 
 		public void Save()
