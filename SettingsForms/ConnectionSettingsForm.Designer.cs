@@ -39,25 +39,25 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.CB_ShowBotAuth = new System.Windows.Forms.CheckBox();
 			this.B_GetLoginData = new System.Windows.Forms.Button();
+			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.Num_PortUsed = new System.Windows.Forms.NumericUpDown();
+			this.CB_Websocket = new System.Windows.Forms.CheckBox();
+			this.CB_DebugMode = new System.Windows.Forms.CheckBox();
 			this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
 			this.label3 = new System.Windows.Forms.Label();
 			this.TB_UserAuth = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.TB_BotAuth = new System.Windows.Forms.TextBox();
-			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-			this.label4 = new System.Windows.Forms.Label();
-			this.CB_Websocket = new System.Windows.Forms.CheckBox();
-			this.CB_DebugMode = new System.Windows.Forms.CheckBox();
-			this.Num_PortUsed = new System.Windows.Forms.NumericUpDown();
-			this.label6 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.tableLayoutPanel9.SuspendLayout();
-			this.tableLayoutPanel8.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Num_PortUsed)).BeginInit();
+			this.tableLayoutPanel8.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -204,6 +204,93 @@
 			this.B_GetLoginData.UseVisualStyleBackColor = true;
 			this.B_GetLoginData.Click += new System.EventHandler(this.B_GetLoginData_Click);
 			// 
+			// tableLayoutPanel6
+			// 
+			this.tableLayoutPanel6.ColumnCount = 5;
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 139F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 94F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 191F));
+			this.tableLayoutPanel6.Controls.Add(this.label6, 2, 0);
+			this.tableLayoutPanel6.Controls.Add(this.label4, 0, 0);
+			this.tableLayoutPanel6.Controls.Add(this.Num_PortUsed, 3, 0);
+			this.tableLayoutPanel6.Controls.Add(this.CB_Websocket, 1, 0);
+			this.tableLayoutPanel6.Controls.Add(this.CB_DebugMode, 4, 0);
+			this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+			this.tableLayoutPanel6.RowCount = 1;
+			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(560, 30);
+			this.tableLayoutPanel6.TabIndex = 2;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label6.Location = new System.Drawing.Point(217, 0);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(95, 30);
+			this.label6.TabIndex = 15;
+			this.label6.Text = "Websocket port:";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Dock = System.Windows.Forms.DockStyle.Left;
+			this.label4.Location = new System.Drawing.Point(3, 0);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(62, 30);
+			this.label4.TabIndex = 23;
+			this.label4.Text = "Websocket";
+			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// Num_PortUsed
+			// 
+			this.Num_PortUsed.Location = new System.Drawing.Point(318, 3);
+			this.Num_PortUsed.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.Num_PortUsed.Minimum = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
+			this.Num_PortUsed.Name = "Num_PortUsed";
+			this.Num_PortUsed.Size = new System.Drawing.Size(86, 20);
+			this.Num_PortUsed.TabIndex = 17;
+			this.Num_PortUsed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.Num_PortUsed.Value = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
+			// 
+			// CB_Websocket
+			// 
+			this.CB_Websocket.AutoSize = true;
+			this.CB_Websocket.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.CB_Websocket.Location = new System.Drawing.Point(78, 3);
+			this.CB_Websocket.Name = "CB_Websocket";
+			this.CB_Websocket.Size = new System.Drawing.Size(133, 24);
+			this.CB_Websocket.TabIndex = 13;
+			this.CB_Websocket.Text = "Run websocket server";
+			this.CB_Websocket.UseVisualStyleBackColor = true;
+			// 
+			// CB_DebugMode
+			// 
+			this.CB_DebugMode.AutoSize = true;
+			this.CB_DebugMode.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.CB_DebugMode.Location = new System.Drawing.Point(412, 3);
+			this.CB_DebugMode.Name = "CB_DebugMode";
+			this.CB_DebugMode.Size = new System.Drawing.Size(185, 24);
+			this.CB_DebugMode.TabIndex = 12;
+			this.CB_DebugMode.Text = "Debug mode";
+			this.CB_DebugMode.UseVisualStyleBackColor = true;
+			// 
 			// tableLayoutPanel8
 			// 
 			this.tableLayoutPanel8.ColumnCount = 4;
@@ -264,93 +351,6 @@
 			this.TB_BotAuth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.TB_BotAuth.UseSystemPasswordChar = true;
 			// 
-			// tableLayoutPanel6
-			// 
-			this.tableLayoutPanel6.ColumnCount = 5;
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 139F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 94F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 191F));
-			this.tableLayoutPanel6.Controls.Add(this.label6, 2, 0);
-			this.tableLayoutPanel6.Controls.Add(this.label4, 0, 0);
-			this.tableLayoutPanel6.Controls.Add(this.Num_PortUsed, 3, 0);
-			this.tableLayoutPanel6.Controls.Add(this.CB_Websocket, 1, 0);
-			this.tableLayoutPanel6.Controls.Add(this.CB_DebugMode, 4, 0);
-			this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
-			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-			this.tableLayoutPanel6.RowCount = 1;
-			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(560, 30);
-			this.tableLayoutPanel6.TabIndex = 2;
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Dock = System.Windows.Forms.DockStyle.Left;
-			this.label4.Location = new System.Drawing.Point(3, 0);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(62, 30);
-			this.label4.TabIndex = 23;
-			this.label4.Text = "Websocket";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// CB_Websocket
-			// 
-			this.CB_Websocket.AutoSize = true;
-			this.CB_Websocket.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.CB_Websocket.Location = new System.Drawing.Point(78, 3);
-			this.CB_Websocket.Name = "CB_Websocket";
-			this.CB_Websocket.Size = new System.Drawing.Size(133, 24);
-			this.CB_Websocket.TabIndex = 13;
-			this.CB_Websocket.Text = "Run websocket server";
-			this.CB_Websocket.UseVisualStyleBackColor = true;
-			// 
-			// CB_DebugMode
-			// 
-			this.CB_DebugMode.AutoSize = true;
-			this.CB_DebugMode.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.CB_DebugMode.Location = new System.Drawing.Point(412, 3);
-			this.CB_DebugMode.Name = "CB_DebugMode";
-			this.CB_DebugMode.Size = new System.Drawing.Size(185, 24);
-			this.CB_DebugMode.TabIndex = 12;
-			this.CB_DebugMode.Text = "Debug mode";
-			this.CB_DebugMode.UseVisualStyleBackColor = true;
-			// 
-			// Num_PortUsed
-			// 
-			this.Num_PortUsed.Location = new System.Drawing.Point(318, 3);
-			this.Num_PortUsed.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.Num_PortUsed.Minimum = new decimal(new int[] {
-            8000,
-            0,
-            0,
-            0});
-			this.Num_PortUsed.Name = "Num_PortUsed";
-			this.Num_PortUsed.Size = new System.Drawing.Size(86, 20);
-			this.Num_PortUsed.TabIndex = 17;
-			this.Num_PortUsed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.Num_PortUsed.Value = new decimal(new int[] {
-            8000,
-            0,
-            0,
-            0});
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label6.Location = new System.Drawing.Point(217, 0);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(95, 30);
-			this.label6.TabIndex = 15;
-			this.label6.Text = "Websocket port:";
-			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -368,11 +368,11 @@
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel9.ResumeLayout(false);
 			this.tableLayoutPanel9.PerformLayout();
-			this.tableLayoutPanel8.ResumeLayout(false);
-			this.tableLayoutPanel8.PerformLayout();
 			this.tableLayoutPanel6.ResumeLayout(false);
 			this.tableLayoutPanel6.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Num_PortUsed)).EndInit();
+			this.tableLayoutPanel8.ResumeLayout(false);
+			this.tableLayoutPanel8.PerformLayout();
 			this.ResumeLayout(false);
 
         }
