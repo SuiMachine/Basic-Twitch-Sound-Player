@@ -133,8 +133,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			Task.Factory.StartNew(async () =>
 			{
-				Response_SubscribeTo.Subscription_Response_Data result = await HelixAPI_Bot.SubscribeTo_ChatMessage(HelixAPI_User.BotUserId, TwitchSocket.SessionID);
-				List<Response_SubscribeTo.Subscription_Response_Data> channelsToSubScribeAdditionalInformationTo = new List<Response_SubscribeTo.Subscription_Response_Data>();
+				Response_SubscribeTo.Subscription_Response_Data result = await HelixAPI_Bot.SubscribeTo_ChatMessageUsingID(HelixAPI_User.BotUserId, TwitchSocket.SessionID);
 				await Task.Delay(2000);
 
 				Response_SubscribeTo currentSubscriptionChecks = await HelixAPI_Bot.GetCurrentSubscriptions();
@@ -148,18 +147,15 @@ namespace BasicTwitchSoundPlayer.IRC
 					}
 				}
 
-				foreach (var channel in channelsToSubScribeAdditionalInformationTo)
-				{
-					Logger.AddLine($"Subscribing to additional events for {channel.condition.broadcaster_user_id}");
-					var onLineSub = await HelixAPI_Bot.SubscribeToOnlineStatus(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
-					await Task.Delay(2000);
-					var offlineSub = await HelixAPI_Bot.SubscribeToOfflineStatus(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
-					await Task.Delay(2000);
-					/*					var adSub = await HelixAPI.SubscribeToChannelAdBreak(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
-										await Task.Delay(2000);*/
-					//var susMessage = await HelixAPI_Bot.(channel.condition.broadcaster_user_id.Value.ToString(), TwitchSocket.SessionID);
-					await Task.Delay(2000);
-				}
+				Logger.AddLine($"Subscribing to additional events for {result.condition.broadcaster_user_id}");
+				var onLineSub = await HelixAPI_Bot.SubscribeToOnlineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
+				await Task.Delay(2000);
+				var offlineSub = await HelixAPI_Bot.SubscribeToOfflineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
+				await Task.Delay(2000);
+				/*					var adSub = await HelixAPI.SubscribeToChannelAdBreak(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
+									await Task.Delay(2000);*/
+				//var susMessage = await HelixAPI_Bot.(channel.condition.broadcaster_user_id.Value.ToString(), TwitchSocket.SessionID);
+				await Task.Delay(2000);
 				Logger.AddLine($"Done!");
 			});
 
@@ -173,6 +169,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void TwitchSocket_ClosedViaSocket()
 		{
+
 		}
 
 		public void TwitchSocket_ChatMessage(ES_ChatMessage chatMessage)
