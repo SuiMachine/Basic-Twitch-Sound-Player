@@ -121,7 +121,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			RB_Preview.BackColor = LineColorBackground;
 			RB_Preview.Clear();
 			AppendChatLine("This is the generic line, which is usually any chat message", LineType.Generic);
-			AppendChatLine("This is the irc command line, which is usually received when receiving information like connection state change / verification / moderation rights", LineType.IrcCommand);
+			AppendChatLine("This is the irc command line, which is usually received when receiving information like connection state change / verification / moderation rights", LineType.TwitchSocketCommand);
 			AppendChatLine("This is the moderation line, which is when a moderator uses a mod only command (rare one)", LineType.ModCommand);
 			AppendChatLine("This is a sound playback line, which is when a user uses a sound", LineType.SoundCommand);
 		}
@@ -148,7 +148,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			RB_Preview.Select(RB_Preview.Text.Length - text.Length - 1, text.Length);
 			switch (linetype)
 			{
-				case LineType.IrcCommand:
+				case LineType.TwitchSocketCommand:
 					RB_Preview.SelectionColor = LineColorIrcCommand;
 					break;
 				case LineType.ModCommand:

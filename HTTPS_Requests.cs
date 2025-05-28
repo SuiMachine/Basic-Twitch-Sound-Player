@@ -67,7 +67,7 @@ namespace BasicTwitchSoundPlayer
 			catch (Exception e)
 			{
 				Debug.WriteLine(e);
-				MainForm.Instance.ThreadSafeAddPreviewText($"Error with patch request: {e.Message}", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Error with patch request: {e.Message}", LineType.TwitchSocketCommand);
 				return "";
 			}
 		}

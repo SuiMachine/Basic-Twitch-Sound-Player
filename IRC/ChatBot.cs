@@ -6,6 +6,7 @@ using SuiBot_Core.API.EventSub.Subscription.Responses;
 using SuiBot_TwitchSocket.Interfaces;
 using System;
 using System.Threading.Tasks;
+using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -27,7 +28,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string m_ChannelToJoin;
 		private char m_PrefixChar;
 		public System.Timers.Timer StatusUpdateTimer;
-		private Action<ES_ChannelPoints> OnChannelPointsRedeem;
+		private Action<ES_ChannelPointRedeemRequest> OnChannelPointsRedeem;
 
 
 		private SoundDB SndDB { get; set; }
@@ -138,7 +139,7 @@ namespace BasicTwitchSoundPlayer.IRC
 				{
 					if (subscription.status != "enabled" || subscription.transport.session_id != TwitchSocket.SessionID)
 					{
-						m_Parent?.ThreadSafeAddPreviewText($"Unsubscribing from {subscription.type} ({subscription.status})", LineType.IrcCommand);
+						m_Parent?.ThreadSafeAddPreviewText($"Unsubscribing from {subscription.type} ({subscription.status})", LineType.TwitchSocketCommand);
 						Logger.AddLine($"Unsubscribing from {subscription.type} ({subscription.status})");
 						await HelixAPI_User.CloseSubscription(subscription);
 						await Task.Delay(100);
@@ -155,7 +156,7 @@ namespace BasicTwitchSoundPlayer.IRC
 									await Task.Delay(2000);*/
 				//var susMessage = await HelixAPI_Bot.(channel.condition.broadcaster_user_id.Value.ToString(), TwitchSocket.SessionID);
 				await Task.Delay(2000);
-				m_Parent?.ThreadSafeAddPreviewText("Registered to events", LineType.IrcCommand);
+				m_Parent?.ThreadSafeAddPreviewText("Registered to events", LineType.TwitchSocketCommand);
 				Logger.AddLine($"Done!");
 			});
 
@@ -215,10 +216,12 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void TwitchSocket_StreamWentOnline(ES_StreamOnline onlineData)
 		{
+			m_Parent.ThreadSafeAddPreviewText("Streamer went online", LineType.TwitchSocketCommand);
 		}
 
 		public void TwitchSocket_StreamWentOffline(ES_StreamOffline offlineData)
 		{
+			m_Parent.ThreadSafeAddPreviewText("Streamer went offline", LineType.TwitchSocketCommand);
 		}
 
 		public void TwitchSocket_AutoModMessageHold(ES_AutomodMessageHold messageHold)
@@ -229,8 +232,10 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 		}
 
-		public void TwitchSocket_ChannelPointsRedeem(ES_ChannelPoints redeemInfo)
+		public void TwitchSocket_ChannelPointsRedeem(ES_ChannelPointRedeemRequest redeemInfo)
 		{
+			//m_Parent.ThreadSafeAddPreviewText($"User {redeemInfo.} went offline", LineType.TwitchSocketCommand);
+
 			OnChannelPointsRedeem?.Invoke(redeemInfo);
 		}
 

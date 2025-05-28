@@ -407,7 +407,7 @@ namespace BasicTwitchSoundPlayer
 			await Task.Delay(500);
 			if (ConnectedToVoiceMod && !CurrentActiveStatus)
 			{
-				MainForm.Instance.ThreadSafeAddPreviewText("Toggled voice using backup ?", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText("Toggled voice using backup ?", LineType.TwitchSocketCommand);
 				ToggleVoiceMod();
 			}
 		}
@@ -420,7 +420,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void VoiceModSocket_OnOpen(object sender, EventArgs e)
 		{
-			MainForm.Instance.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
+			MainForm.Instance.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.TwitchSocketCommand);
 			ConnectedToVoiceMod = true;
 			m_IsConnecting = false;
 			OnConnectionStateChanged?.Invoke(true);
@@ -441,7 +441,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void VoiceModSocket_OnClose(object sender, CloseEventArgs e)
 		{
-			MainForm.Instance.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.IrcCommand);
+			MainForm.Instance.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.TwitchSocketCommand);
 			ConnectedToVoiceMod = false;
 		}
 
@@ -472,12 +472,12 @@ namespace BasicTwitchSoundPlayer
 				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;*/
 		}
 
-		private void OnChannelPointsRedeem(ChannelPointRedeemRequest redeem)
+		private void OnChannelPointsRedeem(ES_ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)
 				return;
 
-			var reward = VoiceModConfig.GetInstance().GetReward(redeem.rewardId);
+			var reward = VoiceModConfig.GetInstance().GetReward(redeem.reward.id);
 			if (reward != null)
 			{
 				if (redeem.state == RedemptionStates.UNFULFILLED)

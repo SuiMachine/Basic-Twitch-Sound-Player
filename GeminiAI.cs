@@ -75,12 +75,12 @@ namespace BasicTwitchSoundPlayer
 			//MainForm.TwitchSocket.OnChannelPointsRedeem -= PointsRedeem;
 		}
 
-		public void PointsRedeem(ChannelPointRedeemRequest request)
+		public void PointsRedeem(ES_ChannelPointRedeemRequest request)
 		{
 			var rewardID = AIConfig.GetInstance().TwitchAwardID;
 			if (string.IsNullOrEmpty(rewardID))
 				return;
-			if (request.rewardId != rewardID)
+			if (request.id != rewardID)
 				return;
 
 			Task.Run(async () =>
@@ -90,7 +90,7 @@ namespace BasicTwitchSoundPlayer
 
 		}
 
-		private async Task GetResponse(ChannelPointRedeemRequest request)
+		private async Task GetResponse(ES_ChannelPointRedeemRequest request)
 		{
 			try
 			{
@@ -99,22 +99,21 @@ namespace BasicTwitchSoundPlayer
 				ChannelInstance channelInstance = MainForm.Instance.TwitchBot.ChannelInstance;
 
 				int tokenLimit = 1000;
-				var lowerCaseUserName = request.userName.ToLower();
 
-				if (lowerCaseUserName == channelInstance.Channel)
+				if (request.user_login == channelInstance.Channel)
 				{
 					content = StreamerContent;
 
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, true);
+					content.systemInstruction = aiConfig.GetInstruction(request.user_name, true, true);
 					content.generationConfig.temperature = aiConfig.Temperature_Streamer;
 				}
 				else
 				{
-					if (!UserContents.TryGetValue(request.userId, out content))
+					if (!UserContents.TryGetValue(request.user_id, out content))
 					{
-						var path = AIConfig.GetAIHistoryPath(request.userId);
+						var path = AIConfig.GetAIHistoryPath(request.user_id);
 						if (File.Exists(path))
 						{
 							content = XML_Utils.Load(path, new GeminiContent()
@@ -133,14 +132,14 @@ namespace BasicTwitchSoundPlayer
 							};
 						}
 
-						UserContents.Add(request.userId, content);
+						UserContents.Add(request.user_id, content);
 					}
 
 					if (content.StoragePath == null)
-						content.StoragePath = AIConfig.GetAIHistoryPath(request.userId);
+						content.StoragePath = AIConfig.GetAIHistoryPath(request.user_id);
 
 					tokenLimit = aiConfig.TokenLimit_User;
-					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.userName));
+					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.user_name));
 					if (overrides != null)
 					{
 						//content.systemInstruction = 
@@ -150,14 +149,14 @@ namespace BasicTwitchSoundPlayer
 					else
 					{
 						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-						content.systemInstruction = aiConfig.GetInstruction(request.userName, false, channelInstance.StreamStatus.IsOnline);
+						content.systemInstruction = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus.IsOnline);
 					}
 					content.generationConfig.temperature = aiConfig.Temperature_User;
 				}
 
 				if (content == null)
 				{
-					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.userName}: Failed to load user history.");
+					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.user_name}: Failed to load user history.");
 					//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 					return;
 				}
@@ -173,7 +172,7 @@ namespace BasicTwitchSoundPlayer
 
 				if (string.IsNullOrEmpty(result))
 				{
-					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.userName} - Failed to get a response. Please debug me, Sui :(");
+					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.user_name} - Failed to get a response. Please debug me, Sui :(");
 					//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 					return;
 				}
@@ -219,7 +218,7 @@ namespace BasicTwitchSoundPlayer
 							}
 
 							text = string.Join(" ", splitText);
-							channelInstance.SendChatMessage($"@{request.userName}: {text}");
+							channelInstance.SendChatMessage($"@{request.user_name}: {text}");
 
 							while (content.generationConfig.TokenCount > tokenLimit)
 							{
@@ -245,9 +244,9 @@ namespace BasicTwitchSoundPlayer
 						{
 							content.contents.RemoveAt(content.contents.Count - 1);
 							if (finishReason == "SAFETY")
-								channelInstance.SendChatMessage($"@{request.userName}: AI tripped a safety setting.");
+								channelInstance.SendChatMessage($"@{request.user_name}: AI tripped a safety setting.");
 							else
-								channelInstance.SendChatMessage($"@{request.userName}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
+								channelInstance.SendChatMessage($"@{request.user_name}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
 
 							//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
 							XML_Utils.Save(content.StoragePath, content);
@@ -256,7 +255,7 @@ namespace BasicTwitchSoundPlayer
 					else
 					{
 						//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
-						channelInstance.SendChatMessage($"@{request.userName}: Failed to get a response. Please debug me, Sui :(");
+						channelInstance.SendChatMessage($"@{request.user_name}: Failed to get a response. Please debug me, Sui :(");
 					}
 				}
 			}

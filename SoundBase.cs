@@ -103,12 +103,12 @@ namespace BasicTwitchSoundPlayer
 			PrivateSettings.GetInstance().Delay = delay;
 		}
 
-		public void PlaySoundIfExists(ChannelPointRedeemRequest redeem)
+		public void PlaySoundIfExists(ES_ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)
 				return;
 
-			if (redeem.userId == null)
+			if (redeem.user_id == null)
 				return;
 
 			//Iterate through existing sound players
@@ -123,14 +123,14 @@ namespace BasicTwitchSoundPlayer
 			}
 
 			//Check if our db has a user and if not add him
-			if (!m_UserDB.ContainsKey(redeem.userId))
+			if (!m_UserDB.ContainsKey(redeem.user_id))
 			{
-				m_UserDB.Add(redeem.userId, DateTime.MinValue);
+				m_UserDB.Add(redeem.user_id, DateTime.MinValue);
 			}
 
-			if (!string.IsNullOrEmpty(PrivateSettings.GetInstance().UniversalRewardID) && redeem.rewardId == PrivateSettings.GetInstance().UniversalRewardID)
+			if (!string.IsNullOrEmpty(PrivateSettings.GetInstance().UniversalRewardID) && redeem.reward.id == PrivateSettings.GetInstance().UniversalRewardID)
 			{
-				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
+				if (m_UserDB[redeem.user_id] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
 					if (UniversalRewards.TryGetValue(redeem.userInput.SanitizeTags().ToLower(), out SoundEntry universal_sound))
 					{
@@ -143,7 +143,7 @@ namespace BasicTwitchSoundPlayer
 						if (additionalDelay < 0)
 							additionalDelay = 0;
 
-						m_UserDB[redeem.userId] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
+						m_UserDB[redeem.user_id] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
 						MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 					else
@@ -152,17 +152,17 @@ namespace BasicTwitchSoundPlayer
 				else
 					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 			}
-			else if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
+			else if (RewardsToSound.TryGetValue(redeem.reward.id, out SoundEntry sound))
 			{
 				//check user cooldown
-				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
+				if (m_UserDB[redeem.user_id] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
 					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 					PrivateSettings programSettings = PrivateSettings.GetInstance();
 					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
 					TimeSpan length = player.GetTimeLength() + TimeSpan.FromSeconds(1);
 					m_SoundPlayerStack.Add(player);
-					m_UserDB[redeem.userId] = DateTime.Now + length;
+					m_UserDB[redeem.user_id] = DateTime.Now + length;
 
 					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 				}

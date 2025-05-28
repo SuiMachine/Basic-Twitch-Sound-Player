@@ -33,51 +33,11 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		//Because I really don't want to rewrite half of this
 
-		#region Constructor
 		public ChannelInstance(ChatBot chatBotInstance, string SoundRewardID = null)
 		{
 			m_ChatBot = chatBotInstance;
-
-
-/*			try
-			{
-
-				if (SoundRewardID != null)
-				{
-					Task run = KrakenConnection.VerifyChannelRewardsAsync(parentReference, SoundRewardID);
-					Debug.WriteLine("Verifying reward IDs.");
-				}
-			}
-			catch (ConnectionException e)
-			{
-				parent.ThreadSafeAddPreviewText("Could not connect! Reason:" + e.Message, LineType.IrcCommand);
-			}*/
-
 			LoadIgnoredList();
 		}
-
-/*		private void KrakenUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
-		{
-			StatusUpdateTimer.Interval = 2 * 60 * 1000;
-
-			Task.Run(async () =>
-			{
-				await KrakenConnection.GetStreamerStatus();
-
-				var newSubscribers = await KrakenConnection.GetSubscribersAsync();
-				Debug.WriteLine("Updating subscribers");
-				if (newSubscribers != null)
-				{
-					int PreviousSubscribers = newSubscribers.Length;
-					if (PreviousSubscribers != newSubscribers.Length)
-					{
-						parent.ThreadSafeAddPreviewText("Subscriber amount changed to " + newSubscribers.Length, LineType.IrcCommand);
-					}
-					Subscribers = newSubscribers;
-				}
-			});
-		}*/
-		#endregion
 
 		public void SendChatMessage(string message)
 		{
@@ -122,7 +82,6 @@ namespace BasicTwitchSoundPlayer.IRC
 			return result;
 		}
 
-		#region IgnoredList
 		public void IgnoreListAdd(ES_ChatMessage msg)
 		{
 			if (msg.UserRole <= ES_ChatMessage.Role.Mod)
@@ -140,12 +99,12 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 
 				//TODO: Reimplement check if we are not adding a moderator?
-/*				if (!Moderators.Contains(helper[1].ToLower()))
-				{
-					....
-				}
-				else
-					SendChatMessage("Moderators can't be added to ignored list!");*/
+				/*				if (!Moderators.Contains(helper[1].ToLower()))
+								{
+									....
+								}
+								else
+									SendChatMessage("Moderators can't be added to ignored list!");*/
 
 			}
 		}
@@ -208,15 +167,11 @@ namespace BasicTwitchSoundPlayer.IRC
 			File.WriteAllLines(IgnoredUsers, IgnoreList);
 		}
 
-		public bool IsSuperMod(string username)
-		{
-			throw new System.NotImplementedException();
-		}
+		public bool IsSuperMod(string username) => username == Channel;
 
 		internal void UpdateTwitchStatus()
 		{
-			throw new NotImplementedException();
+
 		}
-		#endregion
 	}
 }

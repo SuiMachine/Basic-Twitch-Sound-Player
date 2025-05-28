@@ -12,7 +12,7 @@ namespace BasicTwitchSoundPlayer
 	public enum LineType
 	{
 		Generic,
-		IrcCommand,
+		TwitchSocketCommand,
 		ModCommand,
 		SoundCommand,
 		VoiceMod,
@@ -92,7 +92,7 @@ namespace BasicTwitchSoundPlayer
 					case LineType.Generic:
 						RB_Preview.SelectionColor = settings.Colors.LineColorGeneric;
 						break;
-					case LineType.IrcCommand:
+					case LineType.TwitchSocketCommand:
 						RB_Preview.SelectionColor = settings.Colors.LineColorIrcCommand;
 						break;
 					case LineType.ModCommand:
@@ -145,10 +145,10 @@ namespace BasicTwitchSoundPlayer
 			System.Environment.Exit(0);
 		}
 
-		private void OnRedeemUpdatedReceived(ChannelPointRedeemRequest redeem)
+		private void OnRedeemUpdatedReceived(ES_ChannelPointRedeemRequest redeem)
 		{
 #if DEBUG
-			Debug.WriteLine($"Received reward status {redeem.userName}, redeeem ID {redeem.rewardId} - {redeem.state}");
+			Debug.WriteLine($"Received reward status {redeem.user_name}, redeeem ID {redeem.id} - {redeem.state}");
 #endif
 		}
 		#endregion
