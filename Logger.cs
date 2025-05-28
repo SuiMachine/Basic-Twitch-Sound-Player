@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace BasicTwitchSoundPlayer
@@ -9,7 +10,10 @@ namespace BasicTwitchSoundPlayer
 
 		public static void AddLine(string text)
 		{
-			File.AppendAllText(FILE, string.Format("{0}: {1}\n", DateTime.Now.ToString(), text));
+#if DEBUG
+			Debug.WriteLine("[LOGGER]: " + text);
+#endif
+			File.AppendAllText(FILE, $"{DateTime.Now}: {text}\n");
 		}
 	}
 }

@@ -1,9 +1,13 @@
 ﻿using BasicTwitchSoundPlayer.Structs;
 using SuiBot_Core;
+using SuiBot_Core.API;
 using SuiBot_Core.API.EventSub;
+using SuiBot_Core.API.EventSub.Subscription.Responses;
 using SuiBot_TwitchSocket.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Remoting.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +24,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private SuiBot_Core.API.HelixAPI m_HelixAPI_Bot;
 		internal SuiBot_Core.API.HelixAPI HelixAPI_Bot => m_HelixAPI_Bot != null ? m_HelixAPI_Bot : HelixAPI_User;
 
-
+		public bool ShouldRun { get; set; }
 		public bool IsDisposed { get; private set; }
 
 		private MainForm m_Parent;
@@ -55,15 +59,22 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			m_Parent = MainForm.Instance;
 			this.StatusUpdateTimer = new System.Timers.Timer(5 * 1000 * 60) { AutoReset = true };
+			this.StatusUpdateTimer.Elapsed += StatusUpdateTimer_Elapsed;
 			this.m_PrefixChar = PrefixChar;
 			SndDB = soundDb;
 		}
 
+		private void StatusUpdateTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			ChannelInstance.UpdateTwitchStatus();
+		}
 
 		internal void Connect()
 		{
 			VoiceModHandling.GetInstance().ConnectToVoiceMod();
 
+			ShouldRun = true;
+			TwitchSocket = new TwitchSocket(this);
 		}
 
 		public void Run()
@@ -120,10 +131,44 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			Logger.AddLine("Connected!");
 
+			Task.Factory.StartNew(async () =>
+			{
+				Response_SubscribeTo.Subscription_Response_Data result = await HelixAPI_Bot.SubscribeTo_ChatMessage(HelixAPI_User.BotUserId, TwitchSocket.SessionID);
+				List<Response_SubscribeTo.Subscription_Response_Data> channelsToSubScribeAdditionalInformationTo = new List<Response_SubscribeTo.Subscription_Response_Data>();
+				await Task.Delay(2000);
+
+				Response_SubscribeTo currentSubscriptionChecks = await HelixAPI_Bot.GetCurrentSubscriptions();
+				foreach (var subscription in currentSubscriptionChecks.data)
+				{
+					if (subscription.status != "enabled" || subscription.transport.session_id != TwitchSocket.SessionID)
+					{
+						Logger.AddLine($"Unsubscribing from {subscription.type} ({subscription.status})");
+						await HelixAPI_Bot.CloseSubscription(subscription);
+						await Task.Delay(100);
+					}
+				}
+
+				foreach (var channel in channelsToSubScribeAdditionalInformationTo)
+				{
+					Logger.AddLine($"Subscribing to additional events for {channel.condition.broadcaster_user_id}");
+					var onLineSub = await HelixAPI_Bot.SubscribeToOnlineStatus(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
+					await Task.Delay(2000);
+					var offlineSub = await HelixAPI_Bot.SubscribeToOfflineStatus(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
+					await Task.Delay(2000);
+					/*					var adSub = await HelixAPI.SubscribeToChannelAdBreak(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
+										await Task.Delay(2000);*/
+					//var susMessage = await HelixAPI_Bot.(channel.condition.broadcaster_user_id.Value.ToString(), TwitchSocket.SessionID);
+					await Task.Delay(2000);
+				}
+				Logger.AddLine($"Done!");
+			});
+
+			StatusUpdateTimer.Start();
 		}
 
 		public void TwitchSocket_Disconnected()
 		{
+			StatusUpdateTimer.Stop();
 		}
 
 		public void TwitchSocket_ClosedViaSocket()
@@ -193,7 +238,8 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void Dispose()
 		{
-			throw new NotImplementedException();
+			StatusUpdateTimer.Elapsed -= StatusUpdateTimer_Elapsed;
+			StatusUpdateTimer.Dispose();
 		}
 		#endregion
 	}

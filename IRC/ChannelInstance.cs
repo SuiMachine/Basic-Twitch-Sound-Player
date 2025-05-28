@@ -212,6 +212,11 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			throw new System.NotImplementedException();
 		}
+
+		internal void UpdateTwitchStatus()
+		{
+			throw new NotImplementedException();
+		}
 		#endregion
 	}
 }
