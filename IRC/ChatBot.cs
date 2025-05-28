@@ -75,37 +75,13 @@ namespace BasicTwitchSoundPlayer.IRC
 			TwitchSocket = new TwitchSocket(this);
 		}
 
-		public void Run()
-		{
-/*			InitBot(m_ChannelToJoin);
-			this.BotRunning = true;
-			SndDB.Register();
-			try
-			{
-				ChannelInstance.MeebyIrc.Listen();
-			}
-			catch (ThreadInterruptedException e)
-			{
-				Debug.WriteLine("Nop" + e);
-			}*/
-		}
-
 		public void StopBot()
 		{
-/*			SndDB.Close();
+			SndDB.Close();
 			PrivateSettings.GetInstance().SaveSettings();
 			ChannelInstance.SaveIgnoredList();
 
-			Task.Factory.StartNew(() =>
-				ChannelInstance.MeebyIrc.Disconnect()
-			);
-
-			System.Threading.Thread.Sleep(200);*/
-		}
-
-		private void InitBot(string channel)
-		{
-
+			System.Threading.Thread.Sleep(200);
 		}
 
 		internal void UpdateVolume() => SndDB.ChangeVolume(PrivateSettings.GetInstance().Volume);
@@ -165,11 +141,14 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void TwitchSocket_Disconnected()
 		{
+			m_Parent.ThreadSafeAddPreviewText("Socket disconnected", LineType.TwitchSocketCommand);
+
 			StatusUpdateTimer.Stop();
 		}
 
 		public void TwitchSocket_ClosedViaSocket()
 		{
+			m_Parent.ThreadSafeAddPreviewText("Connection closed via socket", LineType.TwitchSocketCommand);
 
 		}
 
