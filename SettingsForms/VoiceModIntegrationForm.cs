@@ -339,7 +339,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			int counter = 0;
 			foreach (var voice in voices.Rewards)
 			{
-				var resultReward = await helix.CreateOrUpdateReward(voice.RewardID, voice.RewardTitle, voice.RewardDescription, voice.RewardCost, voice.RewardCooldown, voice.Enabled, false);
+				var resultReward = await helix.CreateOrUpdateReward(voice.RewardID, voice.RewardTitle, voice.RewardDescription, voice.RewardCost, voice.RewardCooldown + voice.RewardDuration, voice.Enabled, false);
 				if (resultReward != null)
 				{
 					voice.RewardID = resultReward.id;
@@ -347,7 +347,6 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				}
 				counter++;
 				UpdateProgressBar(counter, voicesCountForProgressBar);
-				await Task.Delay(2000);
 			}
 			UpdateProgressBar(0, voicesCountForProgressBar);
 
