@@ -326,22 +326,20 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 			var validationResult = helix.ValidateToken();
 			if(validationResult != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
-			{
 				throw new Exception("Failed to verify token");
-			}
 
 
 			var voices = VoiceModConfig.GetInstance();
 			var voicesCountForProgressBar = voices.Rewards.Count;
 			if (voicesCountForProgressBar <= 0)
 				voicesCountForProgressBar = 1;
+			if (!await helix.CreateRewardsCache())
+				throw new Exception("Failed to create rewards cache");
 
 			int counter = 0;
-/*			foreach (var voice in voices.Rewards)
+			foreach (var voice in voices.Rewards)
 			{
-				if (apiConnection.CachedRewards == null)
-					_ = await apiConnection.GetRewardsList();
-				var resultReward = await apiConnection.CreateOrUpdateReward(voice);
+				var resultReward = await helix.CreateOrUpdateReward(voice.RewardID, voice.RewardTitle, voice.RewardDescription, voice.RewardCost, voice.RewardCooldown, voice.Enabled, false);
 				if (resultReward != null)
 				{
 					voice.RewardID = resultReward.id;
@@ -350,7 +348,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				counter++;
 				UpdateProgressBar(counter, voicesCountForProgressBar);
 				await Task.Delay(2000);
-			}*/
+			}
 			UpdateProgressBar(0, voicesCountForProgressBar);
 
 			MessageBox.Show("Done!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
