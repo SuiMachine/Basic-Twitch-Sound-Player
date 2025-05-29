@@ -2,13 +2,13 @@
 using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
 using NAudio.Wave;
+using SuiBot_TwitchSocket.API.EventSub;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
-using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -22,7 +22,6 @@ namespace BasicTwitchSoundPlayer
 		private Dictionary<string, DateTime> m_UserDB;
 		private int m_Delay;
 		private readonly string m_SoundBaseFile;
-
 
 		#region ConstructorRelated
 		public SoundDB()
@@ -38,8 +37,7 @@ namespace BasicTwitchSoundPlayer
 
 		public void Register()
 		{
-/*			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;*/
+			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += PlaySoundIfExists;
 		}
 
 		public void RebuildDictionary()
@@ -103,7 +101,7 @@ namespace BasicTwitchSoundPlayer
 			PrivateSettings.GetInstance().Delay = delay;
 		}
 
-		public void PlaySoundIfExists(ES_ChannelPointRedeemRequest redeem)
+		public void PlaySoundIfExists(ES_ChannelPoints.ES_ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)
 				return;
@@ -179,9 +177,8 @@ namespace BasicTwitchSoundPlayer
 			{
 				m_SoundPlayerStack[i].Dispose();
 			}
-/*
-			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem -= PlaySoundIfExists;*/
+
+			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem -= PlaySoundIfExists;
 		}
 
 		public void Save()
@@ -286,17 +283,10 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (disposing)
 				{
-					if (directWaveOut != null)
-						directWaveOut.Stop();
-
-					if (GenericFileReader != null)
-						GenericFileReader.Dispose();
-
-					if (VorbisFileReader != null)
-						VorbisFileReader.Dispose();
-
-					if (directWaveOut != null)
-						directWaveOut.Dispose();
+					directWaveOut?.Stop();
+					GenericFileReader?.Dispose();
+					VorbisFileReader?.Dispose();
+					directWaveOut?.Dispose();
 					Debug.WriteLine("[DISPOSE] Disposed of player for " + fileName + ".");
 				}
 			}

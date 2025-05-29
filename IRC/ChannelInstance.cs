@@ -1,5 +1,4 @@
-﻿using SuiBot_Core.API.Helix.Responses;
-using SuiBot_TwitchSocket.Interfaces;
+﻿using SuiBot_TwitchSocket.Interfaces;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,8 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using SuiBot_Core;
-using SuiBot_Core.API.EventSub;
 using System;
+using SuiBot_TwitchSocket.API.Helix.Responses;
+using SuiBot_TwitchSocket.API.EventSub;
 
 namespace BasicTwitchSoundPlayer.IRC
 {

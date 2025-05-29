@@ -1,12 +1,13 @@
 ﻿using BasicTwitchSoundPlayer.Structs;
 using SuiBot_Core;
-using SuiBot_Core.API;
-using SuiBot_Core.API.EventSub;
-using SuiBot_Core.API.EventSub.Subscription.Responses;
+using SuiBot_TwitchSocket;
+using SuiBot_TwitchSocket.API;
+using SuiBot_TwitchSocket.API.EventSub;
+using SuiBot_TwitchSocket.API.EventSub.Subscription.Responses;
 using SuiBot_TwitchSocket.Interfaces;
 using System;
 using System.Threading.Tasks;
-using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -19,7 +20,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		internal TwitchSocket TwitchSocket { get; private set; }
 		internal HelixAPI HelixAPI_User { get; private set; }
 		private HelixAPI m_HelixAPI_Bot;
-		internal HelixAPI HelixAPI_Bot => m_HelixAPI_Bot != null ? m_HelixAPI_Bot : HelixAPI_User;
+		internal HelixAPI HelixAPI_Bot => m_HelixAPI_Bot ?? HelixAPI_User; //Use user if bot is null
 
 		public bool ShouldRun { get; set; }
 		public bool IsDisposed { get; private set; }
@@ -28,8 +29,6 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string m_ChannelToJoin;
 		private char m_PrefixChar;
 		public System.Timers.Timer StatusUpdateTimer;
-		private Action<ES_ChannelPointRedeemRequest> OnChannelPointsRedeem;
-
 
 		private SoundDB SndDB { get; set; }
 
@@ -44,11 +43,13 @@ namespace BasicTwitchSoundPlayer.IRC
 				m_HelixAPI_Bot = new HelixAPI(BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, this, privateSettings.BotAuth);
 
 			var authVerify = HelixAPI_User.GetValidation();
-			if(authVerify == null || string.IsNullOrEmpty(authVerify.login))
+			if (authVerify == null || string.IsNullOrEmpty(authVerify.login))
 				throw new Exception("Failed to validate user token - a new one might need to be generated?");
 			m_ChannelToJoin = authVerify.login;
+			ChannelInstance.Channel = m_ChannelToJoin;
+			ChannelInstance.ChannelID = authVerify.user_id;
 
-			if(m_HelixAPI_Bot != null)
+			if (m_HelixAPI_Bot != null)
 			{
 				var validationResult = m_HelixAPI_Bot.ValidateToken();
 				if (validationResult != HelixAPI.ValidationResult.Successful)
@@ -60,6 +61,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			this.StatusUpdateTimer.Elapsed += StatusUpdateTimer_Elapsed;
 			this.m_PrefixChar = PrefixChar;
 			SndDB = soundDb;
+			SndDB.Register();
 		}
 
 		private void StatusUpdateTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -128,9 +130,6 @@ namespace BasicTwitchSoundPlayer.IRC
 				var offlineSub = await HelixAPI_User.SubscribeToOfflineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
 				await Task.Delay(2000);
 				var subscribe = await HelixAPI_User.SubscribeToChannelRedeem(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
-				/*					var adSub = await HelixAPI.SubscribeToChannelAdBreak(channel.condition.broadcaster_user_id, TwitchSocket.SessionID);
-									await Task.Delay(2000);*/
-				//var susMessage = await HelixAPI_Bot.(channel.condition.broadcaster_user_id.Value.ToString(), TwitchSocket.SessionID);
 				await Task.Delay(2000);
 				m_Parent?.ThreadSafeAddPreviewText("Registered to events", LineType.TwitchSocketCommand);
 				Logger.AddLine($"Done!");
@@ -156,8 +155,8 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			if (!chatMessage.message.text.StartsWith(m_PrefixChar.ToString()) || ChannelInstance.IgnoreList.Contains(chatMessage.chatter_user_login))
 			{
-				m_Parent.ThreadSafeAddPreviewText($"{chatMessage.broadcaster_user_name}: {chatMessage.message.text}", LineType.Generic);
 				//literally nothing else happens in your code if this is false
+				m_Parent.ThreadSafeAddPreviewText($"{chatMessage.broadcaster_user_name}: {chatMessage.message.text}", LineType.Generic);
 				return;
 			}
 			else
@@ -175,7 +174,7 @@ namespace BasicTwitchSoundPlayer.IRC
 						return;
 					}
 
-					if (text.ToLower().StartsWith("delay "))
+					if (text.StartsWith("cooldown "))
 					{
 						var split = text.Split(' ');
 						text = split[split.Length - 1];
@@ -213,13 +212,14 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void TwitchSocket_ChannelPointsRedeem(ES_ChannelPointRedeemRequest redeemInfo)
 		{
-			//m_Parent.ThreadSafeAddPreviewText($"User {redeemInfo.} went offline", LineType.TwitchSocketCommand);
-
-			OnChannelPointsRedeem?.Invoke(redeemInfo);
+			if (redeemInfo.broadcaster_user_id == ChannelInstance.ChannelID)
+				m_Parent.TwitchEvents.OnChannelPointsRedeem?.Invoke(redeemInfo);
 		}
 
 		public void Dispose()
 		{
+			m_Parent?.TwitchEvents.Clear();
+
 			StatusUpdateTimer.Elapsed -= StatusUpdateTimer_Elapsed;
 			StatusUpdateTimer.Dispose();
 		}

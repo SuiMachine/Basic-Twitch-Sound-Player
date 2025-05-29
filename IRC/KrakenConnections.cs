@@ -2,6 +2,7 @@
 using BasicTwitchSoundPlayer.SoundStorage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SuiBot_TwitchSocket.API.EventSub;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,36 +14,7 @@ namespace BasicTwitchSoundPlayer.IRC
 	public class KrakenConnections
 	{
 
-/*		public class ChannelPointRedeemRequest
-		{
-			public string userName;
-			public string userId;
-			public string rewardId;
-			public string redemptionId;
-			public RedemptionStates state;
-			public string userInput;
-
-			public ChannelPointRedeemRequest(string userName, string userId, string rewardId, string redemptionId, RedemptionStates state, string userInput)
-			{
-				this.userName = userName;
-				this.userId = userId;
-				this.rewardId = rewardId;
-				this.redemptionId = redemptionId;
-				this.state = state;
-				this.userInput = userInput;
-			}
-		}*/
-
-
-
-
-		public string BroadcasterID { get; set; }
-		public bool IsLive { get; private set; } = false;
-		public string GameID { get; private set; } = "";
-		public string GameTitle { get; private set; } = "";
-		public string StreamTitle { get; private set; } = "";
-
-		public List<SuiBot_Core.API.EventSub.ES_ChannelPoints.ChannelReward> CachedRewards { get; internal set; }
+		public List<ES_ChannelPoints.ChannelReward> CachedRewards { get; internal set; }
 
 
 /*		public async Task VerifyChannelRewardsAsync(MainForm mainForm, string soundRedeemId)

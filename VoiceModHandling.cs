@@ -9,8 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using WebSocketSharp;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
-using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -54,6 +53,7 @@ namespace BasicTwitchSoundPlayer
 		private bool m_DisableVoiceModOnConnection = false;
 		private bool m_Playing = false;
 		private bool m_RedeemsPaused = false;
+		private ChatBot ChatBotInstance;
 
 		private (string request, string voiceID) awaitingBitmap;
 
@@ -94,8 +94,7 @@ namespace BasicTwitchSoundPlayer
 					m_IsConnecting = true;
 					MainForm.Instance.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.VoiceMod);
 					VoiceModSocket.ConnectAsync();
-/*					if (MainForm.TwitchSocket != null)
-						MainForm.TwitchSocket.OnChannelPointsRedeem += OnChannelPointsRedeem;*/
+					MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += OnChannelPointsRedeem;
 				}
 				else
 					MainForm.Instance.ThreadSafeAddPreviewText("VoiceMod is not configured - this is OK, unless you want to use it", LineType.VoiceMod);
@@ -472,7 +471,7 @@ namespace BasicTwitchSoundPlayer
 				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;*/
 		}
 
-		private void OnChannelPointsRedeem(ES_ChannelPointRedeemRequest redeem)
+		public void OnChannelPointsRedeem(ES_ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)
 				return;

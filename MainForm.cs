@@ -2,10 +2,8 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
-using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -28,6 +26,7 @@ namespace BasicTwitchSoundPlayer
 		public delegate void SetVolumeSlider(int value);       //used to safely change the slider position
 
 		public ChatBot TwitchBot { get; private set; }
+		public EventBridge TwitchEvents { get; private set; }
 		private char PrefixCharacter = '-';
 		SoundDB soundDb;
 		GeminiAI AI;
@@ -36,6 +35,7 @@ namespace BasicTwitchSoundPlayer
 		public MainForm()
 		{
 			Instance = this;
+			TwitchEvents = new EventBridge();
 			InitializeComponent();
 		}
 
@@ -143,13 +143,6 @@ namespace BasicTwitchSoundPlayer
 			this.webSockets.Stop();
 
 			System.Environment.Exit(0);
-		}
-
-		private void OnRedeemUpdatedReceived(ES_ChannelPointRedeemRequest redeem)
-		{
-#if DEBUG
-			Debug.WriteLine($"Received reward status {redeem.user_name}, redeeem ID {redeem.id} - {redeem.state}");
-#endif
 		}
 		#endregion
 

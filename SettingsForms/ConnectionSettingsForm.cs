@@ -1,6 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.Structs;
-using SuiBot_Core.API;
+using SuiBot_TwitchSocket.API;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

@@ -322,10 +322,10 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			var helix = new SuiBot_Core.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+			var helix = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
 
 			var validationResult = helix.ValidateToken();
-			if(validationResult != SuiBot_Core.API.HelixAPI.ValidationResult.Successful)
+			if(validationResult != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
 			{
 				throw new Exception("Failed to verify token");
 			}

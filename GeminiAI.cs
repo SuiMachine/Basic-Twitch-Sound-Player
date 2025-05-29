@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
-using static SuiBot_Core.API.EventSub.ES_ChannelPoints;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
