@@ -19,12 +19,9 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 
 		public static DB_Editor Instance { get; private set; }
 		public List<SoundEntry> SoundsCopy;
-		char PrefixCharacter;
 
-		public DB_Editor(List<SoundEntry> Sounds, char PrefixCharacter)
+		public DB_Editor(List<SoundEntry> Sounds)
 		{
-			this.PrefixCharacter = PrefixCharacter;
-
 			this.SoundsCopy = new List<SoundEntry>(Sounds.Count);
 			foreach (SoundEntry SoundEntry in Sounds)
 				this.SoundsCopy.Add(SoundEntry.CreateCopy());
@@ -180,34 +177,39 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			Action content = new Action(async () =>
 			{
 				var settings = PrivateSettings.GetInstance();
-/*				KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
-				await apiConnection.GetBroadcasterIDAsync();
-				if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+
+				var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+				var authentication = api.ValidateToken();
+				if (authentication != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
 				{
-					DialogBoxes.ProgressDisplay.Instance?.InvokeClose();
+					MessageBox.Show("API authentication failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 
-				await apiConnection.GetRewardsList();
-
-				var reward = await apiConnection.CreateOrUpdateReward("Universal sound reward", "Redeem a sound using tag / phrase", 160, true, 0, settings.UniversalRewardID);
-				if (reward != null)
+				if (!await api.CreateRewardsCache())
 				{
-					if (string.IsNullOrEmpty(settings.UniversalRewardID))
+					MessageBox.Show("Failed to get rewards.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+
+				var foundReward = api.RewardsCache.FirstOrDefault(x => x.id == settings.UniversalRewardID);
+				if (foundReward != null)
+				{
+					MessageBox.Show("A reward already exists and wasn't updated", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				else
+				{
+					var result = await api.CreateOrUpdateReward(null, "Universal sound reward", "Redeem a sound using tag / phrase", 160, 0, true, true);
+					if (result == null)
 					{
-						settings.UniversalRewardID = reward.id;
-						MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						if (string.IsNullOrEmpty(settings.UniversalRewardID))
+							MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						else
+							MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						settings.UniversalRewardID = result.id;
 					}
-					else if (settings.UniversalRewardID != reward.id)
-					{
-						settings.UniversalRewardID = reward.id;
-						MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-					}
-					else
-					{
-						MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					}
-				}*/
+				}
+
 				DialogBoxes.ProgressDisplay.Instance?.InvokeClose();
 			});
 
@@ -256,7 +258,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 		{
 			if (snd.GetIsProperEntry())
 			{
-				var mainIcon = !string.IsNullOrEmpty(snd.RewardID) ? (int)TreeIcons.RewardSound : (int)TreeIcons.TagSound; 
+				var mainIcon = !string.IsNullOrEmpty(snd.RewardID) ? (int)TreeIcons.RewardSound : (int)TreeIcons.TagSound;
 
 				var newNode = new TreeNode(snd.RewardName)
 				{

@@ -349,7 +349,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void DatabaseEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.SoundList, PrefixCharacter);
+			SoundDatabaseEditor.DB_Editor scf = new SoundDatabaseEditor.DB_Editor(soundDb.SoundList);
 			DialogResult res = scf.ShowDialog();
 			if (res == DialogResult.OK)
 			{
