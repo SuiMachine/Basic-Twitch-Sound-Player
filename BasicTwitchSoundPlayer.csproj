@@ -135,11 +135,8 @@
     <Compile Include="Extensions\GeminiExtensions.cs" />
     <Compile Include="Extensions\Numbers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\SuiXMLExtensions.cs" />
     <Compile Include="GeminiAI.cs" />
-    <Compile Include="HTTPS_Requests.cs" />
     <Compile Include="Interfaces\IVoiceModeRewardBindingInterface.cs" />
-    <Compile Include="IRC\KrakenConnections.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

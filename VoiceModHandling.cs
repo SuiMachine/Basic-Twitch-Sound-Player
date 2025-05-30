@@ -483,7 +483,7 @@ namespace BasicTwitchSoundPlayer
 				{
 					if (m_Playing || m_RedeemsPaused)
 					{
-						//MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
+						MainForm.Instance?.TwitchBot?.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 					}
 					else
 					{
@@ -492,7 +492,7 @@ namespace BasicTwitchSoundPlayer
 							Debug.WriteLine("This is ok");
 						}
 
-						//MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
+						MainForm.Instance?.TwitchBot?.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 				}
 			}

@@ -22,7 +22,7 @@ namespace BasicTwitchSoundPlayer.Extensions
 			{
 				ChannelInstance channelInstance = MainForm.Instance.TwitchBot.ChannelInstance;
 
-				if (channelInstance.StreamStatus.IsOnline)
+				if (channelInstance.StreamStatus?.IsOnline ?? false)
 				{
 
 					sb.AppendLine($"{channelInstance.Channel} is now streaming {channelInstance.StreamStatus.game_name}.");

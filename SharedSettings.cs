@@ -281,6 +281,7 @@ namespace BasicTwitchSoundPlayer
 			return m_Instance;
 		}
 
+		public string TwitchUsername { get; set; } = "";
 		public EncryptedString ApiKey { get; set; } = "";
 		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
 		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;

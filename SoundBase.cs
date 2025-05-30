@@ -130,7 +130,7 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (m_UserDB[redeem.user_id] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
-					if (UniversalRewards.TryGetValue(redeem.userInput.SanitizeTags().ToLower(), out SoundEntry universal_sound))
+					if (UniversalRewards.TryGetValue(redeem.user_input.SanitizeTags().ToLower(), out SoundEntry universal_sound))
 					{
 						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 						PrivateSettings programSettings = PrivateSettings.GetInstance();

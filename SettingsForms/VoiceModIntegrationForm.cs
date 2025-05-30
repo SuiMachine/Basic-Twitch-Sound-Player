@@ -4,7 +4,6 @@ using BasicTwitchSoundPlayer.SettingsForms.EditForm;
 using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static BasicTwitchSoundPlayer.VoiceModConfig;
 

@@ -217,11 +217,12 @@
 			this.tableLayoutPanel6.Controls.Add(this.Num_PortUsed, 3, 0);
 			this.tableLayoutPanel6.Controls.Add(this.CB_Websocket, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.CB_DebugMode, 4, 0);
+			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(560, 30);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(606, 30);
 			this.tableLayoutPanel6.TabIndex = 2;
 			// 
 			// label6
@@ -286,7 +287,7 @@
 			this.CB_DebugMode.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CB_DebugMode.Location = new System.Drawing.Point(412, 3);
 			this.CB_DebugMode.Name = "CB_DebugMode";
-			this.CB_DebugMode.Size = new System.Drawing.Size(185, 24);
+			this.CB_DebugMode.Size = new System.Drawing.Size(191, 24);
 			this.CB_DebugMode.TabIndex = 12;
 			this.CB_DebugMode.Text = "Debug mode";
 			this.CB_DebugMode.UseVisualStyleBackColor = true;
@@ -302,11 +303,12 @@
 			this.tableLayoutPanel8.Controls.Add(this.TB_UserAuth, 1, 0);
 			this.tableLayoutPanel8.Controls.Add(this.label8, 2, 0);
 			this.tableLayoutPanel8.Controls.Add(this.TB_BotAuth, 3, 0);
+			this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 39);
 			this.tableLayoutPanel8.Name = "tableLayoutPanel8";
 			this.tableLayoutPanel8.RowCount = 1;
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.Size = new System.Drawing.Size(560, 30);
+			this.tableLayoutPanel8.Size = new System.Drawing.Size(606, 30);
 			this.tableLayoutPanel8.TabIndex = 4;
 			// 
 			// label3
@@ -325,7 +327,7 @@
 			this.TB_UserAuth.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TB_UserAuth.Location = new System.Drawing.Point(99, 3);
 			this.TB_UserAuth.Name = "TB_UserAuth";
-			this.TB_UserAuth.Size = new System.Drawing.Size(209, 20);
+			this.TB_UserAuth.Size = new System.Drawing.Size(235, 20);
 			this.TB_UserAuth.TabIndex = 6;
 			this.TB_UserAuth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.TB_UserAuth.UseSystemPasswordChar = true;
@@ -334,7 +336,7 @@
 			// 
 			this.label8.AutoSize = true;
 			this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label8.Location = new System.Drawing.Point(314, 0);
+			this.label8.Location = new System.Drawing.Point(340, 0);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(78, 30);
 			this.label8.TabIndex = 20;
@@ -344,9 +346,9 @@
 			// TB_BotAuth
 			// 
 			this.TB_BotAuth.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TB_BotAuth.Location = new System.Drawing.Point(398, 3);
+			this.TB_BotAuth.Location = new System.Drawing.Point(424, 3);
 			this.TB_BotAuth.Name = "TB_BotAuth";
-			this.TB_BotAuth.Size = new System.Drawing.Size(159, 20);
+			this.TB_BotAuth.Size = new System.Drawing.Size(179, 20);
 			this.TB_BotAuth.TabIndex = 21;
 			this.TB_BotAuth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.TB_BotAuth.UseSystemPasswordChar = true;
@@ -355,7 +357,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(630, 167);
+			this.ClientSize = new System.Drawing.Size(621, 167);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;

@@ -5,10 +5,12 @@ namespace BasicTwitchSoundPlayer
 {
 	public class EventBridge
 	{
+		public Action<ES_ChatMessage> OnChannelMessage;
 		public Action<ES_ChannelPoints.ES_ChannelPointRedeemRequest> OnChannelPointsRedeem;
 
 		internal void Clear()
 		{
+			OnChannelMessage = null;
 			OnChannelPointsRedeem = null;
 		}
 	}

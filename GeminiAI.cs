@@ -1,8 +1,11 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.Structs.Gemini;
 using Newtonsoft.Json;
+using SuiBot_TwitchSocket;
+using SuiBot_TwitchSocket.API.EventSub;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,10 +30,9 @@ namespace BasicTwitchSoundPlayer
 				return false;
 			}
 
-/*			var privateSettings = PrivateSettings.GetInstance();
-			if (string.IsNullOrEmpty(privateSettings.UserName))
+			if (string.IsNullOrEmpty(aiConfig.TwitchUsername))
 			{
-				MainForm.Instance.ThreadSafeAddPreviewText($"Can't setup AI - no streamer {nameof(privateSettings.UserName)} provided.", LineType.GeminiAI);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Can't setup AI - no streamer username provided", LineType.GeminiAI);
 				return false;
 			}
 
@@ -40,7 +42,7 @@ namespace BasicTwitchSoundPlayer
 				return false;
 			}
 
-			var path = AIConfig.GetAIHistoryPath(privateSettings.UserName);
+			var path = AIConfig.GetAIHistoryPath(aiConfig.TwitchUsername);
 			StreamerContent = XML_Utils.Load(path, new GeminiContent()
 			{
 				StoragePath = path,
@@ -49,7 +51,7 @@ namespace BasicTwitchSoundPlayer
 				systemInstruction = null,
 				safetySettings = null,
 			});
-			StreamerContent.StoragePath = path;*/
+			StreamerContent.StoragePath = path;
 
 			return true;
 		}
@@ -58,7 +60,7 @@ namespace BasicTwitchSoundPlayer
 		{
 			//TODO: There is some bug with registering it, probably order of execution :-/
 			IsRegistered = true;
-			//MainForm.TwitchSocket.OnChannelPointsRedeem += PointsRedeem;
+			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += PointsRedeem;
 
 			//Safety tripping test
 			/*			Task.Run(async () =>
@@ -79,7 +81,7 @@ namespace BasicTwitchSoundPlayer
 			var rewardID = AIConfig.GetInstance().TwitchAwardID;
 			if (string.IsNullOrEmpty(rewardID))
 				return;
-			if (request.id != rewardID)
+			if (request.reward.id != rewardID)
 				return;
 
 			Task.Run(async () =>
@@ -95,7 +97,13 @@ namespace BasicTwitchSoundPlayer
 			{
 				GeminiContent content = null;
 				AIConfig aiConfig = AIConfig.GetInstance();
-				ChannelInstance channelInstance = MainForm.Instance.TwitchBot.ChannelInstance;
+				ChatBot bot = MainForm.Instance.TwitchBot;
+				ChannelInstance channelInstance = bot?.ChannelInstance;
+				if (bot == null || bot.IsDisposed || channelInstance == null)
+				{
+					Logger.AddLine("Either bot or channel were already disposed.");
+					return;
+				}
 
 				int tokenLimit = 1000;
 
@@ -155,24 +163,24 @@ namespace BasicTwitchSoundPlayer
 
 				if (content == null)
 				{
-					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.user_name}: Failed to load user history.");
-					//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+					bot?.ChannelInstance?.SendChatMessage($"{request.user_name}: Failed to load user history.");
+					bot?.HelixAPI_User?.UpdateRedemptionStatus(request, RedemptionStates.CANCELED);
 					return;
 				}
 
-				content.contents.Add(GeminiMessage.CreateUserResponse(request.userInput));
+				content.contents.Add(GeminiMessage.CreateUserResponse(request.user_input));
 #if DEBUG
 				string json = JsonConvert.SerializeObject(content, Formatting.Indented);
 #else
 				string json = JsonConvert.SerializeObject(content);
 #endif
 
-				string result = await HTTPS_Requests.PostAsync("https://generativelanguage.googleapis.com/v1beta/", $"{aiConfig.Model}:generateContent", $"?key={aiConfig.ApiKey}", json, new Dictionary<string, string>());
+				string result = await HttpWebRequestHandlers.PerformPostAsync("https://generativelanguage.googleapis.com/v1beta/", $"{aiConfig.Model}:generateContent", $"?key={aiConfig.ApiKey}", json, new Dictionary<string, string>(), timeout: 16_000);
 
 				if (string.IsNullOrEmpty(result))
 				{
-					MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"{request.user_name} - Failed to get a response. Please debug me, Sui :(");
-					//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+					bot?.ChannelInstance.SendChatMessage($"{request.user_name} - Failed to get a response. Please debug me :(");
+					bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.CANCELED);
 					return;
 				}
 				else
@@ -217,7 +225,7 @@ namespace BasicTwitchSoundPlayer
 							}
 
 							text = string.Join(" ", splitText);
-							channelInstance.SendChatMessage($"@{request.user_name}: {text}");
+							channelInstance?.SendChatMessage($"@{request.user_name}: {text}");
 
 							while (content.generationConfig.TokenCount > tokenLimit)
 							{
@@ -236,7 +244,7 @@ namespace BasicTwitchSoundPlayer
 								}
 							}
 
-							//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
+							bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.FULFILLED);
 							XML_Utils.Save(content.StoragePath, content);
 						}
 						else
@@ -247,20 +255,20 @@ namespace BasicTwitchSoundPlayer
 							else
 								channelInstance.SendChatMessage($"@{request.user_name}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
 
-							//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+							bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.UNFULFILLED);
 							XML_Utils.Save(content.StoragePath, content);
 						}
 					}
 					else
 					{
-						//channelInstance.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
-						channelInstance.SendChatMessage($"@{request.user_name}: Failed to get a response. Please debug me, Sui :(");
+						bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.UNFULFILLED);
+						channelInstance.SendChatMessage($"@{request.user_name}: Failed to get a response. Please debug me :(");
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"Failed to get a response. Something was written in log. Sui help! :(");
+				MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"Failed to get a response. Something was written in log. Help! :(");
 				MainForm.Instance.ThreadSafeAddPreviewText($"There was an error trying to do AI: {ex}", LineType.GeminiAI);
 			}
 		}

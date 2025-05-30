@@ -163,7 +163,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
-			var mbResult = MessageBox.Show("Are you sure you want to remove the reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			var mbResult = MessageBox.Show("Are you sure you want to create or update the reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (mbResult == DialogResult.No)
 				return;
 
@@ -186,51 +186,28 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 			var award = api.RewardsCache.FirstOrDefault(x => x.id == TB_RewardID.Text);
 			if (award != null)
 			{
-
+				var update = await api.CreateOrUpdateReward(award.id, TB_RewardName.Text, RB_Description.Text, (int)Num_Points.Value, (int)Num_Cooldown.Value, true, false);
+				if (update != null)
+				{
+					MessageBox.Show("Updated the reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				else
+					MessageBox.Show("Failed to update a reward", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			else
 			{
 				var reward = await api.CreateOrUpdateReward(null, TB_RewardName.Text, RB_Description.Text, (int)Num_Points.Value, (int)Num_Cooldown.Value, true, false);
-				if(reward != null)
+				if (reward != null)
 				{
-					if(string.IsNullOrEmpty(TB_RewardID.Text))
+					if (string.IsNullOrEmpty(TB_RewardID.Text))
 						MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					else
 						MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 					this.TB_RewardID.Text = reward.id;
 				}
 				else
-				{
-
-				}
+					MessageBox.Show("Failed to create a reward", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-
-			/*			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
-						await apiConnection.GetBroadcasterIDAsync();
-						if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
-							return;
-
-						await apiConnection.GetRewardsList();
-
-						KrakenConnections.ChannelReward reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
-
-						if (reward != null)
-						{
-							if (string.IsNullOrEmpty(TB_RewardID.Text))
-							{
-								this.TB_RewardID.Text = reward.id;
-								MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-							}
-							else if (TB_RewardID.Text != reward.id)
-							{
-								this.TB_RewardID.Text = reward.id;
-								MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-							}
-							else
-							{
-								MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-							}
-						}*/
 		}
 
 		private async void B_RemoveReward_Click(object sender, EventArgs e)
