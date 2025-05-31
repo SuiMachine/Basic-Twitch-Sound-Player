@@ -156,7 +156,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			if (!chatMessage.message.text.StartsWith(m_PrefixChar.ToString()) || ChannelInstance.IgnoreList.Contains(chatMessage.chatter_user_login))
 			{
 				//literally nothing else happens in your code if this is false
-				m_Parent.ThreadSafeAddPreviewText($"{chatMessage.broadcaster_user_name}: {chatMessage.message.text}", LineType.Generic);
+				m_Parent.ThreadSafeAddPreviewText($"{chatMessage.chatter_user_name}: {chatMessage.message.text}", LineType.Generic);
 				return;
 			}
 			else
@@ -185,7 +185,7 @@ namespace BasicTwitchSoundPlayer.IRC
 							this.SndDB.SetDelay(delayValue);
 						}
 
-						m_Parent.ThreadSafeAddPreviewText($"{chatMessage.broadcaster_user_name}: {chatMessage.message.text}", LineType.ModCommand);
+						m_Parent.ThreadSafeAddPreviewText($"{chatMessage.chatter_user_name}: {chatMessage.message.text}", LineType.ModCommand);
 						return;
 					}
 				}
