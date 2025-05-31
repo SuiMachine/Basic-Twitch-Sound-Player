@@ -156,7 +156,7 @@ namespace BasicTwitchSoundPlayer
 					else
 					{
 						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-						content.systemInstruction = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus.IsOnline);
+						content.systemInstruction = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus?.IsOnline ?? false);
 					}
 					content.generationConfig.temperature = aiConfig.Temperature_User;
 				}
