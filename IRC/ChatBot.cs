@@ -62,6 +62,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			this.m_PrefixChar = PrefixChar;
 			SndDB = soundDb;
 			SndDB.Register();
+			this?.HelixAPI_Bot.RequestUpdate(ChannelInstance);
 		}
 
 		private void StatusUpdateTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

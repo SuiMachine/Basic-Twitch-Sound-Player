@@ -36,6 +36,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		public ChannelInstance(ChatBot chatBotInstance, string SoundRewardID = null)
 		{
 			m_ChatBot = chatBotInstance;
+			StreamStatus = new Response_StreamStatus();
 			LoadIgnoredList();
 		}
 
@@ -171,7 +172,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		internal void UpdateTwitchStatus()
 		{
-
+			m_ChatBot?.HelixAPI_Bot.RequestUpdate(this);
 		}
 	}
 }
