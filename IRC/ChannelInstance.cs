@@ -1,15 +1,9 @@
-﻿using SuiBot_TwitchSocket.Interfaces;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using SuiBot_Core;
-using System;
+﻿using SuiBot_TwitchSocket.API.EventSub;
 using SuiBot_TwitchSocket.API.Helix.Responses;
-using SuiBot_TwitchSocket.API.EventSub;
+using SuiBot_TwitchSocket.Interfaces;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -172,7 +166,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		internal void UpdateTwitchStatus()
 		{
-			m_ChatBot?.HelixAPI_Bot.RequestUpdate(this);
+			m_ChatBot?.HelixAPI_Bot.GetStatus(this);
 		}
 	}
 }

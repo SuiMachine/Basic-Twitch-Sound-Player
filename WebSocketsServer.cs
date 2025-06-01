@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BasicTwitchSoundPlayer.IRC;
+using System;
 using System.Diagnostics;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -28,16 +29,18 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (e.Data.ToLower() == "true")
 				{
-					VoiceModHandling.GetInstance().SetPauseRedeems(true);
-					MainForm.Instance.ThreadSafeAddPreviewText("Paused redeems", LineType.WebSocket);
+					ChatBot.AreRedeemsPaused = true;
+					MainForm.Instance?.MixItUpWebhook?.BTSP_RewardsStatusChanged(ChatBot.AreRedeemsPaused, ChatBot.AreSoundRedeemsPaused, ChatBot.AreVoiceRedeemsPaused);
+					MainForm.Instance?.ThreadSafeAddPreviewText("Paused redeems", LineType.WebSocket);
 				}
 				else if (e.Data.ToLower() == "false")
 				{
-					VoiceModHandling.GetInstance().SetPauseRedeems(false);
-					MainForm.Instance.ThreadSafeAddPreviewText("Unpaused redeems", LineType.WebSocket);
+					ChatBot.AreRedeemsPaused = false;
+					MainForm.Instance?.MixItUpWebhook?.BTSP_RewardsStatusChanged(ChatBot.AreRedeemsPaused, ChatBot.AreSoundRedeemsPaused, ChatBot.AreVoiceRedeemsPaused);
+					MainForm.Instance?.ThreadSafeAddPreviewText("Unpaused redeems", LineType.WebSocket);
 				}
 				else
-					MainForm.Instance.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
+					MainForm.Instance?.ThreadSafeAddPreviewText("Failed to parse", LineType.WebSocket);
 			}
 		}
 

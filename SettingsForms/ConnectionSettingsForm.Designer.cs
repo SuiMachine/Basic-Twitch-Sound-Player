@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.B_Save = new System.Windows.Forms.Button();
-			this.B_Cancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
@@ -50,67 +47,39 @@
 			this.TB_UserAuth = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.TB_BotAuth = new System.Windows.Forms.TextBox();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_Save = new System.Windows.Forms.Button();
+			this.B_Cancel = new System.Windows.Forms.Button();
+			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+			this.TB_MixItUpWebhook = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
-			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.tableLayoutPanel9.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Num_PortUsed)).BeginInit();
 			this.tableLayoutPanel8.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 1);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowCount = 3;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 337F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(618, 166);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(562, 201);
 			this.tableLayoutPanel1.TabIndex = 0;
-			// 
-			// tableLayoutPanel2
-			// 
-			this.tableLayoutPanel2.ColumnCount = 2;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 125);
-			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 1;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(612, 37);
-			this.tableLayoutPanel2.TabIndex = 0;
-			// 
-			// B_Save
-			// 
-			this.B_Save.Dock = System.Windows.Forms.DockStyle.Right;
-			this.B_Save.Location = new System.Drawing.Point(228, 3);
-			this.B_Save.Name = "B_Save";
-			this.B_Save.Size = new System.Drawing.Size(75, 31);
-			this.B_Save.TabIndex = 0;
-			this.B_Save.Text = "Save";
-			this.B_Save.UseVisualStyleBackColor = true;
-			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
-			// 
-			// B_Cancel
-			// 
-			this.B_Cancel.Dock = System.Windows.Forms.DockStyle.Left;
-			this.B_Cancel.Location = new System.Drawing.Point(309, 3);
-			this.B_Cancel.Name = "B_Cancel";
-			this.B_Cancel.Size = new System.Drawing.Size(75, 31);
-			this.B_Cancel.TabIndex = 1;
-			this.B_Cancel.Text = "Cancel";
-			this.B_Cancel.UseVisualStyleBackColor = true;
-			this.B_Cancel.Click += new System.EventHandler(this.B_Cancel_Click);
 			// 
 			// panel1
 			// 
@@ -118,7 +87,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(612, 116);
+			this.panel1.Size = new System.Drawing.Size(556, 116);
 			this.panel1.TabIndex = 1;
 			// 
 			// tableLayoutPanel3
@@ -131,21 +100,21 @@
 			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 3;
+			this.tableLayoutPanel3.RowCount = 4;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(612, 116);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(556, 116);
 			this.tableLayoutPanel3.TabIndex = 25;
 			// 
 			// tableLayoutPanel9
 			// 
 			this.tableLayoutPanel9.ColumnCount = 4;
-			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 137F));
+			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
+			this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel9.Controls.Add(this.CB_ShowPasswordUser, 1, 0);
 			this.tableLayoutPanel9.Controls.Add(this.button1, 2, 0);
 			this.tableLayoutPanel9.Controls.Add(this.CB_ShowBotAuth, 3, 0);
@@ -155,16 +124,16 @@
 			this.tableLayoutPanel9.Name = "tableLayoutPanel9";
 			this.tableLayoutPanel9.RowCount = 1;
 			this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel9.Size = new System.Drawing.Size(606, 38);
+			this.tableLayoutPanel9.Size = new System.Drawing.Size(550, 38);
 			this.tableLayoutPanel9.TabIndex = 5;
 			// 
 			// CB_ShowPasswordUser
 			// 
 			this.CB_ShowPasswordUser.AutoSize = true;
 			this.CB_ShowPasswordUser.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.CB_ShowPasswordUser.Location = new System.Drawing.Point(154, 3);
+			this.CB_ShowPasswordUser.Location = new System.Drawing.Point(140, 3);
 			this.CB_ShowPasswordUser.Name = "CB_ShowPasswordUser";
-			this.CB_ShowPasswordUser.Size = new System.Drawing.Size(145, 32);
+			this.CB_ShowPasswordUser.Size = new System.Drawing.Size(138, 32);
 			this.CB_ShowPasswordUser.TabIndex = 10;
 			this.CB_ShowPasswordUser.Text = "Show user auth";
 			this.CB_ShowPasswordUser.UseVisualStyleBackColor = true;
@@ -173,9 +142,9 @@
 			// button1
 			// 
 			this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.button1.Location = new System.Drawing.Point(305, 3);
+			this.button1.Location = new System.Drawing.Point(284, 3);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(145, 32);
+			this.button1.Size = new System.Drawing.Size(119, 32);
 			this.button1.TabIndex = 24;
 			this.button1.Text = "Obtain auth (manual)";
 			this.button1.UseVisualStyleBackColor = true;
@@ -185,9 +154,9 @@
 			// 
 			this.CB_ShowBotAuth.AutoSize = true;
 			this.CB_ShowBotAuth.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.CB_ShowBotAuth.Location = new System.Drawing.Point(456, 3);
+			this.CB_ShowBotAuth.Location = new System.Drawing.Point(409, 3);
 			this.CB_ShowBotAuth.Name = "CB_ShowBotAuth";
-			this.CB_ShowBotAuth.Size = new System.Drawing.Size(147, 32);
+			this.CB_ShowBotAuth.Size = new System.Drawing.Size(138, 32);
 			this.CB_ShowBotAuth.TabIndex = 22;
 			this.CB_ShowBotAuth.Text = "Show bot auth";
 			this.CB_ShowBotAuth.UseVisualStyleBackColor = true;
@@ -198,7 +167,7 @@
 			this.B_GetLoginData.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.B_GetLoginData.Location = new System.Drawing.Point(3, 3);
 			this.B_GetLoginData.Name = "B_GetLoginData";
-			this.B_GetLoginData.Size = new System.Drawing.Size(145, 32);
+			this.B_GetLoginData.Size = new System.Drawing.Size(131, 32);
 			this.B_GetLoginData.TabIndex = 11;
 			this.B_GetLoginData.Text = "Obtain auth (webserver)";
 			this.B_GetLoginData.UseVisualStyleBackColor = true;
@@ -211,7 +180,7 @@
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 139F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 94F));
-			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 191F));
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 528F));
 			this.tableLayoutPanel6.Controls.Add(this.label6, 2, 0);
 			this.tableLayoutPanel6.Controls.Add(this.label4, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.Num_PortUsed, 3, 0);
@@ -222,7 +191,7 @@
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(606, 30);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(550, 30);
 			this.tableLayoutPanel6.TabIndex = 2;
 			// 
 			// label6
@@ -287,7 +256,7 @@
 			this.CB_DebugMode.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.CB_DebugMode.Location = new System.Drawing.Point(412, 3);
 			this.CB_DebugMode.Name = "CB_DebugMode";
-			this.CB_DebugMode.Size = new System.Drawing.Size(191, 24);
+			this.CB_DebugMode.Size = new System.Drawing.Size(522, 24);
 			this.CB_DebugMode.TabIndex = 12;
 			this.CB_DebugMode.Text = "Debug mode";
 			this.CB_DebugMode.UseVisualStyleBackColor = true;
@@ -308,7 +277,7 @@
 			this.tableLayoutPanel8.Name = "tableLayoutPanel8";
 			this.tableLayoutPanel8.RowCount = 1;
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.Size = new System.Drawing.Size(606, 30);
+			this.tableLayoutPanel8.Size = new System.Drawing.Size(550, 30);
 			this.tableLayoutPanel8.TabIndex = 4;
 			// 
 			// label3
@@ -327,7 +296,7 @@
 			this.TB_UserAuth.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TB_UserAuth.Location = new System.Drawing.Point(99, 3);
 			this.TB_UserAuth.Name = "TB_UserAuth";
-			this.TB_UserAuth.Size = new System.Drawing.Size(235, 20);
+			this.TB_UserAuth.Size = new System.Drawing.Size(204, 20);
 			this.TB_UserAuth.TabIndex = 6;
 			this.TB_UserAuth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.TB_UserAuth.UseSystemPasswordChar = true;
@@ -336,7 +305,7 @@
 			// 
 			this.label8.AutoSize = true;
 			this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label8.Location = new System.Drawing.Point(340, 0);
+			this.label8.Location = new System.Drawing.Point(309, 0);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(78, 30);
 			this.label8.TabIndex = 20;
@@ -346,26 +315,100 @@
 			// TB_BotAuth
 			// 
 			this.TB_BotAuth.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TB_BotAuth.Location = new System.Drawing.Point(424, 3);
+			this.TB_BotAuth.Location = new System.Drawing.Point(393, 3);
 			this.TB_BotAuth.Name = "TB_BotAuth";
-			this.TB_BotAuth.Size = new System.Drawing.Size(179, 20);
+			this.TB_BotAuth.Size = new System.Drawing.Size(154, 20);
 			this.TB_BotAuth.TabIndex = 21;
 			this.TB_BotAuth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.TB_BotAuth.UseSystemPasswordChar = true;
+			// 
+			// tableLayoutPanel2
+			// 
+			this.tableLayoutPanel2.ColumnCount = 2;
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.Controls.Add(this.B_Save, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.B_Cancel, 1, 0);
+			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 162);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 1;
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(556, 37);
+			this.tableLayoutPanel2.TabIndex = 0;
+			// 
+			// B_Save
+			// 
+			this.B_Save.Dock = System.Windows.Forms.DockStyle.Right;
+			this.B_Save.Location = new System.Drawing.Point(200, 3);
+			this.B_Save.Name = "B_Save";
+			this.B_Save.Size = new System.Drawing.Size(75, 31);
+			this.B_Save.TabIndex = 0;
+			this.B_Save.Text = "Save";
+			this.B_Save.UseVisualStyleBackColor = true;
+			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
+			// 
+			// B_Cancel
+			// 
+			this.B_Cancel.Dock = System.Windows.Forms.DockStyle.Left;
+			this.B_Cancel.Location = new System.Drawing.Point(281, 3);
+			this.B_Cancel.Name = "B_Cancel";
+			this.B_Cancel.Size = new System.Drawing.Size(75, 31);
+			this.B_Cancel.TabIndex = 1;
+			this.B_Cancel.Text = "Cancel";
+			this.B_Cancel.UseVisualStyleBackColor = true;
+			this.B_Cancel.Click += new System.EventHandler(this.B_Cancel_Click);
+			// 
+			// tableLayoutPanel4
+			// 
+			this.tableLayoutPanel4.ColumnCount = 2;
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 127F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel4.Controls.Add(this.TB_MixItUpWebhook, 1, 0);
+			this.tableLayoutPanel4.Controls.Add(this.label1, 0, 0);
+			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 125);
+			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+			this.tableLayoutPanel4.RowCount = 1;
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(556, 31);
+			this.tableLayoutPanel4.TabIndex = 2;
+			// 
+			// TB_MixItUpWebhook
+			// 
+			this.TB_MixItUpWebhook.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_MixItUpWebhook.Location = new System.Drawing.Point(130, 5);
+			this.TB_MixItUpWebhook.Name = "TB_MixItUpWebhook";
+			this.TB_MixItUpWebhook.Size = new System.Drawing.Size(423, 20);
+			this.TB_MixItUpWebhook.TabIndex = 7;
+			this.TB_MixItUpWebhook.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(3, 9);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(121, 13);
+			this.label1.TabIndex = 4;
+			this.label1.Text = "MixItUp Webook URL*";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// ConnectionSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(621, 167);
+			this.ClientSize = new System.Drawing.Size(562, 201);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(1024, 240);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(578, 240);
 			this.Name = "ConnectionSettingsForm";
 			this.Text = "Connection Settings";
 			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel2.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel9.ResumeLayout(false);
@@ -375,6 +418,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.Num_PortUsed)).EndInit();
 			this.tableLayoutPanel8.ResumeLayout(false);
 			this.tableLayoutPanel8.PerformLayout();
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel4.ResumeLayout(false);
+			this.tableLayoutPanel4.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -403,5 +449,8 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.NumericUpDown Num_PortUsed;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TextBox TB_MixItUpWebhook;
 	}
 }

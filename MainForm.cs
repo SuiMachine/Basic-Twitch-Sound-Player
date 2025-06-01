@@ -1,4 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
+using BasicTwitchSoundPlayer.MixItUpBridge;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -31,11 +32,13 @@ namespace BasicTwitchSoundPlayer
 		SoundDB soundDb;
 		GeminiAI AI;
 		WebSocketsListener webSockets;
+		public MixItUp MixItUpWebhook { get; private set; }
 
 		public MainForm()
 		{
 			Instance = this;
 			TwitchEvents = new EventBridge();
+			MixItUpWebhook = new MixItUp();
 			InitializeComponent();
 		}
 
@@ -218,6 +221,7 @@ namespace BasicTwitchSoundPlayer
 				settings.Debug_mode = form.DebugMode;
 				settings.WebSocketsServerPort = form.WebsocketPort;
 				settings.RunWebSocketsServer = form.RunWebsocket;
+				settings.MixItUpWebookURL = form.MixItUp_WebookURL;
 				settings.SaveSettings();
 				ReloadBot();
 			}

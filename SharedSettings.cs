@@ -95,6 +95,7 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement] public EncryptedString BotAuth { get; set; }
 		[XmlElement] public bool RunWebSocketsServer { get; set; }
 		[XmlElement] public int WebSocketsServerPort { get; set; }
+		[XmlElement] public string MixItUpWebookURL { get; set; }
 		[XmlElement] public string UniversalRewardID { get; set; }
 		#endregion
 

@@ -1,5 +1,4 @@
 ﻿using BasicTwitchSoundPlayer.Structs;
-using SuiBot_Core;
 using SuiBot_TwitchSocket;
 using SuiBot_TwitchSocket.API;
 using SuiBot_TwitchSocket.API.EventSub;
@@ -14,6 +13,9 @@ namespace BasicTwitchSoundPlayer.IRC
 	public class ChatBot : IBotInstance, IDisposable
 	{
 		public const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
+		public static bool AreRedeemsPaused { get; internal set; } = false;
+		public static bool AreVoiceRedeemsPaused { get; internal set; } = false;
+		public static bool AreSoundRedeemsPaused { get; internal set; } = false;
 
 		public bool BotRunning;
 		public ChannelInstance ChannelInstance;
@@ -62,7 +64,8 @@ namespace BasicTwitchSoundPlayer.IRC
 			this.m_PrefixChar = PrefixChar;
 			SndDB = soundDb;
 			SndDB.Register();
-			this?.HelixAPI_Bot.RequestUpdate(ChannelInstance);
+			m_Parent.MixItUpWebhook.Register();
+			this?.HelixAPI_Bot.GetStatus(ChannelInstance);
 		}
 
 		private void StatusUpdateTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -130,8 +133,9 @@ namespace BasicTwitchSoundPlayer.IRC
 				await Task.Delay(2000);
 				var offlineSub = await HelixAPI_User.SubscribeToOfflineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
 				await Task.Delay(2000);
-				var subscribe = await HelixAPI_User.SubscribeToChannelRedeem(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
+				var redeems = await HelixAPI_User.SubscribeToChannelRedeem(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
 				await Task.Delay(2000);
+				var goalEnd = await HelixAPI_User.SubscribeToGoalEnd(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
 				m_Parent?.ThreadSafeAddPreviewText("Registered to events", LineType.TwitchSocketCommand);
 				Logger.AddLine($"Done!");
 			});
@@ -203,13 +207,9 @@ namespace BasicTwitchSoundPlayer.IRC
 			m_Parent.ThreadSafeAddPreviewText("Streamer went offline", LineType.TwitchSocketCommand);
 		}
 
-		public void TwitchSocket_AutoModMessageHold(ES_AutomodMessageHold messageHold)
-		{
-		}
+		public void TwitchSocket_AutoModMessageHold(ES_AutomodMessageHold messageHold) { }
 
-		public void TwitchSocket_SuspiciousMessageReceived(ES_Suspicious_UserMessage suspiciousMessage)
-		{
-		}
+		public void TwitchSocket_SuspiciousMessageReceived(ES_Suspicious_UserMessage suspiciousMessage) { }
 
 		public void TwitchSocket_ChannelPointsRedeem(ES_ChannelPointRedeemRequest redeemInfo)
 		{
@@ -223,6 +223,14 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			StatusUpdateTimer.Elapsed -= StatusUpdateTimer_Elapsed;
 			StatusUpdateTimer.Dispose();
+		}
+
+		public void TwitchSocket_OnChannelGoalEnd(ES_ChannelGoal channelGoalEnded)
+		{
+			if (channelGoalEnded.is_achieved.HasValue && channelGoalEnded.is_achieved.Value)
+			{
+				MainForm.Instance?.TwitchEvents?.ChannelGoalAchieved?.Invoke(channelGoalEnded);
+			}
 		}
 		#endregion
 	}

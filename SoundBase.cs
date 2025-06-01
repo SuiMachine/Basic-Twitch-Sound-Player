@@ -120,6 +120,12 @@ namespace BasicTwitchSoundPlayer
 				}
 			}
 
+			if (ChatBot.AreRedeemsPaused)
+			{
+				MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
+				return;
+			}
+
 			//Check if our db has a user and if not add him
 			if (!m_UserDB.ContainsKey(redeem.user_id))
 			{

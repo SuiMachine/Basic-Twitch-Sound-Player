@@ -52,7 +52,6 @@ namespace BasicTwitchSoundPlayer
 		private bool m_IsConnecting = false;
 		private bool m_DisableVoiceModOnConnection = false;
 		private bool m_Playing = false;
-		private bool m_RedeemsPaused = false;
 		private ChatBot ChatBotInstance;
 
 		private (string request, string voiceID) awaitingBitmap;
@@ -73,8 +72,6 @@ namespace BasicTwitchSoundPlayer
 			Disposed = false;
 			ConnectToVoiceMod();
 		}
-
-		public void SetPauseRedeems(bool value) => m_RedeemsPaused = value;
 
 		public void ConnectToVoiceMod()
 		{
@@ -481,7 +478,7 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (redeem.state == RedemptionStates.UNFULFILLED)
 				{
-					if (m_Playing || m_RedeemsPaused)
+					if (m_Playing || ChatBot.AreRedeemsPaused || ChatBot.AreVoiceRedeemsPaused)
 					{
 						MainForm.Instance?.TwitchBot?.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 					}

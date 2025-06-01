@@ -1,14 +1,7 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.Structs;
 using SuiBot_TwitchSocket.API;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security.Principal;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
@@ -28,6 +21,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			"channel:read:redemptions",
 			"channel:manage:redemptions",
 			"channel:read:subscriptions",
+			"channel:read:goals",
 			"channel:moderate",
 			"moderation:read",
 			"moderator:manage:announcements",
@@ -57,8 +51,9 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		public bool DebugMode { get; set; }
 		public int WebsocketPort { get; set; }
-
 		public bool RunWebsocket { get; set; }
+		public string MixItUp_WebookURL { get; set; }
+
 
 		public ConnectionSettingsForm(MainForm _parent)
 		{
@@ -73,6 +68,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.CB_DebugMode.DataBindings.Add("Checked", this, nameof(DebugMode), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.Num_PortUsed.DataBindings.Add("Value", this, nameof(WebsocketPort), false, DataSourceUpdateMode.OnPropertyChanged);
 			this.CB_Websocket.DataBindings.Add("Checked", this, nameof(RunWebsocket), false, DataSourceUpdateMode.OnPropertyChanged);
+			this.TB_MixItUpWebhook.DataBindings.Add("Text", this, nameof(MixItUp_WebookURL), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			this.UserAuth = settings.UserAuth;
 			this.BotAuth = settings.BotAuth;
@@ -80,6 +76,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			this.DebugMode = settings.Debug_mode;
 			this.WebsocketPort = settings.WebSocketsServerPort;
 			this.RunWebsocket = settings.RunWebSocketsServer;
+			this.MixItUp_WebookURL = settings.MixItUpWebookURL;
 		}
 
 		private void B_Save_Click(object sender, EventArgs e)
