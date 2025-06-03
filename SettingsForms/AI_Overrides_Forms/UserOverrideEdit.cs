@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using static BasicTwitchSoundPlayer.Structs.Gemini.SafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 {
@@ -32,11 +33,11 @@ namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
 		private void B_OK_Click(object sender, EventArgs e)
 		{
 			UserData.SystemInstruction = RB_Instructions.Text;
-			UserData.HARM_CATEGORY_HARASSMENT = (Structs.Gemini.AISafetySettingsValues)TBar_Harassment.Value;
-			UserData.HARM_CATEGORY_HATE_SPEECH = (Structs.Gemini.AISafetySettingsValues)TBar_Hate.Value;
-			UserData.HARM_CATEGORY_SEXUALLY_EXPLICIT = (Structs.Gemini.AISafetySettingsValues)TBar_Sexually_Explicit.Value;
-			UserData.HARM_CATEGORY_DANGEROUS_CONTENT = (Structs.Gemini.AISafetySettingsValues)TBar_DangerousContent.Value;
-			UserData.HARM_CATEGORY_CIVIC_INTEGRITY = (Structs.Gemini.AISafetySettingsValues)TBar_CivicIntegrity.Value;
+			UserData.HARM_CATEGORY_HARASSMENT = (AISafetySettingsValues)TBar_Harassment.Value;
+			UserData.HARM_CATEGORY_HATE_SPEECH = (AISafetySettingsValues)TBar_Hate.Value;
+			UserData.HARM_CATEGORY_SEXUALLY_EXPLICIT = (AISafetySettingsValues)TBar_Sexually_Explicit.Value;
+			UserData.HARM_CATEGORY_DANGEROUS_CONTENT = (AISafetySettingsValues)TBar_DangerousContent.Value;
+			UserData.HARM_CATEGORY_CIVIC_INTEGRITY = (AISafetySettingsValues)TBar_CivicIntegrity.Value;
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}

@@ -1,6 +1,5 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
 using BasicTwitchSoundPlayer.Interfaces;
-using BasicTwitchSoundPlayer.Structs;
 using BasicTwitchSoundPlayer.Structs.Gemini;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using static BasicTwitchSoundPlayer.Structs.Gemini.SafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -351,9 +351,9 @@ namespace BasicTwitchSoundPlayer
 			return new GeminiMessage()
 			{
 				role = Role.user,
-				parts = new GeminiMessagePart[]
+				parts = new GeminiResponseMessagePart[]
 				{
-					new GeminiMessagePart()
+					new GeminiResponseMessagePart()
 					{
 						text = sb.ToString()
 					}

@@ -159,6 +159,7 @@ namespace BasicTwitchSoundPlayer
 						content.systemInstruction = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus?.IsOnline ?? false);
 					}
 					content.generationConfig.temperature = aiConfig.Temperature_User;
+					content.tools = GeminiContent.GetTools();
 				}
 
 				if (content == null)

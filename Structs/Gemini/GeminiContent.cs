@@ -27,6 +27,17 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 		[XmlIgnore] public SafetySettingsCategory[] safetySettings;
 		[XmlIgnore] public GeminiMessage systemInstruction;
 		public GenerationConfig generationConfig;
+
+		[XmlIgnore]
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public List<GeminiTools> tools;
+		public static List<GeminiTools> GetTools()
+		{
+			return new List<GeminiTools>()
+			{
+				new GeminiTools()
+			};
+		}
 	}
 
 	public class SafetySettingsCategory
@@ -34,26 +45,31 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 		public string category;
 		[JsonConverter(typeof(StringEnumConverter))]
 		public AISafetySettingsValues threshold;
+		[XmlIgnore]
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public List<GeminiTools> tools;
 
-		public SafetySettingsCategory()
+		public static List<GeminiTools> GetTools()
 		{
-			category = "";
-			threshold = AISafetySettingsValues.BLOCK_ONLY_HIGH;
+			return new List<GeminiTools>()
+			{
+				new GeminiTools()
+			};
 		}
 
-		public SafetySettingsCategory(string category, AISafetySettingsValues threshold)
+		public enum AISafetySettingsValues
+		{
+			BLOCK_NONE,
+			BLOCK_ONLY_HIGH, //Block few
+			BLOCK_MEDIUM_AND_ABOVE, //Block some
+			BLOCK_LOW_AND_ABOVE //Block Most
+		}
+
+		public SafetySettingsCategory(string category, AISafetySettingsValues safety)
 		{
 			this.category = category;
-			this.threshold = threshold;
+			this.threshold = safety;
 		}
-	}
-
-	public enum AISafetySettingsValues
-	{
-		BLOCK_NONE,
-		BLOCK_ONLY_HIGH, //Block few
-		BLOCK_MEDIUM_AND_ABOVE, //Block some
-		BLOCK_LOW_AND_ABOVE //Block Most
 	}
 
 	[Serializable]
@@ -80,3 +96,4 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 		public string modelVersion;
 	}
 }
+

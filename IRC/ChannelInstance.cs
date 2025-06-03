@@ -1,9 +1,11 @@
 ﻿using SuiBot_TwitchSocket.API.EventSub;
 using SuiBot_TwitchSocket.API.Helix.Responses;
 using SuiBot_TwitchSocket.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BasicTwitchSoundPlayer.IRC
 {
@@ -36,18 +38,21 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void SendChatMessage(string message)
 		{
-			if (message.Length <= 500)
+			Task.Run(async () =>
 			{
-				m_ChatBot?.HelixAPI_Bot.SendMessage(this, message);
-			}
-			else
-			{
-				var messages = SplitMessage(message, 500);
-				foreach (var subMessage in messages)
+				if (message.Length <= 500)
 				{
-					m_ChatBot?.HelixAPI_Bot.SendMessage(this, subMessage);
+					await m_ChatBot?.HelixAPI_Bot.SendMessageAsync(this, message);
 				}
-			}
+				else
+				{
+					var messages = SplitMessage(message, 500);
+					foreach (var subMessage in messages)
+					{
+						await m_ChatBot?.HelixAPI_Bot.SendMessageAsync(this, subMessage);
+					}
+				}
+			});
 		}
 
 		public static List<string> SplitMessage(string v, int length)
@@ -106,18 +111,21 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		private void SendChatMessageResponse(ES_ChatMessage messageToRespondTo, string text)
 		{
-			if (text.Length <= 500)
+			Task.Run(async () =>
 			{
-				m_ChatBot?.HelixAPI_Bot.SendResponse(messageToRespondTo, text);
-			}
-			else
-			{
-				var messages = SplitMessage(text, 500);
-				foreach (var subMessage in messages)
+				if (text.Length <= 500)
 				{
-					m_ChatBot?.HelixAPI_Bot.SendResponse(messageToRespondTo, subMessage);
+					await m_ChatBot?.HelixAPI_Bot.SendResponseAsync(messageToRespondTo, text);
 				}
-			}
+				else
+				{
+					var messages = SplitMessage(text, 500);
+					foreach (var subMessage in messages)
+					{
+						await m_ChatBot?.HelixAPI_Bot.SendResponseAsync(messageToRespondTo, subMessage);
+					}
+				}
+			});
 		}
 
 		public void IgnoreListRemove(ES_ChatMessage msg)
@@ -167,6 +175,16 @@ namespace BasicTwitchSoundPlayer.IRC
 		internal void UpdateTwitchStatus()
 		{
 			m_ChatBot?.HelixAPI_Bot.GetStatus(this);
+		}
+
+		internal void UserTimeout(ES_ChatMessage message, uint duration_in_seconds, string text_response)
+		{
+			m_ChatBot?.HelixAPI_Bot.RequestTimeout(message, duration_in_seconds, text_response);
+		}
+
+		internal void UserBan(ES_ChatMessage message, string response)
+		{
+			m_ChatBot?.HelixAPI_Bot.RequestBan(message, response);
 		}
 	}
 }

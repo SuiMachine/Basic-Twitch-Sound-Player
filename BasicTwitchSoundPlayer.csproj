@@ -224,9 +224,12 @@
     </Compile>
     <Compile Include="SoundDatabaseEditor\SupportedFileFormats.cs" />
     <Compile Include="SoundEntry.cs" />
+    <Compile Include="Structs\Gemini\FunctionTypes\FunctionCalls.cs" />
+    <Compile Include="Structs\Gemini\FunctionTypes\Parameters.cs" />
     <Compile Include="Structs\Gemini\GeminiCharacterOverride.cs" />
     <Compile Include="Structs\Gemini\GeminiContent.cs" />
     <Compile Include="Structs\Gemini\GeminiMessage.cs" />
+    <Compile Include="Structs\Gemini\GeminiTools.cs" />
     <Compile Include="VoiceModHandling.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\TwitchRightsEnum.cs" />

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-using System.IO;
+﻿using BasicTwitchSoundPlayer.Extensions;
+using System;
 using System.Text;
-using BasicTwitchSoundPlayer.Extensions;
+using System.Xml.Serialization;
+using static BasicTwitchSoundPlayer.Structs.Gemini.SafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer.Structs.Gemini
 {
@@ -62,9 +62,9 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 			sb.AppendStreamInstructionPostfix(true, true);
 			return new GeminiMessage()
 			{
-				parts = new GeminiMessagePart[]
+				parts = new GeminiResponseMessagePart[]
 				{
-					new GeminiMessagePart()
+					new GeminiResponseMessagePart()
 					{
 						text = sb.ToString(),
 					}
