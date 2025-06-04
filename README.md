@@ -4,7 +4,7 @@ Basic Sound player for Twitch written in C# is a lightweight sound player which 
 
 Credits
 -------
-  * [SuicideMachine](http://twitch.tv/suimachine)
+  * [SuicideMachine](http://twitch.tv/sui_vt)
   
 External libraries used
 -------
