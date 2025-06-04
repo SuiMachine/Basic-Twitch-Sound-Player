@@ -4,6 +4,7 @@ using SuiBot_TwitchSocket.API;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
 {
@@ -92,18 +93,18 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			config.Instruction_Streamer = RB_InstructionStreamer.Text;
 			config.Instruction_User = RB_InstructionUser.Text;
 
-			config.FilterSet_Streamer.Harassment = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerHarassment.Value;
-			config.FilterSet_Streamer.Hate = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerHate.Value;
-			config.FilterSet_Streamer.Sexually_Explicit = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerSexuallyExplicit.Value;
-			config.FilterSet_Streamer.Dangerous_Content = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerDangerousContent.Value;
-			config.FilterSet_Streamer.Civic_Integrity = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerCivicIntegrity.Value;
+			config.FilterSet_Streamer.Harassment = (AISafetySettingsValues)TBar_StreamerHarassment.Value;
+			config.FilterSet_Streamer.Hate = (AISafetySettingsValues)TBar_StreamerHate.Value;
+			config.FilterSet_Streamer.Sexually_Explicit = (AISafetySettingsValues)TBar_StreamerSexuallyExplicit.Value;
+			config.FilterSet_Streamer.Dangerous_Content = (AISafetySettingsValues)TBar_StreamerDangerousContent.Value;
+			config.FilterSet_Streamer.Civic_Integrity = (AISafetySettingsValues)TBar_StreamerCivicIntegrity.Value;
 			config.Temperature_Streamer = (float)Num_StreamerTemperature.Value;
 
-			config.FilterSet_User.Harassment = (Structs.Gemini.AISafetySettingsValues)TBar_UserHarassment.Value;
-			config.FilterSet_User.Hate = (Structs.Gemini.AISafetySettingsValues)TBar_UserHate.Value;
-			config.FilterSet_User.Sexually_Explicit = (Structs.Gemini.AISafetySettingsValues)TBar_UserSexuallyExplicit.Value;
-			config.FilterSet_User.Dangerous_Content = (Structs.Gemini.AISafetySettingsValues)TBar_UserDangerousContent.Value;
-			config.FilterSet_User.Civic_Integrity = (Structs.Gemini.AISafetySettingsValues)TBar_UserCivicIntegrity.Value;
+			config.FilterSet_User.Harassment = (AISafetySettingsValues)TBar_UserHarassment.Value;
+			config.FilterSet_User.Hate = (AISafetySettingsValues)TBar_UserHate.Value;
+			config.FilterSet_User.Sexually_Explicit = (AISafetySettingsValues)TBar_UserSexuallyExplicit.Value;
+			config.FilterSet_User.Dangerous_Content = (AISafetySettingsValues)TBar_UserDangerousContent.Value;
+			config.FilterSet_User.Civic_Integrity = (AISafetySettingsValues)TBar_UserCivicIntegrity.Value;
 			config.Temperature_User = (float)Num_UserResponseTemperature.Value;
 
 			config.TokenLimit_Streamer = (int)Num_StreamerTokenLimit.Value;
