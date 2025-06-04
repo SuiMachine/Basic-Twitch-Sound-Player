@@ -109,7 +109,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			}
 		}
 
-		private void SendChatMessageResponse(ES_ChatMessage messageToRespondTo, string text)
+		public void SendChatMessageResponse(ES_ChatMessage messageToRespondTo, string text)
 		{
 			Task.Run(async () =>
 			{
