@@ -9,7 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using WebSocketSharp;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -52,7 +52,7 @@ namespace BasicTwitchSoundPlayer
 		private bool m_IsConnecting = false;
 		private bool m_DisableVoiceModOnConnection = false;
 		private bool m_Playing = false;
-		private bool m_RedeemsPaused = false;
+		private ChatBot ChatBotInstance;
 
 		private (string request, string voiceID) awaitingBitmap;
 
@@ -73,8 +73,6 @@ namespace BasicTwitchSoundPlayer
 			ConnectToVoiceMod();
 		}
 
-		public void SetPauseRedeems(bool value) => m_RedeemsPaused = value;
-
 		public void ConnectToVoiceMod()
 		{
 			if (ConnectedToVoiceMod || m_IsConnecting)
@@ -93,8 +91,7 @@ namespace BasicTwitchSoundPlayer
 					m_IsConnecting = true;
 					MainForm.Instance.ThreadSafeAddPreviewText("Connecting to voice mod!", LineType.VoiceMod);
 					VoiceModSocket.ConnectAsync();
-					if (MainForm.TwitchSocket != null)
-						MainForm.TwitchSocket.OnChannelPointsRedeem += OnChannelPointsRedeem;
+					MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += OnChannelPointsRedeem;
 				}
 				else
 					MainForm.Instance.ThreadSafeAddPreviewText("VoiceMod is not configured - this is OK, unless you want to use it", LineType.VoiceMod);
@@ -406,7 +403,7 @@ namespace BasicTwitchSoundPlayer
 			await Task.Delay(500);
 			if (ConnectedToVoiceMod && !CurrentActiveStatus)
 			{
-				MainForm.Instance.ThreadSafeAddPreviewText("Toggled voice using backup ?", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText("Toggled voice using backup ?", LineType.TwitchSocketCommand);
 				ToggleVoiceMod();
 			}
 		}
@@ -419,7 +416,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void VoiceModSocket_OnOpen(object sender, EventArgs e)
 		{
-			MainForm.Instance.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.IrcCommand);
+			MainForm.Instance.ThreadSafeAddPreviewText("Opened VoiceMod connection", LineType.TwitchSocketCommand);
 			ConnectedToVoiceMod = true;
 			m_IsConnecting = false;
 			OnConnectionStateChanged?.Invoke(true);
@@ -440,7 +437,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void VoiceModSocket_OnClose(object sender, CloseEventArgs e)
 		{
-			MainForm.Instance.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.IrcCommand);
+			MainForm.Instance.ThreadSafeAddPreviewText("Closed VoiceMod connection", LineType.TwitchSocketCommand);
 			ConnectedToVoiceMod = false;
 		}
 
@@ -467,23 +464,23 @@ namespace BasicTwitchSoundPlayer
 				VoiceModSocket.Close();
 			}
 
-			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;
+/*			if (MainForm.TwitchSocket != null)
+				MainForm.TwitchSocket.OnChannelPointsRedeem -= OnChannelPointsRedeem;*/
 		}
 
-		private void OnChannelPointsRedeem(ChannelPointRedeemRequest redeem)
+		public void OnChannelPointsRedeem(ES_ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)
 				return;
 
-			var reward = VoiceModConfig.GetInstance().GetReward(redeem.rewardId);
+			var reward = VoiceModConfig.GetInstance().GetReward(redeem.reward.id);
 			if (reward != null)
 			{
-				if (redeem.state == KrakenConnections.RedemptionStates.UNFULFILLED)
+				if (redeem.state == RedemptionStates.UNFULFILLED)
 				{
-					if (m_Playing || m_RedeemsPaused)
+					if (m_Playing || ChatBot.AreRedeemsPaused || ChatBot.AreVoiceRedeemsPaused)
 					{
-						MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
+						MainForm.Instance?.TwitchBot?.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 					}
 					else
 					{
@@ -492,7 +489,7 @@ namespace BasicTwitchSoundPlayer
 							Debug.WriteLine("This is ok");
 						}
 
-						MainForm.TwitchSocket?.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
+						MainForm.Instance?.TwitchBot?.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 				}
 			}

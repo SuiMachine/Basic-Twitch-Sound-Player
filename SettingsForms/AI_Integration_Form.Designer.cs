@@ -31,7 +31,6 @@
 			this.TBar_StreamerHarassment = new System.Windows.Forms.TrackBar();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
-			this.B_Show_UserOverrides = new System.Windows.Forms.Button();
 			this.label8 = new System.Windows.Forms.Label();
 			this.TB_API_Key = new System.Windows.Forms.TextBox();
 			this.B_CreateReward = new System.Windows.Forms.Button();
@@ -39,6 +38,8 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+			this.Num_UserResponseTemperature = new System.Windows.Forms.NumericUpDown();
+			this.label11 = new System.Windows.Forms.Label();
 			this.Num_UserTokenLimit = new System.Windows.Forms.NumericUpDown();
 			this.label10 = new System.Windows.Forms.Label();
 			this.TBar_UserCivicIntegrity = new System.Windows.Forms.TrackBar();
@@ -57,6 +58,8 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			this.Num_StreamerTemperature = new System.Windows.Forms.NumericUpDown();
+			this.label12 = new System.Windows.Forms.Label();
 			this.TBar_StreamerCivicIntegrity = new System.Windows.Forms.TrackBar();
 			this.L_Civic_Integrity = new System.Windows.Forms.Label();
 			this.TBar_StreamerDangerousContent = new System.Windows.Forms.TrackBar();
@@ -74,10 +77,11 @@
 			this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
-			this.label11 = new System.Windows.Forms.Label();
-			this.Num_UserResponseTemperature = new System.Windows.Forms.NumericUpDown();
-			this.label12 = new System.Windows.Forms.Label();
-			this.Num_StreamerTemperature = new System.Windows.Forms.NumericUpDown();
+			this.B_Show_UserOverrides = new System.Windows.Forms.Button();
+			this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
+			this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
+			this.label13 = new System.Windows.Forms.Label();
+			this.TB_Username = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerHarassment)).BeginInit();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel11.SuspendLayout();
@@ -85,6 +89,7 @@
 			this.groupBox2.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
 			this.tableLayoutPanel7.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_UserResponseTemperature)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Num_UserTokenLimit)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_UserCivicIntegrity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_UserDangerousContent)).BeginInit();
@@ -95,6 +100,7 @@
 			this.groupBox1.SuspendLayout();
 			this.tableLayoutPanel5.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_StreamerTemperature)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerCivicIntegrity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerDangerousContent)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerSexuallyExplicit)).BeginInit();
@@ -102,8 +108,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.Num_StreamerTokenLimit)).BeginInit();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.tableLayoutPanel9.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.Num_UserResponseTemperature)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.Num_StreamerTemperature)).BeginInit();
+			this.tableLayoutPanel10.SuspendLayout();
+			this.tableLayoutPanel12.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TBar_StreamerHarassment
@@ -120,17 +126,17 @@
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel11, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel9, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel10, 0, 1);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 3;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 78F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 845);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 897);
 			this.tableLayoutPanel1.TabIndex = 1;
 			// 
 			// tableLayoutPanel11
@@ -145,23 +151,12 @@
 			this.tableLayoutPanel11.Controls.Add(this.TB_API_Key, 1, 0);
 			this.tableLayoutPanel11.Controls.Add(this.B_CreateReward, 2, 0);
 			this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 774);
+			this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 3);
 			this.tableLayoutPanel11.Name = "tableLayoutPanel11";
 			this.tableLayoutPanel11.RowCount = 1;
 			this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel11.Size = new System.Drawing.Size(794, 29);
+			this.tableLayoutPanel11.Size = new System.Drawing.Size(788, 30);
 			this.tableLayoutPanel11.TabIndex = 4;
-			// 
-			// B_Show_UserOverrides
-			// 
-			this.B_Show_UserOverrides.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.B_Show_UserOverrides.Location = new System.Drawing.Point(689, 3);
-			this.B_Show_UserOverrides.Name = "B_Show_UserOverrides";
-			this.B_Show_UserOverrides.Size = new System.Drawing.Size(102, 23);
-			this.B_Show_UserOverrides.TabIndex = 3;
-			this.B_Show_UserOverrides.Text = "User overrides";
-			this.B_Show_UserOverrides.UseVisualStyleBackColor = true;
-			this.B_Show_UserOverrides.Click += new System.EventHandler(this.B_Show_UserOverrides_Click);
 			// 
 			// label8
 			// 
@@ -176,16 +171,16 @@
 			// TB_API_Key
 			// 
 			this.TB_API_Key.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_API_Key.Location = new System.Drawing.Point(72, 4);
+			this.TB_API_Key.Location = new System.Drawing.Point(72, 5);
 			this.TB_API_Key.Name = "TB_API_Key";
-			this.TB_API_Key.Size = new System.Drawing.Size(444, 20);
+			this.TB_API_Key.Size = new System.Drawing.Size(438, 20);
 			this.TB_API_Key.TabIndex = 1;
 			this.TB_API_Key.UseSystemPasswordChar = true;
 			// 
 			// B_CreateReward
 			// 
 			this.B_CreateReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.B_CreateReward.Location = new System.Drawing.Point(522, 3);
+			this.B_CreateReward.Location = new System.Drawing.Point(516, 3);
 			this.B_CreateReward.Name = "B_CreateReward";
 			this.B_CreateReward.Size = new System.Drawing.Size(161, 23);
 			this.B_CreateReward.TabIndex = 2;
@@ -205,7 +200,7 @@
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 			this.tableLayoutPanel3.RowCount = 1;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(794, 765);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(794, 774);
 			this.tableLayoutPanel3.TabIndex = 2;
 			// 
 			// groupBox2
@@ -214,7 +209,7 @@
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox2.Location = new System.Drawing.Point(400, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(391, 759);
+			this.groupBox2.Size = new System.Drawing.Size(391, 768);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Chat user";
@@ -231,7 +226,7 @@
 			this.tableLayoutPanel6.RowCount = 2;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 233F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(385, 740);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(385, 749);
 			this.tableLayoutPanel6.TabIndex = 0;
 			// 
 			// tableLayoutPanel7
@@ -253,7 +248,7 @@
 			this.tableLayoutPanel7.Controls.Add(this.label5, 0, 1);
 			this.tableLayoutPanel7.Controls.Add(this.label6, 0, 0);
 			this.tableLayoutPanel7.Controls.Add(this.TBar_UserHarassment, 1, 0);
-			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 510);
+			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 519);
 			this.tableLayoutPanel7.Name = "tableLayoutPanel7";
 			this.tableLayoutPanel7.RowCount = 7;
 			this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -265,6 +260,35 @@
 			this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
 			this.tableLayoutPanel7.Size = new System.Drawing.Size(379, 227);
 			this.tableLayoutPanel7.TabIndex = 0;
+			// 
+			// Num_UserResponseTemperature
+			// 
+			this.Num_UserResponseTemperature.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.Num_UserResponseTemperature.DecimalPlaces = 2;
+			this.Num_UserResponseTemperature.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+			this.Num_UserResponseTemperature.Location = new System.Drawing.Point(189, 199);
+			this.Num_UserResponseTemperature.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.Num_UserResponseTemperature.Name = "Num_UserResponseTemperature";
+			this.Num_UserResponseTemperature.Size = new System.Drawing.Size(187, 20);
+			this.Num_UserResponseTemperature.TabIndex = 14;
+			// 
+			// label11
+			// 
+			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(3, 203);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(180, 13);
+			this.label11.TabIndex = 13;
+			this.label11.Text = "Response temperature:";
 			// 
 			// Num_UserTokenLimit
 			// 
@@ -401,7 +425,7 @@
 			this.tableLayoutPanel8.RowCount = 2;
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.Size = new System.Drawing.Size(379, 501);
+			this.tableLayoutPanel8.Size = new System.Drawing.Size(379, 510);
 			this.tableLayoutPanel8.TabIndex = 2;
 			// 
 			// label7
@@ -418,7 +442,7 @@
 			this.RB_InstructionUser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.RB_InstructionUser.Location = new System.Drawing.Point(3, 23);
 			this.RB_InstructionUser.Name = "RB_InstructionUser";
-			this.RB_InstructionUser.Size = new System.Drawing.Size(373, 475);
+			this.RB_InstructionUser.Size = new System.Drawing.Size(373, 484);
 			this.RB_InstructionUser.TabIndex = 1;
 			this.RB_InstructionUser.Text = "";
 			// 
@@ -428,7 +452,7 @@
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(391, 759);
+			this.groupBox1.Size = new System.Drawing.Size(391, 768);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Streamer";
@@ -445,7 +469,7 @@
 			this.tableLayoutPanel5.RowCount = 2;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 233F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(385, 740);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(385, 749);
 			this.tableLayoutPanel5.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -467,7 +491,7 @@
 			this.tableLayoutPanel2.Controls.Add(this.TBar_StreamerHarassment, 1, 0);
 			this.tableLayoutPanel2.Controls.Add(this.Num_StreamerTokenLimit, 1, 5);
 			this.tableLayoutPanel2.Controls.Add(this.label9, 0, 5);
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 510);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 519);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 7;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -479,6 +503,35 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(379, 227);
 			this.tableLayoutPanel2.TabIndex = 0;
+			// 
+			// Num_StreamerTemperature
+			// 
+			this.Num_StreamerTemperature.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.Num_StreamerTemperature.DecimalPlaces = 2;
+			this.Num_StreamerTemperature.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+			this.Num_StreamerTemperature.Location = new System.Drawing.Point(189, 199);
+			this.Num_StreamerTemperature.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			this.Num_StreamerTemperature.Name = "Num_StreamerTemperature";
+			this.Num_StreamerTemperature.Size = new System.Drawing.Size(187, 20);
+			this.Num_StreamerTemperature.TabIndex = 15;
+			// 
+			// label12
+			// 
+			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(3, 203);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(180, 13);
+			this.label12.TabIndex = 14;
+			this.label12.Text = "Response temperature:";
 			// 
 			// TBar_StreamerCivicIntegrity
 			// 
@@ -605,7 +658,7 @@
 			this.tableLayoutPanel4.RowCount = 2;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(379, 501);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(379, 510);
 			this.tableLayoutPanel4.TabIndex = 2;
 			// 
 			// label1
@@ -622,7 +675,7 @@
 			this.RB_InstructionStreamer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.RB_InstructionStreamer.Location = new System.Drawing.Point(3, 23);
 			this.RB_InstructionStreamer.Name = "RB_InstructionStreamer";
-			this.RB_InstructionStreamer.Size = new System.Drawing.Size(373, 475);
+			this.RB_InstructionStreamer.Size = new System.Drawing.Size(373, 484);
 			this.RB_InstructionStreamer.TabIndex = 1;
 			this.RB_InstructionStreamer.Text = "";
 			// 
@@ -634,7 +687,7 @@
 			this.tableLayoutPanel9.Controls.Add(this.B_Cancel, 1, 0);
 			this.tableLayoutPanel9.Controls.Add(this.B_Save, 0, 0);
 			this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Right;
-			this.tableLayoutPanel9.Location = new System.Drawing.Point(597, 809);
+			this.tableLayoutPanel9.Location = new System.Drawing.Point(597, 861);
 			this.tableLayoutPanel9.Name = "tableLayoutPanel9";
 			this.tableLayoutPanel9.RowCount = 1;
 			this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -663,69 +716,71 @@
 			this.B_Save.UseVisualStyleBackColor = true;
 			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
 			// 
-			// label11
+			// B_Show_UserOverrides
 			// 
-			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(3, 203);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(180, 13);
-			this.label11.TabIndex = 13;
-			this.label11.Text = "Response temperature:";
+			this.B_Show_UserOverrides.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.B_Show_UserOverrides.Location = new System.Drawing.Point(683, 3);
+			this.B_Show_UserOverrides.Name = "B_Show_UserOverrides";
+			this.B_Show_UserOverrides.Size = new System.Drawing.Size(102, 23);
+			this.B_Show_UserOverrides.TabIndex = 3;
+			this.B_Show_UserOverrides.Text = "User overrides";
+			this.B_Show_UserOverrides.UseVisualStyleBackColor = true;
+			this.B_Show_UserOverrides.Click += new System.EventHandler(this.B_Show_UserOverrides_Click);
 			// 
-			// Num_UserResponseTemperature
+			// tableLayoutPanel10
 			// 
-			this.Num_UserResponseTemperature.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.Num_UserResponseTemperature.DecimalPlaces = 2;
-			this.Num_UserResponseTemperature.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-			this.Num_UserResponseTemperature.Location = new System.Drawing.Point(189, 199);
-			this.Num_UserResponseTemperature.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.Num_UserResponseTemperature.Name = "Num_UserResponseTemperature";
-			this.Num_UserResponseTemperature.Size = new System.Drawing.Size(187, 20);
-			this.Num_UserResponseTemperature.TabIndex = 14;
+			this.tableLayoutPanel10.ColumnCount = 1;
+			this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel11, 0, 0);
+			this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel12, 0, 1);
+			this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel10.Location = new System.Drawing.Point(3, 783);
+			this.tableLayoutPanel10.Name = "tableLayoutPanel10";
+			this.tableLayoutPanel10.RowCount = 2;
+			this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel10.Size = new System.Drawing.Size(794, 72);
+			this.tableLayoutPanel10.TabIndex = 5;
 			// 
-			// label12
+			// tableLayoutPanel12
 			// 
-			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(3, 203);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(180, 13);
-			this.label12.TabIndex = 14;
-			this.label12.Text = "Response temperature:";
+			this.tableLayoutPanel12.ColumnCount = 2;
+			this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 69F));
+			this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel12.Controls.Add(this.TB_Username, 1, 0);
+			this.tableLayoutPanel12.Controls.Add(this.label13, 0, 0);
+			this.tableLayoutPanel12.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel12.Location = new System.Drawing.Point(3, 39);
+			this.tableLayoutPanel12.Name = "tableLayoutPanel12";
+			this.tableLayoutPanel12.RowCount = 1;
+			this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel12.Size = new System.Drawing.Size(788, 30);
+			this.tableLayoutPanel12.TabIndex = 5;
 			// 
-			// Num_StreamerTemperature
+			// label13
 			// 
-			this.Num_StreamerTemperature.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.Num_StreamerTemperature.DecimalPlaces = 2;
-			this.Num_StreamerTemperature.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-			this.Num_StreamerTemperature.Location = new System.Drawing.Point(189, 199);
-			this.Num_StreamerTemperature.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-			this.Num_StreamerTemperature.Name = "Num_StreamerTemperature";
-			this.Num_StreamerTemperature.Size = new System.Drawing.Size(187, 20);
-			this.Num_StreamerTemperature.TabIndex = 15;
+			this.label13.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(3, 2);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(56, 26);
+			this.label13.TabIndex = 1;
+			this.label13.Text = "Twitch username:";
+			// 
+			// TB_Username
+			// 
+			this.TB_Username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_Username.Location = new System.Drawing.Point(72, 5);
+			this.TB_Username.Name = "TB_Username";
+			this.TB_Username.Size = new System.Drawing.Size(713, 20);
+			this.TB_Username.TabIndex = 2;
 			// 
 			// AI_Integration_Form
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 845);
+			this.ClientSize = new System.Drawing.Size(800, 897);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "AI_Integration_Form";
 			this.Text = "AI Intergration Form";
@@ -739,6 +794,7 @@
 			this.tableLayoutPanel6.ResumeLayout(false);
 			this.tableLayoutPanel7.ResumeLayout(false);
 			this.tableLayoutPanel7.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_UserResponseTemperature)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Num_UserTokenLimit)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_UserCivicIntegrity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_UserDangerousContent)).EndInit();
@@ -751,6 +807,7 @@
 			this.tableLayoutPanel5.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Num_StreamerTemperature)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerCivicIntegrity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerDangerousContent)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerSexuallyExplicit)).EndInit();
@@ -759,8 +816,9 @@
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();
 			this.tableLayoutPanel9.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.Num_UserResponseTemperature)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.Num_StreamerTemperature)).EndInit();
+			this.tableLayoutPanel10.ResumeLayout(false);
+			this.tableLayoutPanel12.ResumeLayout(false);
+			this.tableLayoutPanel12.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -808,7 +866,6 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.TextBox TB_API_Key;
 		private System.Windows.Forms.Button B_CreateReward;
-		private System.Windows.Forms.Button B_Show_UserOverrides;
 		private System.Windows.Forms.NumericUpDown Num_StreamerTokenLimit;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.NumericUpDown Num_UserTokenLimit;
@@ -817,5 +874,10 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.NumericUpDown Num_StreamerTemperature;
 		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Button B_Show_UserOverrides;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel12;
+		private System.Windows.Forms.TextBox TB_Username;
+		private System.Windows.Forms.Label label13;
 	}
 }

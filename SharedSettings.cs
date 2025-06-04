@@ -1,7 +1,7 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
 using BasicTwitchSoundPlayer.Interfaces;
-using BasicTwitchSoundPlayer.Structs;
 using BasicTwitchSoundPlayer.Structs.Gemini;
+using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -91,13 +92,11 @@ namespace BasicTwitchSoundPlayer
 		[XmlElement] public float Volume { get; set; }
 		[XmlElement] public int Delay { get; set; }
 		[XmlElement] public Guid OutputDevice { get; set; }
-		[XmlElement] public string TwitchServer { get; set; }
-		[XmlElement] public string UserName { get; set; }
 		[XmlElement] public EncryptedString UserAuth { get; set; }
-		[XmlElement] public string BotUsername { get; set; }
 		[XmlElement] public EncryptedString BotAuth { get; set; }
 		[XmlElement] public bool RunWebSocketsServer { get; set; }
 		[XmlElement] public int WebSocketsServerPort { get; set; }
+		[XmlElement] public string MixItUpWebookURL { get; set; }
 		[XmlElement] public string UniversalRewardID { get; set; }
 		#endregion
 
@@ -110,10 +109,7 @@ namespace BasicTwitchSoundPlayer
 			Delay = 15;
 			this.Colors = new ColorStruct();
 
-			TwitchServer = "irc.twitch.tv";
-			UserName = "";
 			UserAuth = "";
-			BotUsername = "";
 			BotAuth = "";
 			RunWebSocketsServer = false;
 			WebSocketsServerPort = 8005;
@@ -287,6 +283,7 @@ namespace BasicTwitchSoundPlayer
 			return m_Instance;
 		}
 
+		public string TwitchUsername { get; set; } = "";
 		public EncryptedString ApiKey { get; set; } = "";
 		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
 		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
@@ -318,27 +315,27 @@ namespace BasicTwitchSoundPlayer
 
 		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
 
-		public SafetySettingsCategory[] GetSafetySettingsStreamer()
+		public GeminiSafetySettingsCategory[] GetSafetySettingsStreamer()
 		{
-			return new SafetySettingsCategory[]
+			return new GeminiSafetySettingsCategory[]
 			{
-				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_Streamer.Harassment),
-				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_Streamer.Hate),
-				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_Streamer.Sexually_Explicit),
-				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_Streamer.Dangerous_Content),
-				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_Streamer.Civic_Integrity),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_Streamer.Harassment),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_Streamer.Hate),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_Streamer.Sexually_Explicit),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_Streamer.Dangerous_Content),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_Streamer.Civic_Integrity),
 			};
 		}
 
-		public SafetySettingsCategory[] GetSafetySettingsGeneral()
+		public GeminiSafetySettingsCategory[] GetSafetySettingsGeneral()
 		{
-			return new SafetySettingsCategory[]
+			return new GeminiSafetySettingsCategory[]
 			{
-				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_User.Harassment),
-				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_User.Hate),
-				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_User.Sexually_Explicit),
-				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_User.Dangerous_Content),
-				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_User.Civic_Integrity),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_User.Harassment),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_User.Hate),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_User.Sexually_Explicit),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_User.Dangerous_Content),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_User.Civic_Integrity),
 			};
 		}
 
@@ -355,9 +352,9 @@ namespace BasicTwitchSoundPlayer
 			return new GeminiMessage()
 			{
 				role = Role.user,
-				parts = new GeminiMessagePart[]
+				parts = new GeminiResponseMessagePart[]
 				{
-					new GeminiMessagePart()
+					new GeminiResponseMessagePart()
 					{
 						text = sb.ToString()
 					}

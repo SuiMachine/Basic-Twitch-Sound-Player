@@ -1,17 +1,26 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.Structs.Gemini;
+using BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes;
+using NAudio.Gui;
 using Newtonsoft.Json;
+using SuiBot_TwitchSocket;
+using SuiBot_TwitchSocket.API.EventSub;
+using SuiBot_TwitchSocket.Interfaces;
+using SuiBotAI.Components;
+using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
+using static SuiBotAI.Components.SuiBotAIProcessor;
 
 namespace BasicTwitchSoundPlayer
 {
 	public class GeminiAI
 	{
+		private SuiBotAIProcessor m_Processor;
 		public bool IsRegistered { get; private set; }
 		public GeminiContent StreamerContent = new GeminiContent();
 		public Dictionary<string, GeminiContent> UserContents = new Dictionary<string, GeminiContent>();
@@ -27,10 +36,9 @@ namespace BasicTwitchSoundPlayer
 				return false;
 			}
 
-			var privateSettings = PrivateSettings.GetInstance();
-			if (string.IsNullOrEmpty(privateSettings.UserName))
+			if (string.IsNullOrEmpty(aiConfig.TwitchUsername))
 			{
-				MainForm.Instance.ThreadSafeAddPreviewText($"Can't setup AI - no streamer {nameof(privateSettings.UserName)} provided.", LineType.GeminiAI);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Can't setup AI - no streamer username provided", LineType.GeminiAI);
 				return false;
 			}
 
@@ -40,46 +48,36 @@ namespace BasicTwitchSoundPlayer
 				return false;
 			}
 
-			var path = AIConfig.GetAIHistoryPath(privateSettings.UserName);
+			var path = AIConfig.GetAIHistoryPath(aiConfig.TwitchUsername);
 			StreamerContent = XML_Utils.Load(path, new GeminiContent()
 			{
-				StoragePath = path,
 				contents = new List<GeminiMessage>(),
 				generationConfig = new GeminiContent.GenerationConfig(),
 				systemInstruction = null,
 				safetySettings = null,
 			});
-			StreamerContent.StoragePath = path;
+			m_Processor = new SuiBotAIProcessor(aiConfig.ApiKey, aiConfig.Model);
 
 			return true;
 		}
 
 		public void Register()
 		{
-			//TODO: There is some bug with registering it, probably order of execution :-/
 			IsRegistered = true;
-			MainForm.TwitchSocket.OnChannelPointsRedeem += PointsRedeem;
-
-			//Safety tripping test
-			/*			Task.Run(async () =>
-						{
-							var newr = new ChannelPointRedeemRequest("userName", "69", "69", "69", RedemptionStates.FULFILLED, "What is 69? Make it as lewd as possible.");
-							await GetResponse(newr);
-						});*/
+			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += PointsRedeem;
 		}
 
 		public void Unregister()
 		{
 			IsRegistered = false;
-			MainForm.TwitchSocket.OnChannelPointsRedeem -= PointsRedeem;
 		}
 
-		public void PointsRedeem(ChannelPointRedeemRequest request)
+		public void PointsRedeem(ES_ChannelPointRedeemRequest request)
 		{
 			var rewardID = AIConfig.GetInstance().TwitchAwardID;
 			if (string.IsNullOrEmpty(rewardID))
 				return;
-			if (request.rewardId != rewardID)
+			if (request.reward.id != rewardID)
 				return;
 
 			Task.Run(async () =>
@@ -89,31 +87,40 @@ namespace BasicTwitchSoundPlayer
 
 		}
 
-		private async Task GetResponse(ChannelPointRedeemRequest request)
+		private async Task GetResponse(ES_ChannelPointRedeemRequest request)
 		{
+			ChatBot bot = MainForm.Instance.TwitchBot;
+
 			try
 			{
 				GeminiContent content = null;
 				AIConfig aiConfig = AIConfig.GetInstance();
-				OldIRCClient irc = MainForm.Instance.TwitchBot.Irc;
+				ChannelInstance channelInstance = bot?.ChannelInstance;
+				if (bot == null || bot.IsDisposed || channelInstance == null)
+				{
+					Logger.AddLine("Either bot or channel were already disposed.");
+					return;
+				}
 
 				int tokenLimit = 1000;
-				var lowerCaseUserName = request.userName.ToLower();
 
-				if (lowerCaseUserName == PrivateSettings.GetInstance().UserName.ToLower())
+				string path;
+				if (request.user_login == channelInstance.Channel)
 				{
+					path = AIConfig.GetAIHistoryPath(aiConfig.TwitchUsername);
 					content = StreamerContent;
 
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
-					content.systemInstruction = aiConfig.GetInstruction(request.userName, true, true);
+					content.systemInstruction = aiConfig.GetInstruction(request.user_name, true, true);
 					content.generationConfig.temperature = aiConfig.Temperature_Streamer;
 				}
 				else
 				{
-					if (!UserContents.TryGetValue(request.userId, out content))
+					path = AIConfig.GetAIHistoryPath(request.user_id);
+
+					if (!UserContents.TryGetValue(request.user_id, out content))
 					{
-						var path = AIConfig.GetAIHistoryPath(request.userId);
 						if (File.Exists(path))
 						{
 							content = XML_Utils.Load(path, new GeminiContent()
@@ -121,7 +128,6 @@ namespace BasicTwitchSoundPlayer
 								contents = new List<GeminiMessage>(),
 								generationConfig = new GeminiContent.GenerationConfig(),
 							});
-							content.StoragePath = path;
 						}
 						else
 						{
@@ -132,14 +138,11 @@ namespace BasicTwitchSoundPlayer
 							};
 						}
 
-						UserContents.Add(request.userId, content);
+						UserContents.Add(request.user_id, content);
 					}
 
-					if (content.StoragePath == null)
-						content.StoragePath = AIConfig.GetAIHistoryPath(request.userId);
-
 					tokenLimit = aiConfig.TokenLimit_User;
-					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.userName));
+					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.user_name));
 					if (overrides != null)
 					{
 						//content.systemInstruction = 
@@ -149,164 +152,99 @@ namespace BasicTwitchSoundPlayer
 					else
 					{
 						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-						content.systemInstruction = aiConfig.GetInstruction(request.userName, false, irc.KrakenConnection.IsLive);
+						content.systemInstruction = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus?.IsOnline ?? false);
 					}
 					content.generationConfig.temperature = aiConfig.Temperature_User;
+					content.tools = new List<SuiBotAI.Components.Other.Gemini.GeminiTools>()
+					{
+						new GeminiTools()
+						{
+							functionDeclarations = new List<GeminiTools.GeminiFunction>()
+							{
+								GeminiFunctionCall.CreateTimeoutFunction(),
+								GeminiFunctionCall.CreateBanFunction()
+							}
+						}
+					};
 				}
 
 				if (content == null)
 				{
-					MainForm.Instance.TwitchBot.Irc.SendChatMessage($"{request.userName}: Failed to load user history.");
-					irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+					bot?.ChannelInstance?.SendChatMessage($"{request.user_name}: Failed to load user history.");
+					bot?.HelixAPI_User?.UpdateRedemptionStatus(request, RedemptionStates.CANCELED);
 					return;
 				}
 
-				content.contents.Add(GeminiMessage.CreateUserResponse(request.userInput));
-#if DEBUG
-				string json = JsonConvert.SerializeObject(content, Formatting.Indented);
-#else
-				string json = JsonConvert.SerializeObject(content);
-#endif
+				var result = await m_Processor.GetAIResponse(content, null, request.user_input);
 
-				string result = await HTTPS_Requests.PostAsync("https://generativelanguage.googleapis.com/v1beta/", $"{aiConfig.Model}:generateContent", $"?key={aiConfig.ApiKey}", json, new Dictionary<string, string>());
 
-				if (string.IsNullOrEmpty(result))
+				if (result == null)
 				{
-					MainForm.Instance.TwitchBot.Irc.SendChatMessage($"{request.userName} - Failed to get a response. Please debug me, Sui :(");
-					irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
+					bot?.ChannelInstance.SendChatMessage($"{request.user_name} - Failed to get a response. Please debug me :(");
+					bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.CANCELED);
 					return;
 				}
 				else
 				{
-					GeminiResponse response = JsonConvert.DeserializeObject<GeminiResponse>(result);
-					content.generationConfig.TokenCount = response.usageMetadata.totalTokenCount;
+					content.generationConfig.TokenCount = result.usageMetadata.totalTokenCount;
 
-					if (response.candidates.Length > 0)
+					var lastResponse = result.candidates.Last().content;
+					StreamerContent.contents.Add(lastResponse);
+					var text = lastResponse.parts.Last().text;
+					bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.FULFILLED);
+
+					if (text != null)
 					{
-						var lastFullResponse = response.candidates.Last();
-						string finishReason = lastFullResponse.finishReason;
-						if (finishReason == "STOP")
+						SuiBotAIProcessor.CleanupResponse(ref text);
+
+						channelInstance?.SendChatMessage($"{request.user_name}: {text}");
+
+						while (StreamerContent.generationConfig.TokenCount > tokenLimit)
 						{
-							var lastResponse = lastFullResponse.content;
-							foreach (var part in lastFullResponse.content.parts)
+							if (StreamerContent.contents.Count > 2)
 							{
-								part.text = part.text.Trim('\n', '\r', ' ');
-								part.text = ClearUpBackwardSlashCharacters(part.text);
-							}
-
-							content.contents.Add(lastResponse);
-							var text = lastResponse.parts.Last().text;
-							List<string> splitText = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-							for (int i = splitText.Count - 1; i >= 0; i--)
-							{
-								var line = splitText[i].Trim();
-								if (line.StartsWith("*") && line.EndsWith("*"))
+								//This isn't weird - we want to make sure we start from user message
+								if (StreamerContent.contents[0].role == Role.user)
 								{
-									var count = line.Count(x => x == '*');
-									if (count == 2)
-									{
-										splitText.RemoveAt(i);
-										continue;
-									}
+									StreamerContent.contents.RemoveAt(0);
 								}
 
-								if (line.Contains("*"))
+								if (StreamerContent.contents[0].role == Role.model)
 								{
-									line = CleanDescriptors(line);
-									splitText[i] = line;
+									StreamerContent.contents.RemoveAt(0);
 								}
 							}
-
-							text = string.Join(" ", splitText);
-							irc.SendChatMessage($"@{request.userName}: {text}");
-
-							while (content.generationConfig.TokenCount > tokenLimit)
-							{
-								if (content.contents.Count > 2)
-								{
-									//This isn't weird - we want to make sure we start from user message
-									if (content.contents[0].role == Role.user)
-									{
-										content.contents.RemoveAt(0);
-									}
-
-									if (content.contents[0].role == Role.model)
-									{
-										content.contents.RemoveAt(0);
-									}
-								}
-							}
-
-							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.FULFILLED);
-							XML_Utils.Save(content.StoragePath, content);
 						}
-						else
-						{
-							content.contents.RemoveAt(content.contents.Count - 1);
-							if (finishReason == "SAFETY")
-								irc.SendChatMessage($"@{request.userName}: AI tripped a safety setting.");
-							else
-								irc.SendChatMessage($"@{request.userName}: AI couldn't deliver the answer - unhandled finish reason: {finishReason}");
 
-							irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
-							XML_Utils.Save(content.StoragePath, content);
-						}
+						XML_Utils.Save(path, StreamerContent);
 					}
-					else
+
+					var func = lastResponse.parts.Last().functionCall;
+					if (func != null)
 					{
-						irc.KrakenConnection.UpdateRedemptionStatus(request.rewardId, new string[] { request.redemptionId }, RedemptionStates.CANCELED);
-						irc.SendChatMessage($"@{request.userName}: Failed to get a response. Please debug me, Sui :(");
+						HandleChatFunctionCall(channelInstance, request, func);
 					}
 				}
 			}
+			catch(SafetyFilterTrippedException ex)
+			{
+				MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"Failed to get a response. Safety filter tripped!");
+				MainForm.Instance.ThreadSafeAddPreviewText($"Safety was tripped {ex}", LineType.GeminiAI);
+				bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.CANCELED);
+			}
 			catch (Exception ex)
 			{
-				MainForm.Instance.TwitchBot.Irc.SendChatMessage($"Failed to get a response. Something was written in log. Sui help! :(");
+				MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"Failed to get a response. Something was written in log. Help! :(");
 				MainForm.Instance.ThreadSafeAddPreviewText($"There was an error trying to do AI: {ex}", LineType.GeminiAI);
 			}
 		}
 
-		private string ClearUpBackwardSlashCharacters(string text)
+		private void HandleChatFunctionCall(ChannelInstance channelInstance, ES_ChannelPointRedeemRequest message, GeminiResponseFunctionCall func)
 		{
-			text = text.Replace("\\*", "*");
-			text = text.Replace("\\_", "_");
-			return text;
-		}
-
-		private string CleanDescriptors(string text)
-		{
-			int endIndex = text.Length;
-			bool isDescription = false;
-
-			for (int i = text.Length - 1; i >= 0; i--)
-			{
-				if (text[i] == '*')
-				{
-					if (!isDescription)
-					{
-						endIndex = i;
-						isDescription = true;
-					}
-					else
-					{
-						var length = i - endIndex;
-						var substring = text.Substring(i + 1, endIndex - i - 1);
-						if (substring.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length > 5)
-						{
-							text = text.Remove(i, endIndex - i + 1);
-						}
-						isDescription = false;
-					}
-				}
-			}
-
-			while (text.Contains("  "))
-			{
-				text = text.Replace("  ", " ");
-			}
-
-			text = text.Trim();
-			return text;
+			if (func.name == "timeout")
+				func.args.ToObject<TimeOutUser>().Perform(channelInstance, message);
+			else if (func.name == "ban")
+				func.args.ToObject<BanUser>().Perform(channelInstance, message);
 		}
 	}
 }

@@ -2,12 +2,13 @@
 using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
 using NAudio.Wave;
+using SuiBot_TwitchSocket.API.EventSub;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using static BasicTwitchSoundPlayer.IRC.KrakenConnections;
+using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -21,7 +22,6 @@ namespace BasicTwitchSoundPlayer
 		private Dictionary<string, DateTime> m_UserDB;
 		private int m_Delay;
 		private readonly string m_SoundBaseFile;
-
 
 		#region ConstructorRelated
 		public SoundDB()
@@ -37,8 +37,7 @@ namespace BasicTwitchSoundPlayer
 
 		public void Register()
 		{
-			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem += PlaySoundIfExists;
+			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += PlaySoundIfExists;
 		}
 
 		public void RebuildDictionary()
@@ -102,12 +101,12 @@ namespace BasicTwitchSoundPlayer
 			PrivateSettings.GetInstance().Delay = delay;
 		}
 
-		public void PlaySoundIfExists(ChannelPointRedeemRequest redeem)
+		public void PlaySoundIfExists(ES_ChannelPoints.ES_ChannelPointRedeemRequest redeem)
 		{
 			if (redeem.state != RedemptionStates.UNFULFILLED)
 				return;
 
-			if (redeem.userId == null)
+			if (redeem.user_id == null)
 				return;
 
 			//Iterate through existing sound players
@@ -121,17 +120,23 @@ namespace BasicTwitchSoundPlayer
 				}
 			}
 
-			//Check if our db has a user and if not add him
-			if (!m_UserDB.ContainsKey(redeem.userId))
+			if (ChatBot.AreRedeemsPaused)
 			{
-				m_UserDB.Add(redeem.userId, DateTime.MinValue);
+				MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
+				return;
 			}
 
-			if (!string.IsNullOrEmpty(PrivateSettings.GetInstance().UniversalRewardID) && redeem.rewardId == PrivateSettings.GetInstance().UniversalRewardID)
+			//Check if our db has a user and if not add him
+			if (!m_UserDB.ContainsKey(redeem.user_id))
 			{
-				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
+				m_UserDB.Add(redeem.user_id, DateTime.MinValue);
+			}
+
+			if (!string.IsNullOrEmpty(PrivateSettings.GetInstance().UniversalRewardID) && redeem.reward.id == PrivateSettings.GetInstance().UniversalRewardID)
+			{
+				if (m_UserDB[redeem.user_id] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
-					if (UniversalRewards.TryGetValue(redeem.userInput.SanitizeTags().ToLower(), out SoundEntry universal_sound))
+					if (UniversalRewards.TryGetValue(redeem.user_input.SanitizeTags().ToLower(), out SoundEntry universal_sound))
 					{
 						//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 						PrivateSettings programSettings = PrivateSettings.GetInstance();
@@ -142,32 +147,32 @@ namespace BasicTwitchSoundPlayer
 						if (additionalDelay < 0)
 							additionalDelay = 0;
 
-						m_UserDB[redeem.userId] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
-						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
+						m_UserDB[redeem.user_id] = DateTime.Now + length + TimeSpan.FromSeconds(additionalDelay);
+						MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 					}
 					else
-						MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+						MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 				}
 				else
-					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 			}
-			else if (RewardsToSound.TryGetValue(redeem.rewardId, out SoundEntry sound))
+			else if (RewardsToSound.TryGetValue(redeem.reward.id, out SoundEntry sound))
 			{
 				//check user cooldown
-				if (m_UserDB[redeem.userId] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
+				if (m_UserDB[redeem.user_id] + TimeSpan.FromSeconds(m_Delay) < DateTime.Now)
 				{
 					//Sound is found, is not played allocate a new player, start playing it, write down when user started playing a sound so he's under cooldown
 					PrivateSettings programSettings = PrivateSettings.GetInstance();
 					NSoundPlayer player = new NSoundPlayer(programSettings.OutputDevice, sound.GetFile(m_RNG), programSettings.Volume * sound.Volume);
 					TimeSpan length = player.GetTimeLength() + TimeSpan.FromSeconds(1);
 					m_SoundPlayerStack.Add(player);
-					m_UserDB[redeem.userId] = DateTime.Now + length;
+					m_UserDB[redeem.user_id] = DateTime.Now + length;
 
-					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.FULFILLED);
+					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.FULFILLED);
 				}
 				else
 				{
-					MainForm.TwitchSocket.UpdateRedemptionStatus(redeem, KrakenConnections.RedemptionStates.CANCELED);
+					MainForm.Instance.TwitchBot.HelixAPI_User.UpdateRedemptionStatus(redeem, RedemptionStates.CANCELED);
 				}
 			}
 		}
@@ -178,8 +183,8 @@ namespace BasicTwitchSoundPlayer
 			{
 				m_SoundPlayerStack[i].Dispose();
 			}
-			if (MainForm.TwitchSocket != null)
-				MainForm.TwitchSocket.OnChannelPointsRedeem -= PlaySoundIfExists;
+
+			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem -= PlaySoundIfExists;
 		}
 
 		public void Save()
@@ -284,17 +289,10 @@ namespace BasicTwitchSoundPlayer
 			{
 				if (disposing)
 				{
-					if (directWaveOut != null)
-						directWaveOut.Stop();
-
-					if (GenericFileReader != null)
-						GenericFileReader.Dispose();
-
-					if (VorbisFileReader != null)
-						VorbisFileReader.Dispose();
-
-					if (directWaveOut != null)
-						directWaveOut.Dispose();
+					directWaveOut?.Stop();
+					GenericFileReader?.Dispose();
+					VorbisFileReader?.Dispose();
+					directWaveOut?.Dispose();
 					Debug.WriteLine("[DISPOSE] Disposed of player for " + fileName + ".");
 				}
 			}

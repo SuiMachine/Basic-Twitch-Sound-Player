@@ -30,7 +30,7 @@ namespace BasicTwitchSoundPlayer
 			}
 			catch (Exception ex)
 			{
-				MainForm.Instance.ThreadSafeAddPreviewText($"Error: {ex.Message}", LineType.IrcCommand);
+				MainForm.Instance.ThreadSafeAddPreviewText($"Error: {ex.Message}", LineType.TwitchSocketCommand);
 				result = defaultVal;
 			}
 			finally

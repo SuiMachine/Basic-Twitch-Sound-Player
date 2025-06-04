@@ -1,7 +1,10 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms;
+using SuiBot_TwitchSocket.API;
 using System;
+using System.Linq;
 using System.Windows.Forms;
+using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
 {
@@ -17,6 +20,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			//No bindings - we do it manually so we don't have to copy data
 			var config = AIConfig.GetInstance();
 
+			TB_Username.Text = config.TwitchUsername;
 			TB_API_Key.Text = config.ApiKey;
 			RB_InstructionStreamer.Text = config.Instruction_Streamer;
 			RB_InstructionUser.Text = config.Instruction_User;
@@ -40,19 +44,38 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
-			var config = AIConfig.GetInstance();
+			var aiConfig = AIConfig.GetInstance();
 
-			var settings = PrivateSettings.GetInstance();
-			IRC.KrakenConnections apiConnection = new IRC.KrakenConnections(settings.UserName);
-			await apiConnection.GetBroadcasterIDAsync();
-			if (apiConnection.CachedRewards == null)
-				_ = await apiConnection.GetRewardsList();
-
-			var result = await apiConnection.CreateOrUpdateReward("Ask AI", "Ask AI a question", 1_000, true, 5*60, config.TwitchAwardID);
-			if (result != null)
+			var api = new HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, PrivateSettings.GetInstance().UserAuth);
+			var validation = api.ValidateToken();
+			if (validation != HelixAPI.ValidationResult.Successful)
 			{
-				config.TwitchAwardID = result.id;
-				config.SaveSettings();
+				MessageBox.Show("Failed to validate user token!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (!await api.CreateRewardsCache())
+			{
+				MessageBox.Show("Failed to create reward cache!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			var award = api.RewardsCache.FirstOrDefault(x => x.id == aiConfig.TwitchAwardID);
+			if (award != null)
+			{
+				MessageBox.Show("The reward already exists!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			else
+			{
+				var reward = await api.CreateOrUpdateReward(null, "Ask AI", "Ask AI a question", 1_000, 5 * 60, true, true);
+				if (reward != null)
+				{
+					MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					aiConfig.TwitchAwardID = reward.id;
+					aiConfig.SaveSettings();
+				}
+				else
+					MessageBox.Show("Failed to create a reward", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -70,22 +93,23 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			config.Instruction_Streamer = RB_InstructionStreamer.Text;
 			config.Instruction_User = RB_InstructionUser.Text;
 
-			config.FilterSet_Streamer.Harassment = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerHarassment.Value;
-			config.FilterSet_Streamer.Hate = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerHate.Value;
-			config.FilterSet_Streamer.Sexually_Explicit = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerSexuallyExplicit.Value;
-			config.FilterSet_Streamer.Dangerous_Content = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerDangerousContent.Value;
-			config.FilterSet_Streamer.Civic_Integrity = (Structs.Gemini.AISafetySettingsValues)TBar_StreamerCivicIntegrity.Value;
+			config.FilterSet_Streamer.Harassment = (AISafetySettingsValues)TBar_StreamerHarassment.Value;
+			config.FilterSet_Streamer.Hate = (AISafetySettingsValues)TBar_StreamerHate.Value;
+			config.FilterSet_Streamer.Sexually_Explicit = (AISafetySettingsValues)TBar_StreamerSexuallyExplicit.Value;
+			config.FilterSet_Streamer.Dangerous_Content = (AISafetySettingsValues)TBar_StreamerDangerousContent.Value;
+			config.FilterSet_Streamer.Civic_Integrity = (AISafetySettingsValues)TBar_StreamerCivicIntegrity.Value;
 			config.Temperature_Streamer = (float)Num_StreamerTemperature.Value;
 
-			config.FilterSet_User.Harassment = (Structs.Gemini.AISafetySettingsValues)TBar_UserHarassment.Value;
-			config.FilterSet_User.Hate = (Structs.Gemini.AISafetySettingsValues)TBar_UserHate.Value;
-			config.FilterSet_User.Sexually_Explicit = (Structs.Gemini.AISafetySettingsValues)TBar_UserSexuallyExplicit.Value;
-			config.FilterSet_User.Dangerous_Content = (Structs.Gemini.AISafetySettingsValues)TBar_UserDangerousContent.Value;
-			config.FilterSet_User.Civic_Integrity = (Structs.Gemini.AISafetySettingsValues)TBar_UserCivicIntegrity.Value;
+			config.FilterSet_User.Harassment = (AISafetySettingsValues)TBar_UserHarassment.Value;
+			config.FilterSet_User.Hate = (AISafetySettingsValues)TBar_UserHate.Value;
+			config.FilterSet_User.Sexually_Explicit = (AISafetySettingsValues)TBar_UserSexuallyExplicit.Value;
+			config.FilterSet_User.Dangerous_Content = (AISafetySettingsValues)TBar_UserDangerousContent.Value;
+			config.FilterSet_User.Civic_Integrity = (AISafetySettingsValues)TBar_UserCivicIntegrity.Value;
 			config.Temperature_User = (float)Num_UserResponseTemperature.Value;
 
 			config.TokenLimit_Streamer = (int)Num_StreamerTokenLimit.Value;
 			config.TokenLimit_User = (int)Num_UserTokenLimit.Value;
+			config.TwitchUsername = TB_Username.Text.Trim();
 
 			config.SaveSettings();
 			this.Close();

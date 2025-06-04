@@ -3,7 +3,6 @@ using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.SoundStorage;
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
@@ -164,32 +163,50 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 
 		private async void B_CreateReward_Click(object sender, EventArgs e)
 		{
-			var settings = PrivateSettings.GetInstance();
-			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
-			await apiConnection.GetBroadcasterIDAsync();
-			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+			var mbResult = MessageBox.Show("Are you sure you want to create or update the reward?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (mbResult == DialogResult.No)
 				return;
 
-			await apiConnection.GetRewardsList();
+			var settings = PrivateSettings.GetInstance();
+			var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+			var validation = api.ValidateToken();
 
-			KrakenConnections.ChannelReward reward = await apiConnection.CreateOrUpdateReward(new SoundEntry(TB_RewardName.Text, RB_Description.Text, TB_RewardID.Text, new string[] { }, new string[] { }, 1f, (int)Num_Points.Value, (int)Num_Cooldown.Value));
-
-			if (reward != null)
+			if (validation != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
 			{
-				if (string.IsNullOrEmpty(TB_RewardID.Text))
+				MessageBox.Show("Failed to validate user token!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (!await api.CreateRewardsCache())
+			{
+				MessageBox.Show("Failed to create reward cache!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			var award = api.RewardsCache.FirstOrDefault(x => x.id == TB_RewardID.Text);
+			if (award != null)
+			{
+				var update = await api.CreateOrUpdateReward(award.id, TB_RewardName.Text, RB_Description.Text, (int)Num_Points.Value, (int)Num_Cooldown.Value, true, false);
+				if (update != null)
 				{
-					this.TB_RewardID.Text = reward.id;
-					MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
-				else if (TB_RewardID.Text != reward.id)
-				{
-					this.TB_RewardID.Text = reward.id;
-					MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					MessageBox.Show("Updated the reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 				else
+					MessageBox.Show("Failed to update a reward", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			else
+			{
+				var reward = await api.CreateOrUpdateReward(null, TB_RewardName.Text, RB_Description.Text, (int)Num_Points.Value, (int)Num_Cooldown.Value, true, false);
+				if (reward != null)
 				{
-					MessageBox.Show("A reward was updated!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					if (string.IsNullOrEmpty(TB_RewardID.Text))
+						MessageBox.Show("Created a reward!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					else
+						MessageBox.Show("A reward was missing and was created - make sure this is OK", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					this.TB_RewardID.Text = reward.id;
 				}
+				else
+					MessageBox.Show("Failed to create a reward", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -203,28 +220,39 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			KrakenConnections apiConnection = new KrakenConnections(settings.UserName);
-			await apiConnection.GetBroadcasterIDAsync();
-			if (string.IsNullOrEmpty(apiConnection.BroadcasterID))
+			var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+			var validation = api.ValidateToken();
+
+			if (validation != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
+			{
+				MessageBox.Show("Failed to validate user token!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
+			}
 
-			var rewards = await apiConnection.GetRewardsList();
+			if (!await api.CreateRewardsCache())
+			{
+				MessageBox.Show("Failed to create reward cache!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
-			KrakenConnections.ChannelReward reward = rewards.FirstOrDefault(x => x.id == TB_RewardID.Text);
+			var reward = api.RewardsCache.FirstOrDefault(x => x.id == TB_RewardID.Text);
 			if (reward != null)
 			{
-				var result = await apiConnection.DeleteCustomReward(reward);
-				if(result)
+				var delete = await api.DeleteCustomReward(reward);
+				if (delete)
 				{
 					MessageBox.Show("Reward deleted successfully", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					TB_RewardID.Text = "";
+				}
+				else
+				{
+					MessageBox.Show("Failed to deleted award", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 			else
 			{
 				MessageBox.Show("Seems like the reward was already removed on Twitch!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				TB_RewardID.Text = "";
-
 			}
 		}
 	}
