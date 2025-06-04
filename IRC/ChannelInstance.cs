@@ -128,6 +128,25 @@ namespace BasicTwitchSoundPlayer.IRC
 			});
 		}
 
+		public void SendChatMessageResponse(string broadcast_id, string message_id, string text)
+		{
+			Task.Run(async () =>
+			{
+				if (text.Length <= 500)
+				{
+					await m_ChatBot?.HelixAPI_Bot.SendResponseAsync(broadcast_id, message_id, text);
+				}
+				else
+				{
+					var messages = SplitMessage(text, 500);
+					foreach (var subMessage in messages)
+					{
+						await m_ChatBot?.HelixAPI_Bot.SendResponseAsync(broadcast_id, message_id, subMessage);
+					}
+				}
+			});
+		}
+
 		public void IgnoreListRemove(ES_ChatMessage msg)
 		{
 			if (msg.UserRole <= ES_ChatMessage.Role.Mod)
@@ -182,9 +201,19 @@ namespace BasicTwitchSoundPlayer.IRC
 			m_ChatBot?.HelixAPI_Bot.RequestTimeout(message, duration_in_seconds, text_response);
 		}
 
+		internal void UserTimeout(string broadcaster_id, string chatter_id, uint duration_in_seconds, string text_response)
+		{
+			m_ChatBot?.HelixAPI_Bot.RequestTimeout(broadcaster_id, chatter_id, duration_in_seconds, text_response);
+		}
+
 		internal void UserBan(ES_ChatMessage message, string response)
 		{
 			m_ChatBot?.HelixAPI_Bot.RequestBan(message, response);
+		}
+
+		internal void UserBan(string broadcaster_id, string chatter_id, string response)
+		{
+			m_ChatBot?.HelixAPI_Bot.RequestBan(broadcaster_id, chatter_id, response);
 		}
 	}
 }

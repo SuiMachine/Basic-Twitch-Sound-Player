@@ -1,6 +1,7 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
 using BasicTwitchSoundPlayer.Interfaces;
 using BasicTwitchSoundPlayer.Structs.Gemini;
+using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using static BasicTwitchSoundPlayer.Structs.Gemini.SafetySettingsCategory;
+using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -314,27 +315,27 @@ namespace BasicTwitchSoundPlayer
 
 		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
 
-		public SafetySettingsCategory[] GetSafetySettingsStreamer()
+		public GeminiSafetySettingsCategory[] GetSafetySettingsStreamer()
 		{
-			return new SafetySettingsCategory[]
+			return new GeminiSafetySettingsCategory[]
 			{
-				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_Streamer.Harassment),
-				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_Streamer.Hate),
-				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_Streamer.Sexually_Explicit),
-				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_Streamer.Dangerous_Content),
-				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_Streamer.Civic_Integrity),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_Streamer.Harassment),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_Streamer.Hate),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_Streamer.Sexually_Explicit),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_Streamer.Dangerous_Content),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_Streamer.Civic_Integrity),
 			};
 		}
 
-		public SafetySettingsCategory[] GetSafetySettingsGeneral()
+		public GeminiSafetySettingsCategory[] GetSafetySettingsGeneral()
 		{
-			return new SafetySettingsCategory[]
+			return new GeminiSafetySettingsCategory[]
 			{
-				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_User.Harassment),
-				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_User.Hate),
-				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_User.Sexually_Explicit),
-				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_User.Dangerous_Content),
-				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_User.Civic_Integrity),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HARASSMENT", FilterSet_User.Harassment),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", FilterSet_User.Hate),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", FilterSet_User.Sexually_Explicit),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", FilterSet_User.Dangerous_Content),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", FilterSet_User.Civic_Integrity),
 			};
 		}
 

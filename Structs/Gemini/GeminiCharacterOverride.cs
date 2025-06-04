@@ -1,8 +1,9 @@
 ﻿using BasicTwitchSoundPlayer.Extensions;
+using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Text;
 using System.Xml.Serialization;
-using static BasicTwitchSoundPlayer.Structs.Gemini.SafetySettingsCategory;
+using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer.Structs.Gemini
 {
@@ -43,15 +44,15 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 			XML_Utils.Save(Path, this);
 		}
 
-		public SafetySettingsCategory[] GetSafetyOverrides()
+		public GeminiSafetySettingsCategory[] GetSafetyOverrides()
 		{
-			return new SafetySettingsCategory[]
+			return new GeminiSafetySettingsCategory[]
 			{
-				new SafetySettingsCategory("HARM_CATEGORY_HARASSMENT", HARM_CATEGORY_HARASSMENT),
-				new SafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", HARM_CATEGORY_HATE_SPEECH),
-				new SafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", HARM_CATEGORY_SEXUALLY_EXPLICIT),
-				new SafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", HARM_CATEGORY_DANGEROUS_CONTENT),
-				new SafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", HARM_CATEGORY_CIVIC_INTEGRITY),            
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HARASSMENT", HARM_CATEGORY_HARASSMENT),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_HATE_SPEECH", HARM_CATEGORY_HATE_SPEECH),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_SEXUALLY_EXPLICIT", HARM_CATEGORY_SEXUALLY_EXPLICIT),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_DANGEROUS_CONTENT", HARM_CATEGORY_DANGEROUS_CONTENT),
+				new GeminiSafetySettingsCategory("HARM_CATEGORY_CIVIC_INTEGRITY", HARM_CATEGORY_CIVIC_INTEGRITY),            
 			};
 		}
 

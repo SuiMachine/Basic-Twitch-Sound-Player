@@ -4,7 +4,7 @@ using SuiBot_TwitchSocket.API;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using static BasicTwitchSoundPlayer.Structs.Gemini.SafetySettingsCategory;
+using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
 namespace BasicTwitchSoundPlayer.SettingsForms
 {

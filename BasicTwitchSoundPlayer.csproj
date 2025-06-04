@@ -227,9 +227,6 @@
     <Compile Include="Structs\Gemini\FunctionTypes\FunctionCalls.cs" />
     <Compile Include="Structs\Gemini\FunctionTypes\Parameters.cs" />
     <Compile Include="Structs\Gemini\GeminiCharacterOverride.cs" />
-    <Compile Include="Structs\Gemini\GeminiContent.cs" />
-    <Compile Include="Structs\Gemini\GeminiMessage.cs" />
-    <Compile Include="Structs\Gemini\GeminiTools.cs" />
     <Compile Include="VoiceModHandling.cs" />
     <Compile Include="SoundStorageXML.cs" />
     <Compile Include="Structs\TwitchRightsEnum.cs" />
@@ -306,6 +303,10 @@
     <Content Include="sound_player_icon_bundled.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SuiBot-AI\SuiBot-AI.csproj">
+      <Project>{22F63E69-76D9-451E-8329-46A8B41C12CB}</Project>
+      <Name>SuiBot-AI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuiBot-TwitchSocket\SuiBot-TwitchSocket.csproj">
       <Project>{eefd4d67-fa06-4a2a-804f-31851cb06a3e}</Project>
       <Name>SuiBot-TwitchSocket</Name>
