@@ -58,4 +58,6 @@ packages
 Release/7za.exe
 Release/Release_dir/*
 Release/Tags.txt
+Release/Log.txt
+Release/SuiBot-TwitchSocket.log
 *.7z
