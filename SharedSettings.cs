@@ -285,6 +285,7 @@ namespace BasicTwitchSoundPlayer
 
 		public string TwitchUsername { get; set; } = "";
 		public EncryptedString ApiKey { get; set; } = "";
+		public string Instruction_Character { get; set; } = "Describe your character here";
 		public string Instruction_Streamer { get; set; } = "The responses are always 200-550 characters long.";
 		public int TokenLimit_Streamer { get; set; } = 1_048_576 - 8096 - 512;
 		public float Temperature_Streamer { get; set; } = 1f;
@@ -343,6 +344,8 @@ namespace BasicTwitchSoundPlayer
 		{
 			var sb = new StringBuilder();
 
+			sb.AppendLine(Instruction_Character);
+			sb.AppendLine();
 			sb.AppendLine(isStreamer ? Instruction_Streamer : Instruction_User);
 			if (!isStreamer)
 				sb.AppendLine("The user is " + username + ".");

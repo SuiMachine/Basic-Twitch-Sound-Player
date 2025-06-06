@@ -22,6 +22,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 			TB_Username.Text = config.TwitchUsername;
 			TB_API_Key.Text = config.ApiKey;
+			RB_CharacterDefinition.Text = config.Instruction_Character;
 			RB_InstructionStreamer.Text = config.Instruction_Streamer;
 			RB_InstructionUser.Text = config.Instruction_User;
 
@@ -90,6 +91,8 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			var config = AIConfig.GetInstance();
 
 			config.ApiKey = TB_API_Key.Text;
+
+			config.Instruction_Character = RB_CharacterDefinition.Text;
 			config.Instruction_Streamer = RB_InstructionStreamer.Text;
 			config.Instruction_User = RB_InstructionUser.Text;
 

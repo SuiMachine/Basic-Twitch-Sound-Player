@@ -30,10 +30,6 @@
 		{
 			this.TBar_StreamerHarassment = new System.Windows.Forms.TrackBar();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
-			this.label8 = new System.Windows.Forms.Label();
-			this.TB_API_Key = new System.Windows.Forms.TextBox();
-			this.B_CreateReward = new System.Windows.Forms.Button();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
@@ -77,14 +73,20 @@
 			this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Cancel = new System.Windows.Forms.Button();
 			this.B_Save = new System.Windows.Forms.Button();
-			this.B_Show_UserOverrides = new System.Windows.Forms.Button();
 			this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
+			this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
+			this.B_Show_UserOverrides = new System.Windows.Forms.Button();
+			this.label8 = new System.Windows.Forms.Label();
+			this.TB_API_Key = new System.Windows.Forms.TextBox();
+			this.B_CreateReward = new System.Windows.Forms.Button();
 			this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
-			this.label13 = new System.Windows.Forms.Label();
 			this.TB_Username = new System.Windows.Forms.TextBox();
+			this.label13 = new System.Windows.Forms.Label();
+			this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
+			this.label14 = new System.Windows.Forms.Label();
+			this.RB_CharacterDefinition = new System.Windows.Forms.RichTextBox();
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerHarassment)).BeginInit();
 			this.tableLayoutPanel1.SuspendLayout();
-			this.tableLayoutPanel11.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
@@ -109,7 +111,9 @@
 			this.tableLayoutPanel4.SuspendLayout();
 			this.tableLayoutPanel9.SuspendLayout();
 			this.tableLayoutPanel10.SuspendLayout();
+			this.tableLayoutPanel11.SuspendLayout();
 			this.tableLayoutPanel12.SuspendLayout();
+			this.tableLayoutPanel13.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TBar_StreamerHarassment
@@ -126,67 +130,20 @@
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel9, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel10, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel9, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel10, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel13, 0, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowCount = 4;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 230F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 78F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 897);
 			this.tableLayoutPanel1.TabIndex = 1;
-			// 
-			// tableLayoutPanel11
-			// 
-			this.tableLayoutPanel11.ColumnCount = 4;
-			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 69F));
-			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
-			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
-			this.tableLayoutPanel11.Controls.Add(this.B_Show_UserOverrides, 3, 0);
-			this.tableLayoutPanel11.Controls.Add(this.label8, 0, 0);
-			this.tableLayoutPanel11.Controls.Add(this.TB_API_Key, 1, 0);
-			this.tableLayoutPanel11.Controls.Add(this.B_CreateReward, 2, 0);
-			this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 3);
-			this.tableLayoutPanel11.Name = "tableLayoutPanel11";
-			this.tableLayoutPanel11.RowCount = 1;
-			this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel11.Size = new System.Drawing.Size(788, 30);
-			this.tableLayoutPanel11.TabIndex = 4;
-			// 
-			// label8
-			// 
-			this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(3, 8);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(47, 13);
-			this.label8.TabIndex = 0;
-			this.label8.Text = "API key:";
-			// 
-			// TB_API_Key
-			// 
-			this.TB_API_Key.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_API_Key.Location = new System.Drawing.Point(72, 5);
-			this.TB_API_Key.Name = "TB_API_Key";
-			this.TB_API_Key.Size = new System.Drawing.Size(438, 20);
-			this.TB_API_Key.TabIndex = 1;
-			this.TB_API_Key.UseSystemPasswordChar = true;
-			// 
-			// B_CreateReward
-			// 
-			this.B_CreateReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.B_CreateReward.Location = new System.Drawing.Point(516, 3);
-			this.B_CreateReward.Name = "B_CreateReward";
-			this.B_CreateReward.Size = new System.Drawing.Size(161, 23);
-			this.B_CreateReward.TabIndex = 2;
-			this.B_CreateReward.Text = "Create Reward";
-			this.B_CreateReward.UseVisualStyleBackColor = true;
-			this.B_CreateReward.Click += new System.EventHandler(this.B_CreateReward_Click);
 			// 
 			// tableLayoutPanel3
 			// 
@@ -196,11 +153,11 @@
 			this.tableLayoutPanel3.Controls.Add(this.groupBox2, 1, 0);
 			this.tableLayoutPanel3.Controls.Add(this.groupBox1, 0, 0);
 			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 233);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 			this.tableLayoutPanel3.RowCount = 1;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(794, 774);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(794, 544);
 			this.tableLayoutPanel3.TabIndex = 2;
 			// 
 			// groupBox2
@@ -209,7 +166,7 @@
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox2.Location = new System.Drawing.Point(400, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(391, 768);
+			this.groupBox2.Size = new System.Drawing.Size(391, 538);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Chat user";
@@ -226,7 +183,7 @@
 			this.tableLayoutPanel6.RowCount = 2;
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 233F));
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(385, 749);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(385, 519);
 			this.tableLayoutPanel6.TabIndex = 0;
 			// 
 			// tableLayoutPanel7
@@ -248,7 +205,7 @@
 			this.tableLayoutPanel7.Controls.Add(this.label5, 0, 1);
 			this.tableLayoutPanel7.Controls.Add(this.label6, 0, 0);
 			this.tableLayoutPanel7.Controls.Add(this.TBar_UserHarassment, 1, 0);
-			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 519);
+			this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 289);
 			this.tableLayoutPanel7.Name = "tableLayoutPanel7";
 			this.tableLayoutPanel7.RowCount = 7;
 			this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -425,7 +382,7 @@
 			this.tableLayoutPanel8.RowCount = 2;
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.Size = new System.Drawing.Size(379, 510);
+			this.tableLayoutPanel8.Size = new System.Drawing.Size(379, 280);
 			this.tableLayoutPanel8.TabIndex = 2;
 			// 
 			// label7
@@ -433,16 +390,16 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(3, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(100, 13);
+			this.label7.Size = new System.Drawing.Size(106, 13);
 			this.label7.TabIndex = 0;
-			this.label7.Text = "System instructions:";
+			this.label7.Text = "Additional istructions:";
 			// 
 			// RB_InstructionUser
 			// 
 			this.RB_InstructionUser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.RB_InstructionUser.Location = new System.Drawing.Point(3, 23);
 			this.RB_InstructionUser.Name = "RB_InstructionUser";
-			this.RB_InstructionUser.Size = new System.Drawing.Size(373, 484);
+			this.RB_InstructionUser.Size = new System.Drawing.Size(373, 254);
 			this.RB_InstructionUser.TabIndex = 1;
 			this.RB_InstructionUser.Text = "";
 			// 
@@ -452,7 +409,7 @@
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(391, 768);
+			this.groupBox1.Size = new System.Drawing.Size(391, 538);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Streamer";
@@ -469,7 +426,7 @@
 			this.tableLayoutPanel5.RowCount = 2;
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 233F));
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(385, 749);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(385, 519);
 			this.tableLayoutPanel5.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -491,7 +448,7 @@
 			this.tableLayoutPanel2.Controls.Add(this.TBar_StreamerHarassment, 1, 0);
 			this.tableLayoutPanel2.Controls.Add(this.Num_StreamerTokenLimit, 1, 5);
 			this.tableLayoutPanel2.Controls.Add(this.label9, 0, 5);
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 519);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 289);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 7;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -658,7 +615,7 @@
 			this.tableLayoutPanel4.RowCount = 2;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(379, 510);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(379, 280);
 			this.tableLayoutPanel4.TabIndex = 2;
 			// 
 			// label1
@@ -666,16 +623,16 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(100, 13);
+			this.label1.Size = new System.Drawing.Size(106, 13);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "System instructions:";
+			this.label1.Text = "Additional istructions:";
 			// 
 			// RB_InstructionStreamer
 			// 
 			this.RB_InstructionStreamer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.RB_InstructionStreamer.Location = new System.Drawing.Point(3, 23);
 			this.RB_InstructionStreamer.Name = "RB_InstructionStreamer";
-			this.RB_InstructionStreamer.Size = new System.Drawing.Size(373, 484);
+			this.RB_InstructionStreamer.Size = new System.Drawing.Size(373, 254);
 			this.RB_InstructionStreamer.TabIndex = 1;
 			this.RB_InstructionStreamer.Text = "";
 			// 
@@ -716,17 +673,6 @@
 			this.B_Save.UseVisualStyleBackColor = true;
 			this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
 			// 
-			// B_Show_UserOverrides
-			// 
-			this.B_Show_UserOverrides.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.B_Show_UserOverrides.Location = new System.Drawing.Point(683, 3);
-			this.B_Show_UserOverrides.Name = "B_Show_UserOverrides";
-			this.B_Show_UserOverrides.Size = new System.Drawing.Size(102, 23);
-			this.B_Show_UserOverrides.TabIndex = 3;
-			this.B_Show_UserOverrides.Text = "User overrides";
-			this.B_Show_UserOverrides.UseVisualStyleBackColor = true;
-			this.B_Show_UserOverrides.Click += new System.EventHandler(this.B_Show_UserOverrides_Click);
-			// 
 			// tableLayoutPanel10
 			// 
 			this.tableLayoutPanel10.ColumnCount = 1;
@@ -743,6 +689,66 @@
 			this.tableLayoutPanel10.Size = new System.Drawing.Size(794, 72);
 			this.tableLayoutPanel10.TabIndex = 5;
 			// 
+			// tableLayoutPanel11
+			// 
+			this.tableLayoutPanel11.ColumnCount = 4;
+			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 69F));
+			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
+			this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
+			this.tableLayoutPanel11.Controls.Add(this.B_Show_UserOverrides, 3, 0);
+			this.tableLayoutPanel11.Controls.Add(this.label8, 0, 0);
+			this.tableLayoutPanel11.Controls.Add(this.TB_API_Key, 1, 0);
+			this.tableLayoutPanel11.Controls.Add(this.B_CreateReward, 2, 0);
+			this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel11.Name = "tableLayoutPanel11";
+			this.tableLayoutPanel11.RowCount = 1;
+			this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel11.Size = new System.Drawing.Size(788, 30);
+			this.tableLayoutPanel11.TabIndex = 4;
+			// 
+			// B_Show_UserOverrides
+			// 
+			this.B_Show_UserOverrides.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.B_Show_UserOverrides.Location = new System.Drawing.Point(683, 3);
+			this.B_Show_UserOverrides.Name = "B_Show_UserOverrides";
+			this.B_Show_UserOverrides.Size = new System.Drawing.Size(102, 23);
+			this.B_Show_UserOverrides.TabIndex = 3;
+			this.B_Show_UserOverrides.Text = "User overrides";
+			this.B_Show_UserOverrides.UseVisualStyleBackColor = true;
+			this.B_Show_UserOverrides.Click += new System.EventHandler(this.B_Show_UserOverrides_Click);
+			// 
+			// label8
+			// 
+			this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(3, 8);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(47, 13);
+			this.label8.TabIndex = 0;
+			this.label8.Text = "API key:";
+			// 
+			// TB_API_Key
+			// 
+			this.TB_API_Key.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_API_Key.Location = new System.Drawing.Point(72, 5);
+			this.TB_API_Key.Name = "TB_API_Key";
+			this.TB_API_Key.Size = new System.Drawing.Size(438, 20);
+			this.TB_API_Key.TabIndex = 1;
+			this.TB_API_Key.UseSystemPasswordChar = true;
+			// 
+			// B_CreateReward
+			// 
+			this.B_CreateReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.B_CreateReward.Location = new System.Drawing.Point(516, 3);
+			this.B_CreateReward.Name = "B_CreateReward";
+			this.B_CreateReward.Size = new System.Drawing.Size(161, 23);
+			this.B_CreateReward.TabIndex = 2;
+			this.B_CreateReward.Text = "Create Reward";
+			this.B_CreateReward.UseVisualStyleBackColor = true;
+			this.B_CreateReward.Click += new System.EventHandler(this.B_CreateReward_Click);
+			// 
 			// tableLayoutPanel12
 			// 
 			this.tableLayoutPanel12.ColumnCount = 2;
@@ -758,6 +764,14 @@
 			this.tableLayoutPanel12.Size = new System.Drawing.Size(788, 30);
 			this.tableLayoutPanel12.TabIndex = 5;
 			// 
+			// TB_Username
+			// 
+			this.TB_Username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_Username.Location = new System.Drawing.Point(72, 5);
+			this.TB_Username.Name = "TB_Username";
+			this.TB_Username.Size = new System.Drawing.Size(713, 20);
+			this.TB_Username.TabIndex = 2;
+			// 
 			// label13
 			// 
 			this.label13.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -768,13 +782,39 @@
 			this.label13.TabIndex = 1;
 			this.label13.Text = "Twitch username:";
 			// 
-			// TB_Username
+			// tableLayoutPanel13
 			// 
-			this.TB_Username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_Username.Location = new System.Drawing.Point(72, 5);
-			this.TB_Username.Name = "TB_Username";
-			this.TB_Username.Size = new System.Drawing.Size(713, 20);
-			this.TB_Username.TabIndex = 2;
+			this.tableLayoutPanel13.ColumnCount = 1;
+			this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel13.Controls.Add(this.RB_CharacterDefinition, 0, 1);
+			this.tableLayoutPanel13.Controls.Add(this.label14, 0, 0);
+			this.tableLayoutPanel13.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel13.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel13.Name = "tableLayoutPanel13";
+			this.tableLayoutPanel13.RowCount = 2;
+			this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17F));
+			this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel13.Size = new System.Drawing.Size(794, 224);
+			this.tableLayoutPanel13.TabIndex = 6;
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(3, 0);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(101, 13);
+			this.label14.TabIndex = 1;
+			this.label14.Text = "Character definition:";
+			// 
+			// RB_CharacterDefinition
+			// 
+			this.RB_CharacterDefinition.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.RB_CharacterDefinition.Location = new System.Drawing.Point(3, 20);
+			this.RB_CharacterDefinition.Name = "RB_CharacterDefinition";
+			this.RB_CharacterDefinition.Size = new System.Drawing.Size(788, 201);
+			this.RB_CharacterDefinition.TabIndex = 2;
+			this.RB_CharacterDefinition.Text = "";
 			// 
 			// AI_Integration_Form
 			// 
@@ -787,8 +827,6 @@
 			this.Load += new System.EventHandler(this.AI_Integration_Form_Load);
 			((System.ComponentModel.ISupportInitialize)(this.TBar_StreamerHarassment)).EndInit();
 			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel11.ResumeLayout(false);
-			this.tableLayoutPanel11.PerformLayout();
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.tableLayoutPanel6.ResumeLayout(false);
@@ -817,8 +855,12 @@
 			this.tableLayoutPanel4.PerformLayout();
 			this.tableLayoutPanel9.ResumeLayout(false);
 			this.tableLayoutPanel10.ResumeLayout(false);
+			this.tableLayoutPanel11.ResumeLayout(false);
+			this.tableLayoutPanel11.PerformLayout();
 			this.tableLayoutPanel12.ResumeLayout(false);
 			this.tableLayoutPanel12.PerformLayout();
+			this.tableLayoutPanel13.ResumeLayout(false);
+			this.tableLayoutPanel13.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -879,5 +921,8 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel12;
 		private System.Windows.Forms.TextBox TB_Username;
 		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel13;
+		private System.Windows.Forms.RichTextBox RB_CharacterDefinition;
+		private System.Windows.Forms.Label label14;
 	}
 }
