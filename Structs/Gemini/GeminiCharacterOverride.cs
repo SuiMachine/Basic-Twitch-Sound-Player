@@ -21,7 +21,6 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 
 		public static string GetOverridePath(string username)
 		{
-			username = username.ToLower();
 			return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Overrides", username + ".xml");
 		}
 
@@ -56,9 +55,11 @@ namespace BasicTwitchSoundPlayer.Structs.Gemini
 			};
 		}
 
-		public GeminiMessage GetFullInstruction()
+		public GeminiMessage GetFullInstruction(AIConfig aiConfig)
 		{
 			var sb = new StringBuilder();
+			sb.Append(aiConfig.Instruction_Character);
+			sb.AppendLine();
 			sb.AppendLine(SystemInstruction);
 			sb.AppendStreamInstructionPostfix(true, true);
 			return new GeminiMessage()

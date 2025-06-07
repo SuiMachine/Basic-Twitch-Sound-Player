@@ -1,11 +1,6 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.Structs.Gemini;
 using BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes;
-using NAudio.Gui;
-using Newtonsoft.Json;
-using SuiBot_TwitchSocket;
-using SuiBot_TwitchSocket.API.EventSub;
-using SuiBot_TwitchSocket.Interfaces;
 using SuiBotAI.Components;
 using SuiBotAI.Components.Other.Gemini;
 using System;
@@ -53,7 +48,6 @@ namespace BasicTwitchSoundPlayer
 			{
 				contents = new List<GeminiMessage>(),
 				generationConfig = new GeminiContent.GenerationConfig(),
-				systemInstruction = null,
 				safetySettings = null,
 			});
 			m_Processor = new SuiBotAIProcessor(aiConfig.ApiKey, aiConfig.Model);
@@ -105,6 +99,7 @@ namespace BasicTwitchSoundPlayer
 				int tokenLimit = 1000;
 
 				string path;
+				GeminiMessage instructions = null;
 				if (request.user_login == channelInstance.Channel)
 				{
 					path = AIConfig.GetAIHistoryPath(aiConfig.TwitchUsername);
@@ -112,7 +107,7 @@ namespace BasicTwitchSoundPlayer
 
 					tokenLimit = aiConfig.TokenLimit_Streamer;
 					content.safetySettings = aiConfig.GetSafetySettingsStreamer();
-					content.systemInstruction = aiConfig.GetInstruction(request.user_name, true, true);
+					instructions = aiConfig.GetInstruction(request.user_name, true, true);
 					content.generationConfig.temperature = aiConfig.Temperature_Streamer;
 				}
 				else
@@ -142,20 +137,20 @@ namespace BasicTwitchSoundPlayer
 					}
 
 					tokenLimit = aiConfig.TokenLimit_User;
-					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.user_name));
+					GeminiCharacterOverride overrides = GeminiCharacterOverride.GetOverride(GeminiCharacterOverride.GetOverridePath(request.user_login));
 					if (overrides != null)
 					{
 						//content.systemInstruction = 
 						content.safetySettings = overrides.GetSafetyOverrides();
-						content.systemInstruction = overrides.GetFullInstruction();
+						instructions = overrides.GetFullInstruction(aiConfig);
 					}
 					else
 					{
 						content.safetySettings = aiConfig.GetSafetySettingsGeneral();
-						content.systemInstruction = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus?.IsOnline ?? false);
+						instructions = aiConfig.GetInstruction(request.user_name, false, channelInstance.StreamStatus?.IsOnline ?? false);
 					}
 					content.generationConfig.temperature = aiConfig.Temperature_User;
-					content.tools = new List<SuiBotAI.Components.Other.Gemini.GeminiTools>()
+					content.tools = new List<GeminiTools>()
 					{
 						new GeminiTools()
 						{
@@ -174,9 +169,7 @@ namespace BasicTwitchSoundPlayer
 					bot?.HelixAPI_User?.UpdateRedemptionStatus(request, RedemptionStates.CANCELED);
 					return;
 				}
-
-				var result = await m_Processor.GetAIResponse(content, null, request.user_input);
-
+				var result = await m_Processor.GetAIResponse(content, instructions, request.user_input);
 
 				if (result == null)
 				{
@@ -189,7 +182,7 @@ namespace BasicTwitchSoundPlayer
 					content.generationConfig.TokenCount = result.usageMetadata.totalTokenCount;
 
 					var lastResponse = result.candidates.Last().content;
-					StreamerContent.contents.Add(lastResponse);
+					content.contents.Add(lastResponse);
 					var text = lastResponse.parts.Last().text;
 					bot?.HelixAPI_User.UpdateRedemptionStatus(request, RedemptionStates.FULFILLED);
 
@@ -199,24 +192,24 @@ namespace BasicTwitchSoundPlayer
 
 						channelInstance?.SendChatMessage($"{request.user_name}: {text}");
 
-						while (StreamerContent.generationConfig.TokenCount > tokenLimit)
+						while (content.generationConfig.TokenCount > tokenLimit)
 						{
-							if (StreamerContent.contents.Count > 2)
+							if (content.contents.Count > 2)
 							{
 								//This isn't weird - we want to make sure we start from user message
-								if (StreamerContent.contents[0].role == Role.user)
+								if (content.contents[0].role == Role.user)
 								{
-									StreamerContent.contents.RemoveAt(0);
+									content.contents.RemoveAt(0);
 								}
 
-								if (StreamerContent.contents[0].role == Role.model)
+								if (content.contents[0].role == Role.model)
 								{
-									StreamerContent.contents.RemoveAt(0);
+									content.contents.RemoveAt(0);
 								}
 							}
 						}
 
-						XML_Utils.Save(path, StreamerContent);
+						XML_Utils.Save(path, content);
 					}
 
 					var func = lastResponse.parts.Last().functionCall;
