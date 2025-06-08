@@ -6,11 +6,11 @@ using System.Linq;
 using System.Windows.Forms;
 using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
-namespace BasicTwitchSoundPlayer.SettingsForms
+namespace BasicTwitchSoundPlayer.AI_Integration
 {
-	public partial class AI_Integration_Form : Form
+	public partial class AskAI_Configuration_Form : Form
 	{
-		public AI_Integration_Form()
+		public AskAI_Configuration_Form()
 		{
 			InitializeComponent();
 		}

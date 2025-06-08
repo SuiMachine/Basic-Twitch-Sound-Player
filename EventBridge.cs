@@ -7,13 +7,20 @@ namespace BasicTwitchSoundPlayer
 	{
 		public Action<ES_ChatMessage> OnChannelMessage;
 		public Action<ES_ChannelPoints.ES_ChannelPointRedeemRequest> OnChannelPointsRedeem;
-		public Action<ES_ChannelGoal> ChannelGoalAchieved;
+		public Action<ES_ChannelGoal> OnChannelGoalAchieved;
+		public Action<ES_AdBreakBeginNotification> OnAdBreakStarted;
+		public Action<ES_AdBreakBeginNotification, int> OnAdBreakFinished;
+		public Action OnAdPrerollsActive;
+
 
 		internal void Clear()
 		{
 			OnChannelMessage = null;
 			OnChannelPointsRedeem = null;
-			ChannelGoalAchieved = null;
+			OnChannelGoalAchieved = null;
+			OnAdBreakStarted = null;
+			OnAdBreakFinished = null;
+			OnAdPrerollsActive = null;
 		}
 	}
 }

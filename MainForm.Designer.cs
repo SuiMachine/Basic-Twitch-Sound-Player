@@ -49,7 +49,9 @@
 			this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.showProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.geminiAIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.aIIntegrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.askAIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.streamEventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -93,7 +95,8 @@
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.soundsToolStripMenuItem});
+            this.soundsToolStripMenuItem,
+            this.aIIntegrationToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(455, 24);
@@ -152,7 +155,6 @@
 			// soundsToolStripMenuItem
 			// 
 			this.soundsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.geminiAIToolStripMenuItem,
             this.soundSettings,
             this.voiceModSettings});
 			this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
@@ -162,14 +164,14 @@
 			// soundSettings
 			// 
 			this.soundSettings.Name = "soundSettings";
-			this.soundSettings.Size = new System.Drawing.Size(180, 22);
+			this.soundSettings.Size = new System.Drawing.Size(127, 22);
 			this.soundSettings.Text = "Sounds";
 			this.soundSettings.Click += new System.EventHandler(this.DatabaseEditorToolStripMenuItem_Click);
 			// 
 			// voiceModSettings
 			// 
 			this.voiceModSettings.Name = "voiceModSettings";
-			this.voiceModSettings.Size = new System.Drawing.Size(180, 22);
+			this.voiceModSettings.Size = new System.Drawing.Size(127, 22);
 			this.voiceModSettings.Text = "VoiceMod";
 			this.voiceModSettings.Click += new System.EventHandler(this.VoiceModSettings_Click);
 			// 
@@ -228,12 +230,28 @@
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
 			// 
-			// geminiAIToolStripMenuItem
+			// aIIntegrationToolStripMenuItem
 			// 
-			this.geminiAIToolStripMenuItem.Name = "geminiAIToolStripMenuItem";
-			this.geminiAIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.geminiAIToolStripMenuItem.Text = "GeminiAI";
-			this.geminiAIToolStripMenuItem.Click += new System.EventHandler(this.GeminiAIToolStripMenuItem_Click);
+			this.aIIntegrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.askAIToolStripMenuItem,
+            this.streamEventsToolStripMenuItem});
+			this.aIIntegrationToolStripMenuItem.Name = "aIIntegrationToolStripMenuItem";
+			this.aIIntegrationToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
+			this.aIIntegrationToolStripMenuItem.Text = "AI integration";
+			// 
+			// askAIToolStripMenuItem
+			// 
+			this.askAIToolStripMenuItem.Name = "askAIToolStripMenuItem";
+			this.askAIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.askAIToolStripMenuItem.Text = "Ask AI";
+			this.askAIToolStripMenuItem.Click += new System.EventHandler(this.ai_askToolStripMenuItem_Click);
+			// 
+			// streamEventsToolStripMenuItem
+			// 
+			this.streamEventsToolStripMenuItem.Name = "streamEventsToolStripMenuItem";
+			this.streamEventsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.streamEventsToolStripMenuItem.Text = "Stream Events";
+			this.streamEventsToolStripMenuItem.Click += new System.EventHandler(this.ai_streamEventsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -245,7 +263,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "MainForm";
-			this.Text = "Basic Sound Player";
+			this.Text = "Sui\'s Stream Companion App";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
@@ -282,7 +300,9 @@
         private System.Windows.Forms.ToolStripMenuItem showProgramToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem voiceModSettings;
-		private System.Windows.Forms.ToolStripMenuItem geminiAIToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem aIIntegrationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem askAIToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem streamEventsToolStripMenuItem;
 	}
 }
 

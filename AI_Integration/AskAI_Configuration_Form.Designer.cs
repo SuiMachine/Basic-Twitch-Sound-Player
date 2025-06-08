@@ -1,6 +1,6 @@
-﻿namespace BasicTwitchSoundPlayer.SettingsForms
+﻿namespace BasicTwitchSoundPlayer.AI_Integration
 {
-	partial class AI_Integration_Form
+	partial class AskAI_Configuration_Form
 	{
 		/// <summary>
 		/// Required designer variable.

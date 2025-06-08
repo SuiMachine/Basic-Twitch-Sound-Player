@@ -1,10 +1,8 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.MixItUpBridge;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
 namespace BasicTwitchSoundPlayer
 {
@@ -248,7 +246,7 @@ namespace BasicTwitchSoundPlayer
 
 			TwitchBot = null;
 
-			if(AI != null)
+			if (AI != null)
 				AI.Unregister();
 		}
 
@@ -374,7 +372,22 @@ namespace BasicTwitchSoundPlayer
 
 		private void GeminiAIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SettingsForms.AI_Integration_Form ai_form = new SettingsForms.AI_Integration_Form();
+
+		}
+
+		private void ai_askToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AI_Integration.AskAI_Configuration_Form ai_form = new AI_Integration.AskAI_Configuration_Form();
+			var result = ai_form.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+
+			}
+		}
+
+		private void ai_streamEventsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AI_Integration.AI_StreamEvents ai_form = new AI_Integration.AI_StreamEvents();
 			var result = ai_form.ShowDialog();
 			if (result == DialogResult.OK)
 			{

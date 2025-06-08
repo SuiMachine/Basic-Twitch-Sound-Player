@@ -1,10 +1,12 @@
 ﻿using BasicTwitchSoundPlayer.IRC;
 using BasicTwitchSoundPlayer.Structs.Gemini;
 using BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes;
+using SuiBot_TwitchSocket.API.EventSub;
 using SuiBotAI.Components;
 using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +22,7 @@ namespace BasicTwitchSoundPlayer
 		public GeminiContent StreamerContent = new GeminiContent();
 		public Dictionary<string, GeminiContent> UserContents = new Dictionary<string, GeminiContent>();
 		public Dictionary<string, DateTime> Cooldowns = new Dictionary<string, DateTime>();
+		private Tuple<ES_AdBreakBeginNotification, GeminiContent> m_TemporaryMemoryForAdNotification;
 
 		internal bool IsConfigured()
 		{
@@ -59,6 +62,9 @@ namespace BasicTwitchSoundPlayer
 		{
 			IsRegistered = true;
 			MainForm.Instance.TwitchEvents.OnChannelPointsRedeem += PointsRedeem;
+			MainForm.Instance.TwitchEvents.OnAdBreakStarted += GetResponseAdBreakStarted;
+			MainForm.Instance.TwitchEvents.OnAdBreakFinished += GetResponseAdBreakFinished;
+			MainForm.Instance.TwitchEvents.OnAdPrerollsActive += GetResponsePreRollsActivated;
 		}
 
 		public void Unregister()
@@ -78,7 +84,6 @@ namespace BasicTwitchSoundPlayer
 			{
 				await GetResponse(request);
 			});
-
 		}
 
 		private async Task GetResponse(ES_ChannelPointRedeemRequest request)
@@ -219,7 +224,7 @@ namespace BasicTwitchSoundPlayer
 					}
 				}
 			}
-			catch(SafetyFilterTrippedException ex)
+			catch (SafetyFilterTrippedException ex)
 			{
 				MainForm.Instance.TwitchBot.ChannelInstance.SendChatMessage($"Failed to get a response. Safety filter tripped!");
 				MainForm.Instance.ThreadSafeAddPreviewText($"Safety was tripped {ex}", LineType.GeminiAI);
@@ -238,6 +243,139 @@ namespace BasicTwitchSoundPlayer
 				func.args.ToObject<TimeOutUser>().Perform(channelInstance, message);
 			else if (func.name == "ban")
 				func.args.ToObject<BanUser>().Perform(channelInstance, message);
+		}
+
+		private void GetResponseAdBreakStarted(ES_AdBreakBeginNotification adInfo)
+		{
+			var aiConfig = AIConfig.GetInstance();
+
+			if (!aiConfig.Events.AdsBeginNotify)
+				return;
+
+			ChatBot bot = MainForm.Instance.TwitchBot;
+			if (bot == null)
+				return;
+
+			Task.Factory.StartNew(async () =>
+			{
+				GeminiContent content = new GeminiContent
+				{
+					contents = new List<GeminiMessage>(),
+					safetySettings = aiConfig.GetSafetySettingsStreamer(),
+					tools = null,
+					generationConfig = new GeminiContent.GenerationConfig()
+					{
+						temperature = aiConfig.Temperature_Streamer
+					}
+				};
+				GeminiMessage instructions = aiConfig.GetCharacterInstruction();
+
+				m_TemporaryMemoryForAdNotification = null;
+				var result = await m_Processor.GetAIResponse(content, instructions, aiConfig.Events.Instruction_AdsBegin.Replace("{time}", (adInfo.duration_seconds / 60f).ToString(CultureInfo.GetCultureInfo("en-US"))));
+				if (result == null)
+					return;
+
+				var candidate = result.candidates.Last();
+
+				var text = candidate.content.parts.Last().text;
+				if (text != null)
+				{
+					SuiBotAIProcessor.CleanupResponse(ref text);
+					bot.ChannelInstance?.SendChatMessage(text);
+					content.contents.Add(candidate.content);
+					m_TemporaryMemoryForAdNotification = new Tuple<ES_AdBreakBeginNotification, GeminiContent>(adInfo, content);
+				}
+			});
+		}
+
+		private void GetResponseAdBreakFinished(ES_AdBreakBeginNotification adInfo, int nextAdsIn)
+		{
+			var aiConfig = AIConfig.GetInstance();
+
+			if (!aiConfig.Events.AdsFinishNotify)
+				return;
+
+			ChatBot bot = MainForm.Instance.TwitchBot;
+			if (bot == null)
+				return;
+
+			Task.Factory.StartNew(async () =>
+			{
+				GeminiContent content;
+				if (m_TemporaryMemoryForAdNotification != null && adInfo == m_TemporaryMemoryForAdNotification.Item1)
+				{
+					content = m_TemporaryMemoryForAdNotification.Item2;
+				}
+				else
+				{
+					content = new GeminiContent
+					{
+						contents = new List<GeminiMessage>(),
+						safetySettings = aiConfig.GetSafetySettingsStreamer(),
+						tools = null,
+						generationConfig = new GeminiContent.GenerationConfig()
+						{
+							temperature = aiConfig.Temperature_Streamer
+						}
+					};
+				}
+
+				GeminiMessage instructions = aiConfig.GetCharacterInstruction();
+
+				m_TemporaryMemoryForAdNotification = null;
+				var result = await m_Processor.GetAIResponse(content, instructions, aiConfig.Events.Instruction_AdsFinished.Replace("{next_ads}", nextAdsIn.ToString()));
+				if (result == null)
+					return;
+
+				var candidate = result.candidates.Last();
+
+				var text = candidate.content.parts.Last().text;
+				if (text != null)
+				{
+					SuiBotAIProcessor.CleanupResponse(ref text);
+					bot?.ChannelInstance?.SendChatMessage(text);
+				}
+			});
+		}
+
+		private void GetResponsePreRollsActivated()
+		{
+			var aiConfig = AIConfig.GetInstance();
+
+			if (!aiConfig.Events.AdsPrerollsActiveNotify)
+				return;
+			ChatBot bot = MainForm.Instance.TwitchBot;
+
+			Task.Factory.StartNew(async () =>
+			{
+				GeminiContent content = new GeminiContent
+				{
+					contents = new List<GeminiMessage>(),
+					safetySettings = aiConfig.GetSafetySettingsStreamer(),
+					tools = null,
+					generationConfig = new GeminiContent.GenerationConfig()
+					{
+						temperature = aiConfig.Temperature_Streamer
+					}
+				};
+
+				GeminiMessage instructions = aiConfig.GetCharacterInstruction();
+
+				m_TemporaryMemoryForAdNotification = null;
+				var result = await m_Processor.GetAIResponse(content, instructions, aiConfig.Events.Instruction_NotifyPrerolls);
+				if (result == null)
+					return;
+
+				var candidate = result.candidates.Last();
+
+				var text = candidate.content.parts.Last().text;
+				if (text != null)
+				{
+					SuiBotAIProcessor.CleanupResponse(ref text);
+					bot?.ChannelInstance?.SendChatMessage(text);
+				}
+			});
+
 		}
 	}
 }

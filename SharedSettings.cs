@@ -261,6 +261,19 @@ namespace BasicTwitchSoundPlayer
 	[Serializable]
 	public class AIConfig
 	{
+		private static AIConfig LoadSettings() => XML_Utils.Load(GetConfigPath(), new AIConfig());
+
+		[Serializable]
+		public class EventSettings
+		{
+			public string Instruction_AdsBegin = "Notify users in the chat that the ads (commercials) have just started and they will least for {time} minutes. The response should be between 50-450 characters long. Stay in character.";
+			public string Instruction_AdsFinished = "Notify users in the chat that the ads (commercials) just finished and that next ones should be in {next_ads} minutes. Stay in character.  The response should be between 50-450 characters long.";
+			public string Instruction_NotifyPrerolls = "Notify users in the chat that pre-roll ads (commercials) are now sadly activated. Stay in character. The response should be between 50-450 characters long.";
+			public bool AdsBeginNotify { get; set; } = false;
+			public bool AdsFinishNotify { get; set; } = false;
+			public bool AdsPrerollsActiveNotify { get; set; } = false;
+		}
+
 		[Serializable]
 		public class FilterSet
 		{
@@ -311,8 +324,7 @@ namespace BasicTwitchSoundPlayer
 
 		public string Model { get; set; } = "models/gemini-2.5-flash-preview-04-17";
 		public string TwitchAwardID { get; set; } = "";
-
-		private static AIConfig LoadSettings() => XML_Utils.Load(GetConfigPath(), new AIConfig());
+		public EventSettings Events = new EventSettings();
 
 		public void SaveSettings() => XML_Utils.Save(GetConfigPath(), this);
 
@@ -360,6 +372,21 @@ namespace BasicTwitchSoundPlayer
 					new GeminiResponseMessagePart()
 					{
 						text = sb.ToString()
+					}
+				}
+			};
+		}
+
+		public GeminiMessage GetCharacterInstruction()
+		{
+			return new GeminiMessage()
+			{
+				role = Role.user,
+				parts = new GeminiResponseMessagePart[]
+				{
+					new GeminiResponseMessagePart()
+					{
+						text = Instruction_Character
 					}
 				}
 			};

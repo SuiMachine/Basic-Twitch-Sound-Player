@@ -10,13 +10,13 @@ namespace BasicTwitchSoundPlayer.MixItUpBridge
 		internal void Register()
 		{
 			if (MainForm.Instance != null && MainForm.Instance.TwitchEvents != null)
-				MainForm.Instance.TwitchEvents.ChannelGoalAchieved += GoalReached;
+				MainForm.Instance.TwitchEvents.OnChannelGoalAchieved += GoalReached;
 		}
 
 		internal void Unregister()
 		{
 			if (MainForm.Instance != null && MainForm.Instance.TwitchEvents != null)
-				MainForm.Instance.TwitchEvents.ChannelGoalAchieved -= GoalReached;
+				MainForm.Instance.TwitchEvents.OnChannelGoalAchieved -= GoalReached;
 		}
 
 		public void BTSP_RewardsStatusChanged(bool allPaused, bool soundRewardsPaused, bool voiceRewardsPaused)

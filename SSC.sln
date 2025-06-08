@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicTwitchSoundPlayer", "BasicTwitchSoundPlayer.csproj", "{AB91E6D8-41B7-40F8-9A30-8C8C0AC02DDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSC", "SSC.csproj", "{AB91E6D8-41B7-40F8-9A30-8C8C0AC02DDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuiBot-TwitchSocket", "..\SuiBot-TwitchSocket\SuiBot-TwitchSocket.csproj", "{EEFD4D67-FA06-4A2A-804F-31851CB06A3E}"
 EndProject

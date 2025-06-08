@@ -31,6 +31,7 @@ namespace BasicTwitchSoundPlayer.IRC
 		private string m_ChannelToJoin;
 		private char m_PrefixChar;
 		public System.Timers.Timer StatusUpdateTimer;
+		private System.Timers.Timer m_PreRolsActiveNotificationTimer;
 
 		private SoundDB SndDB { get; set; }
 
@@ -129,6 +130,8 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 
 				Logger.AddLine($"Subscribing to additional events for {result.condition.broadcaster_user_id}");
+				var sub = await HelixAPI_User.SubscribeToChannelAdBreak(result.condition.user_id, TwitchSocket.SessionID);
+				await Task.Delay(2000);
 				var onLineSub = await HelixAPI_User.SubscribeToOnlineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
 				await Task.Delay(2000);
 				var offlineSub = await HelixAPI_User.SubscribeToOfflineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
@@ -229,8 +232,42 @@ namespace BasicTwitchSoundPlayer.IRC
 		{
 			if (channelGoalEnded.is_achieved.HasValue && channelGoalEnded.is_achieved.Value)
 			{
-				MainForm.Instance?.TwitchEvents?.ChannelGoalAchieved?.Invoke(channelGoalEnded);
+				MainForm.Instance?.TwitchEvents?.OnChannelGoalAchieved?.Invoke(channelGoalEnded);
 			}
+		}
+
+		public void TwitchSocket_AdBreakBegin(ES_AdBreakBeginNotification infoAboutAd)
+		{
+			if(m_PreRolsActiveNotificationTimer != null)
+			{
+				m_PreRolsActiveNotificationTimer.Dispose();
+				m_PreRolsActiveNotificationTimer = null;
+			}
+
+			MainForm.Instance?.TwitchEvents?.OnAdBreakStarted?.Invoke(infoAboutAd);
+		}
+
+		public void TwitchSocket_AdBreakFinished(ES_AdBreakBeginNotification infoAboutAd)
+		{
+			if (m_PreRolsActiveNotificationTimer != null)
+			{
+				m_PreRolsActiveNotificationTimer.Dispose();
+				m_PreRolsActiveNotificationTimer = null;
+			}
+
+			//Calculate when prerolls get activated and wait additional 30s just in case!
+			var prerollsActivation = (infoAboutAd.duration_seconds * 20) + 30;
+
+			m_PreRolsActiveNotificationTimer = new System.Timers.Timer(prerollsActivation * 1000);
+			m_PreRolsActiveNotificationTimer.Elapsed +=	(sender, args) =>
+			{
+				MainForm.Instance?.TwitchEvents?.OnAdPrerollsActive?.Invoke();
+			};
+			m_PreRolsActiveNotificationTimer.Start();
+
+
+			MainForm.Instance?.TwitchEvents?.OnAdBreakFinished?.Invoke(infoAboutAd, prerollsActivation / 60);
+
 		}
 		#endregion
 	}
