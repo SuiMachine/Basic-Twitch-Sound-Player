@@ -78,6 +78,9 @@
     <Reference Include="NVorbis, Version=0.10.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\NVorbis.0.10.5\lib\net45\NVorbis.dll</HintPath>
     </Reference>
+    <Reference Include="SpeedrunComSharp">
+      <HintPath>Libraries\SpeedrunComSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
@@ -232,6 +235,7 @@
     <Compile Include="SoundEntry.cs" />
     <Compile Include="Structs\Gemini\FunctionTypes\FunctionCalls.cs" />
     <Compile Include="Structs\Gemini\FunctionTypes\Parameters.cs" />
+    <Compile Include="Structs\Gemini\FunctionTypes\Speedrun\FunctionCallsSpeedrun.cs" />
     <Compile Include="Structs\Gemini\GeminiCharacterOverride.cs" />
     <Compile Include="VoiceModHandling.cs" />
     <Compile Include="SoundStorageXML.cs" />

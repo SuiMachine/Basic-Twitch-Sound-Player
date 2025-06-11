@@ -111,7 +111,26 @@ namespace BasicTwitchSoundPlayer.IRC
 		public void TwitchSocket_Connected()
 		{
 			Logger.AddLine("Connected!");
+/*#if DEBUG
+			MainForm.Instance.AI.PointsRedeem(new ES_ChannelPointRedeemRequest()
+			{
+				reward = new ES_ChannelPointRedeemRequest.Reward()
+				{
+					id = AIConfig.GetInstance().TwitchAwardID,
 
+				},
+				user_input = "What's streamer's personal best time for Deus Ex?",
+				id = Guid.NewGuid().ToString(),
+				broadcaster_user_id = HelixAPI_User.BotUserId,
+				broadcaster_user_login = HelixAPI_User.BotLoginName,
+				broadcaster_user_name = HelixAPI_User.BotLoginName,
+				user_id = HelixAPI_User.BotUserId,
+				user_login = HelixAPI_User.BotLoginName,
+				user_name = HelixAPI_User.BotLoginName,
+				state = RedemptionStates.UNFULFILLED,
+				redeemed_at = DateTime.UtcNow,
+			});
+#endif*/
 			Task.Factory.StartNew(async () =>
 			{
 				Response_SubscribeTo.Subscription_Response_Data result = await HelixAPI_User.SubscribeToChatMessageUsingID(HelixAPI_User.BotUserId, TwitchSocket.SessionID);
@@ -130,7 +149,9 @@ namespace BasicTwitchSoundPlayer.IRC
 				}
 
 				Logger.AddLine($"Subscribing to additional events for {result.condition.broadcaster_user_id}");
-				var sub = await HelixAPI_User.SubscribeToChannelAdBreak(result.condition.user_id, TwitchSocket.SessionID);
+				var raid = await HelixAPI_User.SubscribeToRaidNotification(result.condition.user_id, TwitchSocket.SessionID);
+				await Task.Delay(2000);
+				var ads = await HelixAPI_User.SubscribeToChannelAdBreak(result.condition.user_id, TwitchSocket.SessionID);
 				await Task.Delay(2000);
 				var onLineSub = await HelixAPI_User.SubscribeToOnlineStatus(result.condition.broadcaster_user_id, TwitchSocket.SessionID);
 				await Task.Delay(2000);
@@ -238,7 +259,7 @@ namespace BasicTwitchSoundPlayer.IRC
 
 		public void TwitchSocket_AdBreakBegin(ES_AdBreakBeginNotification infoAboutAd)
 		{
-			if(m_PreRolsActiveNotificationTimer != null)
+			if (m_PreRolsActiveNotificationTimer != null)
 			{
 				m_PreRolsActiveNotificationTimer.Dispose();
 				m_PreRolsActiveNotificationTimer = null;
@@ -259,7 +280,7 @@ namespace BasicTwitchSoundPlayer.IRC
 			var prerollsActivation = (infoAboutAd.duration_seconds * 20) + 30;
 
 			m_PreRolsActiveNotificationTimer = new System.Timers.Timer(prerollsActivation * 1000);
-			m_PreRolsActiveNotificationTimer.Elapsed +=	(sender, args) =>
+			m_PreRolsActiveNotificationTimer.Elapsed += (sender, args) =>
 			{
 				MainForm.Instance?.TwitchEvents?.OnAdPrerollsActive?.Invoke();
 			};
@@ -268,6 +289,14 @@ namespace BasicTwitchSoundPlayer.IRC
 
 			MainForm.Instance?.TwitchEvents?.OnAdBreakFinished?.Invoke(infoAboutAd, prerollsActivation / 60);
 
+		}
+
+		public void TwitchSocket_ChannelRaid(ES_ChannelRaid raidInfo)
+		{
+			if (raidInfo.to_broadcaster_user_id != ChannelInstance.ChannelID)
+				return;
+
+			MainForm.Instance?.TwitchEvents?.OnChannelRaid?.Invoke(raidInfo);
 		}
 		#endregion
 	}

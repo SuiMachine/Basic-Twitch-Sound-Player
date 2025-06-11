@@ -28,7 +28,7 @@ namespace BasicTwitchSoundPlayer
 		public EventBridge TwitchEvents { get; private set; }
 		private char PrefixCharacter = '-';
 		SoundDB soundDb;
-		GeminiAI AI;
+		public GeminiAI AI { get; private set; }
 		WebSocketsListener webSockets;
 		public MixItUp MixItUpWebhook { get; private set; }
 
@@ -381,7 +381,6 @@ namespace BasicTwitchSoundPlayer
 			var result = ai_form.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-
 			}
 		}
 

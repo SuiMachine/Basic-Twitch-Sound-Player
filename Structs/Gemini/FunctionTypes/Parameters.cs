@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SuiBotAI.Components.Other.Gemini.FunctionTypes;
+﻿using SuiBotAI.Components.Other.Gemini.FunctionTypes;
 using System;
 using System.Collections.Generic;
 

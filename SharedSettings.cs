@@ -269,9 +269,12 @@ namespace BasicTwitchSoundPlayer
 			public string Instruction_AdsBegin = "Notify users in the chat that the ads (commercials) have just started and they will least for {time} minutes. The response should be between 50-450 characters long. Stay in character.";
 			public string Instruction_AdsFinished = "Notify users in the chat that the ads (commercials) just finished and that next ones should be in {next_ads} minutes. Stay in character.  The response should be between 50-450 characters long.";
 			public string Instruction_NotifyPrerolls = "Notify users in the chat that pre-roll ads (commercials) are now sadly activated. Stay in character. The response should be between 50-450 characters long.";
+			public string Instruction_Raid = "Thank {user} for the raid. Provide a short description of who they are based and what they were streaming. The response should be between 250-450 characters long. Stay in character. Make sure the response doesn't have racist tones.";
+
 			public bool AdsBeginNotify { get; set; } = false;
 			public bool AdsFinishNotify { get; set; } = false;
 			public bool AdsPrerollsActiveNotify { get; set; } = false;
+			public bool RaidNotify { get; set; } = false;
 		}
 
 		[Serializable]
@@ -322,7 +325,7 @@ namespace BasicTwitchSoundPlayer
 			Civic_Integrity = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE,
 		};
 
-		public string Model { get; set; } = "models/gemini-2.5-flash-preview-04-17";
+		public string Model { get; set; } = "models/gemini-2.5-flash-preview-05-20";
 		public string TwitchAwardID { get; set; } = "";
 		public EventSettings Events = new EventSettings();
 

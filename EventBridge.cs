@@ -11,7 +11,7 @@ namespace BasicTwitchSoundPlayer
 		public Action<ES_AdBreakBeginNotification> OnAdBreakStarted;
 		public Action<ES_AdBreakBeginNotification, int> OnAdBreakFinished;
 		public Action OnAdPrerollsActive;
-
+		public Action<ES_ChannelRaid> OnChannelRaid;
 
 		internal void Clear()
 		{
@@ -21,6 +21,7 @@ namespace BasicTwitchSoundPlayer
 			OnAdBreakStarted = null;
 			OnAdBreakFinished = null;
 			OnAdPrerollsActive = null;
+			OnChannelRaid = null;
 		}
 	}
 }

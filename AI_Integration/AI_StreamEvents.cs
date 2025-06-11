@@ -23,9 +23,12 @@ namespace BasicTwitchSoundPlayer.AI_Integration
 			RB_AdsStarted_Instruction.Text = config.Instruction_AdsBegin;
 			RB_AdsFinished_Instruction.Text = config.Instruction_AdsFinished;
 			RB_Ads_PreRollsNowActive.Text = config.Instruction_NotifyPrerolls;
+			RB_RaidInstructions.Text = config.Instruction_Raid;
+
 			CB_AdsStarted.Checked = config.AdsBeginNotify;
 			CB_AdsFinished.Checked = config.AdsFinishNotify;
 			CB_Ads_PreRollsNowActive.Checked = config.AdsPrerollsActiveNotify;
+			CB_RaidNotification.Checked = config.RaidNotify;
 		}
 
 		private void B_Save_Click(object sender, EventArgs e)
@@ -37,9 +40,11 @@ namespace BasicTwitchSoundPlayer.AI_Integration
 			config.Instruction_AdsBegin = RB_AdsStarted_Instruction.Text.Trim();
 			config.Instruction_AdsFinished = RB_AdsFinished_Instruction.Text.Trim();
 			config.Instruction_NotifyPrerolls = RB_Ads_PreRollsNowActive.Text.Trim();
+			config.Instruction_Raid = RB_RaidInstructions.Text.Trim();
 			config.AdsBeginNotify = CB_AdsStarted.Checked;
 			config.AdsFinishNotify = CB_AdsFinished.Checked;
 			config.AdsPrerollsActiveNotify = CB_Ads_PreRollsNowActive.Checked;
+			config.RaidNotify = CB_RaidNotification.Checked;
 
 			this.DialogResult = DialogResult.OK;
 			aiConfig.SaveSettings();
@@ -52,51 +57,24 @@ namespace BasicTwitchSoundPlayer.AI_Integration
 			this.Close();
 		}
 
-		SuiBot_TwitchSocket.API.EventSub.ES_AdBreakBeginNotification testAdd;
-		private void B_Test_AdsStarted_Click(object sender, EventArgs e)
+		private void button1_Click(object sender, EventArgs e)
 		{
-			var helixUser = MainForm.Instance.TwitchBot.HelixAPI_User;
+			var aiConfig = AIConfig.GetInstance();
 
-			testAdd = new SuiBot_TwitchSocket.API.EventSub.ES_AdBreakBeginNotification()
+			var config = aiConfig.Events;
+
+			var helixUser = MainForm.Instance?.TwitchBot.HelixAPI_User;
+
+			MainForm.Instance?.TwitchBot.TwitchSocket_ChannelRaid(new SuiBot_TwitchSocket.API.EventSub.ES_ChannelRaid()
 			{
-				requester_user_id = helixUser.BotUserId,
-				requester_user_login = helixUser.BotLoginName,
-				requester_user_name = helixUser.BotLoginName,
-				broadcaster_user_id = helixUser.BotUserId,
-				broadcaster_user_login = helixUser.BotLoginName,
-				broadcaster_user_name = helixUser.BotLoginName,
-				is_automatic = false,
-				started_at = DateTime.UtcNow,
-				duration_seconds = 30
-			};
-
-			MainForm.Instance.TwitchBot?.TwitchSocket_AdBreakBegin(testAdd);
-		}
-
-		private void B_Test_AdsFinished_Click(object sender, EventArgs e)
-		{
-			var helixUser = MainForm.Instance.TwitchBot.HelixAPI_User;
-
-			if(testAdd == null)
-			{
-				var tmp = new SuiBot_TwitchSocket.API.EventSub.ES_AdBreakBeginNotification()
-				{
-					requester_user_id = helixUser.BotUserId,
-					requester_user_login = helixUser.BotLoginName,
-					requester_user_name = helixUser.BotLoginName,
-					broadcaster_user_id = helixUser.BotUserId,
-					broadcaster_user_login = helixUser.BotLoginName,
-					broadcaster_user_name = helixUser.BotLoginName,
-					is_automatic = false,
-					started_at = DateTime.UtcNow,
-					duration_seconds = 30
-				};
-				MainForm.Instance.TwitchBot?.TwitchSocket_AdBreakFinished(tmp);
-			}
-			else
-			{
-				MainForm.Instance.TwitchBot?.TwitchSocket_AdBreakFinished(testAdd);
-			}
+				from_broadcaster_user_id = "89089368",
+				from_broadcaster_user_login = "hibike7",
+				from_broadcaster_user_name = "HiBike7",
+				to_broadcaster_user_id = helixUser.BotUserId,
+				to_broadcaster_user_login = helixUser.BotLoginName,
+				to_broadcaster_user_name = helixUser.BotLoginName,
+				viewers = 9
+			});
 		}
 	}
 }

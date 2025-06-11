@@ -41,6 +41,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 			"moderator:manage:warnings",
 			"user:bot",
 			"user:read:chat",
+			"user:read:emotes",
 			"user:read:subscriptions",
 			"user:write:chat",
 		};
