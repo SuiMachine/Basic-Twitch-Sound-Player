@@ -18,7 +18,7 @@ namespace SSC
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			bool createdNew;
-			mutex = new Mutex(true, "BasicTwitchSoundPlayerMutex", out createdNew);
+			mutex = new Mutex(true, "SSCMutex", out createdNew);
 			if (createdNew)
 				Application.Run(new MainForm());
 			else

@@ -18,7 +18,7 @@ namespace SSC.SettingsForms.AI_Overrides_Forms
 
 		private void UserOverrideSelectionForm_Load(object sender, EventArgs e)
 		{
-			var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Overrides");
+			var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "AI_Overrides");
 			if (!Directory.Exists(path))
 				return;
 

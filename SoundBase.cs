@@ -30,7 +30,7 @@ namespace SSC
 			m_SoundPlayerStack = new List<NSoundPlayer>();
 			m_RNG = new Random();
 			this.m_Delay = PrivateSettings.GetInstance().Delay;
-			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Sounds.xml");
+			this.m_SoundBaseFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "Sounds.xml");
 			SoundList = SoundStorageXML.LoadSoundBase(m_SoundBaseFile);
 			RebuildDictionary();
 		}

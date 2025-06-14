@@ -73,7 +73,7 @@ namespace SSC
 	[Serializable]
 	public class PrivateSettings
 	{
-		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "Config.xml");
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "Config.xml");
 		private static PrivateSettings m_Instance;
 		public static PrivateSettings GetInstance()
 		{
@@ -139,7 +139,7 @@ namespace SSC
 	[Serializable]
 	public class VoiceModConfig
 	{
-		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "VoiceModConfig.xml");
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "VoiceModConfig.xml");
 		private static VoiceModConfig m_Instance;
 		public static VoiceModConfig GetInstance()
 		{
@@ -286,8 +286,8 @@ namespace SSC
 			public AISafetySettingsValues Civic_Integrity { get; set; } = AISafetySettingsValues.BLOCK_LOW_AND_ABOVE;
 		}
 
-		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Config.xml");
-		public static string GetAIHistoryPath(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_History", username + ".xml");
+		private static string GetConfigPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "AI_Config.xml");
+		public static string GetAIHistoryPath(string username) => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "AI_History", username + ".xml");
 
 		private static AIConfig m_Instance;
 		public static AIConfig GetInstance()

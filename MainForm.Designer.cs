@@ -204,7 +204,7 @@
 			// 
 			this.trayIcon.ContextMenuStrip = this.trayMenu;
 			this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
-			this.trayIcon.Text = "Basic Twitch Sound Player";
+			this.trayIcon.Text = "Sui's Stream Companion App";
 			this.trayIcon.Visible = true;
 			this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
 			// 

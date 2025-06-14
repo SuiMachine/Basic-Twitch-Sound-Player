@@ -21,7 +21,7 @@ namespace SSC.Structs.Gemini
 
 		public static string GetOverridePath(string username)
 		{
-			return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BasicTwitchSoundPlayer", "AI_Overrides", username + ".xml");
+			return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SSC", "AI_Overrides", username + ".xml");
 		}
 
 		public static GeminiCharacterOverride GetOverride(string path)
