@@ -1,11 +1,11 @@
-﻿using BasicTwitchSoundPlayer.Structs.Gemini;
+﻿using SSC.Structs.Gemini;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
+namespace SSC.SettingsForms.AI_Overrides_Forms
 {
 	public partial class UserOverrideSelectionForm : Form
 	{

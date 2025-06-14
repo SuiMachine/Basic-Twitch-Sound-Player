@@ -1,9 +1,9 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using SSC.Chat;
 using SuiBot_TwitchSocket.API.EventSub;
 using System;
 using static SuiBotAI.Components.Other.Gemini.GeminiTools;
 
-namespace BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes
+namespace SSC.Structs.Gemini.FunctionTypes
 {
 	public abstract class FunctionCall
 	{

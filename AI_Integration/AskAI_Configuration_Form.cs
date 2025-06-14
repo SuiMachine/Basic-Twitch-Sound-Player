@@ -1,12 +1,12 @@
-﻿using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms;
+﻿using SSC.Chat;
+using SSC.SettingsForms.AI_Overrides_Forms;
 using SuiBot_TwitchSocket.API;
 using System;
 using System.Linq;
 using System.Windows.Forms;
 using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
-namespace BasicTwitchSoundPlayer.AI_Integration
+namespace SSC.AI_Integration
 {
 	public partial class AskAI_Configuration_Form : Form
 	{
@@ -47,7 +47,7 @@ namespace BasicTwitchSoundPlayer.AI_Integration
 		{
 			var aiConfig = AIConfig.GetInstance();
 
-			var api = new HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, PrivateSettings.GetInstance().UserAuth);
+			var api = new HelixAPI(ChatBot.SSC_CLIENT_ID, null, PrivateSettings.GetInstance().UserAuth);
 			var validation = api.ValidateToken();
 			if (validation != HelixAPI.ValidationResult.Successful)
 			{

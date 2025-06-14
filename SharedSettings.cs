@@ -1,6 +1,5 @@
-﻿using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.Interfaces;
-using BasicTwitchSoundPlayer.Structs.Gemini;
+﻿using SSC.Extensions;
+using SSC.Interfaces;
 using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	[Serializable]
 	public class ColorStruct

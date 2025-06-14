@@ -1,11 +1,11 @@
-﻿using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.SoundStorage;
+﻿using SSC.Chat;
+using SSC.Extensions;
+using SSC.SoundStorage;
 using System;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
+namespace SSC.SoundDatabaseEditor.EditDialogues
 {
 	public partial class AddEditNewEntryDialog : Form
 	{
@@ -168,7 +168,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+			var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.SSC_CLIENT_ID, null, settings.UserAuth);
 			var validation = api.ValidateToken();
 
 			if (validation != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
@@ -220,7 +220,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+			var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.SSC_CLIENT_ID, null, settings.UserAuth);
 			var validation = api.ValidateToken();
 
 			if (validation != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)

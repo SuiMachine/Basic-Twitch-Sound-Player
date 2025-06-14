@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.AI_Integration
+﻿namespace SSC.AI_Integration
 {
 	partial class AskAI_Configuration_Form
 	{

@@ -3,7 +3,7 @@ using SuiBot_TwitchSocket;
 using SuiBot_TwitchSocket.API.EventSub;
 using System.Threading.Tasks;
 
-namespace BasicTwitchSoundPlayer.MixItUpBridge
+namespace SSC.MixItUpBridge
 {
 	public class MixItUp
 	{

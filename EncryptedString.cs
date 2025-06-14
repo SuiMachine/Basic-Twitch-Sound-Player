@@ -3,13 +3,13 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Xml.Serialization;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	[Serializable]
 	public class EncryptedString
 	{
-		private static string GetEncryptionLocationIV() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "EncryptionIV.bin");
-		private static string GetEncryptionLocationKey() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer", "EncryptionKey.bin");
+		private static string GetEncryptionLocationIV() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SSC", "EncryptionIV.bin");
+		private static string GetEncryptionLocationKey() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SSC", "EncryptionKey.bin");
 
 		private static Aes m_AES;
 		private static ICryptoTransform m_Encryptor;
@@ -98,7 +98,7 @@ namespace BasicTwitchSoundPlayer
 					m_AES.GenerateIV();
 					m_AES.GenerateKey();
 
-					Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BasicTwitchSoundPlayer"));
+					Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SSC"));
 					File.WriteAllBytes(GetEncryptionLocationIV(), m_AES.IV);
 					File.WriteAllBytes(GetEncryptionLocationKey(), m_AES.Key);
 

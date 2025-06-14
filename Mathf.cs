@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer
+﻿namespace SSC
 {
 	public static class Mathf
 	{

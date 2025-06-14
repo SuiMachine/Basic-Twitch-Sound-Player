@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 
-namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
+namespace SSC.SoundDatabaseEditor.EditDialogues
 {
     partial class AddEditNewEntryDialog
     {

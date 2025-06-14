@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace BasicTwitchSoundPlayer.SettingsForms.EditForm
+namespace SSC.SettingsForms.EditForm
 {
 	public partial class VoiceModEditForm : Form
 	{

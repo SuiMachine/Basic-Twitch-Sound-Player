@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
-namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
+namespace SSC.SettingsForms.AI_Overrides_Forms
 {
 	public partial class UserOverrideEdit : Form
 	{

@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
+﻿namespace SSC.SoundDatabaseEditor
 {
     partial class DB_Editor
     {

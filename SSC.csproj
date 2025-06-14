@@ -7,8 +7,8 @@
     <ProjectGuid>{AB91E6D8-41B7-40F8-9A30-8C8C0AC02DDF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BasicTwitchSoundPlayer</RootNamespace>
-    <AssemblyName>BasicTwitchSoundPlayer</AssemblyName>
+    <RootNamespace>SSC</RootNamespace>
+    <AssemblyName>SuisStreamCompanion</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

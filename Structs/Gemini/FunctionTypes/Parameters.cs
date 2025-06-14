@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes
+namespace SSC.Structs.Gemini.FunctionTypes
 {
 	[Serializable]
 	public class TimeOutParameters : GeminiProperty

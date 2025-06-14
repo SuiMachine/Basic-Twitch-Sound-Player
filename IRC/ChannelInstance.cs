@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicTwitchSoundPlayer.IRC
+namespace SSC.Chat
 {
 	public class ChannelInstance : IChannelInstance
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
+namespace SSC.SettingsForms.AI_Overrides_Forms
 {
 	public partial class UserOverrideAddForm : Form
 	{

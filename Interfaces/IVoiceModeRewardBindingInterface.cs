@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BasicTwitchSoundPlayer.Interfaces
+namespace SSC.Interfaces
 {
 	public interface IVoiceModeRewardBindingInterface : ICloneable
 	{

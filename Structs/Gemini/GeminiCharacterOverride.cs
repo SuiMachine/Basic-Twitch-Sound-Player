@@ -1,11 +1,11 @@
-﻿using BasicTwitchSoundPlayer.Extensions;
+﻿using SSC.Extensions;
 using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Text;
 using System.Xml.Serialization;
 using static SuiBotAI.Components.Other.Gemini.GeminiSafetySettingsCategory;
 
-namespace BasicTwitchSoundPlayer.Structs.Gemini
+namespace SSC.Structs.Gemini
 {
 	[Serializable]
 	public class GeminiCharacterOverride

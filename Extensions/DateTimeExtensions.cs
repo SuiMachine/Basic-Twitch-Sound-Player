@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BasicTwitchSoundPlayer.Extensions
+namespace SSC.Extensions
 {
 	static class DateTimeExtensions
 	{

@@ -1,8 +1,8 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using SSC.Chat;
 using System;
 using System.Text;
 
-namespace BasicTwitchSoundPlayer.Extensions
+namespace SSC.Extensions
 {
 	public static class GeminiExtensions
 	{

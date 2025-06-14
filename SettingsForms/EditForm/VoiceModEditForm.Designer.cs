@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.SettingsForms.EditForm
+﻿namespace SSC.SettingsForms.EditForm
 {
 	partial class VoiceModEditForm
 	{

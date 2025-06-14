@@ -1,13 +1,13 @@
-﻿using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.SoundStorage;
+﻿using SSC.Chat;
+using SSC.Extensions;
+using SSC.SoundStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
+namespace SSC.SoundDatabaseEditor
 {
 	public partial class DB_Editor : Form
 	{
@@ -178,7 +178,7 @@ namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
 			{
 				var settings = PrivateSettings.GetInstance();
 
-				var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+				var api = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.SSC_CLIENT_ID, null, settings.UserAuth);
 				var authentication = api.ValidateToken();
 				if (authentication != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)
 				{

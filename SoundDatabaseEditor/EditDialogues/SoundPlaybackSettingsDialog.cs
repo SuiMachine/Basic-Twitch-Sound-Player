@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.SoundDatabaseEditor.EditDialogues
+namespace SSC.SoundDatabaseEditor.EditDialogues
 {
 	public partial class SoundPlaybackSettingsDialog : Form
 	{

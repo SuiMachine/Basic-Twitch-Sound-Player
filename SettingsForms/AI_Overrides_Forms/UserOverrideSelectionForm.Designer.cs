@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.SettingsForms.AI_Overrides_Forms
+﻿namespace SSC.SettingsForms.AI_Overrides_Forms
 {
 	partial class UserOverrideSelectionForm
 	{

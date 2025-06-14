@@ -1,10 +1,9 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using SSC.Chat;
 using System;
-using System.Diagnostics;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public class WebSocketsListener
 	{

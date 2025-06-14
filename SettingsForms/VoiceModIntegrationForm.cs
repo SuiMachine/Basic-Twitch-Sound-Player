@@ -1,13 +1,13 @@
-﻿using BasicTwitchSoundPlayer.Interfaces;
-using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.SettingsForms.EditForm;
+﻿using SSC.Chat;
+using SSC.Interfaces;
+using SSC.SettingsForms.EditForm;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using static BasicTwitchSoundPlayer.VoiceModConfig;
+using static SSC.VoiceModConfig;
 
-namespace BasicTwitchSoundPlayer.SettingsForms
+namespace SSC.SettingsForms
 {
 	public partial class VoiceModIntegrationForm : Form
 	{
@@ -321,7 +321,7 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 				return;
 
 			var settings = PrivateSettings.GetInstance();
-			var helix = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, null, settings.UserAuth);
+			var helix = new SuiBot_TwitchSocket.API.HelixAPI(ChatBot.SSC_CLIENT_ID, null, settings.UserAuth);
 
 			var validationResult = helix.ValidateToken();
 			if(validationResult != SuiBot_TwitchSocket.API.HelixAPI.ValidationResult.Successful)

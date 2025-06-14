@@ -1,14 +1,11 @@
-﻿using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.Structs.Gemini;
-using BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes;
-using NAudio.Gui;
+﻿using SSC.Chat;
+using SSC.Structs.Gemini;
+using SSC.Structs.Gemini.FunctionTypes;
 using SuiBot_TwitchSocket.API.EventSub;
-using SuiBot_TwitchSocket.API.Helix.Responses;
 using SuiBotAI.Components;
 using SuiBotAI.Components.Other.Gemini;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,7 +14,7 @@ using System.Threading.Tasks;
 using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 using static SuiBotAI.Components.SuiBotAIProcessor;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public class GeminiAI
 	{

@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.MixItUpBridge
+﻿namespace SSC.MixItUpBridge
 {
 	public abstract class MixItUpWebHookRequests_Base
 	{

@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.SettingsForms
+﻿namespace SSC.SettingsForms
 {
     partial class ConnectionSettingsForm
     {

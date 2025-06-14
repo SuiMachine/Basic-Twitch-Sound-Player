@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.DialogBoxes
+﻿namespace SSC.DialogBoxes
 {
 	partial class ProgressDisplay
 	{

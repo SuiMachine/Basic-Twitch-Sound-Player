@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace BasicTwitchSoundPlayer.Structs
+namespace SSC.Structs
 {
 	public enum TwitchRightsEnum
 	{

@@ -1,4 +1,4 @@
-﻿namespace BasicTwitchSoundPlayer.Extensions
+﻿namespace SSC.Extensions
 {
 	static class NumberTypesExtension
 	{

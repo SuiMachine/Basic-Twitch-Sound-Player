@@ -1,5 +1,5 @@
-﻿using BasicTwitchSoundPlayer.IRC;
-using SpeedrunComSharp;
+﻿using SpeedrunComSharp;
+using SSC.Chat;
 using SuiBot_TwitchSocket.API.EventSub;
 using SuiBotAI.Components.Other.Gemini.FunctionTypes;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BasicTwitchSoundPlayer.Structs.Gemini.FunctionTypes.Speedrun
+namespace SSC.Structs.Gemini.FunctionTypes.Speedrun
 {
 	[Serializable]
 	public class WorldRecordRequest : GeminiProperty

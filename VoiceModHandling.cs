@@ -1,5 +1,5 @@
-﻿using BasicTwitchSoundPlayer.IRC;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using SSC.Chat;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using WebSocketSharp;
 using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public class VoiceModHandling : IDisposable
 	{

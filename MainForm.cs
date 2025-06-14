@@ -1,10 +1,10 @@
-﻿using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.MixItUpBridge;
+﻿using SSC.Chat;
+using SSC.MixItUpBridge;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public enum LineType
 	{
@@ -63,7 +63,7 @@ namespace BasicTwitchSoundPlayer
 
 		private void StartBot()
 		{
-			TwitchBot = new IRC.ChatBot(soundDb, PrefixCharacter);
+			TwitchBot = new ChatBot(soundDb, PrefixCharacter);
 			TwitchBot.Connect();
 			if (AI.IsConfigured())
 			{

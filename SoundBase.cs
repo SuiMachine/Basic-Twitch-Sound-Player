@@ -1,7 +1,7 @@
-﻿using BasicTwitchSoundPlayer.Extensions;
-using BasicTwitchSoundPlayer.IRC;
-using BasicTwitchSoundPlayer.SoundStorage;
-using NAudio.Wave;
+﻿using NAudio.Wave;
+using SSC.Chat;
+using SSC.Extensions;
+using SSC.SoundStorage;
 using SuiBot_TwitchSocket.API.EventSub;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public class SoundDB
 	{

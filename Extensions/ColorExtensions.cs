@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.Extensions
+namespace SSC.Extensions
 {
 	class ColorExtension
 	{

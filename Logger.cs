@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public static class Logger
 	{

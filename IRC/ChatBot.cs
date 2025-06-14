@@ -1,18 +1,19 @@
-﻿using BasicTwitchSoundPlayer.Structs;
+﻿using SSC.Structs;
 using SuiBot_TwitchSocket;
 using SuiBot_TwitchSocket.API;
 using SuiBot_TwitchSocket.API.EventSub;
 using SuiBot_TwitchSocket.API.EventSub.Subscription.Responses;
 using SuiBot_TwitchSocket.Interfaces;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using static SuiBot_TwitchSocket.API.EventSub.ES_ChannelPoints;
 
-namespace BasicTwitchSoundPlayer.IRC
+namespace SSC.Chat
 {
 	public class ChatBot : IBotInstance, IDisposable
 	{
-		public const string BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes";
+		public const string SSC_CLIENT_ID = "9z58zy6ak0ejk9lme6dy6nyugydaes"; //Leftover from BTSP - va
 		public static bool AreRedeemsPaused { get; internal set; } = false;
 		public static bool AreVoiceRedeemsPaused { get; internal set; } = false;
 		public static bool AreSoundRedeemsPaused { get; internal set; } = false;
@@ -40,10 +41,10 @@ namespace BasicTwitchSoundPlayer.IRC
 			var privateSettings = PrivateSettings.GetInstance();
 
 			ChannelInstance = new ChannelInstance(this);
-			HelixAPI_User = new HelixAPI(BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, this, privateSettings.UserAuth);
+			HelixAPI_User = new HelixAPI(SSC_CLIENT_ID, this, privateSettings.UserAuth);
 
 			if (privateSettings.BotAuth != "")
-				m_HelixAPI_Bot = new HelixAPI(BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, this, privateSettings.BotAuth);
+				m_HelixAPI_Bot = new HelixAPI(SSC_CLIENT_ID, this, privateSettings.BotAuth);
 
 			var authVerify = HelixAPI_User.GetValidation();
 			if (authVerify == null || string.IsNullOrEmpty(authVerify.login))
@@ -279,7 +280,11 @@ namespace BasicTwitchSoundPlayer.IRC
 			//Calculate when prerolls get activated and wait additional 30s just in case!
 			var prerollsActivation = (infoAboutAd.duration_seconds * 20) + 30;
 
-			m_PreRolsActiveNotificationTimer = new System.Timers.Timer(prerollsActivation * 1000);
+			m_PreRolsActiveNotificationTimer = new System.Timers.Timer(prerollsActivation * 1000)
+			{
+				AutoReset = false
+			};
+
 			m_PreRolsActiveNotificationTimer.Elapsed += (sender, args) =>
 			{
 				MainForm.Instance?.TwitchEvents?.OnAdPrerollsActive?.Invoke();

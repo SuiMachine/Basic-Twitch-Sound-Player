@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 
-namespace BasicTwitchSoundPlayer.SoundDatabaseEditor
+namespace SSC.SoundDatabaseEditor
 {
 	public static class SupportedFileFormats
 	{

@@ -1,7 +1,7 @@
 ﻿using SuiBot_TwitchSocket.API.EventSub;
 using System;
 
-namespace BasicTwitchSoundPlayer
+namespace SSC
 {
 	public class EventBridge
 	{

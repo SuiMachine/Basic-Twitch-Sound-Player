@@ -1,10 +1,10 @@
-﻿using BasicTwitchSoundPlayer.IRC;
+﻿using SSC.Chat;
 using SuiBot_TwitchSocket.API;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.SettingsForms
+namespace SSC.SettingsForms
 {
 	public partial class ConnectionSettingsForm : Form
 	{
@@ -128,13 +128,13 @@ namespace BasicTwitchSoundPlayer.SettingsForms
 
 		private void B_GetLoginData_Click(object sender, EventArgs e)
 		{
-			var url = HelixAPI.GenerateAuthenticationURL(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, "https://suimachine.github.io/twitchauthy/", SCOPES);
+			var url = HelixAPI.GenerateAuthenticationURL(ChatBot.SSC_CLIENT_ID, "https://suimachine.github.io/twitchauthy/", SCOPES);
 			Process.Start(url);
 		}
 
 		private void B_GetLoginDataManual_Click(object sender, EventArgs e)
 		{
-			var url = HelixAPI.GenerateAuthenticationURL(ChatBot.BASIC_TWITCH_SOUND_PLAYER_CLIENT_ID, "https://suimachine.github.io/twitchauthy/", SCOPES);
+			var url = HelixAPI.GenerateAuthenticationURL(ChatBot.SSC_CLIENT_ID, "https://suimachine.github.io/twitchauthy/", SCOPES);
 			Clipboard.SetText(url);
 			MessageBox.Show("An url copied to your clipboard - paste it in your browser to set up bot auth", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}

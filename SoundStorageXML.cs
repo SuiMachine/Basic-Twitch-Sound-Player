@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace BasicTwitchSoundPlayer.SoundStorage
+namespace SSC.SoundStorage
 {
 	class SoundStorageXML
 	{

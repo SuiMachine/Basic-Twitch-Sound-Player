@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.Remoting.Activation;
 using System.Xml.Serialization;
 
-namespace BasicTwitchSoundPlayer.SoundStorage
+namespace SSC.SoundStorage
 {
 	[Serializable]
 	public class SoundEntry

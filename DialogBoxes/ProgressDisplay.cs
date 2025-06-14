@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.DialogBoxes
+namespace SSC.DialogBoxes
 {
 	public partial class ProgressDisplay : Form
 	{

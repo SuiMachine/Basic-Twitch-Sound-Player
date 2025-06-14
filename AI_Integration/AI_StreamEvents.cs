@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BasicTwitchSoundPlayer.AI_Integration
+namespace SSC.AI_Integration
 {
 	public partial class AI_StreamEvents : Form
 	{

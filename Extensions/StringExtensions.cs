@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace BasicTwitchSoundPlayer.Extensions
+namespace SSC.Extensions
 {
 	public static class StringExtensions
 	{
